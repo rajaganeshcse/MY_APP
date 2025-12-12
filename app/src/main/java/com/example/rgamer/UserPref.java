@@ -5,14 +5,15 @@ import android.content.SharedPreferences;
 
 public class UserPref {
 
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
+    private final SharedPreferences pref;
+    private final SharedPreferences.Editor editor;
 
     public UserPref(Context context) {
-        pref = context.getSharedPreferences("USER_DATA", Context.MODE_PRIVATE);
+        pref = context.getSharedPreferences("USER_PREF", Context.MODE_PRIVATE);
         editor = pref.edit();
     }
 
+    // ------------------ SAVE USER DATA ------------------
     public void saveUser(String uid, String name, String email, int coins, String token) {
         editor.putString("uid", uid);
         editor.putString("name", name);
@@ -22,13 +23,35 @@ public class UserPref {
         editor.apply();
     }
 
-    public String getUid() { return pref.getString("uid", null); }
-    public String getName() { return pref.getString("name", null); }
-    public String getEmail() { return pref.getString("email", null); }
-    public int getCoins() { return pref.getInt("coins", 0); }
-    public String getToken() { return pref.getString("token", ""); }
+    // ------------------ GET USER DATA ------------------
+    public String getUid() {
+        return pref.getString("uid", "");
+    }
 
-    public void clear() {
+    public String getName() {
+        return pref.getString("name", "");
+    }
+
+    public String getEmail() {
+        return pref.getString("email", "");
+    }
+
+    public int getCoins() {
+        return pref.getInt("coins", 0);
+    }
+
+    public String getToken() {
+        return pref.getString("token", "");
+    }
+
+    // ------------------ UPDATE COINS ------------------
+    public void updateCoins(int newCoins) {
+        editor.putInt("coins", newCoins);
+        editor.apply();
+    }
+
+    // ------------------ CLEAR USER DATA (LOGOUT) ------------------
+    public void clearUser() {
         editor.clear();
         editor.apply();
     }
