@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#6C2CF9">
+
+    <!-- Top Purple Header -->
+    <ImageView
+        android:id="@+id/header_bg"
+        android:layout_width="match_parent"
+        android:layout_height="350dp"
+        android:scaleType="centerCrop"
+        android:background="#6C2CF9" />
+
+    <!-- App Logo -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="130dp">
+
+        <ImageView
+            android:id="@+id/logo"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
+            android:src="@drawable/app_icon" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="mGamer"
+            android:textSize="28sp"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="10dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Get Free Game Credits"
+            android:textSize="15sp"
+            android:textColor="#FFFFFF" />
+    </LinearLayout>
+
+    <!-- Bottom Sheet -->
+    <LinearLayout
+        android:id="@+id/bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_top_white"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:padding="25dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Login with RGamer"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="Free Game Credits || Play e-sport tournaments"
+            android:textSize="14sp"
+            android:textColor="#666666"
+            android:layout_marginTop="6dp"
+            android:layout_marginBottom="20dp" />
+
+        <!-- Google Login Button -->
+        <LinearLayout
+            android:id="@+id/btnGoogle"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:padding="12dp"
+            android:background="@drawable/rounded_button"
+            android:layout_marginBottom="15dp">
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_google" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Continue with Google"
+                android:textSize="16sp"
+                android:textColor="#000000"
+                android:layout_marginLeft="15dp" />
+        </LinearLayout>
+
+        <!-- Privacy Policy -->
+        <TextView
+            android:id="@+id/txtPrivacy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Privacy Policy"
+            android:textSize="13sp"
+            android:textColor="#1E88E5"
+            android:layout_gravity="center"
+            android:padding="8dp" />
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "389812623522",
+    "firebase_url": "https://r-gamer-35915-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "r-gamer-35915",
+    "storage_bucket": "r-gamer-35915.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:389812623522:android:0feb6bbfd36ced57491ffb",
+        "android_client_info": {
+          "package_name": "com.example.rgamer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "389812623522-pebs2mb4093gqh0a485f55713g6klugq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCLbBJbxZnSN_65QtjsLcx-o_HTkQfV0Eo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "389812623522-pebs2mb4093gqh0a485f55713g6klugq.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
