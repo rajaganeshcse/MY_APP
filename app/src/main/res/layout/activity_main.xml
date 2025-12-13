@@ -1,97 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F7F7F7">
 
-    <!-- ============= HEADER ============== -->
+    <!-- ================= HEADER ================= -->
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:padding="12dp"
-        android:gravity="center_vertical"
+        android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="12dp"
         android:background="@android:color/white"
         android:elevation="8dp">
 
+        <!-- App Title -->
         <TextView
             android:id="@+id/appTitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="mGamer"
-            android:textAlignment="center"
             android:textColor="#6A1BFF"
             android:textSize="22sp"
             android:textStyle="bold" />
 
-        <!-- coin -->
+        <!-- Coins -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:padding="6dp">
+            android:gravity="center_vertical">
 
             <ImageView
-                android:src="@drawable/ic_coin"
                 android:layout_width="22dp"
-                android:layout_height="22dp" />
+                android:layout_height="22dp"
+                android:src="@drawable/ic_coin" />
 
             <TextView
                 android:id="@+id/txtCoins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="100"
+                android:paddingStart="6dp"
+                android:text="0"
                 android:textSize="16sp"
-                android:textColor="#000000"
-                android:paddingLeft="6dp" />
+                android:textColor="#000000" />
         </LinearLayout>
 
-        <!-- token -->
+        <!-- Tokens -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="6dp">
+            android:paddingStart="10dp">
 
             <ImageView
-                android:src="@drawable/ic_ticket"
                 android:layout_width="22dp"
-                android:layout_height="22dp" />
+                android:layout_height="22dp"
+                android:src="@drawable/ic_ticket" />
 
             <TextView
                 android:id="@+id/txtToken"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="5"
+                android:paddingStart="6dp"
+                android:text="0"
                 android:textSize="16sp"
-                android:textColor="#000000"
-                android:paddingLeft="6dp" />
+                android:textColor="#000000" />
         </LinearLayout>
 
-        <!-- Profile Image -->
+        <!-- Header Profile -->
         <ImageView
             android:id="@+id/imgProfile"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="10dp"
-            android:scaleType="centerCrop"
+            android:layout_marginStart="10dp"
             android:src="@drawable/ic_profile"
             android:background="@drawable/circle_bg"
-            android:padding="2dp" />
+            android:scaleType="centerCrop"
+            android:clipToOutline="true" />
     </LinearLayout>
 
-
-    <!-- ============= MAIN SCROLL CONTENT ============== -->
+    <!-- ================= MAIN CONTENT ================= -->
     <ScrollView
         android:layout_below="@id/header"
         android:layout_above="@id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,117 +97,113 @@
             android:orientation="vertical"
             android:padding="15dp">
 
-            <!-- Watch & Earn Card -->
             <include layout="@layout/card_watch_earn" />
-
-            <!-- Lucky Draw Card -->
             <include layout="@layout/card_lucky_draw" />
-
-            <!-- Spinner Card -->
             <include layout="@layout/card_spinner" />
-
-            <!-- Tasks Card -->
             <include layout="@layout/card_tasks" />
-
-            <!-- Surveys -->
             <include layout="@layout/card_surveys" />
-
-            <!-- Invite Friends -->
             <include layout="@layout/card_invite" />
 
         </LinearLayout>
     </ScrollView>
 
-
-    <!-- ================= FOOTER NAVIGATION =============== -->
+    <!-- ================= BOTTOM NAV ================= -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="70dp"
-        android:background="@android:color/white"
-        android:elevation="10dp"
         android:orientation="horizontal"
-        android:gravity="center">
+        android:gravity="center"
+        android:background="@android:color/white"
+        android:elevation="10dp">
 
+        <!-- Home -->
         <LinearLayout
             android:id="@+id/navHome"
-            android:orientation="vertical"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
             <ImageView
-                android:src="@drawable/ic_home"
                 android:layout_width="24dp"
-                android:layout_height="24dp"/>
+                android:layout_height="24dp"
+                android:src="@drawable/ic_home" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Home"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
+        <!-- Game -->
         <LinearLayout
             android:id="@+id/navGame"
-            android:orientation="vertical"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
             <ImageView
-                android:src="@drawable/ic_game"
                 android:layout_width="24dp"
-                android:layout_height="24dp"/>
+                android:layout_height="24dp"
+                android:src="@drawable/ic_game" />
 
             <TextView
-                android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="Game"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
+        <!-- Reward -->
         <LinearLayout
             android:id="@+id/navReward"
-            android:orientation="vertical"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
             <ImageView
-                android:src="@drawable/ic_gift"
                 android:layout_width="24dp"
-                android:layout_height="24dp"/>
+                android:layout_height="24dp"
+                android:src="@drawable/ic_gift" />
 
             <TextView
-                android:text="Reward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"/>
+                android:text="Reward"
+                android:textSize="12sp" />
         </LinearLayout>
 
+        <!-- Profile -->
         <LinearLayout
             android:id="@+id/navProfile"
-            android:orientation="vertical"
-            android:gravity="center"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center">
 
             <ImageView
-                android:src="@drawable/ic_profile"
+                android:id="@+id/imgBottomProfile"
                 android:layout_width="24dp"
-                android:layout_height="24dp"/>
+                android:layout_height="24dp"
+                android:src="@drawable/ic_profile"
+                android:background="@drawable/circle_bg"
+                android:scaleType="centerCrop"
+                android:clipToOutline="true" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Profile"
-                android:textSize="12sp"/>
+                android:textSize="12sp" />
         </LinearLayout>
 
     </LinearLayout>
