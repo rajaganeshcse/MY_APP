@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="140dp"
+    android:background="@drawable/card_bg"
+    android:padding="15dp"
+    android:layout_marginBottom="15dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invite Friends"
+        android:textStyle="bold"
+        android:textSize="18sp"
+        android:textColor="#000" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invite new friends || earn coins"
+        android:textSize="14sp"
+        android:textColor="#777"
+        android:layout_marginTop="5dp" />
+
+    <Button
+        android:id="@+id/btnInvite"
+        android:layout_width="120dp"
+        android:layout_height="40dp"
+        android:text="Invite"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/btn_blue"
+        android:layout_marginTop="10dp"
+        android:layout_gravity="center"/>
+</LinearLayout>
