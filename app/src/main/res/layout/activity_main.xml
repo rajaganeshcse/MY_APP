@@ -8,30 +8,31 @@
     <LinearLayout
         android:id="@+id/header"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:gravity="center_vertical"
-        android:padding="12dp"
+        android:layout_height="86dp"
         android:background="@android:color/white"
-        android:elevation="8dp">
+        android:elevation="8dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="12dp">
 
         <!-- App Title -->
+
+        <!-- Coins -->
         <TextView
             android:id="@+id/appTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="226dp"
+            android:layout_height="37dp"
             android:layout_weight="1"
             android:text="mGamer"
             android:textColor="#6A1BFF"
             android:textSize="22sp"
             android:textStyle="bold" />
 
-        <!-- Coins -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
             <ImageView
                 android:layout_width="22dp"
@@ -44,16 +45,16 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="6dp"
                 android:text="0"
-                android:textSize="16sp"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <!-- Tokens -->
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
+            android:orientation="horizontal"
             android:paddingStart="10dp">
 
             <ImageView
@@ -67,8 +68,8 @@
                 android:layout_height="wrap_content"
                 android:paddingStart="6dp"
                 android:text="0"
-                android:textSize="16sp"
-                android:textColor="#000000" />
+                android:textColor="#000000"
+                android:textSize="16sp" />
         </LinearLayout>
 
         <!-- Header Profile -->
@@ -77,10 +78,10 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_marginStart="10dp"
-            android:src="@drawable/ic_profile"
             android:background="@drawable/circle_bg"
+            android:clipToOutline="true"
             android:scaleType="centerCrop"
-            android:clipToOutline="true" />
+            android:src="@drawable/ic_profile" />
     </LinearLayout>
 
     <!-- ================= MAIN CONTENT ================= -->
