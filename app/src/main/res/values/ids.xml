@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="header" type="id" />
+    <item name="txtToken" type="id" />
+    <item name="imgProfile" type="id" />
+    <item name="bottomNav" type="id" />
+    <item name="navHome" type="id" />
+    <item name="navGame" type="id" />
+    <item name="navReward" type="id" />
+    <item name="navProfile" type="id" />
+</resources>

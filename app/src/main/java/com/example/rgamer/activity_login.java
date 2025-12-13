@@ -4,27 +4,13 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import com.google.android.gms.auth.api.signin.*;
+import com.google.android.gms.common.api.ApiException;
+import com.google.firebase.auth.*;
 
 public class activity_login extends AppCompatActivity {
 
@@ -32,137 +18,86 @@ public class activity_login extends AppCompatActivity {
 
     GoogleSignInClient googleSignInClient;
     FirebaseAuth auth;
-    FirebaseFirestore db;
+    UserPref userPref;
 
     LinearLayout btnGoogle;
-    UserPref userPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
-        // Set status and nav bar color
-        Window window = getWindow();
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(Color.parseColor("#6A1BFF"));
-        window.setNavigationBarColor(Color.parseColor("#FFFFFF"));
-
         super.onCreate(savedInstanceState);
-
-        userPref = new UserPref(this);
-
-        // AUTO LOGIN
-        if (!userPref.getUid().isEmpty()) {
-            goToMain();
-            return;
-        }
-
         setContentView(R.layout.activity_login);
 
-        btnGoogle = findViewById(R.id.btnGoogle);
         auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+        userPref = new UserPref(this);
 
-        // Google Sign-in setup
-        GoogleSignInOptions gso = new GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
+        btnGoogle = findViewById(R.id.btnGoogle);
+
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(
+                GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
+                .requestEmail()
                 .build();
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
-        btnGoogle.setOnClickListener(v ->
-                startActivityForResult(googleSignInClient.getSignInIntent(), RC_SIGN_IN));
+        btnGoogle.setOnClickListener(v -> signIn());
     }
 
+    private void signIn() {
+        startActivityForResult(googleSignInClient.getSignInIntent(), RC_SIGN_IN);
+    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
+            try {
+                GoogleSignInAccount account =
+                        GoogleSignIn.getSignedInAccountFromIntent(data)
+                                .getResult(ApiException.class);
 
-            GoogleSignIn.getSignedInAccountFromIntent(data)
-                    .addOnSuccessListener(this::firebaseLogin)
-                    .addOnFailureListener(e ->
-                            Toast.makeText(this, "Google Sign-in failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
+                firebaseAuth(account);
+
+            } catch (Exception e) {
+                Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
-
-    private void firebaseLogin(GoogleSignInAccount account) {
+    private void firebaseAuth(GoogleSignInAccount account) {
 
         AuthCredential credential =
                 GoogleAuthProvider.getCredential(account.getIdToken(), null);
 
         auth.signInWithCredential(credential)
-                .addOnSuccessListener(result -> {
+                .addOnSuccessListener(authResult -> {
 
                     FirebaseUser user = auth.getCurrentUser();
 
-                    if (user != null) {
-                        checkUserInFirestore(
-                                user.getUid(),
-                                user.getDisplayName(),
-                                user.getEmail()
-                        );
+                    String uid = user.getUid();
+                    String name = account.getDisplayName();
+                    String email = account.getEmail();
+
+                    String profileImage = "";
+                    if (account.getPhotoUrl() != null) {
+                        profileImage = account.getPhotoUrl().toString();
                     }
 
-                }).addOnFailureListener(e ->
-                        Toast.makeText(this, "Firebase Auth failed: " + e.getMessage(), Toast.LENGTH_LONG).show());
-    }
+                    // ✅ Save all data
+                    userPref.setUid(uid);
+                    userPref.setName(name);
+                    userPref.setEmail(email);
+                    userPref.setProfileImage(profileImage);
+                    userPref.setCoins(100);
+                    userPref.setToken("0");
+                    userPref.setLogin(true);
 
+                    startActivity(new Intent(this, MainActivity.class));
+                    finish();
 
-    private void checkUserInFirestore(String uid, String name, String email) {
-
-        DocumentReference ref = db.collection("users").document(uid);
-
-        ref.get().addOnSuccessListener(doc -> {
-
-            if (doc.exists()) {
-                // SAFE READ
-                String savedName = doc.getString("name") != null ? doc.getString("name") : name;
-                String savedEmail = doc.getString("email") != null ? doc.getString("email") : email;
-
-                Long coinValue = doc.getLong("coins");
-                int coins = Math.toIntExact(coinValue != null ? coinValue : 100);
-
-                String token = doc.getString("token");
-                if (token == null || token.isEmpty()) {
-                    token = UUID.randomUUID().toString();
-                    ref.update("token", token);
-                }
-
-                userPref.saveUser(uid, savedName, savedEmail, coins, token);
-
-            } else {
-
-                // NEW USER
-                int initialCoins = 100;
-                String token = UUID.randomUUID().toString();
-
-                Map<String, Object> map = new HashMap<>();
-                map.put("uid", uid);
-                map.put("name", name != null ? name : "User");
-                map.put("email", email != null ? email : "unknown");
-                map.put("coins", initialCoins);
-                map.put("token", token);
-                map.put("created_at", System.currentTimeMillis());
-
-                ref.set(map);
-                userPref.saveUser(uid, name, email, initialCoins, token);
-            }
-
-            Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
-            goToMain();
-
-        }).addOnFailureListener(e ->
-                Toast.makeText(this, "Firestore Error: " + e.getMessage(), Toast.LENGTH_LONG).show());
-    }
-
-
-    private void goToMain() {
-        startActivity(new Intent(activity_login.this, MainActivity.class));
-        finish();
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this, "Auth Failed", Toast.LENGTH_SHORT).show());
     }
 }
