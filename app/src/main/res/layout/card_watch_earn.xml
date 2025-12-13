@@ -23,12 +23,13 @@
             android:src="@drawable/ic_watch" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="249dp"
+            android:layout_height="55dp"
             android:layout_marginStart="12dp"
-            android:text="Watch and Earn"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:text="Watch and Earn 🪙"
+            android:textColor="@color/black"
+            android:textSize="19dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

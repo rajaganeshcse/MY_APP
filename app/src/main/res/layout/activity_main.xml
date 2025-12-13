@@ -20,57 +20,70 @@
         <!-- Coins -->
         <TextView
             android:id="@+id/appTitle"
-            android:layout_width="226dp"
-            android:layout_height="37dp"
-            android:layout_weight="1"
-            android:text="mGamer"
+            android:layout_width="162dp"
+            android:layout_height="28dp"
+            android:layout_weight="4"
+            android:text="@string/app_name"
+            android:textAlignment="center"
             android:textColor="#6A1BFF"
             android:textSize="22sp"
             android:textStyle="bold" />
 
+        <!-- Coins -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="83dp"
+            android:layout_height="42dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_coin_gradient"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
 
             <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="23dp"
+                android:layout_height="30dp"
                 android:src="@drawable/ic_coin" />
 
             <TextView
                 android:id="@+id/txtCoins"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="6dp"
-                android:text="0"
-                android:textColor="#000000"
-                android:textSize="16sp" />
+                android:layout_marginStart="6dp"
+                android:text="100"
+                android:layout_weight="4"
+                android:textColor="#8D6E00"
+                android:textSize="15sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <!-- Tokens -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="76dp"
+            android:layout_height="41dp"
+            android:layout_marginEnd="8dp"
+            android:background="@drawable/bg_token_gradient"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="10dp">
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
 
             <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
+                android:layout_width="24dp"
+                android:layout_height="32dp"
                 android:src="@drawable/ic_ticket" />
 
             <TextView
                 android:id="@+id/txtToken"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingStart="6dp"
+                android:layout_marginStart="6dp"
                 android:text="0"
-                android:textColor="#000000"
-                android:textSize="16sp" />
+                android:textColor="#1565C0"
+                android:textSize="15sp"
+                android:textStyle="bold" />
         </LinearLayout>
+
 
         <!-- Header Profile -->
         <ImageView

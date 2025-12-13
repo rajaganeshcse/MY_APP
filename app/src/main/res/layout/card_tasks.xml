@@ -18,17 +18,18 @@
         android:gravity="center_vertical">
 
         <ImageView
-            android:layout_width="177dp"
-            android:layout_height="132dp"
+            android:layout_width="157dp"
+            android:layout_height="123dp"
             android:src="@drawable/ic_tasks" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="220dp"
+            android:layout_height="35dp"
             android:layout_marginStart="12dp"
-            android:text="Tasks"
-            android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:text="Complete Tasks"
+            android:textColor="@color/black"
+            android:textSize="19dp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
