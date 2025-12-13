@@ -4,22 +4,22 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_invite"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="157dp"
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="14dp"
     app:cardElevation="6dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:padding="16dp"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
         <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:src="@drawable/ic_ticket"/>
+            android:layout_width="165dp"
+            android:layout_height="129dp"
+            android:src="@drawable/ic_ticket" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -27,7 +27,8 @@
             android:layout_marginStart="12dp"
             android:text="Invite Friends"
             android:textSize="18sp"
-            android:textStyle="bold"/>
+            android:textStyle="bold" />
 
     </LinearLayout>
+
 </androidx.cardview.widget.CardView>
