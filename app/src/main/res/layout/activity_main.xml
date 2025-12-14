@@ -15,14 +15,11 @@
         android:orientation="horizontal"
         android:padding="12dp">
 
-        <!-- App Title -->
-
-        <!-- Coins -->
         <TextView
             android:id="@+id/appTitle"
-            android:layout_width="162dp"
-            android:layout_height="28dp"
-            android:layout_weight="4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:text="@string/app_name"
             android:textAlignment="center"
             android:textColor="#6A1BFF"
@@ -31,14 +28,13 @@
 
         <!-- Coins -->
         <LinearLayout
-            android:layout_width="83dp"
+            android:layout_width="wrap_content"
             android:layout_height="42dp"
             android:layout_marginEnd="8dp"
             android:background="@drawable/bg_coin_gradient"
             android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp">
+            android:padding="10dp">
 
             <ImageView
                 android:layout_width="23dp"
@@ -51,75 +47,29 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:text="100"
-                android:layout_weight="4"
                 android:textColor="#8D6E00"
                 android:textSize="15sp"
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <!-- Tokens -->
-        <LinearLayout
-            android:layout_width="76dp"
-            android:layout_height="41dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_token_gradient"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="32dp"
-                android:src="@drawable/ic_ticket" />
-
-            <TextView
-                android:id="@+id/txtToken"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:text="0"
-                android:textColor="#1565C0"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-
-        <!-- Header Profile -->
+        <!-- Profile (Top) -->
         <ImageView
             android:id="@+id/imgProfile"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginStart="10dp"
             android:background="@drawable/circle_bg"
             android:clipToOutline="true"
             android:scaleType="centerCrop"
             android:src="@drawable/ic_profile" />
     </LinearLayout>
 
-    <!-- ================= MAIN CONTENT ================= -->
-    <ScrollView
+    <!-- ================= FRAGMENT CONTAINER ================= -->
+    <FrameLayout
+        android:id="@+id/fragmentContainer"
         android:layout_below="@id/header"
         android:layout_above="@id/bottomNav"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="15dp">
-
-            <include layout="@layout/card_watch_earn" />
-            <include layout="@layout/card_lucky_draw" />
-            <include layout="@layout/card_spinner" />
-            <include layout="@layout/card_tasks" />
-            <include layout="@layout/card_surveys" />
-            <include layout="@layout/card_invite" />
-
-        </LinearLayout>
-    </ScrollView>
+        android:layout_height="match_parent" />
 
     <!-- ================= BOTTOM NAV ================= -->
     <LinearLayout
@@ -128,7 +78,6 @@
         android:layout_width="match_parent"
         android:layout_height="70dp"
         android:orientation="horizontal"
-        android:gravity="center"
         android:background="@android:color/white"
         android:elevation="10dp">
 
@@ -138,8 +87,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -159,8 +108,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="43dp"
@@ -180,8 +129,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
                 android:layout_width="46dp"
@@ -201,8 +150,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="vertical">
 
             <ImageView
                 android:id="@+id/imgBottomProfile"
@@ -214,12 +163,11 @@
                 android:src="@drawable/ic_profile" />
 
             <TextView
+                android:text="Profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Profile"
                 android:textSize="12sp" />
         </LinearLayout>
-
     </LinearLayout>
 
 </RelativeLayout>

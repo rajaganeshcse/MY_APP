@@ -8,4 +8,5 @@
     <item name="navGame" type="id" />
     <item name="navReward" type="id" />
     <item name="navProfile" type="id" />
+    <item name="ic_Profile" type="id" />
 </resources>
