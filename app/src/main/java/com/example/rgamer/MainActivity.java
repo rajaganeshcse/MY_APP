@@ -5,25 +5,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
-import com.example.rgamer.GameFragment;
-import com.example.rgamer.HomeFragment;
-import com.example.rgamer.ProfileFragment;
-import com.example.rgamer.RewardFragment;
-
 public class MainActivity extends AppCompatActivity {
-
-    UserPref userPref;
-
-    TextView txtCoins;
-    ImageView imgProfile, imgBottomProfile;
 
     LinearLayout navHome, navGame, navReward, navProfile;
 
@@ -31,64 +18,87 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Transparent status bar (safe)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.setStatusBarColor(Color.TRANSPARENT);
-            window.getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            );
-        }
-
+        makeFullScreen();
         setContentView(R.layout.activity_main);
 
-        userPref = new UserPref(this);
-
         initViews();
-        loadUserData();
-        setupBottomNavigation();
+        setupNavigation();
 
-        // Load HomeFragment by default
+        // Default
+        selectNav(navHome);
         loadFragment(new HomeFragment());
     }
 
-    private void initViews() {
-        txtCoins = findViewById(R.id.txtCoins);
-        imgProfile = findViewById(R.id.imgProfile);
-        imgBottomProfile = findViewById(R.id.imgBottomProfile);
+    // ================= FULL SCREEN =================
+    private void makeFullScreen() {
+        Window window = getWindow();
 
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+
+        window.getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
+    }
+
+    // ================= INIT =================
+    private void initViews() {
         navHome = findViewById(R.id.navHome);
         navGame = findViewById(R.id.navGame);
         navReward = findViewById(R.id.navReward);
         navProfile = findViewById(R.id.navProfile);
     }
 
-    private void loadUserData() {
-        txtCoins.setText(String.valueOf(userPref.getCoins()));
+    // ================= NAV =================
+    private void setupNavigation() {
 
-        Glide.with(this)
-                .load(userPref.getProfileImage())
-                .placeholder(R.drawable.ic_profile)
-                .error(R.drawable.ic_profile)
-                .circleCrop()
-                .into(imgProfile);
+        navHome.setOnClickListener(v -> {
+            selectNav(navHome);
+            loadFragment(new HomeFragment());
+        });
 
-        Glide.with(this)
-                .load(userPref.getProfileImage())
-                .placeholder(R.drawable.ic_profile)
-                .error(R.drawable.ic_profile)
-                .circleCrop()
-                .into(imgBottomProfile);
+        navGame.setOnClickListener(v -> {
+            selectNav(navGame);
+            loadFragment(new GameFragment());
+        });
+
+        navReward.setOnClickListener(v -> {
+            selectNav(navReward);
+            loadFragment(new RewardFragment());
+        });
+
+        navProfile.setOnClickListener(v -> {
+            selectNav(navProfile);
+            loadFragment(new ProfileFragment());
+        });
     }
 
-    private void setupBottomNavigation() {
-        navHome.setOnClickListener(v -> loadFragment(new HomeFragment()));
-        navGame.setOnClickListener(v -> loadFragment(new GameFragment()));
-        navReward.setOnClickListener(v -> loadFragment(new RewardFragment()));
-        navProfile.setOnClickListener(v -> loadFragment(new ProfileFragment()));
+    // ================= FOOTER EFFECT =================
+    private void selectNav(LinearLayout selected) {
+        resetNav();
+
+        selected.setBackgroundResource(R.drawable.bg_nav_selected);
+        selected.animate()
+                .scaleX(1.08f)
+                .scaleY(1.08f)
+                .setDuration(150)
+                .start();
     }
 
+    private void resetNav() {
+        LinearLayout[] navs = {navHome, navGame, navReward, navProfile};
+
+        for (LinearLayout nav : navs) {
+            nav.setBackgroundResource(R.drawable.bg_nav_unselected);
+            nav.setScaleX(1f);
+            nav.setScaleY(1f);
+        }
+    }
+
+    // ================= FRAGMENT =================
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()

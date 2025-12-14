@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -15,14 +17,21 @@ import androidx.cardview.widget.CardView;
 import androidx.core.content.FileProvider;
 import androidx.fragment.app.Fragment;
 
-import com.example.rgamer.R;
+import com.bumptech.glide.Glide;
 
 import java.io.File;
 import java.io.FileOutputStream;
 
 public class HomeFragment extends Fragment {
 
+    // Header views
+    TextView txtCoins, txtToken;
+    ImageView imgProfile;
+
+    // Card
     CardView cardInvite;
+
+    UserPref userPref;
 
     @Nullable
     @Override
@@ -32,11 +41,33 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        userPref = new UserPref(requireContext());
+
+        // Header
+        txtCoins = view.findViewById(R.id.txtCoins);
+        txtToken = view.findViewById(R.id.txtToken);
+        imgProfile = view.findViewById(R.id.imgProfile);
+
+        // Cards
         cardInvite = view.findViewById(R.id.card_invite);
+
+        loadUserData();
 
         cardInvite.setOnClickListener(v -> inviteFriend());
 
         return view;
+    }
+
+    private void loadUserData() {
+        txtCoins.setText(String.valueOf(userPref.getCoins()));
+        txtToken.setText(String.valueOf(userPref.getToken()));
+
+        Glide.with(this)
+                .load(userPref.getProfileImage())
+                .placeholder(R.drawable.ic_profile)
+                .error(R.drawable.ic_profile)
+                .circleCrop()
+                .into(imgProfile);
     }
 
     private void inviteFriend() {

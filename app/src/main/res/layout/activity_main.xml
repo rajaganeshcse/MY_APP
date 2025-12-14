@@ -4,75 +4,14 @@
     android:layout_height="match_parent"
     android:background="#F7F7F7">
 
-    <!-- ================= HEADER ================= -->
-    <LinearLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="86dp"
-        android:background="@android:color/white"
-        android:elevation="8dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="12dp">
-
-        <TextView
-            android:id="@+id/appTitle"
-            android:layout_width="260dp"
-            android:layout_height="35dp"
-            android:layout_weight="1"
-            android:text="@string/app_name"
-            android:textAlignment="center"
-            android:textColor="#6A1BFF"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <!-- Coins -->
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="42dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_coin_gradient"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="10dp">
-
-            <ImageView
-                android:layout_width="23dp"
-                android:layout_height="30dp"
-                android:src="@drawable/ic_coin" />
-
-            <TextView
-                android:id="@+id/txtCoins"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:text="100"
-                android:textColor="#8D6E00"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Profile (Top) -->
-        <ImageView
-            android:id="@+id/imgProfile"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/circle_bg"
-            android:clipToOutline="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_profile" />
-    </LinearLayout>
-
-    <!-- ================= FRAGMENT CONTAINER ================= -->
+    <!-- ================= Fragment Container ================= -->
     <FrameLayout
         android:id="@+id/fragmentContainer"
-        android:layout_below="@id/header"
-        android:layout_above="@id/bottomNav"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="0dp"/>
+        android:layout_above="@id/bottomNav" />
 
-    <!-- ================= BOTTOM NAV ================= -->
+    <!-- ================= Bottom Navigation ================= -->
     <LinearLayout
         android:id="@+id/bottomNav"
         android:layout_alignParentBottom="true"
@@ -89,18 +28,24 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="6dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="36dp"
+                android:id="@+id/imgHome"
+                android:layout_width="42dp"
+                android:layout_height="39dp"
                 android:src="@drawable/ic_home" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/txtHome"
                 android:text="Home"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textColor="#777777" />
         </LinearLayout>
 
         <!-- Game -->
@@ -110,18 +55,24 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="6dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <ImageView
-                android:layout_width="43dp"
-                android:layout_height="34dp"
+                android:id="@+id/imgGame"
+                android:layout_width="44dp"
+                android:layout_height="36dp"
                 android:src="@drawable/ic_game" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/txtGame"
                 android:text="Game"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textColor="#777777" />
         </LinearLayout>
 
         <!-- Reward -->
@@ -131,18 +82,24 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="6dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <ImageView
-                android:layout_width="46dp"
-                android:layout_height="35dp"
+                android:id="@+id/imgReward"
+                android:layout_width="45dp"
+                android:layout_height="34dp"
                 android:src="@drawable/ic_gift" />
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/txtReward"
                 android:text="Reward"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:textColor="#777777" />
         </LinearLayout>
 
         <!-- Profile -->
@@ -152,23 +109,26 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:padding="6dp"
+            android:clickable="true"
+            android:foreground="?attr/selectableItemBackground">
 
             <ImageView
-                android:id="@+id/imgBottomProfile"
-                android:layout_width="38dp"
-                android:layout_height="32dp"
-                android:background="@drawable/circle_bg"
-                android:clipToOutline="true"
-                android:scaleType="centerCrop"
+                android:id="@+id/imgProfile"
+                android:layout_width="40dp"
+                android:layout_height="34dp"
                 android:src="@drawable/ic_profile" />
 
             <TextView
-                android:text="Profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp" />
+                android:id="@+id/txtProfile"
+                android:text="Profile"
+                android:textSize="12sp"
+                android:textColor="#777777" />
         </LinearLayout>
+
     </LinearLayout>
 
 </RelativeLayout>

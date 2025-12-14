@@ -16,11 +16,12 @@
 
     <TextView
         android:id="@+id/txtTitle"
-        android:layout_width="150dp"
+        android:layout_width="264dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="12dp"
         android:layout_weight="2"
         android:text="Daily Bonus"
+        android:textColor="@color/black"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -30,6 +31,7 @@
         android:layout_height="wrap_content"
         android:backgroundTint="#6A1BFF"
         android:text="Get"
+        android:layout_margin="1dp"
         android:textAllCaps="false"
         android:textColor="#FFF" />
 </LinearLayout>
