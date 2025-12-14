@@ -14,12 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.rgamer.R;
-import com.example.rgamer.TournamentActivity;
-import com.example.rgamer.UserPref;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.rewarded.RewardItem;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
@@ -27,9 +23,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class GameFragment extends Fragment {
 
-    UserPref userPref;
-    FirebaseFirestore db;
-    RewardedAd rewardedAd;
+    private UserPref userPref;
+    private FirebaseFirestore db;
+    private RewardedAd rewardedAd;
 
     @Nullable
     @Override
@@ -43,17 +39,18 @@ public class GameFragment extends Fragment {
         userPref = new UserPref(requireContext());
         db = FirebaseFirestore.getInstance();
 
+        // Initialize AdMob once
         MobileAds.initialize(requireContext());
         loadRewardAd();
 
-        /* HOW TO WIN */
+        /* ================= HOW TO WIN ================= */
         view.findViewById(R.id.lytHowToWin).setOnClickListener(v ->
                 Toast.makeText(getContext(),
-                        "Complete tasks & watch videos to earn coins",
+                        "Complete daily bonus & watch videos to earn coins",
                         Toast.LENGTH_SHORT).show()
         );
 
-        /* TOURNAMENTS */
+        /* ================= TOURNAMENTS ================= */
         view.findViewById(R.id.cardFreeFire).setOnClickListener(v ->
                 openTournament("FreeFire")
         );
@@ -62,29 +59,35 @@ public class GameFragment extends Fragment {
                 openTournament("PUBG")
         );
 
-        /* DAILY BONUS */
+        /* ================= DAILY BONUS ================= */
         View daily = view.findViewById(R.id.taskDailyBonus);
         TextView dailyTitle = daily.findViewById(R.id.txtTitle);
         Button dailyBtn = daily.findViewById(R.id.btnAction);
 
         dailyTitle.setText("Daily Bonus");
-        dailyBtn.setText("Get");
+
+        // 🔹 Initial UI state
+        updateDailyButton(dailyBtn);
 
         daily.setOnClickListener(v -> {
             if (userPref.canClaimDaily()) {
                 addCoins(50);
                 userPref.setDailyClaimed();
+
+                dailyBtn.setText("Claimed");
+                dailyBtn.setEnabled(false);
+
                 Toast.makeText(getContext(),
                         "+50 Coins Added",
                         Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(getContext(),
-                        "Already claimed today",
+                        "Daily bonus already claimed",
                         Toast.LENGTH_SHORT).show();
             }
         });
 
-        /* VIDEO TASK */
+        /* ================= VIDEO TASK (REWARDED AD) ================= */
         View video = view.findViewById(R.id.taskVideo);
         TextView videoTitle = video.findViewById(R.id.txtTitle);
         Button videoBtn = video.findViewById(R.id.btnAction);
@@ -101,7 +104,7 @@ public class GameFragment extends Fragment {
                     Toast.makeText(getContext(),
                             "+25 Coins Added",
                             Toast.LENGTH_SHORT).show();
-                    loadRewardAd();
+                    loadRewardAd(); // load next ad
                 });
             } else {
                 Toast.makeText(getContext(),
@@ -114,11 +117,23 @@ public class GameFragment extends Fragment {
         return view;
     }
 
-    /* ADD COINS + UPDATE UI + FIREBASE */
+    /* ================= DAILY BUTTON STATE ================= */
+    private void updateDailyButton(Button dailyBtn) {
+        if (userPref.canClaimDaily()) {
+            dailyBtn.setText("Get");
+            dailyBtn.setEnabled(true);
+        } else {
+            dailyBtn.setText("Claimed");
+            dailyBtn.setEnabled(false);
+        }
+    }
+
+    /* ================= ADD COINS ================= */
     private void addCoins(int coins) {
         int total = userPref.getCoins() + coins;
         userPref.setCoins(total);
 
+        // Update header coin UI
         if (getActivity() != null) {
             TextView txtCoins = getActivity().findViewById(R.id.txtCoins);
             if (txtCoins != null) {
@@ -129,6 +144,7 @@ public class GameFragment extends Fragment {
         syncCoins();
     }
 
+    /* ================= FIREBASE SYNC ================= */
     private void syncCoins() {
         String uid = FirebaseAuth.getInstance().getUid();
         if (uid == null) return;
@@ -138,7 +154,7 @@ public class GameFragment extends Fragment {
                 .update("coins", userPref.getCoins());
     }
 
-    /* REWARDED AD */
+    /* ================= REWARDED AD ================= */
     private void loadRewardAd() {
         AdRequest request = new AdRequest.Builder().build();
         RewardedAd.load(
@@ -150,10 +166,15 @@ public class GameFragment extends Fragment {
                     public void onAdLoaded(@NonNull RewardedAd ad) {
                         rewardedAd = ad;
                     }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull com.google.android.gms.ads.LoadAdError error) {
+                        rewardedAd = null;
+                    }
                 });
     }
 
-    /* TOURNAMENT */
+    /* ================= TOURNAMENT ================= */
     private void openTournament(String game) {
         Intent i = new Intent(getContext(), TournamentActivity.class);
         i.putExtra("game", game);

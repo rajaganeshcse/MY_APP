@@ -2,9 +2,10 @@ package com.example.rgamer;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.os.Build;
 
-import java.time.LocalDate;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class UserPref {
 
@@ -90,51 +91,28 @@ public class UserPref {
     }
 
     /* ==================================================
-       DAILY BONUS (ONCE PER DAY)
+       DAILY BONUS (ONCE PER DAY – SAFE FOR ALL ANDROID)
        ================================================== */
 
     /**
-     * New preferred method
+     * Preferred method
      */
     public boolean canClaimDailyBonus() {
         String lastDate = pref.getString(KEY_DAILY_DATE, "");
-
-        String today;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            today = java.time.LocalDate.now().toString();
-        } else {
-            // Fallback for older Android versions
-            java.text.SimpleDateFormat sdf =
-                    new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
-            today = sdf.format(new java.util.Date());
-        }
-
+        String today = getTodayDate();
         return !today.equals(lastDate);
     }
 
-
     /**
-     * New preferred method
+     * Preferred method
      */
     public void setDailyBonusClaimed() {
-        String today;
-
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            today = java.time.LocalDate.now().toString();
-        } else {
-            java.text.SimpleDateFormat sdf =
-                    new java.text.SimpleDateFormat("yyyy-MM-dd", java.util.Locale.US);
-            today = sdf.format(new java.util.Date());
-        }
-
-        editor.putString(KEY_DAILY_DATE, today);
+        editor.putString(KEY_DAILY_DATE, getTodayDate());
         editor.apply();
     }
 
-
     /* --------------------------------------------------
-       BACKWARD-COMPATIBLE METHODS
-       (So old code will NOT break)
+       BACKWARD COMPATIBILITY (so old code works)
        -------------------------------------------------- */
 
     public boolean canClaimDaily() {
@@ -143,6 +121,14 @@ public class UserPref {
 
     public void setDailyClaimed() {
         setDailyBonusClaimed();
+    }
+
+    /* ================= DATE HELPER ================= */
+    private String getTodayDate() {
+        // Works on ALL Android versions
+        SimpleDateFormat sdf =
+                new SimpleDateFormat("yyyy-MM-dd", Locale.US);
+        return sdf.format(new Date());
     }
 
     /* ================= CLEAR ================= */
