@@ -85,11 +85,13 @@
                 <!-- FREE FIRE -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardFreeFire"
-                    android:layout_width="261dp"
+                    android:layout_width="300dp"
                     android:layout_height="220dp"
                     android:layout_marginEnd="12dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="6dp">
+                    app:cardElevation="6dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginBottom="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -115,11 +117,13 @@
                 <!-- PUBG -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardPubg"
-                    android:layout_width="260dp"
+                    android:layout_width="300dp"
                     android:layout_height="220dp"
                     android:layout_marginEnd="12dp"
                     app:cardCornerRadius="16dp"
-                    app:cardElevation="6dp">
+                    app:cardElevation="6dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginBottom="5dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
