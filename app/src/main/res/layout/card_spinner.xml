@@ -17,19 +17,21 @@
         android:orientation="horizontal"
         android:gravity="center_vertical">
 
+        <!-- TEXT LEFT -->
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Spin and Win"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <!-- IMAGE RIGHT -->
         <ImageView
             android:layout_width="154dp"
             android:layout_height="129dp"
             android:src="@drawable/ic_spinner" />
-
-        <TextView
-            android:layout_width="207dp"
-            android:layout_height="46dp"
-            android:layout_marginStart="12dp"
-            android:text="Spin and Win"
-            android:textColor="@color/black"
-            android:textSize="20dp"
-            android:textStyle="bold" />
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>
