@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -44,11 +45,9 @@ public class GameFragment extends Fragment {
         loadRewardAd();
 
         /* ================= HOW TO WIN ================= */
-        view.findViewById(R.id.lytHowToWin).setOnClickListener(v ->
-                Toast.makeText(getContext(),
-                        "Complete daily bonus & watch videos to earn coins",
-                        Toast.LENGTH_SHORT).show()
-        );
+        view.findViewById(R.id.lytHowToWin)
+                .setOnClickListener(v -> showHowToWinPopup());
+
 
         /* ================= TOURNAMENTS ================= */
         view.findViewById(R.id.cardFreeFire).setOnClickListener(v ->
@@ -58,6 +57,14 @@ public class GameFragment extends Fragment {
         view.findViewById(R.id.cardPubg).setOnClickListener(v ->
                 openTournament("PUBG")
         );
+        view.findViewById(R.id.jackpot).setOnClickListener(v ->
+                openTournament("JackPot")
+        );
+        view.findViewById(R.id.Ludo).setOnClickListener(v ->
+                openTournament("Ludo")
+        );
+
+
 
         /* ================= DAILY BONUS ================= */
         View daily = view.findViewById(R.id.taskDailyBonus);
@@ -115,6 +122,21 @@ public class GameFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void showHowToWinPopup() {
+        BottomSheetDialog dialog =
+                new BottomSheetDialog(requireContext());
+
+        View sheetView = LayoutInflater.from(getContext())
+                .inflate(R.layout.bottomsheet_how_to_win, null);
+
+        dialog.setContentView(sheetView);
+
+        ImageView btnClose = sheetView.findViewById(R.id.btnClose);
+        btnClose.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 
     /* ================= DAILY BUTTON STATE ================= */
