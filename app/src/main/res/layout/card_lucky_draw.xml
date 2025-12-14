@@ -20,7 +20,7 @@
         <ImageView
             android:layout_width="149dp"
             android:layout_height="133dp"
-            android:src="@drawable/ic_gift" />
+            android:src="@drawable/ic_lucky" />
 
         <TextView
             android:layout_width="218dp"
