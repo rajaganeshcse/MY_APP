@@ -95,7 +95,7 @@ public class GameFragment extends Fragment {
 
         videoTitle.setText("Video Task");
         videoBtn.setText("Watch");
-        videoIcon.setImageResource(R.drawable.ic_play);
+        videoIcon.setImageResource(R.drawable.ic_watch);
 
         video.setOnClickListener(v -> {
             if (rewardedAd != null) {
