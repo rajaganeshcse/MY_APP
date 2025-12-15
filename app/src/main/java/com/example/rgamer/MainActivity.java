@@ -24,12 +24,12 @@ public class MainActivity extends AppCompatActivity {
         initViews();
         setupNavigation();
 
-        // Default
+        // Default tab
         selectNav(navHome);
         loadFragment(new HomeFragment());
     }
 
-    // ================= FULL SCREEN =================
+    // ================= FULL SCREEN (STATUS + NAV BAR) =================
     private void makeFullScreen() {
         Window window = getWindow();
 
@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         window.getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | // 🔥 IMPORTANT
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
     }

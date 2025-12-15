@@ -9,4 +9,8 @@
     <item name="navReward" type="id" />
     <item name="navProfile" type="id" />
     <item name="ic_Profile" type="id" />
+    <item name="txtGameName" type="id" />
+    <item name="txtTickets" type="id" />
+    <item name="btnBack" type="id" />
+    <item name="recyclerTournament" type="id" />
 </resources>

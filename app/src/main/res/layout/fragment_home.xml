@@ -32,7 +32,7 @@
             android:layout_width="76dp"
             android:layout_height="38dp"
             android:layout_marginEnd="6dp"
-            android:background="@drawable/bg_coin_gradient"
+            android:background="@drawable/bg_token_gradient"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="10dp">

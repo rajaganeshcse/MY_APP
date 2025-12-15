@@ -4,7 +4,7 @@
     android:layout_height="100dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="12dp"
-    android:background="@drawable/bg_history"
+    android:background="@color/white"
     android:orientation="horizontal"
     android:layout_marginTop="6dp"
     android:gravity="center_vertical">
