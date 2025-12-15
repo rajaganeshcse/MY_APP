@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
+    android:layout_height="80dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:padding="12dp"
-    android:background="@color/white"
+    android:background="@drawable/bg_bottom_border"
     android:orientation="horizontal"
     android:layout_marginTop="6dp"
     android:gravity="center_vertical">
 
     <ImageView
         android:id="@+id/icon"
-        android:layout_width="72dp"
-        android:layout_height="match_parent"
+        android:layout_width="61dp"
+        android:layout_height="62dp"
         android:background="@drawable/splash_image_bg1"
         android:clipToOutline="true"
         android:scaleType="centerCrop"
@@ -28,7 +28,7 @@
         <TextView
             android:id="@+id/title"
             android:layout_width="match_parent"
-            android:layout_height="39dp"
+            android:layout_height="wrap_content"
             android:gravity="bottom"
             android:text="Title"
             android:textColor="@color/black"

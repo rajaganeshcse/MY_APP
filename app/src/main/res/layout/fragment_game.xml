@@ -31,6 +31,7 @@
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:padding="16dp"
+            android:layout_marginTop="30dp"
             android:background="@drawable/bg_yellow_outline">
 
             <TextView
@@ -80,22 +81,24 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingLeft="20dp"
+                android:orientation="vertical"
+                android:paddingLeft="13dp"
                 android:background="@color/white"
                 android:textColor="@color/black"
-                android:paddingRight="20dp">
+                android:paddingRight="10dp">
 
                 <!-- FREE FIRE -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardFreeFire"
-                    android:layout_width="300dp"
+                    android:layout_width="320dp"
                     android:layout_height="220dp"
-                    android:layout_marginEnd="12dp"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="6dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginBottom="5dp">
+                    android:layout_marginEnd="12dp"
+                    >
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -114,6 +117,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="12dp"
+                            android:gravity="center"
                             android:text="FreeFire"
                             android:background="@color/white"
                             android:textColor="@color/black"
@@ -125,13 +129,15 @@
                 <!-- PUBG -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/cardPubg"
-                    android:layout_width="300dp"
+                    android:layout_width="320dp"
                     android:layout_height="220dp"
-                    android:layout_marginEnd="12dp"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="6dp"
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginBottom="5dp">
+                    android:layout_marginEnd="12dp"
+                    >
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -151,6 +157,7 @@
                             android:layout_height="wrap_content"
                             android:padding="12dp"
                             android:text="PUBG"
+                            android:gravity="center"
                             android:background="@color/white"
                             android:textColor="@color/black"
                             android:textSize="16sp"
@@ -159,13 +166,14 @@
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView
                     android:id="@+id/jackpot"
-                    android:layout_width="300dp"
+                    android:layout_width="320dp"
                     android:layout_height="220dp"
                     android:layout_marginEnd="12dp"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="6dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginBottom="5dp">
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -185,6 +193,7 @@
                             android:layout_height="wrap_content"
                             android:padding="12dp"
                             android:text="JackPot"
+                            android:gravity="center"
                             android:background="@color/white"
                             android:textColor="@color/black"
                             android:textSize="16sp"
@@ -193,13 +202,14 @@
                 </androidx.cardview.widget.CardView>
                 <androidx.cardview.widget.CardView
                     android:id="@+id/Ludo"
-                    android:layout_width="300dp"
+                    android:layout_width="320dp"
                     android:layout_height="220dp"
                     android:layout_marginEnd="12dp"
                     app:cardCornerRadius="16dp"
                     app:cardElevation="6dp"
                     android:layout_marginStart="5dp"
-                    android:layout_marginBottom="5dp">
+                    android:layout_marginBottom="20dp"
+                    android:layout_marginTop="20dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -218,6 +228,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:padding="12dp"
+                            android:textAlignment="center"
                             android:text="LUDO"
                             android:background="@color/white"
                             android:textColor="@color/black"
