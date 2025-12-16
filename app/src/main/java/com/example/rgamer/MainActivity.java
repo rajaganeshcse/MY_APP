@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        makeFullScreen();
+        makeFullScreen(); // ✅ SAFE fullscreen
         setContentView(R.layout.activity_main);
 
         initViews();
@@ -29,7 +29,10 @@ public class MainActivity extends AppCompatActivity {
         loadFragment(new HomeFragment());
     }
 
-    // ================= FULL SCREEN (STATUS + NAV BAR) =================
+    // ================= SAFE FULL SCREEN =================
+    // ✔ Transparent status bar
+    // ✔ Navigation bar visible
+    // ✔ No touch / auto-close issues
     private void makeFullScreen() {
         Window window = getWindow();
 
@@ -40,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         window.getDecorView().setSystemUiVisibility(
                 View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                        View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | // 🔥 IMPORTANT
                         View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         );
     }
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         navProfile = findViewById(R.id.navProfile);
     }
 
-    // ================= NAV =================
+    // ================= NAVIGATION =================
     private void setupNavigation() {
 
         navHome.setOnClickListener(v -> {
@@ -99,7 +101,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    // ================= FRAGMENT =================
+    // ================= FRAGMENT LOAD =================
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()

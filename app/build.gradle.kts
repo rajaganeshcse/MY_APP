@@ -12,7 +12,7 @@ android {
     defaultConfig {
         applicationId = "com.example.rgamer"
         minSdk = 23
-        targetSdk = 36
+        targetSdk= 36
         versionCode = 1
         versionName = "1.0"
 
@@ -54,6 +54,7 @@ dependencies {
     implementation("com.google.android.gms:play-services-ads:23.0.0")
     implementation("com.google.firebase:firebase-firestore:25.0.0")
     implementation("com.google.firebase:firebase-auth:23.0.0")
+    implementation("com.google.android.material:material:1.11.0")
     implementation("com.google.android.material:material:1.11.0")
 
 }

@@ -56,10 +56,10 @@
             </LinearLayout>
 
             <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:src="@drawable/ic_coin"
-                android:contentDescription="coin" />
+                android:layout_width="114dp"
+                android:layout_height="120dp"
+                android:contentDescription="coin"
+                android:src="@drawable/ic_coin" />
         </LinearLayout>
 
         <!-- Reward History -->

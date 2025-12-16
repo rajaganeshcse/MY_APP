@@ -13,4 +13,10 @@
     <item name="txtTickets" type="id" />
     <item name="btnBack" type="id" />
     <item name="recyclerTournament" type="id" />
+    <item name="txtAdCount" type="id" />
+    <item name="btnCheckWinners" type="id" />
+    <item name="btnFreeEntry" type="id" />
+    <item name="card_root_2" type="id" />
+    <item name="card_root_3" type="id" />
+    <item name="card_root_1" type="id" />
 </resources>

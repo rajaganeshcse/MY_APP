@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF">
+
+    <!-- Toolbar -->
+    <androidx.appcompat.widget.Toolbar
+        android:layout_width="match_parent"
+        android:layout_height="56dp"
+        android:background="#6A1BFF"
+        app:title="Refer and Earn"
+        app:titleTextColor="#FFFFFF"
+        app:navigationIcon="@drawable/back_arrow" />
+
+    <!-- Tabs -->
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:tabIndicatorColor="#6A1BFF"
+        app:tabSelectedTextColor="#6A1BFF"
+        app:tabTextColor="#888888">
+
+        <com.google.android.material.tabs.TabItem
+            android:text="INVITE"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+
+        <com.google.android.material.tabs.TabItem
+            android:text="MY EARNINGS"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"/>
+    </com.google.android.material.tabs.TabLayout>
+
+    <!-- Content -->
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+</LinearLayout>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Invite your friend, Earn Coins!"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Copy your code, share it with your friends"
+            android:textColor="#777777"
+            android:layout_marginTop="4dp" />
+
+        <!-- Referral Code Box -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/bg_dashed"
+            android:gravity="center_vertical"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/txtReferralCode"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="PQIApVH5cF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:textColor="#6A1BFF" />
+
+            <ImageView
+                android:id="@+id/btnCopy"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_copy" />
+        </LinearLayout>
+
+        <!-- Share Icons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView android:src="@drawable/ic_whatsapp" style="@style/ShareIcon"/>
+            <ImageView android:src="@drawable/ic_telegram" style="@style/ShareIcon"/>
+            <ImageView android:src="@drawable/ic_facebook" style="@style/ShareIcon"/>
+            <ImageView android:src="@drawable/ic_messenger" style="@style/ShareIcon"/>
+            <ImageView android:src="@drawable/ic_share" style="@style/ShareIcon"/>
+        </LinearLayout>
+
+        <!-- Enter Referral Code -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Have a referral code?"
+            android:textStyle="bold"
+            android:layout_marginTop="24dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="8dp">
+
+            <EditText
+                android:id="@+id/edtReferral"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:hint="Enter Code"
+                android:background="@drawable/bg_edit"
+                android:padding="12dp" />
+
+            <Button
+                android:id="@+id/btnValidate"
+                android:layout_width="120dp"
+                android:layout_height="match_parent"
+                android:text="Validate"
+                android:backgroundTint="#D3D3D3" />
+        </LinearLayout>
+
+        <!-- Info Section -->
+        <include layout="@layout/activity_layout_referral_info"/>
+
+    </LinearLayout>
+</ScrollView>

@@ -15,9 +15,23 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RGamer">
         <activity
-            android:name=".activity_tournament"
+            android:name=".layout_referral_info"
             android:exported="false" />
-        <!-- AdMob App ID -->
+        <activity
+            android:name=".layout_my_earnings"
+            android:exported="false" />
+        <activity
+            android:name=".layout_invite"
+            android:exported="false" />
+        <activity
+            android:name=".activity_refer_earn"
+            android:exported="false" />
+        <activity
+            android:name=".activity_lucky_draw"
+            android:exported="false" />
+        <activity
+            android:name=".activity_tournament"
+            android:exported="false" /> <!-- AdMob App ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />

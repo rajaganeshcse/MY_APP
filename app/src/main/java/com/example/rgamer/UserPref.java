@@ -12,6 +12,10 @@ public class UserPref {
     private static final String PREF_NAME = "user_pref";
     private static final String KEY_DAILY_DATE = "daily_date";
 
+    // 🔹 NEW (Ads)
+    private static final String KEY_AD_DATE = "ad_date";
+    private static final String KEY_AD_COUNT = "ad_count";
+
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
 
@@ -91,30 +95,21 @@ public class UserPref {
     }
 
     /* ==================================================
-       DAILY BONUS (ONCE PER DAY – SAFE FOR ALL ANDROID)
+       DAILY BONUS (ONCE PER DAY – SAFE)
        ================================================== */
 
-    /**
-     * Preferred method
-     */
     public boolean canClaimDailyBonus() {
         String lastDate = pref.getString(KEY_DAILY_DATE, "");
         String today = getTodayDate();
         return !today.equals(lastDate);
     }
 
-    /**
-     * Preferred method
-     */
     public void setDailyBonusClaimed() {
         editor.putString(KEY_DAILY_DATE, getTodayDate());
         editor.apply();
     }
 
-    /* --------------------------------------------------
-       BACKWARD COMPATIBILITY (so old code works)
-       -------------------------------------------------- */
-
+    // Backward compatibility
     public boolean canClaimDaily() {
         return canClaimDailyBonus();
     }
@@ -123,9 +118,40 @@ public class UserPref {
         setDailyBonusClaimed();
     }
 
+    /* ==================================================
+       🆕 DAILY ADS LOGIC (ANTI-CHEAT SAFE)
+       ================================================== */
+
+    /** Get today ad count (auto reset on new day) */
+    public int getTodayAdCount() {
+        String today = getTodayDate();
+        String savedDate = pref.getString(KEY_AD_DATE, "");
+
+        if (!today.equals(savedDate)) {
+            editor.putString(KEY_AD_DATE, today);
+            editor.putInt(KEY_AD_COUNT, 0);
+            editor.apply();
+            return 0;
+        }
+        return pref.getInt(KEY_AD_COUNT, 0);
+    }
+
+    /** Increase ad count safely */
+    public void increaseAdCount() {
+        int count = getTodayAdCount();
+        editor.putInt(KEY_AD_COUNT, count + 1);
+        editor.apply();
+    }
+
+    /** Reset ads manually (admin/debug use) */
+    public void resetAdCount() {
+        editor.putInt(KEY_AD_COUNT, 0);
+        editor.putString(KEY_AD_DATE, getTodayDate());
+        editor.apply();
+    }
+
     /* ================= DATE HELPER ================= */
     private String getTodayDate() {
-        // Works on ALL Android versions
         SimpleDateFormat sdf =
                 new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         return sdf.format(new Date());
@@ -136,4 +162,6 @@ public class UserPref {
         editor.clear();
         editor.apply();
     }
+
+
 }

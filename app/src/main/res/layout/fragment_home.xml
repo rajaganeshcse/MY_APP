@@ -1,117 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F7F7F7">
+    android:background="@color/white">
 
-    <!-- ================= HEADER ================= -->
+    <!-- ================= MAIN CONTENT ================= -->
     <LinearLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="86dp"
-        android:background="@android:color/white"
-        android:elevation="8dp"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:padding="12dp">
-
-        <!-- App Title -->
-        <TextView
-            android:id="@+id/appTitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/app_name"
-            android:textColor="#6A1BFF"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <!-- Token -->
-        <LinearLayout
-            android:layout_width="79dp"
-            android:layout_height="42dp"
-            android:layout_marginEnd="6dp"
-            android:background="@drawable/bg_token_gradient"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="1dp">
-
-            <ImageView
-                android:layout_width="33dp"
-                android:layout_height="110dp"
-                android:src="@drawable/ic_ticket" />
-
-            <TextView
-                android:id="@+id/txtToken"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:text="0"
-                android:textColor="#8D6E00"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Coins -->
-        <LinearLayout
-            android:layout_width="87dp"
-            android:layout_height="44dp"
-            android:layout_marginEnd="8dp"
-            android:background="@drawable/bg_coin_gradient"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:padding="1dp">
-
-            <ImageView
-                android:layout_width="38dp"
-                android:layout_height="49dp"
-                android:src="@drawable/ic_coin" />
-
-            <TextView
-                android:id="@+id/txtCoins"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:text="0"
-                android:textColor="#8D6E00"
-                android:textSize="14sp"
-                android:textStyle="bold" />
-        </LinearLayout>
-
-        <!-- Profile -->
-        <ImageView
-            android:id="@+id/imgProfile"
-            android:layout_width="44dp"
-            android:layout_height="wrap_content"
-            android:background="@drawable/circle_bg"
-            android:clipToOutline="true"
-            android:scaleType="centerCrop"
-            android:src="@drawable/ic_profile" />
-    </LinearLayout>
-
-    <!-- ================= CONTENT ================= -->
-    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none"
-        android:overScrollMode="never">
+        android:orientation="vertical">
 
+        <!-- ================= HEADER ================= -->
         <LinearLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="10dp">
+            android:layout_height="86dp"
+            android:background="@android:color/white"
+            android:elevation="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="12dp">
 
-            <include layout="@layout/card_spinner"/>
-            <include layout="@layout/card_lucky_draw"/>
-            <include layout="@layout/card_watch_earn"/>
-            <include layout="@layout/card_tasks"/>
-            <include layout="@layout/card_surveys"/>
-            <include layout="@layout/card_invite"/>
+            <!-- App Title -->
+            <TextView
+                android:id="@+id/appTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/app_name"
+                android:textColor="#6A1BFF"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
+            <!-- Token -->
+            <LinearLayout
+                android:layout_width="79dp"
+                android:layout_height="42dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_token_gradient"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="1dp">
+
+                <ImageView
+                    android:layout_width="33dp"
+                    android:layout_height="33dp"
+                    android:src="@drawable/ic_ticket" />
+
+                <TextView
+                    android:id="@+id/txtToken"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="0"
+                    android:textColor="#8D6E00"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Coins -->
+            <LinearLayout
+                android:layout_width="87dp"
+                android:layout_height="44dp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/bg_coin_gradient"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="1dp">
+
+                <ImageView
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:src="@drawable/ic_coin" />
+
+                <TextView
+                    android:id="@+id/txtCoins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="0"
+                    android:textColor="#8D6E00"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- Profile -->
+            <ImageView
+                android:id="@+id/imgProfile"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:background="@drawable/circle_bg"
+                android:clipToOutline="true"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_profile" />
         </LinearLayout>
-    </ScrollView>
 
-</LinearLayout>
+        <!-- ================= CONTENT ================= -->
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none"
+            android:overScrollMode="never">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="0dp">
+
+                <include layout="@layout/card_spinner"/>
+                <include layout="@layout/card_lucky_draw"/>
+                <include layout="@layout/card_watch_earn"/>
+                <include layout="@layout/card_tasks"/>
+                <include layout="@layout/card_surveys"/>
+                <include layout="@layout/card_invite"/>
+
+            </LinearLayout>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <!-- ================= REWARD COIN ANIMATION (FLOATING) ================= -->
+    <ImageView
+        android:id="@+id/imgRewardCoin"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_coin"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:elevation="12dp"/>
+
+</FrameLayout>
