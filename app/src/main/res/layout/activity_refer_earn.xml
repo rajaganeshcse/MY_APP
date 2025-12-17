@@ -9,11 +9,11 @@
     <!-- Toolbar -->
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="wrap_content"
         android:background="#6A1BFF"
+        app:navigationIcon="@drawable/ic_back_arrow"
         app:title="Refer and Earn"
-        app:titleTextColor="#FFFFFF"
-        app:navigationIcon="@drawable/back_arrow" />
+        app:titleTextColor="#FFFFFF" />
 
     <!-- Tabs -->
     <com.google.android.material.tabs.TabLayout

@@ -3,6 +3,7 @@ package com.example.rgamer;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +17,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.example.rgamer.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
@@ -24,12 +26,22 @@ import java.util.Map;
 
 public class layout_invite extends Fragment {
 
+    // UI
     TextView txtCode;
-    ImageView btnCopy;
     EditText edtReferral;
+    ImageView btnCopy, btnWhatsapp, btnTelegram,
+            btnFacebook, btnMessenger, btnShareAll;
+    View btnValidate;
 
+    // Firebase
     FirebaseFirestore db;
     String uid;
+
+    // Local cache
+    UserPref userPref;
+
+    private static final int REFERRAL_COIN_REWARD = 500;
+    private static final int REFERRAL_TICKET_REWARD = 10;
 
     @Nullable
     @Override
@@ -38,73 +50,138 @@ public class layout_invite extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_layout_invite, container, false);
+        View view = inflater.inflate(
+                R.layout.activity_layout_invite,
+                container,
+                false
+        );
 
+        // UI
         txtCode = view.findViewById(R.id.txtReferralCode);
-        btnCopy = view.findViewById(R.id.btnCopy);
         edtReferral = view.findViewById(R.id.edtReferral);
+        btnCopy = view.findViewById(R.id.btnCopy);
+        btnValidate = view.findViewById(R.id.btnValidate);
 
+        btnWhatsapp = view.findViewById(R.id.btnWhatsapp);
+        btnTelegram = view.findViewById(R.id.btnTelegram);
+        btnFacebook = view.findViewById(R.id.btnFacebook);
+        btnMessenger = view.findViewById(R.id.btnMessenger);
+        btnShareAll = view.findViewById(R.id.btnShareAll);
+
+        // Firebase
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
+
+        // Local cache
+        userPref = new UserPref(requireContext());
+
+        if (uid == null) {
+            toast("User not logged in");
+            return view;
+        }
 
         loadReferralCode();
 
         btnCopy.setOnClickListener(v -> copyCode());
+        btnValidate.setOnClickListener(v -> validateReferral());
 
-        view.findViewById(R.id.btnValidate)
-                .setOnClickListener(v -> validateReferral());
+        btnWhatsapp.setOnClickListener(v -> shareToApp("com.whatsapp"));
+        btnTelegram.setOnClickListener(v -> shareToApp("org.telegram.messenger"));
+        btnFacebook.setOnClickListener(v -> shareToApp("com.facebook.katana"));
+        btnMessenger.setOnClickListener(v -> shareToApp("com.facebook.orca"));
+        btnShareAll.setOnClickListener(v -> shareAll());
 
         return view;
     }
 
+    // ================= REFERRAL CODE =================
+
     private void loadReferralCode() {
-        db.collection("users").document(uid).get()
+        db.collection("users")
+                .document(uid)
+                .get()
                 .addOnSuccessListener(doc -> {
-                    if (!doc.contains("referralCode")) {
+
+                    UserModel user = doc.toObject(UserModel.class);
+
+                    if (user == null || user.getReferralCode() == null) {
+
                         String code = ReferralUtil.generateCode();
-                        db.collection("users").document(uid)
-                                .update("referralCode", code);
+
+                        Map<String, Object> map = new HashMap<>();
+                        map.put("referralCode", code);
+
+                        db.collection("users")
+                                .document(uid)
+                                .set(map, SetOptions.merge());
+
                         txtCode.setText(code);
                     } else {
-                        txtCode.setText(doc.getString("referralCode"));
+                        txtCode.setText(user.getReferralCode());
                     }
                 });
     }
 
+    // ================= COPY =================
+
     private void copyCode() {
         ClipboardManager cm =
-                (ClipboardManager) requireContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                (ClipboardManager) requireContext()
+                        .getSystemService(Context.CLIPBOARD_SERVICE);
+
         cm.setPrimaryClip(
-                ClipData.newPlainText("referral", txtCode.getText()));
+                ClipData.newPlainText(
+                        "referral",
+                        txtCode.getText().toString()
+                )
+        );
+
         toast("Code copied");
     }
+
+    // ================= VALIDATE =================
 
     private void validateReferral() {
 
         String code = edtReferral.getText().toString().trim();
-        if (code.isEmpty()) return;
+
+        if (code.isEmpty()) {
+            toast("Enter referral code");
+            return;
+        }
+
+        btnValidate.setEnabled(false);
 
         db.collection("users")
                 .whereEqualTo("referralCode", code)
+                .limit(1)
                 .get()
                 .addOnSuccessListener(qs -> {
 
                     if (qs.isEmpty()) {
+                        btnValidate.setEnabled(true);
                         toast("Invalid referral code");
                         return;
                     }
 
-                    DocumentSnapshot referrer = qs.getDocuments().get(0);
-                    String refUid = referrer.getId();
+                    DocumentSnapshot refDoc = qs.getDocuments().get(0);
+                    String refUid = refDoc.getId();
 
                     if (refUid.equals(uid)) {
-                        toast("You can't use your own code");
+                        btnValidate.setEnabled(true);
+                        toast("Can't use your own code");
                         return;
                     }
 
                     applyReferral(refUid);
+                })
+                .addOnFailureListener(e -> {
+                    btnValidate.setEnabled(true);
+                    toast("Something went wrong");
                 });
     }
+
+    // ================= APPLY REFERRAL =================
 
     private void applyReferral(String refUid) {
 
@@ -113,32 +190,41 @@ public class layout_invite extends Fragment {
 
         userRef.get().addOnSuccessListener(doc -> {
 
-            if (doc.getBoolean("referralUsed")) {
+            UserModel user = doc.toObject(UserModel.class);
+
+            if (user == null) {
+                btnValidate.setEnabled(true);
+                return;
+            }
+
+            if (user.isReferralUsed()) {
+                btnValidate.setEnabled(true);
                 toast("Referral already used");
                 return;
             }
 
             WriteBatch batch = db.batch();
 
-            // New user reward
+            // New user → instant wallet reward
             batch.update(userRef,
                     "referredBy", refUid,
                     "referralUsed", true,
-                    "coins", FieldValue.increment(500),
-                    "tickets", FieldValue.increment(10)
+                    "coins", FieldValue.increment(REFERRAL_COIN_REWARD),
+                    "tickets", FieldValue.increment(REFERRAL_TICKET_REWARD)
             );
 
-            // Referrer reward
-            batch.update(db.collection("users").document(refUid),
-                    "coins", FieldValue.increment(500),
-                    "tickets", FieldValue.increment(10)
+            // Referrer → pending earnings
+            batch.update(
+                    db.collection("users").document(refUid),
+                    "totalReferralCoins",
+                    FieldValue.increment(REFERRAL_COIN_REWARD),
+                    "totalReferralTickets",
+                    FieldValue.increment(REFERRAL_TICKET_REWARD)
             );
 
-            // Referral record
+            // History
             Map<String, Object> map = new HashMap<>();
             map.put("userId", uid);
-            map.put("earnedCoins", 0);
-            map.put("earnedTickets", 0);
             map.put("joinedAt", System.currentTimeMillis());
 
             batch.set(
@@ -149,12 +235,58 @@ public class layout_invite extends Fragment {
                     map
             );
 
-            batch.commit().addOnSuccessListener(aVoid ->
-                    toast("Referral applied 🎉"));
+            batch.commit()
+                    .addOnSuccessListener(unused -> {
+
+                        // 🔥 UPDATE LOCAL CACHE (UserPref)
+                        int currentCoins = userPref.getCoins();
+                        userPref.setCoins(currentCoins + REFERRAL_COIN_REWARD);
+
+                        toast("Referral applied 🎉");
+                        btnValidate.setEnabled(false);
+                    })
+                    .addOnFailureListener(e -> {
+                        btnValidate.setEnabled(true);
+                        toast("Failed to apply referral");
+                    });
         });
     }
 
+    // ================= SHARE =================
+
+    private String getShareMessage() {
+        return "🎮 Join RGamer & earn FREE coins!\n\n"
+                + "Use my referral code: " + txtCode.getText().toString()
+                + "\n\nDownload now 👇\n"
+                + "https://play.google.com/store/apps/details?id="
+                + requireContext().getPackageName();
+    }
+
+    private void shareToApp(String packageName) {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, getShareMessage());
+        intent.setPackage(packageName);
+
+        try {
+            startActivity(intent);
+        } catch (Exception e) {
+            toast("App not installed");
+        }
+    }
+
+    private void shareAll() {
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/plain");
+        intent.putExtra(Intent.EXTRA_TEXT, getShareMessage());
+        startActivity(Intent.createChooser(intent, "Invite using"));
+    }
+
+    // ================= TOAST =================
+
     private void toast(String msg) {
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        if (getContext() != null) {
+            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        }
     }
 }

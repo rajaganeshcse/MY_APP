@@ -13,11 +13,11 @@
         android:padding="16dp">
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="71dp"
             android:layout_height="wrap_content"
             android:text="Claim"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+            android:textSize="16sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- Referral Coins -->
@@ -29,18 +29,18 @@
         android:padding="16dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/txtCoins"
+            android:layout_width="60dp"
+            android:layout_height="58dp"
             android:text="0"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Referral Coins"
-            android:layout_marginTop="8dp" />
+            android:layout_width="163dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="8dp"
+            android:text="Referral Coins" />
     </LinearLayout>
 
     <!-- Referral Tickets -->
@@ -52,18 +52,18 @@
         android:padding="16dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:id="@+id/txtTickets"
+            android:layout_width="55dp"
+            android:layout_height="81dp"
             android:text="0"
             android:textSize="24sp"
             android:textStyle="bold" />
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Referral Tickets"
-            android:layout_marginTop="8dp" />
+            android:layout_width="188dp"
+            android:layout_height="57dp"
+            android:layout_marginTop="8dp"
+            android:text="Referral Tickets" />
     </LinearLayout>
 
     <Button

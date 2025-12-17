@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,13 +17,19 @@ import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
 import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.nativead.MediaView;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -44,6 +51,9 @@ public class HomeFragment extends Fragment {
     // Reward animation
     ImageView imgRewardCoin;
 
+    // Native Ad
+    NativeAd nativeAd;
+
     // AdMob
     private RewardedAd rewardedAd;
 
@@ -54,6 +64,8 @@ public class HomeFragment extends Fragment {
     UserPref userPref;
 
     private static final int DAILY_LIMIT = 20;
+    private static final int AD_REWARD_COINS = 10;
+    private static final int AD_REWARD_TOKENS = 2;
 
     @Nullable
     @Override
@@ -76,10 +88,9 @@ public class HomeFragment extends Fragment {
         cardWatch = view.findViewById(R.id.card_watch_earn);
         cardInvite = view.findViewById(R.id.card_invite);
 
-        // Watch card views
-        View watchView = cardWatch;
-        btnWatchNow = watchView.findViewById(R.id.btnWatchNow);
-        txtAdCount = watchView.findViewById(R.id.txtAdCount);
+        // Watch & Earn
+        btnWatchNow = view.findViewById(R.id.btnWatchNow);
+        txtAdCount = view.findViewById(R.id.txtAdCount);
 
         // Animation
         imgRewardCoin = view.findViewById(R.id.imgRewardCoin);
@@ -87,27 +98,26 @@ public class HomeFragment extends Fragment {
         loadUserData();
         updateAdUI();
         loadRewardAd();
+        loadNativeAd(view); // 🔥 Native Advanced Ad
 
-        // Watch Ad
         btnWatchNow.setOnClickListener(v -> watchAd());
 
-        // Watch card → Lucky Draw
-        cardWatch.setOnClickListener(v -> {
-            startActivity(new Intent(requireContext(), activity_lucky_draw.class));
-        });
+        cardWatch.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), activity_lucky_draw.class))
+        );
 
-        // ✅ Invite Card → Refer & Earn
-        cardInvite.setOnClickListener(v -> {
-            startActivity(new Intent(requireContext(), activity_refer_earn.class));
-        });
+        cardInvite.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(), activity_refer_earn.class))
+        );
 
         return view;
     }
 
     /* ================= USER DATA ================= */
     private void loadUserData() {
+
         txtCoins.setText(String.valueOf(userPref.getCoins()));
-        txtToken.setText(String.valueOf(userPref.getToken()));
+        txtToken.setText(String.valueOf(userPref.getWalletToken()));
 
         Glide.with(this)
                 .load(userPref.getProfileImage())
@@ -148,14 +158,14 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    /* ================= LOAD AD ================= */
+    /* ================= LOAD REWARDED AD ================= */
     private void loadRewardAd() {
 
         AdRequest request = new AdRequest.Builder().build();
 
         RewardedAd.load(
                 requireContext(),
-                "ca-app-pub-3940256099942544/5224354917",
+                "ca-app-pub-3940256099942544/5224354917", // TEST ID
                 request,
                 new RewardedAdLoadCallback() {
 
@@ -192,11 +202,71 @@ public class HomeFragment extends Fragment {
         );
     }
 
+    /* ================= NATIVE ADVANCED AD ================= */
+    private void loadNativeAd(View rootView) {
+
+        AdLoader adLoader = new AdLoader.Builder(
+                requireContext(),
+                "ca-app-pub-3940256099942544/2247696110" // TEST Native ID
+        )
+                .forNativeAd(ad -> {
+
+                    NativeAdView adView =
+                            rootView.findViewById(R.id.nativeAdView);
+
+                    if (adView == null) return;
+
+                    nativeAd = ad;
+
+                    TextView headline = adView.findViewById(R.id.ad_headline);
+                    Button cta = adView.findViewById(R.id.ad_call_to_action);
+                    MediaView media = adView.findViewById(R.id.ad_media);
+
+                    headline.setText(ad.getHeadline());
+                    adView.setHeadlineView(headline);
+
+                    if (ad.getCallToAction() != null) {
+                        cta.setText(ad.getCallToAction());
+                        adView.setCallToActionView(cta);
+                    } else {
+                        cta.setVisibility(View.GONE);
+                    }
+
+                    adView.setMediaView(media);
+                    adView.setNativeAd(ad);
+                })
+                .withAdListener(new AdListener() {
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError error) {
+                        // Optional: hide native ad container
+                    }
+                })
+                .build();
+
+        adLoader.loadAd(new AdRequest.Builder().build());
+    }
+
     /* ================= REWARD ================= */
     private void rewardUser() {
-        int reward = 5;
-        userPref.setCoins(userPref.getCoins() + reward);
-        txtCoins.setText(String.valueOf(userPref.getCoins()));
+
+        int newCoins = userPref.getCoins() + AD_REWARD_COINS;
+        int newTokens = userPref.getWalletToken() + AD_REWARD_TOKENS;
+
+        userPref.setCoins(newCoins);
+        userPref.setWalletToken(newTokens);
+
+        txtCoins.setText(String.valueOf(newCoins));
+        txtToken.setText(String.valueOf(newTokens));
+
+        String uid = userPref.getUid();
+        if (uid == null || uid.isEmpty()) return;
+
+        db.collection("users")
+                .document(uid)
+                .update(
+                        "coins", FieldValue.increment(AD_REWARD_COINS),
+                        "walletToken", FieldValue.increment(AD_REWARD_TOKENS)
+                );
     }
 
     /* ================= ANIMATION ================= */
@@ -210,20 +280,21 @@ public class HomeFragment extends Fragment {
                 .scaleX(1.2f)
                 .scaleY(1.2f)
                 .setDuration(300)
-                .withEndAction(() -> {
-                    imgRewardCoin.setVisibility(View.GONE);
-                })
+                .withEndAction(() ->
+                        imgRewardCoin.setVisibility(View.GONE)
+                )
                 .start();
     }
 
     /* ================= UI ================= */
     private void updateAdUI() {
+
         int watched = userPref.getTodayAdCount();
         txtAdCount.setText(watched + "/" + DAILY_LIMIT + " ads watched");
         btnWatchNow.setEnabled(watched < DAILY_LIMIT);
     }
 
-    /* ================= FIREBASE ================= */
+    /* ================= FIREBASE (ADS COUNT) ================= */
     private void syncAdCountToFirebase() {
 
         String uid = userPref.getUid();
@@ -237,5 +308,11 @@ public class HomeFragment extends Fragment {
         data.put("daily_ads.updated_at", System.currentTimeMillis());
 
         ref.update(data);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (nativeAd != null) nativeAd.destroy();
     }
 }

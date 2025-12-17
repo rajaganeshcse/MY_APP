@@ -10,11 +10,32 @@ import java.util.Locale;
 public class UserPref {
 
     private static final String PREF_NAME = "user_pref";
+
+    // ---------------- BASIC ----------------
+    private static final String KEY_UID = "uid";
+    private static final String KEY_NAME = "name";
+    private static final String KEY_EMAIL = "email";
+    private static final String KEY_COINS = "coins";
+
+    // 🎮 WALLET TOKEN (GAME CURRENCY)
+    private static final String KEY_WALLET_TOKEN = "wallet_token";
+
+    // 🔔 FCM TOKEN (PUSH NOTIFICATION)
+    private static final String KEY_FCM_TOKEN = "fcm_token";
+
+    private static final String KEY_PROFILE_IMAGE = "profile_image";
+    private static final String KEY_IS_LOGIN = "is_login";
+
+    // ---------------- DAILY BONUS ----------------
     private static final String KEY_DAILY_DATE = "daily_date";
 
-    // 🔹 NEW (Ads)
+    // ---------------- ADS ----------------
     private static final String KEY_AD_DATE = "ad_date";
     private static final String KEY_AD_COUNT = "ad_count";
+
+    // ---------------- REFERRAL ----------------
+    private static final String KEY_REF_COINS = "referral_coins";
+    private static final String KEY_REF_TICKETS = "referral_tickets";
 
     private SharedPreferences pref;
     private SharedPreferences.Editor editor;
@@ -26,72 +47,74 @@ public class UserPref {
 
     /* ================= UID ================= */
     public void setUid(String uid) {
-        editor.putString("uid", uid);
-        editor.apply();
+        editor.putString(KEY_UID, uid).apply();
     }
 
     public String getUid() {
-        return pref.getString("uid", "");
+        return pref.getString(KEY_UID, "");
     }
 
     /* ================= NAME ================= */
     public void setName(String name) {
-        editor.putString("name", name);
-        editor.apply();
+        editor.putString(KEY_NAME, name).apply();
     }
 
     public String getName() {
-        return pref.getString("name", "");
+        return pref.getString(KEY_NAME, "");
     }
 
     /* ================= EMAIL ================= */
     public void setEmail(String email) {
-        editor.putString("email", email);
-        editor.apply();
+        editor.putString(KEY_EMAIL, email).apply();
     }
 
     public String getEmail() {
-        return pref.getString("email", "");
+        return pref.getString(KEY_EMAIL, "");
     }
 
     /* ================= COINS ================= */
     public void setCoins(int coins) {
-        editor.putInt("coins", coins);
-        editor.apply();
+        editor.putInt(KEY_COINS, coins).apply();
     }
 
     public int getCoins() {
-        return pref.getInt("coins", 0);
+        return pref.getInt(KEY_COINS, 0);
     }
 
-    /* ================= TOKEN ================= */
-    public void setToken(String token) {
-        editor.putString("token", token);
-        editor.apply();
+    /* ================= 🎮 WALLET TOKEN ================= */
+    public void setWalletToken(int token) {
+        editor.putInt(KEY_WALLET_TOKEN, token).apply();
     }
 
-    public String getToken() {
-        return pref.getString("token", "0");
+    public int getWalletToken() {
+        return pref.getInt(KEY_WALLET_TOKEN, 0);
+    }
+
+    /* ================= 🔔 FCM TOKEN ================= */
+    public void setFcmToken(String token) {
+        editor.putString(KEY_FCM_TOKEN, token).apply();
+    }
+
+    public String getFcmToken() {
+        return pref.getString(KEY_FCM_TOKEN, "");
     }
 
     /* ================= PROFILE IMAGE ================= */
     public void setProfileImage(String url) {
-        editor.putString("profile_image", url);
-        editor.apply();
+        editor.putString(KEY_PROFILE_IMAGE, url).apply();
     }
 
     public String getProfileImage() {
-        return pref.getString("profile_image", "");
+        return pref.getString(KEY_PROFILE_IMAGE, "");
     }
 
     /* ================= LOGIN STATUS ================= */
     public void setLogin(boolean status) {
-        editor.putBoolean("is_login", status);
-        editor.apply();
+        editor.putBoolean(KEY_IS_LOGIN, status).apply();
     }
 
     public boolean isLogin() {
-        return pref.getBoolean("is_login", false);
+        return pref.getBoolean(KEY_IS_LOGIN, false);
     }
 
     /* ==================================================
@@ -105,8 +128,7 @@ public class UserPref {
     }
 
     public void setDailyBonusClaimed() {
-        editor.putString(KEY_DAILY_DATE, getTodayDate());
-        editor.apply();
+        editor.putString(KEY_DAILY_DATE, getTodayDate()).apply();
     }
 
     // Backward compatibility
@@ -119,10 +141,9 @@ public class UserPref {
     }
 
     /* ==================================================
-       🆕 DAILY ADS LOGIC (ANTI-CHEAT SAFE)
+       DAILY ADS (ANTI-CHEAT SAFE)
        ================================================== */
 
-    /** Get today ad count (auto reset on new day) */
     public int getTodayAdCount() {
         String today = getTodayDate();
         String savedDate = pref.getString(KEY_AD_DATE, "");
@@ -136,17 +157,40 @@ public class UserPref {
         return pref.getInt(KEY_AD_COUNT, 0);
     }
 
-    /** Increase ad count safely */
     public void increaseAdCount() {
         int count = getTodayAdCount();
-        editor.putInt(KEY_AD_COUNT, count + 1);
-        editor.apply();
+        editor.putInt(KEY_AD_COUNT, count + 1).apply();
     }
 
-    /** Reset ads manually (admin/debug use) */
     public void resetAdCount() {
         editor.putInt(KEY_AD_COUNT, 0);
         editor.putString(KEY_AD_DATE, getTodayDate());
+        editor.apply();
+    }
+
+    /* ==================================================
+       REFERRAL EARNINGS (CACHE)
+       ================================================== */
+
+    public void setReferralCoins(long coins) {
+        editor.putLong(KEY_REF_COINS, coins).apply();
+    }
+
+    public long getReferralCoins() {
+        return pref.getLong(KEY_REF_COINS, 0);
+    }
+
+    public void setReferralTickets(long tickets) {
+        editor.putLong(KEY_REF_TICKETS, tickets).apply();
+    }
+
+    public long getReferralTickets() {
+        return pref.getLong(KEY_REF_TICKETS, 0);
+    }
+
+    public void clearReferralEarnings() {
+        editor.putLong(KEY_REF_COINS, 0);
+        editor.putLong(KEY_REF_TICKETS, 0);
         editor.apply();
     }
 
@@ -157,11 +201,9 @@ public class UserPref {
         return sdf.format(new Date());
     }
 
-    /* ================= CLEAR ================= */
+    /* ================= CLEAR ALL ================= */
     public void clear() {
         editor.clear();
         editor.apply();
     }
-
-
 }

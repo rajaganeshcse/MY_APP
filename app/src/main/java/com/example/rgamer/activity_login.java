@@ -90,7 +90,6 @@ public class activity_login extends AppCompatActivity {
                     userPref.setEmail(email);
                     userPref.setProfileImage(profileImage);
                     userPref.setCoins(100);
-                    userPref.setToken("0");
                     userPref.setLogin(true);
 
                     startActivity(new Intent(this, MainActivity.class));

@@ -111,6 +111,8 @@
 
                 <include layout="@layout/card_spinner"/>
                 <include layout="@layout/card_lucky_draw"/>
+                <!-- 🔥 NATIVE AD -->
+                <include layout="@layout/native_ad_layout"/>
                 <include layout="@layout/card_watch_earn"/>
                 <include layout="@layout/card_tasks"/>
                 <include layout="@layout/card_surveys"/>

@@ -35,13 +35,13 @@
 
             <TextView
                 android:id="@+id/txtReferralCode"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="333dp"
+                android:layout_height="34dp"
                 android:layout_weight="1"
-                android:text="PQIApVH5cF"
+                android:text="AABBCCDDEEFF"
+                android:textColor="#6A1BFF"
                 android:textSize="16sp"
-                android:textStyle="bold"
-                android:textColor="#6A1BFF" />
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/btnCopy"
@@ -58,11 +58,16 @@
             android:gravity="center"
             android:orientation="horizontal">
 
-            <ImageView android:src="@drawable/ic_whatsapp" style="@style/ShareIcon"/>
-            <ImageView android:src="@drawable/ic_telegram" style="@style/ShareIcon"/>
-            <ImageView android:src="@drawable/ic_facebook" style="@style/ShareIcon"/>
-            <ImageView android:src="@drawable/ic_messenger" style="@style/ShareIcon"/>
-            <ImageView android:src="@drawable/ic_share" style="@style/ShareIcon"/>
+            <ImageView android:id="@+id/btnWhatsapp"
+                android:src="@drawable/ic_whatsapp" style="@style/ShareIcon"/>
+            <ImageView android:id="@+id/btnTelegram"
+                android:src="@drawable/ic_telegram" style="@style/ShareIcon"/>
+            <ImageView android:id="@+id/btnFacebook"
+                android:src="@drawable/ic_facebook" style="@style/ShareIcon"/>
+            <ImageView android:id="@+id/btnMessenger"
+                android:src="@drawable/ic_messenger" style="@style/ShareIcon"/>
+            <ImageView android:id="@+id/btnShareAll"
+                android:src="@drawable/ic_share" style="@style/ShareIcon"/>
         </LinearLayout>
 
         <!-- Enter Referral Code -->
@@ -88,11 +93,13 @@
                 android:padding="12dp" />
 
             <Button
+                android:layout_marginLeft="6dp"
                 android:id="@+id/btnValidate"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
+                android:textColorHint="@color/black"
                 android:text="Validate"
-                android:backgroundTint="#D3D3D3" />
+                android:backgroundTint="@color/Primary"/>
         </LinearLayout>
 
         <!-- Info Section -->
