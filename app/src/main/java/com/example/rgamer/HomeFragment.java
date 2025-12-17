@@ -166,7 +166,7 @@ public class HomeFragment extends Fragment {
 
         if (rewardedAd == null) {
             Toast.makeText(getContext(),
-                    "Ad not ready, try again",
+                    "Ad not ready",
                     Toast.LENGTH_SHORT).show();
             loadRewardAd();
             return;

@@ -26,11 +26,13 @@
 
         <com.google.android.material.tabs.TabItem
             android:text="INVITE"
+            android:background="@color/white"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"/>
 
         <com.google.android.material.tabs.TabItem
             android:text="MY EARNINGS"
+            android:background="@color/white"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"/>
     </com.google.android.material.tabs.TabLayout>

@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:background="#EEF1FF"
+        android:background="@drawable/bg_history"
         android:gravity="center_vertical"
         android:padding="16dp">
 
@@ -25,7 +25,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginTop="16dp"
-        android:background="#FFE7A0"
+        android:background="@drawable/bg_reward_card"
         android:padding="16dp">
 
         <TextView
@@ -48,7 +48,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_marginTop="12dp"
-        android:background="#CFF4FF"
+        android:background="@drawable/bg_history"
         android:padding="16dp">
 
         <TextView
