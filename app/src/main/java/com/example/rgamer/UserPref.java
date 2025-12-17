@@ -11,41 +11,48 @@ public class UserPref {
 
     private static final String PREF_NAME = "user_pref";
 
-    // ---------------- BASIC ----------------
+    // ================= BASIC =================
     private static final String KEY_UID = "uid";
     private static final String KEY_NAME = "name";
     private static final String KEY_EMAIL = "email";
-    private static final String KEY_COINS = "coins";
-
-    // 🎮 WALLET TOKEN (GAME CURRENCY)
-    private static final String KEY_WALLET_TOKEN = "wallet_token";
-
-    // 🔔 FCM TOKEN (PUSH NOTIFICATION)
-    private static final String KEY_FCM_TOKEN = "fcm_token";
-
-    private static final String KEY_PROFILE_IMAGE = "profile_image";
     private static final String KEY_IS_LOGIN = "is_login";
 
-    // ---------------- DAILY BONUS ----------------
+    // ================= WALLET =================
+    private static final String KEY_COINS = "coins";
+    private static final String KEY_TICKETS = "tickets";
+    private static final String KEY_WALLET_TOKEN = "wallet_token";
+
+    // ================= PROFILE =================
+    private static final String KEY_PROFILE_IMAGE = "profile_image";
+
+    // ================= NOTIFICATIONS =================
+    private static final String KEY_FCM_TOKEN = "fcm_token";
+
+    // ================= DAILY BONUS =================
+    // yyyy-MM-dd
     private static final String KEY_DAILY_DATE = "daily_date";
 
-    // ---------------- ADS ----------------
+    // ================= DAILY ADS =================
     private static final String KEY_AD_DATE = "ad_date";
     private static final String KEY_AD_COUNT = "ad_count";
 
-    // ---------------- REFERRAL ----------------
+    // ================= REFERRAL (CACHE) =================
     private static final String KEY_REF_COINS = "referral_coins";
     private static final String KEY_REF_TICKETS = "referral_tickets";
 
-    private SharedPreferences pref;
-    private SharedPreferences.Editor editor;
+    // ================= INTERNAL =================
+    private final SharedPreferences pref;
+    private final SharedPreferences.Editor editor;
 
     public UserPref(Context context) {
         pref = context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
         editor = pref.edit();
     }
 
-    /* ================= UID ================= */
+    /* ==================================================
+       BASIC INFO
+       ================================================== */
+
     public void setUid(String uid) {
         editor.putString(KEY_UID, uid).apply();
     }
@@ -54,7 +61,6 @@ public class UserPref {
         return pref.getString(KEY_UID, "");
     }
 
-    /* ================= NAME ================= */
     public void setName(String name) {
         editor.putString(KEY_NAME, name).apply();
     }
@@ -63,7 +69,6 @@ public class UserPref {
         return pref.getString(KEY_NAME, "");
     }
 
-    /* ================= EMAIL ================= */
     public void setEmail(String email) {
         editor.putString(KEY_EMAIL, email).apply();
     }
@@ -72,43 +77,6 @@ public class UserPref {
         return pref.getString(KEY_EMAIL, "");
     }
 
-    /* ================= COINS ================= */
-    public void setCoins(int coins) {
-        editor.putInt(KEY_COINS, coins).apply();
-    }
-
-    public int getCoins() {
-        return pref.getInt(KEY_COINS, 0);
-    }
-
-    /* ================= 🎮 WALLET TOKEN ================= */
-    public void setWalletToken(int token) {
-        editor.putInt(KEY_WALLET_TOKEN, token).apply();
-    }
-
-    public int getWalletToken() {
-        return pref.getInt(KEY_WALLET_TOKEN, 0);
-    }
-
-    /* ================= 🔔 FCM TOKEN ================= */
-    public void setFcmToken(String token) {
-        editor.putString(KEY_FCM_TOKEN, token).apply();
-    }
-
-    public String getFcmToken() {
-        return pref.getString(KEY_FCM_TOKEN, "");
-    }
-
-    /* ================= PROFILE IMAGE ================= */
-    public void setProfileImage(String url) {
-        editor.putString(KEY_PROFILE_IMAGE, url).apply();
-    }
-
-    public String getProfileImage() {
-        return pref.getString(KEY_PROFILE_IMAGE, "");
-    }
-
-    /* ================= LOGIN STATUS ================= */
     public void setLogin(boolean status) {
         editor.putBoolean(KEY_IS_LOGIN, status).apply();
     }
@@ -118,7 +86,59 @@ public class UserPref {
     }
 
     /* ==================================================
-       DAILY BONUS (ONCE PER DAY – SAFE)
+       WALLET
+       ================================================== */
+
+    public void setCoins(int coins) {
+        editor.putInt(KEY_COINS, coins).apply();
+    }
+
+    public int getCoins() {
+        return pref.getInt(KEY_COINS, 0);
+    }
+
+    public void setTickets(int tickets) {
+        editor.putInt(KEY_TICKETS, tickets).apply();
+    }
+
+    public int getTickets() {
+        return pref.getInt(KEY_TICKETS, 0);
+    }
+
+    public void setWalletToken(int token) {
+        editor.putInt(KEY_WALLET_TOKEN, token).apply();
+    }
+
+    public int getWalletToken() {
+        return pref.getInt(KEY_WALLET_TOKEN, 0);
+    }
+
+    /* ==================================================
+       PROFILE
+       ================================================== */
+
+    public void setProfileImage(String url) {
+        editor.putString(KEY_PROFILE_IMAGE, url).apply();
+    }
+
+    public String getProfileImage() {
+        return pref.getString(KEY_PROFILE_IMAGE, "");
+    }
+
+    /* ==================================================
+       NOTIFICATIONS
+       ================================================== */
+
+    public void setFcmToken(String token) {
+        editor.putString(KEY_FCM_TOKEN, token).apply();
+    }
+
+    public String getFcmToken() {
+        return pref.getString(KEY_FCM_TOKEN, "");
+    }
+
+    /* ==================================================
+       DAILY BONUS (ONCE PER DAY)
        ================================================== */
 
     public boolean canClaimDailyBonus() {
@@ -140,8 +160,16 @@ public class UserPref {
         setDailyBonusClaimed();
     }
 
+    public void setDailyClaimedDate(String date) {
+        editor.putString(KEY_DAILY_DATE, date).apply();
+    }
+
+    public String getDailyClaimedDate() {
+        return pref.getString(KEY_DAILY_DATE, "");
+    }
+
     /* ==================================================
-       DAILY ADS (ANTI-CHEAT SAFE)
+       DAILY ADS (LIMITED PER DAY)
        ================================================== */
 
     public int getTodayAdCount() {
@@ -169,7 +197,7 @@ public class UserPref {
     }
 
     /* ==================================================
-       REFERRAL EARNINGS (CACHE)
+       REFERRAL (LOCAL CACHE)
        ================================================== */
 
     public void setReferralCoins(long coins) {
@@ -194,14 +222,20 @@ public class UserPref {
         editor.apply();
     }
 
-    /* ================= DATE HELPER ================= */
+    /* ==================================================
+       DATE HELPER
+       ================================================== */
+
     private String getTodayDate() {
         SimpleDateFormat sdf =
                 new SimpleDateFormat("yyyy-MM-dd", Locale.US);
         return sdf.format(new Date());
     }
 
-    /* ================= CLEAR ALL ================= */
+    /* ==================================================
+       CLEAR ALL (LOGOUT)
+       ================================================== */
+
     public void clear() {
         editor.clear();
         editor.apply();

@@ -29,7 +29,6 @@ import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -37,7 +36,7 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
-    // Header
+    // Header (Fragment)
     TextView txtCoins, txtToken;
     ImageView imgProfile;
 
@@ -51,18 +50,15 @@ public class HomeFragment extends Fragment {
     // Reward animation
     ImageView imgRewardCoin;
 
-    // Native Ad
-    NativeAd nativeAd;
-
-    // AdMob
+    // Ads
     private RewardedAd rewardedAd;
+    private NativeAd nativeAd;
 
-    // Firebase
+    // Firebase & Pref
     FirebaseFirestore db;
-
-    // Pref
     UserPref userPref;
 
+    // Constants
     private static final int DAILY_LIMIT = 20;
     private static final int AD_REWARD_COINS = 10;
     private static final int AD_REWARD_TOKENS = 2;
@@ -92,13 +88,12 @@ public class HomeFragment extends Fragment {
         btnWatchNow = view.findViewById(R.id.btnWatchNow);
         txtAdCount = view.findViewById(R.id.txtAdCount);
 
-        // Animation
         imgRewardCoin = view.findViewById(R.id.imgRewardCoin);
 
         loadUserData();
         updateAdUI();
         loadRewardAd();
-        loadNativeAd(view); // 🔥 Native Advanced Ad
+        loadNativeAd(view);
 
         btnWatchNow.setOnClickListener(v -> watchAd());
 
@@ -113,18 +108,36 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    /* ================= USER DATA ================= */
+    /* ================= USER DATA (GOOGLE IMAGE ONLY) ================= */
     private void loadUserData() {
 
         txtCoins.setText(String.valueOf(userPref.getCoins()));
         txtToken.setText(String.valueOf(userPref.getWalletToken()));
 
+        String profileUrl = userPref.getProfileImage();
+
+        // Fragment header image
         Glide.with(this)
-                .load(userPref.getProfileImage())
+                .load(profileUrl)
                 .placeholder(R.drawable.ic_profile)
                 .error(R.drawable.ic_profile)
                 .circleCrop()
                 .into(imgProfile);
+
+        // MainActivity header image
+        if (getActivity() != null) {
+            ImageView headerProfile =
+                    getActivity().findViewById(R.id.imgProfile);
+
+            if (headerProfile != null) {
+                Glide.with(this)
+                        .load(profileUrl)
+                        .placeholder(R.drawable.ic_profile)
+                        .error(R.drawable.ic_profile)
+                        .circleCrop()
+                        .into(headerProfile);
+            }
+        }
     }
 
     /* ================= WATCH AD ================= */
@@ -158,14 +171,95 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    /* ================= LOAD REWARDED AD ================= */
+    /* ================= REWARD ================= */
+    private void rewardUser() {
+        addCoins(AD_REWARD_COINS);
+        addTokens(AD_REWARD_TOKENS);
+    }
+
+    /* ================= ADD COINS ================= */
+    private void addCoins(int coins) {
+
+        int total = userPref.getCoins() + coins;
+        userPref.setCoins(total);
+
+        if (getActivity() != null) {
+            TextView txt = getActivity().findViewById(R.id.txtCoins);
+            if (txt != null) txt.setText(String.valueOf(total));
+        }
+
+        syncCoins();
+    }
+
+    private void syncCoins() {
+
+        String uid = userPref.getUid();
+        if (uid == null || uid.isEmpty()) return;
+
+        db.collection("users")
+                .document(uid)
+                .update("coins", userPref.getCoins());
+    }
+
+    /* ================= ADD TOKENS ================= */
+    private void addTokens(int tokens) {
+
+        int total = userPref.getWalletToken() + tokens;
+        userPref.setWalletToken(total);
+
+        if (getActivity() != null) {
+            TextView txt = getActivity().findViewById(R.id.txtToken);
+            if (txt != null) txt.setText(String.valueOf(total));
+        }
+
+        syncTokens();
+    }
+
+    private void syncTokens() {
+
+        String uid = userPref.getUid();
+        if (uid == null || uid.isEmpty()) return;
+
+        db.collection("users")
+                .document(uid)
+                .update("walletToken", userPref.getWalletToken());
+    }
+
+    /* ================= REWARD ANIMATION ================= */
+    private void playRewardAnimation() {
+
+        if (imgRewardCoin == null) return;
+
+        imgRewardCoin.setVisibility(View.VISIBLE);
+        imgRewardCoin.setScaleX(0f);
+        imgRewardCoin.setScaleY(0f);
+        imgRewardCoin.setAlpha(1f);
+
+        imgRewardCoin.animate()
+                .scaleX(1.3f)
+                .scaleY(1.3f)
+                .setDuration(300)
+                .withEndAction(() ->
+                        imgRewardCoin.animate()
+                                .alpha(0f)
+                                .setDuration(200)
+                                .withEndAction(() -> {
+                                    imgRewardCoin.setVisibility(View.GONE);
+                                    imgRewardCoin.setAlpha(1f);
+                                })
+                                .start()
+                )
+                .start();
+    }
+
+    /* ================= ADS ================= */
     private void loadRewardAd() {
 
         AdRequest request = new AdRequest.Builder().build();
 
         RewardedAd.load(
                 requireContext(),
-                "ca-app-pub-3940256099942544/5224354917", // TEST ID
+                "ca-app-pub-3940256099942544/5224354917",
                 request,
                 new RewardedAdLoadCallback() {
 
@@ -175,7 +269,6 @@ public class HomeFragment extends Fragment {
 
                         rewardedAd.setFullScreenContentCallback(
                                 new FullScreenContentCallback() {
-
                                     @Override
                                     public void onAdDismissedFullScreenContent() {
                                         rewardedAd = null;
@@ -202,12 +295,11 @@ public class HomeFragment extends Fragment {
         );
     }
 
-    /* ================= NATIVE ADVANCED AD ================= */
     private void loadNativeAd(View rootView) {
 
         AdLoader adLoader = new AdLoader.Builder(
                 requireContext(),
-                "ca-app-pub-3940256099942544/2247696110" // TEST Native ID
+                "ca-app-pub-3940256099942544/2247696110"
         )
                 .forNativeAd(ad -> {
 
@@ -235,55 +327,10 @@ public class HomeFragment extends Fragment {
                     adView.setMediaView(media);
                     adView.setNativeAd(ad);
                 })
-                .withAdListener(new AdListener() {
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError error) {
-                        // Optional: hide native ad container
-                    }
-                })
+                .withAdListener(new AdListener() {})
                 .build();
 
         adLoader.loadAd(new AdRequest.Builder().build());
-    }
-
-    /* ================= REWARD ================= */
-    private void rewardUser() {
-
-        int newCoins = userPref.getCoins() + AD_REWARD_COINS;
-        int newTokens = userPref.getWalletToken() + AD_REWARD_TOKENS;
-
-        userPref.setCoins(newCoins);
-        userPref.setWalletToken(newTokens);
-
-        txtCoins.setText(String.valueOf(newCoins));
-        txtToken.setText(String.valueOf(newTokens));
-
-        String uid = userPref.getUid();
-        if (uid == null || uid.isEmpty()) return;
-
-        db.collection("users")
-                .document(uid)
-                .update(
-                        "coins", FieldValue.increment(AD_REWARD_COINS),
-                        "walletToken", FieldValue.increment(AD_REWARD_TOKENS)
-                );
-    }
-
-    /* ================= ANIMATION ================= */
-    private void playRewardAnimation() {
-
-        imgRewardCoin.setVisibility(View.VISIBLE);
-        imgRewardCoin.setScaleX(0f);
-        imgRewardCoin.setScaleY(0f);
-
-        imgRewardCoin.animate()
-                .scaleX(1.2f)
-                .scaleY(1.2f)
-                .setDuration(300)
-                .withEndAction(() ->
-                        imgRewardCoin.setVisibility(View.GONE)
-                )
-                .start();
     }
 
     /* ================= UI ================= */
@@ -308,6 +355,13 @@ public class HomeFragment extends Fragment {
         data.put("daily_ads.updated_at", System.currentTimeMillis());
 
         ref.update(data);
+    }
+
+    /* ================= LIFECYCLE ================= */
+    @Override
+    public void onResume() {
+        super.onResume();
+        loadUserData(); // always Google profile image
     }
 
     @Override

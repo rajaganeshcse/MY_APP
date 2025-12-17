@@ -10,16 +10,21 @@ public class UserModel {
     private String name;
     private String email;
 
-    // Wallet
+    // ================= WALLET =================
     private int coins;          // wallet coins
     private int tickets;        // wallet tickets
     private int walletToken;    // 🎮 GAME TOKEN (SHOW IN UI)
 
-    // Push notifications
+    // ================= NOTIFICATIONS =================
     private String fcmToken;    // 🔔 FCM TOKEN (DO NOT SHOW IN UI)
 
+    // ================= PROFILE =================
     private String profile_image;
     private long created_at;
+
+    // ================= DAILY BONUS =================
+    // yyyy-MM-dd (prevents multiple claims per day)
+    private String dailyBonusClaimedDate;
 
     // ================= REFERRAL SYSTEM =================
     private String referralCode;
@@ -46,6 +51,7 @@ public class UserModel {
             int walletToken,
             String fcmToken,
             String profile_image,
+            String dailyBonusClaimedDate,
             String referralCode,
             String referredBy,
             boolean referralUsed,
@@ -61,6 +67,7 @@ public class UserModel {
         this.walletToken = walletToken;
         this.fcmToken = fcmToken;
         this.profile_image = profile_image;
+        this.dailyBonusClaimedDate = dailyBonusClaimedDate;
         this.referralCode = referralCode;
         this.referredBy = referredBy;
         this.referralUsed = referralUsed;
@@ -91,18 +98,20 @@ public class UserModel {
         return tickets;
     }
 
-    // 🎮 Wallet token (for UI)
     public int getWalletToken() {
         return walletToken;
     }
 
-    // 🔔 FCM token (notifications)
     public String getFcmToken() {
         return fcmToken;
     }
 
     public String getProfileImage() {
         return profile_image;
+    }
+
+    public String getDailyBonusClaimedDate() {
+        return dailyBonusClaimedDate;
     }
 
     public String getReferralCode() {
@@ -151,18 +160,20 @@ public class UserModel {
         this.tickets = tickets;
     }
 
-    // 🎮 Wallet token
     public void setWalletToken(int walletToken) {
         this.walletToken = walletToken;
     }
 
-    // 🔔 FCM token
     public void setFcmToken(String fcmToken) {
         this.fcmToken = fcmToken;
     }
 
     public void setProfileImage(String profile_image) {
         this.profile_image = profile_image;
+    }
+
+    public void setDailyBonusClaimedDate(String date) {
+        this.dailyBonusClaimedDate = date;
     }
 
     public void setReferralCode(String referralCode) {
@@ -195,16 +206,24 @@ public class UserModel {
 
         Map<String, Object> map = new HashMap<>();
 
+        // Basic
         map.put("uid", uid);
         map.put("name", name);
         map.put("email", email);
 
+        // Wallet
         map.put("coins", coins);
         map.put("tickets", tickets);
         map.put("walletToken", walletToken);
+
+        // Notifications
         map.put("fcmToken", fcmToken);
 
+        // Profile
         map.put("profile_image", profile_image);
+
+        // Daily bonus (nested field)
+        map.put("daily_bonus.claimed_date", dailyBonusClaimedDate);
 
         // Referral
         map.put("referralCode", referralCode);
@@ -213,6 +232,7 @@ public class UserModel {
         map.put("totalReferralCoins", totalReferralCoins);
         map.put("totalReferralTickets", totalReferralTickets);
 
+        // Metadata
         map.put("created_at", created_at);
 
         return map;
