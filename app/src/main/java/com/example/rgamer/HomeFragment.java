@@ -28,6 +28,8 @@ import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.button.MaterialButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -36,12 +38,13 @@ import java.util.Map;
 
 public class HomeFragment extends Fragment {
 
-    // Header (Fragment)
+    // Fragment Header
     TextView txtCoins, txtToken;
     ImageView imgProfile;
 
     // Cards
-    CardView cardWatch, cardInvite;
+    CardView cardInvite;
+    TextView txtLuckyDraw;
 
     // Watch & Earn
     MaterialButton btnWatchNow;
@@ -75,13 +78,13 @@ public class HomeFragment extends Fragment {
         userPref = new UserPref(requireContext());
         db = FirebaseFirestore.getInstance();
 
-        // Header
+        // Fragment Header
         txtCoins = view.findViewById(R.id.txtCoins);
         txtToken = view.findViewById(R.id.txtToken);
         imgProfile = view.findViewById(R.id.imgProfile);
 
         // Cards
-        cardWatch = view.findViewById(R.id.card_watch_earn);
+        txtLuckyDraw = view.findViewById(R.id.txtLuckyDraw);
         cardInvite = view.findViewById(R.id.card_invite);
 
         // Watch & Earn
@@ -97,7 +100,7 @@ public class HomeFragment extends Fragment {
 
         btnWatchNow.setOnClickListener(v -> watchAd());
 
-        cardWatch.setOnClickListener(v ->
+        txtLuckyDraw.setOnClickListener(v ->
                 startActivity(new Intent(requireContext(), activity_lucky_draw.class))
         );
 
@@ -108,7 +111,7 @@ public class HomeFragment extends Fragment {
         return view;
     }
 
-    /* ================= USER DATA (GOOGLE IMAGE ONLY) ================= */
+    /* ================= USER DATA (GOOGLE PROFILE – FIXED) ================= */
     private void loadUserData() {
 
         txtCoins.setText(String.valueOf(userPref.getCoins()));
@@ -116,7 +119,16 @@ public class HomeFragment extends Fragment {
 
         String profileUrl = userPref.getProfileImage();
 
-        // Fragment header image
+        // 🔥 FirebaseAuth fallback (REAL SOURCE)
+        if (profileUrl == null || profileUrl.isEmpty()) {
+            FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (user != null && user.getPhotoUrl() != null) {
+                profileUrl = user.getPhotoUrl().toString();
+                userPref.setProfileImage(profileUrl);
+            }
+        }
+
+        // Fragment profile image
         Glide.with(this)
                 .load(profileUrl)
                 .placeholder(R.drawable.ic_profile)
@@ -124,7 +136,7 @@ public class HomeFragment extends Fragment {
                 .circleCrop()
                 .into(imgProfile);
 
-        // MainActivity header image
+        // ✅ MainActivity header profile image (NO ID CONFLICT)
         if (getActivity() != null) {
             ImageView headerProfile =
                     getActivity().findViewById(R.id.imgProfile);
@@ -192,7 +204,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void syncCoins() {
-
         String uid = userPref.getUid();
         if (uid == null || uid.isEmpty()) return;
 
@@ -216,7 +227,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void syncTokens() {
-
         String uid = userPref.getUid();
         if (uid == null || uid.isEmpty()) return;
 
@@ -335,7 +345,6 @@ public class HomeFragment extends Fragment {
 
     /* ================= UI ================= */
     private void updateAdUI() {
-
         int watched = userPref.getTodayAdCount();
         txtAdCount.setText(watched + "/" + DAILY_LIMIT + " ads watched");
         btnWatchNow.setEnabled(watched < DAILY_LIMIT);
@@ -361,7 +370,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-        loadUserData(); // always Google profile image
+        loadUserData();
     }
 
     @Override
