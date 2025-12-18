@@ -2,80 +2,98 @@ package com.example.rgamer;
 
 import android.os.Bundle;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.*;
+
+import java.util.HashMap;
+import java.util.Map;
+
 public class activity_lucky_draw extends AppCompatActivity {
 
-    ImageView btnBack;
+    FirebaseFirestore db;
+    String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lucky_draw);
 
-        // Back button
-        btnBack = findViewById(R.id.btnBack);
+        db = FirebaseFirestore.getInstance();
+        uid = FirebaseAuth.getInstance().getUid();
 
-        btnBack.setOnClickListener(v -> finish());
+        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
-        // Since you are using <include layout="@layout/item_lucky_draw"/>
-        // we handle clicks by finding buttons from included layouts
-
-        setupLuckyDrawCards();
+        loadLuckyDraws();
     }
 
-    // ================= SETUP CARDS =================
-    private void setupLuckyDrawCards() {
+    private void loadLuckyDraws() {
 
-        // FIRST CARD
-        View card1 = findViewById(R.id.card_root_1);
-        if (card1 != null) {
-            card1.findViewById(R.id.btnCheckWinners)
-                    .setOnClickListener(v ->
-                            Toast.makeText(this,
-                                    "Checking winners...",
-                                    Toast.LENGTH_SHORT).show());
+        db.collection("lucky_draws")
+                .whereEqualTo("status", "OPEN")
+                .addSnapshotListener((value, error) -> {
 
-            card1.findViewById(R.id.btnFreeEntry)
-                    .setOnClickListener(v ->
-                            Toast.makeText(this,
-                                    "Free entry added!",
-                                    Toast.LENGTH_SHORT).show());
-        }
+                    if (value == null || value.isEmpty()) return;
 
-        // SECOND CARD
-        View card2 = findViewById(R.id.card_root_2);
-        if (card2 != null) {
-            card2.findViewById(R.id.btnCheckWinners)
-                    .setOnClickListener(v ->
-                            Toast.makeText(this,
-                                    "Checking winners...",
-                                    Toast.LENGTH_SHORT).show());
+                    for (DocumentSnapshot doc : value.getDocuments()) {
+                        setupCard(doc);
+                    }
+                });
+    }
 
-            card2.findViewById(R.id.btnFreeEntry)
-                    .setOnClickListener(v ->
-                            Toast.makeText(this,
-                                    "Free entry added!",
-                                    Toast.LENGTH_SHORT).show());
-        }
+    private void setupCard(DocumentSnapshot doc) {
 
-        // THIRD CARD
-        View card3 = findViewById(R.id.card_root_3);
-        if (card3 != null) {
-            card3.findViewById(R.id.btnCheckWinners)
-                    .setOnClickListener(v ->
-                            Toast.makeText(this,
-                                    "Checking winners...",
-                                    Toast.LENGTH_SHORT).show());
+        String drawId = doc.getId();
+        int reward = doc.getLong("rewardCoins").intValue();
 
-            card3.findViewById(R.id.btnFreeEntry)
-                    .setOnClickListener(v ->
-                            Toast.makeText(this,
-                                    "Free entry added!",
-                                    Toast.LENGTH_SHORT).show());
-        }
+        View card = findViewById(R.id.card_root_1); // demo card
+
+        card.findViewById(R.id.btnFreeEntry)
+                .setOnClickListener(v -> joinDraw(drawId));
+
+        card.findViewById(R.id.btnCheckWinners)
+                .setOnClickListener(v ->
+                        Toast.makeText(this,
+                                "Winner announced after draw completes",
+                                Toast.LENGTH_SHORT).show()
+                );
+    }
+
+    private void joinDraw(String drawId) {
+
+        DocumentReference entryRef =
+                db.collection("lucky_draw_entries")
+                        .document(drawId)
+                        .collection("users")
+                        .document(uid);
+
+        entryRef.get().addOnSuccessListener(doc -> {
+
+            if (doc.exists()) {
+                Toast.makeText(this,
+                        "Already joined",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            // Add entry
+            Map<String, Object> data = new HashMap<>();
+            data.put("uid", uid);
+            data.put("joinedAt", FieldValue.serverTimestamp());
+
+            entryRef.set(data);
+
+            // Increase count
+            db.collection("lucky_draws")
+                    .document(drawId)
+                    .update("filledSlots", FieldValue.increment(1));
+
+            Toast.makeText(this,
+                    "Free entry added!",
+                    Toast.LENGTH_SHORT).show();
+        });
     }
 }

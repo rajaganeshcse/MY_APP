@@ -5,43 +5,41 @@ import java.util.Map;
 
 public class UserModel {
 
-    // ================= BASIC INFO =================
+    /* ================= BASIC INFO ================= */
     private String uid;
     private String name;
     private String email;
 
-    // ================= WALLET =================
-    private int coins;          // wallet coins
-    private int tickets;        // wallet tickets
-    private int walletToken;    // 🎮 GAME TOKEN (SHOW IN UI)
+    /* ================= WALLET ================= */
+    private int coins;          // Wallet coins
+    private int tickets;        // Wallet tickets
+    private int walletToken;    // 🎮 Game token (UI)
 
-    // ================= NOTIFICATIONS =================
-    private String fcmToken;    // 🔔 FCM TOKEN (DO NOT SHOW IN UI)
+    /* ================= NOTIFICATIONS ================= */
+    private String fcmToken;    // 🔔 Push notifications
 
-    // ================= PROFILE =================
-    private String profile_image;
+    /* ================= PROFILE ================= */
+    private String profile_image;   // Google profile image URL
     private long created_at;
 
-    // ================= DAILY BONUS =================
+    /* ================= DAILY BONUS ================= */
     // yyyy-MM-dd (prevents multiple claims per day)
     private String dailyBonusClaimedDate;
 
-    // ================= REFERRAL SYSTEM =================
+    /* ================= REFERRAL SYSTEM ================= */
     private String referralCode;
     private String referredBy;
     private boolean referralUsed;
 
-    // Pending referral earnings (CLAIMABLE)
+    // Pending referral earnings
     private long totalReferralCoins;
     private long totalReferralTickets;
 
-    // ================= EMPTY CONSTRUCTOR =================
+    /* ================= EMPTY CONSTRUCTOR ================= */
     // REQUIRED by Firestore
-    public UserModel() {
-        // Firestore uses reflection
-    }
+    public UserModel() {}
 
-    // ================= FULL CONSTRUCTOR =================
+    /* ================= FULL CONSTRUCTOR ================= */
     public UserModel(
             String uid,
             String name,
@@ -76,117 +74,52 @@ public class UserModel {
         this.created_at = created_at;
     }
 
-    // ================= GETTERS =================
+    /* ================= GETTERS ================= */
 
-    public String getUid() {
-        return uid;
-    }
+    public String getUid() { return uid; }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
 
-    public String getName() {
-        return name;
-    }
+    public int getCoins() { return coins; }
+    public int getTickets() { return tickets; }
+    public int getWalletToken() { return walletToken; }
 
-    public String getEmail() {
-        return email;
-    }
-
-    public int getCoins() {
-        return coins;
-    }
-
-    public int getTickets() {
-        return tickets;
-    }
-
-    public int getWalletToken() {
-        return walletToken;
-    }
-
-    public String getFcmToken() {
-        return fcmToken;
-    }
-
-    public String getProfileImage() {
-        return profile_image;
-    }
+    public String getFcmToken() { return fcmToken; }
+    public String getProfileImage() { return profile_image; }
 
     public String getDailyBonusClaimedDate() {
         return dailyBonusClaimedDate;
     }
 
-    public String getReferralCode() {
-        return referralCode;
-    }
+    public String getReferralCode() { return referralCode; }
+    public String getReferredBy() { return referredBy; }
+    public boolean isReferralUsed() { return referralUsed; }
 
-    public String getReferredBy() {
-        return referredBy;
-    }
+    public long getTotalReferralCoins() { return totalReferralCoins; }
+    public long getTotalReferralTickets() { return totalReferralTickets; }
 
-    public boolean isReferralUsed() {
-        return referralUsed;
-    }
+    public long getCreatedAt() { return created_at; }
 
-    public long getTotalReferralCoins() {
-        return totalReferralCoins;
-    }
+    /* ================= SETTERS ================= */
 
-    public long getTotalReferralTickets() {
-        return totalReferralTickets;
-    }
+    public void setUid(String uid) { this.uid = uid; }
+    public void setName(String name) { this.name = name; }
+    public void setEmail(String email) { this.email = email; }
 
-    public long getCreatedAt() {
-        return created_at;
-    }
+    public void setCoins(int coins) { this.coins = coins; }
+    public void setTickets(int tickets) { this.tickets = tickets; }
+    public void setWalletToken(int walletToken) { this.walletToken = walletToken; }
 
-    // ================= SETTERS =================
-
-    public void setUid(String uid) {
-        this.uid = uid;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public void setCoins(int coins) {
-        this.coins = coins;
-    }
-
-    public void setTickets(int tickets) {
-        this.tickets = tickets;
-    }
-
-    public void setWalletToken(int walletToken) {
-        this.walletToken = walletToken;
-    }
-
-    public void setFcmToken(String fcmToken) {
-        this.fcmToken = fcmToken;
-    }
-
-    public void setProfileImage(String profile_image) {
-        this.profile_image = profile_image;
-    }
+    public void setFcmToken(String fcmToken) { this.fcmToken = fcmToken; }
+    public void setProfileImage(String profile_image) { this.profile_image = profile_image; }
 
     public void setDailyBonusClaimedDate(String date) {
         this.dailyBonusClaimedDate = date;
     }
 
-    public void setReferralCode(String referralCode) {
-        this.referralCode = referralCode;
-    }
-
-    public void setReferredBy(String referredBy) {
-        this.referredBy = referredBy;
-    }
-
-    public void setReferralUsed(boolean referralUsed) {
-        this.referralUsed = referralUsed;
-    }
+    public void setReferralCode(String referralCode) { this.referralCode = referralCode; }
+    public void setReferredBy(String referredBy) { this.referredBy = referredBy; }
+    public void setReferralUsed(boolean referralUsed) { this.referralUsed = referralUsed; }
 
     public void setTotalReferralCoins(long totalReferralCoins) {
         this.totalReferralCoins = totalReferralCoins;
@@ -196,12 +129,10 @@ public class UserModel {
         this.totalReferralTickets = totalReferralTickets;
     }
 
-    public void setCreatedAt(long created_at) {
-        this.created_at = created_at;
-    }
+    public void setCreatedAt(long created_at) { this.created_at = created_at; }
 
-    // ================= FIRESTORE MAP =================
-    // Used when creating / updating user document
+    /* ================= FIRESTORE MAP ================= */
+    // Used when creating / updating Firestore user document
     public Map<String, Object> toMap() {
 
         Map<String, Object> map = new HashMap<>();
@@ -222,7 +153,7 @@ public class UserModel {
         // Profile
         map.put("profile_image", profile_image);
 
-        // Daily bonus (nested field)
+        // Daily bonus (nested)
         map.put("daily_bonus.claimed_date", dailyBonusClaimedDate);
 
         // Referral

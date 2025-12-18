@@ -101,8 +101,9 @@
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
                 android:textColorHint="@color/black"
+                android:textColor="@color/black"
                 android:text="Validate"
-                android:backgroundTint="@color/Primary"/>
+                android:backgroundTint="#FFB300"/>
         </LinearLayout>
 
         <!-- Info Section -->
