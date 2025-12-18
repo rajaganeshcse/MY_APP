@@ -15,12 +15,12 @@
 
         <!-- Title -->
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:text="Rewards"
             android:textSize="22sp"
             android:textStyle="bold"
-            android:textColor="#000000" />
+            android:textColor="#000000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <!-- Coins Card -->
         <LinearLayout
@@ -40,25 +40,24 @@
 
                 <TextView
                     android:id="@+id/txtCoins"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="100"
+                    android:text="0"
                     android:textSize="32sp"
                     android:textStyle="bold"
-                    android:textColor="#FFB300" />
+                    android:textColor="#FFB300"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
                     android:text="Coins"
                     android:textSize="16sp"
-                    android:textColor="#000000" />
+                    android:textColor="#000000"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <ImageView
                 android:layout_width="114dp"
                 android:layout_height="120dp"
-                android:contentDescription="coin"
                 android:src="@drawable/ic_coin" />
         </LinearLayout>
 
@@ -74,13 +73,13 @@
             android:orientation="horizontal">
 
             <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
                 android:text="Rewards History"
                 android:textSize="16sp"
+                android:textStyle="bold"
                 android:textColor="@color/black"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content" />
 
             <ImageView
                 android:layout_width="20dp"
@@ -90,29 +89,19 @@
 
         <!-- Redeem Title -->
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Redeem Rewards Via"
-            android:textColor="@color/black"
+            android:text="Redeem / Withdraw"
             android:textStyle="bold"
             android:textSize="16sp"
-            android:layout_marginTop="24dp" />
+            android:layout_marginTop="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-        <!-- UPI -->
-        <include layout="@layout/item_reward_option"
-            android:id="@+id/upiOption" />
-
-        <!-- Google Play -->
-        <include layout="@layout/item_reward_option"
-            android:id="@+id/googleOption" />
-
-        <!-- Mobile Legend -->
-        <include layout="@layout/item_reward_option"
-            android:id="@+id/mlOption" />
-
-        <!-- Lords Mobile -->
-        <include layout="@layout/item_reward_option"
-            android:id="@+id/lordsOption" />
+        <!-- Redeem / Withdraw Options -->
+        <include android:id="@+id/upiOption" layout="@layout/item_reward_option"/>
+        <include android:id="@+id/bankOption" layout="@layout/item_reward_option"/>
+        <include android:id="@+id/googleOption" layout="@layout/item_reward_option"/>
+        <include android:id="@+id/mlOption" layout="@layout/item_reward_option"/>
+        <include android:id="@+id/lordsOption" layout="@layout/item_reward_option"/>
 
     </LinearLayout>
 </ScrollView>

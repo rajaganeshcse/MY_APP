@@ -13,24 +13,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.example.rgamer.R;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class RewardFragment extends Fragment {
 
-    // UI
     private TextView txtCoins;
-    private LinearLayout btnHistory;
-
-    // Firebase
     private FirebaseAuth auth;
     private FirebaseFirestore db;
-
-    public RewardFragment() {
-        // Required empty public constructor
-    }
 
     @Nullable
     @Override
@@ -40,109 +30,88 @@ public class RewardFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_reward, container, false);
 
-        // Init UI
         txtCoins = view.findViewById(R.id.txtCoins);
-        btnHistory = view.findViewById(R.id.btnHistory);
 
-        // Init Firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // Load coins from Firebase
-        loadCoinsFromFirebase();
-
-        // History click
-        btnHistory.setOnClickListener(v ->
-                Toast.makeText(getContext(),
-                        "Open Rewards History",
-                        Toast.LENGTH_SHORT).show()
-        );
-
-        // Setup redeem options
+        loadCoins();
         setupOptions(view);
 
         return view;
     }
 
-    // 🔥 Load coins from Firestore
-    private void loadCoinsFromFirebase() {
-
+    private void loadCoins() {
         if (auth.getCurrentUser() == null) {
             txtCoins.setText("0");
             return;
         }
 
-        String uid = auth.getCurrentUser().getUid();
-
         db.collection("users")
-                .document(uid)
+                .document(auth.getCurrentUser().getUid())
                 .get()
-                .addOnSuccessListener(documentSnapshot -> {
-
-                    if (documentSnapshot.exists()) {
-                        Long coins = documentSnapshot.getLong("coins");
-
-                        if (coins != null) {
-                            txtCoins.setText(String.valueOf(coins));
-                        } else {
-                            txtCoins.setText("0");
-                        }
-                    } else {
-                        txtCoins.setText("0");
-                    }
-                })
-                .addOnFailureListener(e -> {
-                    txtCoins.setText("0");
-                    Toast.makeText(getContext(),
-                            "Failed to load coins",
-                            Toast.LENGTH_SHORT).show();
+                .addOnSuccessListener(doc -> {
+                    Long coins = doc.getLong("coins");
+                    txtCoins.setText(coins == null ? "0" : String.valueOf(coins));
                 });
     }
 
-    // Redeem options
     private void setupOptions(View view) {
 
         setupItem(view, R.id.upiOption,
                 R.drawable.ic_upi,
-                "UPI Cash",
-                "Redeem Money in UPI");
+                "UPI Withdraw",
+                RedeemFragment.UPI);
+
+        setupItem(view, R.id.bankOption,
+                R.drawable.ic_bank,
+                "Bank Withdraw",
+                RedeemFragment.BANK);
 
         setupItem(view, R.id.googleOption,
                 R.drawable.ic_google_play,
-                "Google Play Voucher",
-                "Get redeem code using coins");
-
-        setupItem(view, R.id.mlOption,
-                R.drawable.ic_ff,
-                "Free Fire",
-                "Redeem Diamonds using coins");
-
-        setupItem(view, R.id.lordsOption,
-                R.drawable.ic_lords,
-                "Lords Mobile Diamonds",
-                "Redeem Diamonds using coins");
+                "Google Play",
+                RedeemFragment.GOOGLE);
     }
 
-    // Single item setup
-    private void setupItem(View root,
-                           int layoutId,
-                           int icon,
-                           String title,
-                           String subtitle) {
+    private void setupItem(View root, int id, int icon,
+                           String title, String type) {
 
-        LinearLayout layout = root.findViewById(layoutId);
+        LinearLayout layout = root.findViewById(id);
+        if (layout == null) return;
+
         ImageView img = layout.findViewById(R.id.icon);
         TextView t1 = layout.findViewById(R.id.title);
-        TextView t2 = layout.findViewById(R.id.subtitle);
 
         img.setImageResource(icon);
         t1.setText(title);
-        t2.setText(subtitle);
 
-        layout.setOnClickListener(v ->
-                Toast.makeText(getContext(),
-                        title + " clicked",
-                        Toast.LENGTH_SHORT).show()
-        );
+        layout.setOnClickListener(v -> openRedeem(type));
+    }
+
+    private void openRedeem(String type) {
+
+        long coins;
+        try {
+            coins = Long.parseLong(txtCoins.getText().toString());
+        } catch (Exception e) {
+            coins = 0;
+        }
+
+        if (coins < 100) {
+            Toast.makeText(getContext(),
+                    "Minimum 100 coins required",
+                    Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // ✅ THIS WILL NOT CRASH NOW
+        requireActivity()
+                .getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container,
+                        RedeemFragment.newInstance(type))
+                .addToBackStack(null)
+                .commit();
     }
 }

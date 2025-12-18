@@ -26,21 +26,21 @@ import java.util.Map;
 
 public class layout_invite extends Fragment {
 
-    // UI
+    // ================= UI =================
     TextView txtCode;
     EditText edtReferral;
     ImageView btnCopy, btnWhatsapp, btnTelegram,
             btnFacebook, btnMessenger, btnShareAll;
     View btnValidate;
 
-    // Firebase
+    // ================= FIREBASE =================
     FirebaseFirestore db;
     String uid;
 
-    // Local cache
+    // ================= LOCAL CACHE =================
     UserPref userPref;
 
-    private static final int REFERRAL_COIN_REWARD = 500;
+    private static final int REFERRAL_COIN_REWARD = 250;
     private static final int REFERRAL_TICKET_REWARD = 10;
 
     @Nullable
@@ -72,7 +72,7 @@ public class layout_invite extends Fragment {
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
 
-        // Local cache
+        // Local
         userPref = new UserPref(requireContext());
 
         if (uid == null) {
@@ -188,6 +188,9 @@ public class layout_invite extends Fragment {
         DocumentReference userRef =
                 db.collection("users").document(uid);
 
+        DocumentReference referrerRef =
+                db.collection("users").document(refUid);
+
         userRef.get().addOnSuccessListener(doc -> {
 
             UserModel user = doc.toObject(UserModel.class);
@@ -205,7 +208,7 @@ public class layout_invite extends Fragment {
 
             WriteBatch batch = db.batch();
 
-            // New user → instant wallet reward
+            // -------- NEW USER --------
             batch.update(userRef,
                     "referredBy", refUid,
                     "referralUsed", true,
@@ -213,32 +216,24 @@ public class layout_invite extends Fragment {
                     "tickets", FieldValue.increment(REFERRAL_TICKET_REWARD)
             );
 
-            // Referrer → pending earnings
-            batch.update(
-                    db.collection("users").document(refUid),
+            // -------- REFERRER --------
+            Map<String, Object> referralUser = new HashMap<>();
+            referralUser.put("userId", uid);
+            referralUser.put("joinedAt", System.currentTimeMillis());
+
+            batch.update(referrerRef,
                     "totalReferralCoins",
                     FieldValue.increment(REFERRAL_COIN_REWARD),
                     "totalReferralTickets",
-                    FieldValue.increment(REFERRAL_TICKET_REWARD)
-            );
-
-            // History
-            Map<String, Object> map = new HashMap<>();
-            map.put("userId", uid);
-            map.put("joinedAt", System.currentTimeMillis());
-
-            batch.set(
-                    db.collection("referrals")
-                            .document(refUid)
-                            .collection("users")
-                            .document(uid),
-                    map
+                    FieldValue.increment(REFERRAL_TICKET_REWARD),
+                    "referralUsers." + uid,
+                    referralUser
             );
 
             batch.commit()
                     .addOnSuccessListener(unused -> {
 
-                        // 🔥 UPDATE LOCAL CACHE (UserPref)
+                        // Update local cache
                         int currentCoins = userPref.getCoins();
                         userPref.setCoins(currentCoins + REFERRAL_COIN_REWARD);
 

@@ -20,4 +20,5 @@
     <item name="card_root_3" type="id" />
     <item name="card_root_1" type="id" />
     <item name="txtLuckyDraw" type="id" />
+    <item name="fragment_container" type="id" />
 </resources>
