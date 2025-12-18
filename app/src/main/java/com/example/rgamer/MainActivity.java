@@ -18,21 +18,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        makeFullScreen(); // ✅ SAFE fullscreen
+        makeFullScreen();
         setContentView(R.layout.activity_main);
 
         initViews();
         setupNavigation();
 
-        // Default tab
+        // Default fragment
         selectNav(navHome);
         loadFragment(new HomeFragment());
     }
 
-    // ================= SAFE FULL SCREEN =================
-    // ✔ Transparent status bar
-    // ✔ Navigation bar visible
-    // ✔ No touch / auto-close issues
     private void makeFullScreen() {
         Window window = getWindow();
 
@@ -47,7 +43,6 @@ public class MainActivity extends AppCompatActivity {
         );
     }
 
-    // ================= INIT =================
     private void initViews() {
         navHome = findViewById(R.id.navHome);
         navGame = findViewById(R.id.navGame);
@@ -55,7 +50,6 @@ public class MainActivity extends AppCompatActivity {
         navProfile = findViewById(R.id.navProfile);
     }
 
-    // ================= NAVIGATION =================
     private void setupNavigation() {
 
         navHome.setOnClickListener(v -> {
@@ -79,29 +73,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    // ================= FOOTER EFFECT =================
     private void selectNav(LinearLayout selected) {
         resetNav();
-
         selected.setBackgroundResource(R.drawable.bg_nav_selected);
-        selected.animate()
-                .scaleX(1.08f)
-                .scaleY(1.08f)
-                .setDuration(150)
-                .start();
     }
 
     private void resetNav() {
         LinearLayout[] navs = {navHome, navGame, navReward, navProfile};
-
         for (LinearLayout nav : navs) {
             nav.setBackgroundResource(R.drawable.bg_nav_unselected);
-            nav.setScaleX(1f);
-            nav.setScaleY(1f);
         }
     }
 
-    // ================= FRAGMENT LOAD =================
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()

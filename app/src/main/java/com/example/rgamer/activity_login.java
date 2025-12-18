@@ -1,29 +1,35 @@
 package com.example.rgamer;
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.rgamer.models.UserModel;
-import com.google.android.gms.auth.api.signin.*;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
-import com.google.firebase.auth.*;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class activity_login extends AppCompatActivity {
 
     private static final int RC_SIGN_IN = 100;
 
-    GoogleSignInClient googleSignInClient;
-    FirebaseAuth auth;
-    FirebaseFirestore db;
-    UserPref userPref;
+    private GoogleSignInClient googleSignInClient;
+    private FirebaseAuth auth;
+    private FirebaseFirestore db;
+    private UserPref userPref;
 
-    LinearLayout btnGoogle;
+    private LinearLayout btnGoogle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,17 +42,18 @@ public class activity_login extends AppCompatActivity {
 
         btnGoogle = findViewById(R.id.btnGoogle);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(
-                GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestEmail()
+                        .build();
 
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
         btnGoogle.setOnClickListener(v -> signIn());
     }
 
+    // ================= GOOGLE SIGN IN =================
     private void signIn() {
         startActivityForResult(
                 googleSignInClient.getSignInIntent(),
@@ -55,11 +62,9 @@ public class activity_login extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(
-            int requestCode,
-            int resultCode,
-            @Nullable Intent data) {
-
+    protected void onActivityResult(int requestCode,
+                                    int resultCode,
+                                    @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
@@ -72,12 +77,13 @@ public class activity_login extends AppCompatActivity {
 
             } catch (Exception e) {
                 Toast.makeText(this,
-                        "Login Failed",
+                        "Google Login Failed",
                         Toast.LENGTH_SHORT).show();
             }
         }
     }
 
+    // ================= FIREBASE AUTH =================
     private void firebaseAuth(GoogleSignInAccount account) {
 
         AuthCredential credential =
@@ -89,9 +95,7 @@ public class activity_login extends AppCompatActivity {
         auth.signInWithCredential(credential)
                 .addOnSuccessListener(authResult -> {
 
-                    FirebaseUser firebaseUser =
-                            auth.getCurrentUser();
-
+                    FirebaseUser firebaseUser = auth.getCurrentUser();
                     if (firebaseUser == null) return;
 
                     String uid = firebaseUser.getUid();
@@ -112,17 +116,15 @@ public class activity_login extends AppCompatActivity {
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this,
-                                "Auth Failed",
-                                Toast.LENGTH_SHORT).show());
+                                e.getMessage(),
+                                Toast.LENGTH_LONG).show());
     }
 
-    /* ================= FIRESTORE USER CHECK ================= */
-
-    private void checkUserInFirestore(
-            String uid,
-            String name,
-            String email,
-            String profileImage) {
+    // ================= FIRESTORE USER CHECK =================
+    private void checkUserInFirestore(String uid,
+                                      String name,
+                                      String email,
+                                      String profileImage) {
 
         db.collection("users")
                 .document(uid)
@@ -131,64 +133,57 @@ public class activity_login extends AppCompatActivity {
 
                     if (doc.exists()) {
                         // ✅ EXISTING USER
-                        UserModel user =
-                                doc.toObject(UserModel.class);
-
+                        UserModel user = doc.toObject(UserModel.class);
                         if (user != null) {
                             saveUserToPref(user);
+                            openMain();
                         }
 
                     } else {
                         // 🆕 NEW USER
                         UserModel newUser =
-                                createNewUser(
-                                        uid,
-                                        name,
-                                        email,
-                                        profileImage
-                                );
+                                createNewUser(uid, name, email, profileImage);
 
                         db.collection("users")
                                 .document(uid)
-                                .set(newUser.toMap());
-
-                        saveUserToPref(newUser);
+                                .set(newUser.toMap())
+                                .addOnSuccessListener(aVoid -> {
+                                    saveUserToPref(newUser);
+                                    openMain();
+                                })
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this,
+                                                e.getMessage(),
+                                                Toast.LENGTH_LONG).show());
                     }
-
-                    userPref.setLogin(true);
-                    startActivity(
-                            new Intent(
-                                    this,
-                                    MainActivity.class
-                            )
-                    );
-                    finish();
-                });
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(this,
+                                e.getMessage(),
+                                Toast.LENGTH_LONG).show());
     }
 
-    /* ================= CREATE NEW USER ================= */
-
-    private UserModel createNewUser(
-            String uid,
-            String name,
-            String email,
-            String profileImage) {
+    // ================= CREATE NEW USER =================
+    private UserModel createNewUser(String uid,
+                                    String name,
+                                    String email,
+                                    String profileImage) {
 
         return new UserModel(
                 uid,
                 name,
                 email,
-                100,        // coins
-                0,          // tickets
-                0,          // walletToken
-                "",         // fcmToken
+                100,                // coins
+                0,                  // tickets
+                0,                  // walletToken
+                "",                 // fcmToken
                 profileImage,
-                "",         // dailyBonusClaimedDate
+                "",                 // dailyBonusClaimedDate
                 generateReferralCode(uid),
-                "",         // referredBy
-                false,      // referralUsed
-                0,          // referral coins
-                0,          // referral tickets
+                "",                 // referredBy
+                false,              // referralUsed
+                0,                  // referral coins
+                0,                  // referral tickets
                 System.currentTimeMillis()
         );
     }
@@ -197,8 +192,7 @@ public class activity_login extends AppCompatActivity {
         return uid.substring(0, 6).toUpperCase();
     }
 
-    /* ================= SAVE TO USER PREF ================= */
-
+    // ================= SAVE USER PREF =================
     private void saveUserToPref(UserModel user) {
 
         userPref.setUid(user.getUid());
@@ -215,5 +209,11 @@ public class activity_login extends AppCompatActivity {
         );
 
         userPref.setLogin(true);
+    }
+
+    // ================= OPEN MAIN =================
+    private void openMain() {
+        startActivity(new Intent(this, MainActivity.class));
+        finish();
     }
 }

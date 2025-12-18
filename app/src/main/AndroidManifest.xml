@@ -15,6 +15,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RGamer">
         <activity
+            android:name=".activity_withdraw_success"
+            android:exported="false" />
+        <activity
+            android:name=".TransactionHistoryFragment"
+            android:exported="false" />
+        <activity
             android:name=".RedeemFragment"
             android:exported="false" />
         <activity

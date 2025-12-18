@@ -21,4 +21,8 @@
     <item name="card_root_1" type="id" />
     <item name="txtLuckyDraw" type="id" />
     <item name="fragment_container" type="id" />
+    <item name="gridLayout" type="id" />
+    <item name="txtStatus" type="id" />
+    <item name="amazonOption" type="id" />
+    <item name="phonepeOption" type="id" />
 </resources>

@@ -18,7 +18,7 @@ public class UserPref {
     private static final String KEY_IS_LOGIN = "is_login";
 
     // ================= WALLET =================
-    private static final String KEY_COINS = "coins";
+    private static final String KEY_COINS = "coins";          // ✅ long
     private static final String KEY_TICKETS = "tickets";
     private static final String KEY_WALLET_TOKEN = "wallet_token";
 
@@ -29,18 +29,16 @@ public class UserPref {
     private static final String KEY_FCM_TOKEN = "fcm_token";
 
     // ================= DAILY BONUS =================
-    // yyyy-MM-dd
     private static final String KEY_DAILY_DATE = "daily_date";
 
     // ================= DAILY ADS =================
     private static final String KEY_AD_DATE = "ad_date";
     private static final String KEY_AD_COUNT = "ad_count";
 
-    // ================= REFERRAL (CACHE) =================
+    // ================= REFERRAL =================
     private static final String KEY_REF_COINS = "referral_coins";
     private static final String KEY_REF_TICKETS = "referral_tickets";
 
-    // ================= INTERNAL =================
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
 
@@ -86,15 +84,25 @@ public class UserPref {
     }
 
     /* ==================================================
-       WALLET
+       WALLET (✅ FIXED)
        ================================================== */
 
-    public void setCoins(int coins) {
-        editor.putInt(KEY_COINS, coins).apply();
+    public void setCoins(long coins) {          // ✅ long
+        editor.putLong(KEY_COINS, coins).apply();
     }
 
-    public int getCoins() {
-        return pref.getInt(KEY_COINS, 0);
+    public long getCoins() {                    // ✅ long
+        return pref.getLong(KEY_COINS, 0L);
+    }
+
+    public void deductCoins(long amount) {      // ✅ helper
+        long current = getCoins();
+        long updated = Math.max(0, current - amount);
+        setCoins(updated);
+    }
+
+    public void addCoins(long amount) {
+        setCoins(getCoins() + amount);
     }
 
     public void setTickets(int tickets) {
@@ -138,26 +146,16 @@ public class UserPref {
     }
 
     /* ==================================================
-       DAILY BONUS (ONCE PER DAY)
+       DAILY BONUS
        ================================================== */
 
     public boolean canClaimDailyBonus() {
         String lastDate = pref.getString(KEY_DAILY_DATE, "");
-        String today = getTodayDate();
-        return !today.equals(lastDate);
+        return !getTodayDate().equals(lastDate);
     }
 
     public void setDailyBonusClaimed() {
         editor.putString(KEY_DAILY_DATE, getTodayDate()).apply();
-    }
-
-    // Backward compatibility
-    public boolean canClaimDaily() {
-        return canClaimDailyBonus();
-    }
-
-    public void setDailyClaimed() {
-        setDailyBonusClaimed();
     }
 
     public void setDailyClaimedDate(String date) {
@@ -169,7 +167,7 @@ public class UserPref {
     }
 
     /* ==================================================
-       DAILY ADS (LIMITED PER DAY)
+       DAILY ADS
        ================================================== */
 
     public int getTodayAdCount() {
@@ -186,18 +184,11 @@ public class UserPref {
     }
 
     public void increaseAdCount() {
-        int count = getTodayAdCount();
-        editor.putInt(KEY_AD_COUNT, count + 1).apply();
-    }
-
-    public void resetAdCount() {
-        editor.putInt(KEY_AD_COUNT, 0);
-        editor.putString(KEY_AD_DATE, getTodayDate());
-        editor.apply();
+        editor.putInt(KEY_AD_COUNT, getTodayAdCount() + 1).apply();
     }
 
     /* ==================================================
-       REFERRAL (LOCAL CACHE)
+       REFERRAL CACHE
        ================================================== */
 
     public void setReferralCoins(long coins) {
@@ -216,28 +207,16 @@ public class UserPref {
         return pref.getLong(KEY_REF_TICKETS, 0);
     }
 
-    public void clearReferralEarnings() {
-        editor.putLong(KEY_REF_COINS, 0);
-        editor.putLong(KEY_REF_TICKETS, 0);
-        editor.apply();
-    }
-
     /* ==================================================
-       DATE HELPER
+       HELPERS
        ================================================== */
 
     private String getTodayDate() {
-        SimpleDateFormat sdf =
-                new SimpleDateFormat("yyyy-MM-dd", Locale.US);
-        return sdf.format(new Date());
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.US)
+                .format(new Date());
     }
 
-    /* ==================================================
-       CLEAR ALL (LOGOUT)
-       ================================================== */
-
     public void clear() {
-        editor.clear();
-        editor.apply();
+        editor.clear().apply();
     }
 }

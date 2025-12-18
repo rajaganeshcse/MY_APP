@@ -2,82 +2,82 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF">
+    android:background="#FFFFFF"
+    android:padding="8dp"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtTitle"
-            android:text="Redeem"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="#000"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/txtSubtitle"
-            android:text="Subtitle"
-            android:textColor="#666"
-            android:layout_marginBottom="20dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <!-- Generic Input -->
-        <EditText
-            android:id="@+id/edtInput"
-            android:hint="Input"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-
-        <!-- Bank Account -->
-        <EditText
-            android:id="@+id/edtAccount"
-            android:hint="Bank Account Number"
-            android:visibility="gone"
+        <!-- ================= HEADER ================= -->
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
+            android:paddingBottom="16dp">
 
-        <EditText
-            android:id="@+id/edtIfsc"
-            android:hint="IFSC Code"
-            android:visibility="gone"
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/back_arrow" />
+
+            <TextView
+                android:id="@+id/txtTitle"
+                android:layout_width="202dp"
+                android:layout_height="45dp"
+                android:gravity="center"
+                android:layout_centerHorizontal="true"
+                android:text="Google Play Voucher"
+                android:textColor="#000"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="74dp"
+                android:layout_height="45dp"
+                android:layout_alignParentEnd="true"
+                android:layout_marginEnd="0dp"
+                android:background="@drawable/bg_yellow_outline"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="22dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_coin" />
+
+                <TextView
+                    android:id="@+id/txtCoins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="4dp"
+                    android:text="100"
+                    android:textColor="#F9A825"
+                    android:textStyle="bold" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <!-- ================= GRID ================= -->
+        <GridLayout
+            android:id="@+id/gridLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"/>
-
-        <!-- Coins -->
-        <EditText
-            android:id="@+id/edtCoins"
-            android:hint="Coins"
-            android:inputType="number"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"/>
-
-        <!-- ✅ FIXED -->
-        <TextView
-            android:text="Minimum 100 coins required"
-            android:textColor="#888"
-            android:layout_marginTop="6dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
-        <TextView
-            android:id="@+id/btnSubmit"
-            android:text="SUBMIT REQUEST"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold"
+            android:columnCount="2"
+            android:alignmentMode="alignMargins"
+            android:useDefaultMargins="true"
             android:gravity="center"
-            android:padding="14dp"
-            android:background="#6A1BFF"
-            android:layout_marginTop="24dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:padding="12dp">
+
+            <include layout="@layout/item_redeem_card" />
+            <include layout="@layout/item_redeem_card" />
+            <include layout="@layout/item_redeem_card" />
+            <include layout="@layout/item_redeem_card" />
+
+        </GridLayout>
+
+
     </LinearLayout>
 </ScrollView>

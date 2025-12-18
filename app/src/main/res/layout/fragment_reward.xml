@@ -100,8 +100,8 @@
         <include android:id="@+id/upiOption" layout="@layout/item_reward_option"/>
         <include android:id="@+id/bankOption" layout="@layout/item_reward_option"/>
         <include android:id="@+id/googleOption" layout="@layout/item_reward_option"/>
-        <include android:id="@+id/mlOption" layout="@layout/item_reward_option"/>
-        <include android:id="@+id/lordsOption" layout="@layout/item_reward_option"/>
+        <include android:id="@+id/amazonoption" layout="@layout/item_reward_option"/>
+        <include android:id="@+id/phonepeoption" layout="@layout/item_reward_option"/>
 
     </LinearLayout>
 </ScrollView>

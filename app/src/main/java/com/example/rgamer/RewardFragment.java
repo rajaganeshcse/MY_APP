@@ -1,5 +1,6 @@
 package com.example.rgamer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,16 +32,17 @@ public class RewardFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reward, container, false);
 
         txtCoins = view.findViewById(R.id.txtCoins);
-
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
         loadCoins();
         setupOptions(view);
+        setupHistory(view);
 
         return view;
     }
 
+    // ================= LOAD COINS =================
     private void loadCoins() {
         if (auth.getCurrentUser() == null) {
             txtCoins.setText("0");
@@ -53,10 +55,27 @@ public class RewardFragment extends Fragment {
                 .addOnSuccessListener(doc -> {
                     Long coins = doc.getLong("coins");
                     txtCoins.setText(coins == null ? "0" : String.valueOf(coins));
-                });
+                })
+                .addOnFailureListener(e -> txtCoins.setText("0"));
     }
 
+    // ================= OPTIONS =================
     private void setupOptions(View view) {
+
+        setupItem(view, R.id.googleOption,
+                R.drawable.ic_google_play,
+                "Google Play Voucher",
+                RedeemFragment.GOOGLE);
+
+        setupItem(view, R.id.amazonOption,
+                R.drawable.ic_amazon,
+                "Amazon Gift Voucher",
+                RedeemFragment.AMAZON);
+
+        setupItem(view, R.id.phonepeOption,
+                R.drawable.ic_phonepe,
+                "PhonePe Gift Voucher",
+                RedeemFragment.PHONEPE);
 
         setupItem(view, R.id.upiOption,
                 R.drawable.ic_upi,
@@ -67,13 +86,18 @@ public class RewardFragment extends Fragment {
                 R.drawable.ic_bank,
                 "Bank Withdraw",
                 RedeemFragment.BANK);
-
-        setupItem(view, R.id.googleOption,
-                R.drawable.ic_google_play,
-                "Google Play",
-                RedeemFragment.GOOGLE);
     }
 
+    // ================= HISTORY =================
+    private void setupHistory(View view) {
+        LinearLayout btnHistory = view.findViewById(R.id.btnHistory);
+        btnHistory.setOnClickListener(v ->
+                startActivity(new Intent(requireContext(),
+                        TransactionHistoryFragment.class))
+        );
+    }
+
+    // ================= SINGLE ITEM =================
     private void setupItem(View root, int id, int icon,
                            String title, String type) {
 
@@ -89,6 +113,7 @@ public class RewardFragment extends Fragment {
         layout.setOnClickListener(v -> openRedeem(type));
     }
 
+    // ================= OPEN REDEEM =================
     private void openRedeem(String type) {
 
         long coins;
@@ -105,12 +130,13 @@ public class RewardFragment extends Fragment {
             return;
         }
 
-        // ✅ THIS WILL NOT CRASH NOW
         requireActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container,
-                        RedeemFragment.newInstance(type))
+                .replace(
+                        R.id.fragmentContainer,
+                        RedeemFragment.newInstance(type)
+                )
                 .addToBackStack(null)
                 .commit();
     }

@@ -190,9 +190,9 @@ public class HomeFragment extends Fragment {
     }
 
     /* ================= ADD COINS ================= */
-    private void addCoins(int coins) {
+    private void addCoins(long coins) {
 
-        int total = userPref.getCoins() + coins;
+        long total = userPref.getCoins() + coins;
         userPref.setCoins(total);
 
         if (getActivity() != null) {

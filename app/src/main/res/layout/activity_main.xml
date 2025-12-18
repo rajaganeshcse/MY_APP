@@ -21,7 +21,6 @@
         android:background="@android:color/white"
         android:elevation="10dp">
 
-        <!-- Home -->
         <LinearLayout
             android:id="@+id/navHome"
             android:layout_width="0dp"
@@ -29,26 +28,21 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="6dp"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackground">
+            android:clickable="true">
 
             <ImageView
-                android:id="@+id/imgHome"
                 android:layout_width="42dp"
                 android:layout_height="39dp"
                 android:src="@drawable/ic_home" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtHome"
                 android:text="Home"
                 android:textSize="12sp"
-                android:textColor="#777777" />
+                android:textColor="#777777"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
-        <!-- Game -->
         <LinearLayout
             android:id="@+id/navGame"
             android:layout_width="0dp"
@@ -56,26 +50,21 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="6dp"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackground">
+            android:clickable="true">
 
             <ImageView
-                android:id="@+id/imgGame"
                 android:layout_width="44dp"
                 android:layout_height="36dp"
                 android:src="@drawable/ic_game" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtGame"
                 android:text="Game"
                 android:textSize="12sp"
-                android:textColor="#777777" />
+                android:textColor="#777777"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
-        <!-- Reward -->
         <LinearLayout
             android:id="@+id/navReward"
             android:layout_width="0dp"
@@ -83,26 +72,21 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="6dp"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackground">
+            android:clickable="true">
 
             <ImageView
-                android:id="@+id/imgReward"
                 android:layout_width="45dp"
                 android:layout_height="34dp"
                 android:src="@drawable/ic_gift" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtReward"
                 android:text="Reward"
                 android:textSize="12sp"
-                android:textColor="#777777" />
+                android:textColor="#777777"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
-        <!-- Profile -->
         <LinearLayout
             android:id="@+id/navProfile"
             android:layout_width="0dp"
@@ -110,25 +94,20 @@
             android:layout_weight="1"
             android:gravity="center"
             android:orientation="vertical"
-            android:padding="6dp"
-            android:clickable="true"
-            android:foreground="?attr/selectableItemBackground">
+            android:clickable="true">
 
             <ImageView
-                android:id="@+id/imgProfile"
                 android:layout_width="40dp"
                 android:layout_height="34dp"
                 android:src="@drawable/ic_profile" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/txtProfile"
                 android:text="Profile"
                 android:textSize="12sp"
-                android:textColor="#777777" />
+                android:textColor="#777777"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
         </LinearLayout>
 
     </LinearLayout>
-
 </RelativeLayout>

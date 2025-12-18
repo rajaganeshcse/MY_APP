@@ -180,7 +180,7 @@ public class GameFragment extends Fragment {
 
     /* ================= ADD COINS (UNCHANGED) ================= */
     private void addCoins(int coins) {
-        int total = userPref.getCoins() + coins;
+        long total = userPref.getCoins() + coins;
         userPref.setCoins(total);
 
         if (getActivity() != null) {

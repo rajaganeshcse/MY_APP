@@ -234,7 +234,7 @@ public class layout_invite extends Fragment {
                     .addOnSuccessListener(unused -> {
 
                         // Update local cache
-                        int currentCoins = userPref.getCoins();
+                        long currentCoins = userPref.getCoins();
                         userPref.setCoins(currentCoins + REFERRAL_COIN_REWARD);
 
                         toast("Referral applied 🎉");

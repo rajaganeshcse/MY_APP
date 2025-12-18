@@ -1,11 +1,12 @@
 package com.example.rgamer;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,190 +25,195 @@ public class RedeemFragment extends Fragment {
 
     // ================= TYPES =================
     public static final String TYPE = "type";
+    public static final String GOOGLE = "google";
+    public static final String AMAZON = "amazon";
+    public static final String PHONEPE = "phonepe";
     public static final String UPI = "upi";
     public static final String BANK = "bank";
-    public static final String FREE_FIRE = "free_fire";
-    public static final String LORDS = "lords";
-    public static final String GOOGLE = "google";
 
-    private String redeemType = UPI;
+    private String redeemType = GOOGLE;
 
-    // ================= UI =================
-    private TextView txtTitle, txtSubtitle, btnSubmit;
-    private EditText edtInput, edtAccount, edtIfsc, edtCoins;
+    private TextView txtTitle, txtCoins;
+    private GridLayout gridLayout;
 
-    // ================= FIREBASE =================
     private FirebaseAuth auth;
     private FirebaseFirestore db;
-
-    // ================= CONSTRUCTOR =================
-    public RedeemFragment() {}
+    private long userCoins = 0;
 
     public static RedeemFragment newInstance(String type) {
-        RedeemFragment fragment = new RedeemFragment();
-        Bundle bundle = new Bundle();
-        bundle.putString(TYPE, type);
-        fragment.setArguments(bundle);
-        return fragment;
+        RedeemFragment f = new RedeemFragment();
+        Bundle b = new Bundle();
+        b.putString(TYPE, type);
+        f.setArguments(b);
+        return f;
     }
 
-    // ================= LIFECYCLE =================
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
 
-        // ✅ CORRECT LAYOUT
-        View view = inflater.inflate(R.layout.activity_redeem_fragment, container, false);
+        View view = inflater.inflate(R.layout.fragment_redeem_options, container, false);
 
-        // UI
         txtTitle = view.findViewById(R.id.txtTitle);
-        txtSubtitle = view.findViewById(R.id.txtSubtitle);
-        edtInput = view.findViewById(R.id.edtInput);
-        edtAccount = view.findViewById(R.id.edtAccount);
-        edtIfsc = view.findViewById(R.id.edtIfsc);
-        edtCoins = view.findViewById(R.id.edtCoins);
-        btnSubmit = view.findViewById(R.id.btnSubmit);
+        txtCoins = view.findViewById(R.id.txtCoins);
+        gridLayout = view.findViewById(R.id.gridLayout);
 
-        // Firebase
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
 
-        // ✅ LOGIN SAFETY (NO AUTO CLOSE)
-        if (auth.getCurrentUser() == null) {
-            toast("Please login again");
-            requireActivity()
-                    .getSupportFragmentManager()
-                    .popBackStack();
-            return view;
-        }
-
-        // Get type
         if (getArguments() != null) {
-            redeemType = getArguments().getString(TYPE, UPI);
+            redeemType = getArguments().getString(TYPE, GOOGLE);
         }
 
-        setupUI();
-
-        btnSubmit.setOnClickListener(v -> submitRedeem());
+        setupHeader();
+        loadCoins();
+        setupCards();
 
         return view;
     }
 
-    // ================= UI SETUP =================
-    private void setupUI() {
-
-        // Reset visibility
-        edtInput.setVisibility(View.VISIBLE);
-        edtAccount.setVisibility(View.GONE);
-        edtIfsc.setVisibility(View.GONE);
-
+    // ================= HEADER =================
+    private void setupHeader() {
         switch (redeemType) {
-
+            case GOOGLE:
+                txtTitle.setText("Google Play Voucher");
+                break;
+            case AMAZON:
+                txtTitle.setText("Amazon Gift Voucher");
+                break;
+            case PHONEPE:
+                txtTitle.setText("PhonePe Gift Voucher");
+                break;
             case UPI:
                 txtTitle.setText("UPI Withdraw");
-                txtSubtitle.setText("Enter your UPI ID");
-                edtInput.setHint("example@upi");
                 break;
-
             case BANK:
                 txtTitle.setText("Bank Withdraw");
-                txtSubtitle.setText("Enter bank details");
-                edtInput.setVisibility(View.GONE);
-                edtAccount.setVisibility(View.VISIBLE);
-                edtIfsc.setVisibility(View.VISIBLE);
-                break;
-
-            case FREE_FIRE:
-                txtTitle.setText("Free Fire Diamonds");
-                txtSubtitle.setText("Enter Free Fire Player ID");
-                edtInput.setHint("Free Fire UID");
-                break;
-
-            case LORDS:
-                txtTitle.setText("Lords Mobile Diamonds");
-                txtSubtitle.setText("Enter Player ID");
-                edtInput.setHint("Player ID");
-                break;
-
-            case GOOGLE:
-                txtTitle.setText("Google Play Redeem");
-                txtSubtitle.setText("Enter your Email ID");
-                edtInput.setHint("email@example.com");
                 break;
         }
     }
 
-    // ================= SUBMIT =================
-    private void submitRedeem() {
+    // ================= LOAD COINS =================
+    private void loadCoins() {
+        db.collection("users")
+                .document(auth.getCurrentUser().getUid())
+                .get()
+                .addOnSuccessListener(doc -> {
+                    Long c = doc.getLong("coins");
+                    userCoins = c == null ? 0 : c;
+                    txtCoins.setText(String.valueOf(userCoins));
+                });
+    }
 
-        String coinStr = edtCoins.getText().toString().trim();
+    // ================= CARDS =================
+    private void setupCards() {
 
-        if (TextUtils.isEmpty(coinStr)) {
-            toast("Enter coins");
-            return;
+        gridLayout.removeAllViews();
+
+        if (redeemType.equals(GOOGLE) ||
+                redeemType.equals(AMAZON) ||
+                redeemType.equals(PHONEPE)) {
+
+            int icon =
+                    redeemType.equals(AMAZON) ? R.drawable.ic_amazon :
+                            redeemType.equals(PHONEPE) ? R.drawable.ic_phonepe :
+                                    R.drawable.ic_google_play;
+
+            addCard(icon, 1000, "₹10");
+            addCard(icon, 3500, "₹35");
+
+        } else if (redeemType.equals(UPI)) {
+            addCard(R.drawable.ic_upi, 1174, "₹10");
+
+        } else if (redeemType.equals(BANK)) {
+            addCard(R.drawable.ic_bank, 10000, "₹100");
         }
+    }
 
-        long coins;
-        try {
-            coins = Long.parseLong(coinStr);
-        } catch (Exception e) {
-            toast("Invalid coin value");
-            return;
-        }
+    private void addCard(int icon, long cost, String amount) {
 
-        // ✅ MINIMUM 100 COINS
-        if (coins < 100) {
-            toast("Minimum 100 coins required");
-            return;
-        }
+        View card = LayoutInflater.from(getContext())
+                .inflate(R.layout.item_redeem_card, gridLayout, false);
 
-        String input = edtInput.getText().toString().trim();
-        String account = edtAccount.getText().toString().trim();
-        String ifsc = edtIfsc.getText().toString().trim();
+        ((ImageView) card.findViewById(R.id.imgIcon)).setImageResource(icon);
+        ((TextView) card.findViewById(R.id.txtCoinCost))
+                .setText(String.valueOf(cost));
+        ((TextView) card.findViewById(R.id.txtAmount))
+                .setText(amount);
 
-        if (redeemType.equals(BANK)) {
-            if (TextUtils.isEmpty(account) || TextUtils.isEmpty(ifsc)) {
-                toast("Enter bank account & IFSC");
-                return;
+        card.setOnClickListener(v -> {
+            if (userCoins < cost) {
+                toast("Not enough coins");
+            } else {
+                submitRedeem(cost, amount);
             }
-        } else {
-            if (TextUtils.isEmpty(input)) {
-                toast("Enter required details");
-                return;
-            }
-        }
+        });
+
+        gridLayout.addView(card);
+    }
+
+    // ================= ATOMIC REDEEM =================
+    private void submitRedeem(long coinsUsed, String amount) {
 
         String uid = auth.getCurrentUser().getUid();
+        UserPref userPref = new UserPref(requireContext());
 
-        Map<String, Object> data = new HashMap<>();
-        data.put("uid", uid);
-        data.put("type", redeemType);
-        data.put("coins", coins);
-        data.put("status", "pending");
-        data.put("created_at", FieldValue.serverTimestamp());
+        db.runTransaction(transaction -> {
 
-        if (redeemType.equals(BANK)) {
-            data.put("account", account);
-            data.put("ifsc", ifsc);
-        } else {
-            data.put("input", input);
-        }
+            var userRef = db.collection("users").document(uid);
+            var snap = transaction.get(userRef);
 
-        db.collection("redeem_requests")
-                .add(data)
-                .addOnSuccessListener(d -> {
-                    toast("Request submitted");
-                    requireActivity()
-                            .getSupportFragmentManager()
-                            .popBackStack();
-                })
-                .addOnFailureListener(e ->
-                        toast("Failed to submit request"));
+            Long current = snap.getLong("coins");
+            if (current == null || current < coinsUsed)
+                throw new RuntimeException("Insufficient coins");
+
+            long updated = current - coinsUsed;
+
+            transaction.update(userRef, "coins", updated);
+
+            // 🔑 Create redeem request with known ID
+            var requestRef =
+                    db.collection("redeem_requests").document();
+
+            Map<String, Object> req = new HashMap<>();
+            req.put("uid", uid);
+            req.put("type", redeemType);
+            req.put("amount", amount);
+            req.put("coins", coinsUsed);
+            req.put("status", "pending");
+            req.put("voucher_code", "");
+            req.put("created_at", FieldValue.serverTimestamp());
+
+            transaction.set(requestRef, req);
+
+            return new Object[]{updated, requestRef.getId()};
+
+        }).addOnSuccessListener(result -> {
+
+            long updatedCoins = (long) ((Object[]) result)[0];
+            String requestId = (String) ((Object[]) result)[1];
+
+            // Save locally
+            userPref.setCoins((int) updatedCoins);
+
+            // Open success screen
+            startActivity(
+                    new Intent(getContext(), activity_withdraw_success.class)
+                            .putExtra("request_id", requestId)
+                            .putExtra("type", redeemType)
+                            .putExtra("amount", amount)
+            );
+
+            requireActivity()
+                    .getSupportFragmentManager()
+                    .popBackStack();
+
+        }).addOnFailureListener(e -> toast(e.getMessage()));
     }
 
-    // ================= TOAST =================
     private void toast(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
