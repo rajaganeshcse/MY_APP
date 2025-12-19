@@ -40,8 +40,8 @@
 
         <!-- EMPTY VIEW (FOR CENTERING TITLE) -->
         <View
-            android:layout_width="24dp"
-            android:layout_height="24dp" />
+            android:layout_width="61dp"
+            android:layout_height="39dp" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

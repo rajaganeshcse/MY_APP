@@ -22,23 +22,21 @@ public class activity_withdraw_success extends AppCompatActivity {
     public static final String EXTRA_REQUEST_ID = "request_id";
 
     // UI
-    private ImageView imgSuccess;
-    private TextView txtTitle, txtMessage, txtAmount;
-    private TextView txtRewardType, txtVoucherCode;
-    private TextView btnDone;
+    ImageView btnBack, imgSuccess;
+    TextView txtHeader, txtTitle, txtMessage, txtRewardType,
+            txtAmount, txtVoucherCode, btnDone;
 
-    // Firebase
-    private FirebaseFirestore db;
+    FirebaseFirestore db;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // 🔥 FULL SCREEN STATUS BAR (ADDED)
+        // 🔹 FULL SCREEN STATUS BAR
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
             getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                            | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
             );
         }
 
@@ -47,8 +45,11 @@ public class activity_withdraw_success extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // Bind UI
+        // 🔹 BIND UI
+        btnBack = findViewById(R.id.btnBack);
         imgSuccess = findViewById(R.id.imgSuccess);
+
+        txtHeader = findViewById(R.id.txtHeader);
         txtTitle = findViewById(R.id.txtTitle);
         txtMessage = findViewById(R.id.txtMessage);
         txtRewardType = findViewById(R.id.txtRewardType);
@@ -56,6 +57,10 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtVoucherCode = findViewById(R.id.txtVoucherCode);
         btnDone = findViewById(R.id.btnDone);
 
+        // 🔹 BACK BUTTON
+        btnBack.setOnClickListener(v -> finish());
+
+        // 🔹 GET INTENT DATA
         String type = getIntent().getStringExtra(EXTRA_TYPE);
         String amount = getIntent().getStringExtra(EXTRA_AMOUNT);
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
@@ -63,7 +68,7 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtAmount.setText(amount);
         txtVoucherCode.setVisibility(View.GONE);
 
-        // -------- UPI / BANK --------
+        // 🔹 HANDLE TYPES
         if (RedeemFragment.UPI.equals(type)) {
 
             setSuccessUI();
@@ -79,16 +84,18 @@ public class activity_withdraw_success extends AppCompatActivity {
             txtRewardType.setText("Payment Method: Bank");
 
         } else {
-            // -------- VOUCHER BASED --------
             txtRewardType.setText("Reward: " + getRewardName(type));
             observeRedeemRequest(requestId);
         }
 
+        // 🔹 DONE
         btnDone.setOnClickListener(v -> finish());
     }
 
-    // ================= FIRESTORE LISTENER =================
+    // ================= FIRESTORE =================
     private void observeRedeemRequest(String requestId) {
+
+        if (requestId == null) return;
 
         setProcessingUI();
 

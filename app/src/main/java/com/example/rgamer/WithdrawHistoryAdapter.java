@@ -39,7 +39,7 @@ public class WithdrawHistoryAdapter
         WithdrawHistoryModel model = list.get(position);
 
         holder.txtType.setText(model.getType());
-        holder.txtAmount.setText("₹" + model.getAmount());
+        holder.txtAmount.setText(model.getAmount());
         holder.txtStatus.setText(model.getStatus());
 
         switch (model.getStatus()) {

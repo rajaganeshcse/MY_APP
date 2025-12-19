@@ -25,4 +25,5 @@
     <item name="txtStatus" type="id" />
     <item name="amazonOption" type="id" />
     <item name="phonepeOption" type="id" />
+    <item name="txtHeader" type="id" />
 </resources>
