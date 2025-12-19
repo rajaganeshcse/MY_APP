@@ -1,87 +1,96 @@
 package com.example.rgamer;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.TextView;
+import android.view.View;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.*;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionHistoryFragment extends Fragment {
+public class TransactionHistoryFragment extends AppCompatActivity {
 
-    RecyclerView recyclerView;
+    RecyclerView recyclerHistory;
+    WithdrawHistoryAdapter adapter;
+    List<WithdrawHistoryModel> list;
+
     FirebaseFirestore db;
-    FirebaseAuth auth;
-    List<DocumentSnapshot> list = new ArrayList<>();
+    String uid;
 
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_transaction_history_fragment, container, false);
+        // 🔹 FULL SCREEN STATUS BAR
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(Color.TRANSPARENT);
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
+        }
 
-        recyclerView = view.findViewById(R.id.recyclerHistory);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_transaction_history_fragment);
 
-        auth = FirebaseAuth.getInstance();
+        recyclerHistory = findViewById(R.id.recyclerHistory);
+        recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
+
+        list = new ArrayList<>();
+
+        adapter = new WithdrawHistoryAdapter(list, model -> {
+
+            // 🔥 OPEN WITHDRAW DETAIL SCREEN
+            Intent intent = new Intent(
+                    TransactionHistoryFragment.this,
+                    activity_withdraw_success.class
+            );
+
+            intent.putExtra(activity_withdraw_success.EXTRA_TYPE, model.getType());
+            intent.putExtra(activity_withdraw_success.EXTRA_AMOUNT, model.getAmount());
+            intent.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, model.getRequest_id());
+
+            startActivity(intent);
+        });
+
+        recyclerHistory.setAdapter(adapter);
+
         db = FirebaseFirestore.getInstance();
+        uid = FirebaseAuth.getInstance().getUid();
 
-        loadHistory();
-
-        return view;
+        loadWithdrawHistory();
     }
 
-    private void loadHistory() {
+    private void loadWithdrawHistory() {
+
         db.collection("redeem_requests")
-                .whereEqualTo("uid", auth.getCurrentUser().getUid())
+                .whereEqualTo("uid", uid)
                 .orderBy("created_at", Query.Direction.DESCENDING)
-                .get()
-                .addOnSuccessListener(qs -> {
-                    list = qs.getDocuments();
-                    recyclerView.setAdapter(new HistoryAdapter());
+                .addSnapshotListener((value, error) -> {
+
+                    if (value == null) return;
+
+                    list.clear();
+
+                    value.getDocuments().forEach(doc -> {
+                        WithdrawHistoryModel model =
+                                doc.toObject(WithdrawHistoryModel.class);
+
+                        if (model != null) {
+                            model.setRequest_id(doc.getId()); // 🔑 IMPORTANT
+                            list.add(model);
+                        }
+                    });
+
+                    adapter.notifyDataSetChanged();
                 });
-    }
-
-    class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.Holder> {
-
-        @NonNull
-        @Override
-        public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View v = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.item_transaction, parent, false);
-            return new Holder(v);
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull Holder h, int i) {
-            DocumentSnapshot d = list.get(i);
-            h.txtType.setText(d.getString("type"));
-            h.txtAmount.setText(d.getString("amount"));
-            h.txtStatus.setText(d.getString("status"));
-        }
-
-        @Override
-        public int getItemCount() { return list.size(); }
-
-        class Holder extends RecyclerView.ViewHolder {
-            TextView txtType, txtAmount, txtStatus;
-            Holder(View v) {
-                super(v);
-                txtType = v.findViewById(R.id.txtType);
-                txtAmount = v.findViewById(R.id.txtAmount);
-                txtStatus = v.findViewById(R.id.txtStatus);
-            }
-        }
     }
 }
