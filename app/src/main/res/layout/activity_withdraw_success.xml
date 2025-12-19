@@ -63,17 +63,18 @@
     <!-- ✅ NEW: VOUCHER CODE (CLICK TO COPY) -->
     <TextView
         android:id="@+id/txtVoucherCode"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="CODE: XXXX-XXXX-XXXX"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="#000000"
-        android:background="@drawable/bg_voucher_code"
-        android:padding="10dp"
+        android:layout_width="232dp"
+        android:gravity="center"
+        android:layout_height="54dp"
         android:layout_marginBottom="24dp"
+        android:background="@drawable/bg_voucher_code"
         android:clickable="true"
-        android:focusable="true" />
+        android:focusable="true"
+        android:padding="10dp"
+        android:text="CODE: XXXX-XXXX-XXXX"
+        android:textColor="#000000"
+        android:textSize="16sp"
+        android:textStyle="bold" />
 
     <!-- Done Button -->
     <TextView

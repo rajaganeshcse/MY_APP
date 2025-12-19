@@ -11,31 +11,31 @@ public class UserPref {
 
     private static final String PREF_NAME = "user_pref";
 
-    // ================= BASIC =================
+    /* ================= BASIC ================= */
     private static final String KEY_UID = "uid";
     private static final String KEY_NAME = "name";
     private static final String KEY_EMAIL = "email";
     private static final String KEY_IS_LOGIN = "is_login";
 
-    // ================= WALLET =================
-    private static final String KEY_COINS = "coins";          // ✅ long
+    /* ================= WALLET ================= */
+    private static final String KEY_COINS = "coins";              // 🔥 long (migrated)
     private static final String KEY_TICKETS = "tickets";
     private static final String KEY_WALLET_TOKEN = "wallet_token";
 
-    // ================= PROFILE =================
+    /* ================= PROFILE ================= */
     private static final String KEY_PROFILE_IMAGE = "profile_image";
 
-    // ================= NOTIFICATIONS =================
+    /* ================= NOTIFICATIONS ================= */
     private static final String KEY_FCM_TOKEN = "fcm_token";
 
-    // ================= DAILY BONUS =================
+    /* ================= DAILY BONUS ================= */
     private static final String KEY_DAILY_DATE = "daily_date";
 
-    // ================= DAILY ADS =================
+    /* ================= DAILY ADS ================= */
     private static final String KEY_AD_DATE = "ad_date";
     private static final String KEY_AD_COUNT = "ad_count";
 
-    // ================= REFERRAL =================
+    /* ================= REFERRAL ================= */
     private static final String KEY_REF_COINS = "referral_coins";
     private static final String KEY_REF_TICKETS = "referral_tickets";
 
@@ -48,7 +48,7 @@ public class UserPref {
     }
 
     /* ==================================================
-       BASIC INFO
+       BASIC
        ================================================== */
 
     public void setUid(String uid) {
@@ -84,25 +84,30 @@ public class UserPref {
     }
 
     /* ==================================================
-       WALLET (✅ FIXED)
+       WALLET (🔥 SAFE)
        ================================================== */
 
-    public void setCoins(long coins) {          // ✅ long
+    public void setCoins(long coins) {
         editor.putLong(KEY_COINS, coins).apply();
     }
 
-    public long getCoins() {                    // ✅ long
-        return pref.getLong(KEY_COINS, 0L);
-    }
-
-    public void deductCoins(long amount) {      // ✅ helper
-        long current = getCoins();
-        long updated = Math.max(0, current - amount);
-        setCoins(updated);
+    // 🔥 int → long migration safe
+    public long getCoins() {
+        try {
+            return pref.getLong(KEY_COINS, 0L);
+        } catch (ClassCastException e) {
+            int oldCoins = pref.getInt(KEY_COINS, 0);
+            setCoins(oldCoins);
+            return oldCoins;
+        }
     }
 
     public void addCoins(long amount) {
         setCoins(getCoins() + amount);
+    }
+
+    public void deductCoins(long amount) {
+        setCoins(Math.max(0, getCoins() - amount));
     }
 
     public void setTickets(int tickets) {
@@ -146,18 +151,20 @@ public class UserPref {
     }
 
     /* ==================================================
-       DAILY BONUS
+       DAILY BONUS (✅ COMPLETE)
        ================================================== */
 
+    // Can user claim daily bonus today?
     public boolean canClaimDailyBonus() {
-        String lastDate = pref.getString(KEY_DAILY_DATE, "");
-        return !getTodayDate().equals(lastDate);
+        return !getTodayDate().equals(pref.getString(KEY_DAILY_DATE, ""));
     }
 
+    // Mark today as claimed (recommended)
     public void setDailyBonusClaimed() {
         editor.putString(KEY_DAILY_DATE, getTodayDate()).apply();
     }
 
+    // Set claimed date manually (Firebase sync)
     public void setDailyClaimedDate(String date) {
         editor.putString(KEY_DAILY_DATE, date).apply();
     }

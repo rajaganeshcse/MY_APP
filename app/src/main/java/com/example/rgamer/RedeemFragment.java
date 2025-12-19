@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class RedeemFragment extends Fragment {
 
-    // ================= TYPES =================
+    /* ================= TYPES ================= */
     public static final String TYPE = "type";
     public static final String GOOGLE = "google";
     public static final String AMAZON = "amazon";
@@ -33,13 +33,17 @@ public class RedeemFragment extends Fragment {
 
     private String redeemType = GOOGLE;
 
+    /* ================= UI ================= */
     private TextView txtTitle, txtCoins;
     private GridLayout gridLayout;
 
+    /* ================= FIREBASE ================= */
     private FirebaseAuth auth;
     private FirebaseFirestore db;
+
     private long userCoins = 0;
 
+    /* ================= INSTANCE ================= */
     public static RedeemFragment newInstance(String type) {
         RedeemFragment f = new RedeemFragment();
         Bundle b = new Bundle();
@@ -75,7 +79,7 @@ public class RedeemFragment extends Fragment {
         return view;
     }
 
-    // ================= HEADER =================
+    /* ================= HEADER ================= */
     private void setupHeader() {
         switch (redeemType) {
             case GOOGLE:
@@ -96,7 +100,7 @@ public class RedeemFragment extends Fragment {
         }
     }
 
-    // ================= LOAD COINS =================
+    /* ================= LOAD COINS ================= */
     private void loadCoins() {
         db.collection("users")
                 .document(auth.getCurrentUser().getUid())
@@ -108,7 +112,7 @@ public class RedeemFragment extends Fragment {
                 });
     }
 
-    // ================= CARDS =================
+    /* ================= CARDS ================= */
     private void setupCards() {
 
         gridLayout.removeAllViews();
@@ -124,12 +128,19 @@ public class RedeemFragment extends Fragment {
 
             addCard(icon, 1000, "₹10");
             addCard(icon, 3500, "₹35");
+            addCard(icon, 5000, "₹50");
+            addCard(icon, 10000, "₹100");
 
         } else if (redeemType.equals(UPI)) {
+
             addCard(R.drawable.ic_upi, 1174, "₹10");
+            addCard(R.drawable.ic_upi, 2674, "₹25");
+            addCard(R.drawable.ic_upi, 10000, "₹100");
 
         } else if (redeemType.equals(BANK)) {
+
             addCard(R.drawable.ic_bank, 10000, "₹100");
+            addCard(R.drawable.ic_bank, 20000, "₹200");
         }
     }
 
@@ -155,10 +166,12 @@ public class RedeemFragment extends Fragment {
         gridLayout.addView(card);
     }
 
-    // ================= ATOMIC REDEEM =================
+    /* ================= SUBMIT REDEEM ================= */
     private void submitRedeem(long coinsUsed, String amount) {
 
         String uid = auth.getCurrentUser().getUid();
+        String email = auth.getCurrentUser().getEmail(); // ✅ Gmail
+
         UserPref userPref = new UserPref(requireContext());
 
         db.runTransaction(transaction -> {
@@ -170,16 +183,18 @@ public class RedeemFragment extends Fragment {
             if (current == null || current < coinsUsed)
                 throw new RuntimeException("Insufficient coins");
 
-            long updated = current - coinsUsed;
+            // ✅ Name from Firestore
+            String name = snap.getString("name");
 
+            long updated = current - coinsUsed;
             transaction.update(userRef, "coins", updated);
 
-            // 🔑 Create redeem request with known ID
-            var requestRef =
-                    db.collection("redeem_requests").document();
+            var requestRef = db.collection("redeem_requests").document();
 
             Map<String, Object> req = new HashMap<>();
             req.put("uid", uid);
+            req.put("name", name);
+            req.put("email", email);
             req.put("type", redeemType);
             req.put("amount", amount);
             req.put("coins", coinsUsed);
@@ -196,10 +211,8 @@ public class RedeemFragment extends Fragment {
             long updatedCoins = (long) ((Object[]) result)[0];
             String requestId = (String) ((Object[]) result)[1];
 
-            // Save locally
             userPref.setCoins((int) updatedCoins);
 
-            // Open success screen
             startActivity(
                     new Intent(getContext(), activity_withdraw_success.class)
                             .putExtra("request_id", requestId)
