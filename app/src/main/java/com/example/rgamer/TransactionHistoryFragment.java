@@ -80,15 +80,17 @@ public class TransactionHistoryFragment extends AppCompatActivity {
 
                     list.clear();
 
-                    value.getDocuments().forEach(doc -> {
-                        WithdrawHistoryModel model =
-                                doc.toObject(WithdrawHistoryModel.class);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        value.getDocuments().forEach(doc -> {
+                            WithdrawHistoryModel model =
+                                    doc.toObject(WithdrawHistoryModel.class);
 
-                        if (model != null) {
-                            model.setRequest_id(doc.getId()); // 🔑 IMPORTANT
-                            list.add(model);
-                        }
-                    });
+                            if (model != null) {
+                                model.setRequest_id(doc.getId()); // 🔑 IMPORTANT
+                                list.add(model);
+                            }
+                        });
+                    }
 
                     adapter.notifyDataSetChanged();
                 });

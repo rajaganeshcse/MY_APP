@@ -26,4 +26,5 @@
     <item name="amazonOption" type="id" />
     <item name="phonepeOption" type="id" />
     <item name="txtHeader" type="id" />
+    <item name="recyclerHistory" type="id" />
 </resources>

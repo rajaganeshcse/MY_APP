@@ -1,5 +1,7 @@
 package com.example.rgamer;
 
+import static com.example.rgamer.R.id.phonepeOption;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -42,8 +44,9 @@ public class RewardFragment extends Fragment {
         return view;
     }
 
-    // ================= LOAD COINS =================
+    /* ================= LOAD COINS ================= */
     private void loadCoins() {
+
         if (auth.getCurrentUser() == null) {
             txtCoins.setText("0");
             return;
@@ -59,7 +62,7 @@ public class RewardFragment extends Fragment {
                 .addOnFailureListener(e -> txtCoins.setText("0"));
     }
 
-    // ================= OPTIONS =================
+    /* ================= OPTIONS ================= */
     private void setupOptions(View view) {
 
         setupItem(view, R.id.googleOption,
@@ -68,12 +71,12 @@ public class RewardFragment extends Fragment {
                 RedeemFragment.GOOGLE);
 
         setupItem(view, R.id.amazonOption,
-                R.drawable.ic_amazon,
+                R.drawable.ic_amazon,          // ✅ AMAZON ICON
                 "Amazon Gift Voucher",
                 RedeemFragment.AMAZON);
 
-        setupItem(view, R.id.phonepeOption,
-                R.drawable.ic_phonepe,
+        setupItem(view, phonepeOption,
+                R.drawable.ic_phonepe,         // ✅ PHONEPE ICON
                 "PhonePe Gift Voucher",
                 RedeemFragment.PHONEPE);
 
@@ -88,7 +91,7 @@ public class RewardFragment extends Fragment {
                 RedeemFragment.BANK);
     }
 
-    // ================= HISTORY =================
+    /* ================= HISTORY ================= */
     private void setupHistory(View view) {
         LinearLayout btnHistory = view.findViewById(R.id.btnHistory);
         btnHistory.setOnClickListener(v ->
@@ -97,7 +100,7 @@ public class RewardFragment extends Fragment {
         );
     }
 
-    // ================= SINGLE ITEM =================
+    /* ================= SINGLE ITEM ================= */
     private void setupItem(View root, int id, int icon,
                            String title, String type) {
 
@@ -105,15 +108,15 @@ public class RewardFragment extends Fragment {
         if (layout == null) return;
 
         ImageView img = layout.findViewById(R.id.icon);
-        TextView t1 = layout.findViewById(R.id.title);
+        TextView txtTitle = layout.findViewById(R.id.title);
 
         img.setImageResource(icon);
-        t1.setText(title);
+        txtTitle.setText(title);
 
         layout.setOnClickListener(v -> openRedeem(type));
     }
 
-    // ================= OPEN REDEEM =================
+    /* ================= OPEN REDEEM ================= */
     private void openRedeem(String type) {
 
         long coins;

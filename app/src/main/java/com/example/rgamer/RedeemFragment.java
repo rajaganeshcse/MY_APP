@@ -170,7 +170,7 @@ public class RedeemFragment extends Fragment {
     private void submitRedeem(long coinsUsed, String amount) {
 
         String uid = auth.getCurrentUser().getUid();
-        String email = auth.getCurrentUser().getEmail(); // ✅ Gmail
+        String email = auth.getCurrentUser().getEmail();
 
         UserPref userPref = new UserPref(requireContext());
 
@@ -183,7 +183,6 @@ public class RedeemFragment extends Fragment {
             if (current == null || current < coinsUsed)
                 throw new RuntimeException("Insufficient coins");
 
-            // ✅ Name from Firestore
             String name = snap.getString("name");
 
             long updated = current - coinsUsed;
@@ -195,7 +194,13 @@ public class RedeemFragment extends Fragment {
             req.put("uid", uid);
             req.put("name", name);
             req.put("email", email);
+
+            // ✅ STORE TYPE (LOGIC)
             req.put("type", redeemType);
+
+            // ✅ STORE TYPE LABEL (UI / ADMIN)
+            req.put("type_label", getRewardName(redeemType));
+
             req.put("amount", amount);
             req.put("coins", coinsUsed);
             req.put("status", "pending");
@@ -215,9 +220,9 @@ public class RedeemFragment extends Fragment {
 
             startActivity(
                     new Intent(getContext(), activity_withdraw_success.class)
-                            .putExtra("request_id", requestId)
-                            .putExtra("type", redeemType)
-                            .putExtra("amount", amount)
+                            .putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, requestId)
+                            .putExtra(activity_withdraw_success.EXTRA_TYPE, redeemType)
+                            .putExtra(activity_withdraw_success.EXTRA_AMOUNT, amount)
             );
 
             requireActivity()
@@ -227,7 +232,25 @@ public class RedeemFragment extends Fragment {
         }).addOnFailureListener(e -> toast(e.getMessage()));
     }
 
+    /* ================= HELPERS ================= */
     private void toast(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private String getRewardName(String type) {
+        switch (type) {
+            case GOOGLE:
+                return "Google Play Voucher";
+            case AMAZON:
+                return "Amazon Gift Voucher";
+            case PHONEPE:
+                return "PhonePe Gift Voucher";
+            case UPI:
+                return "UPI Withdraw";
+            case BANK:
+                return "Bank Withdraw";
+            default:
+                return "Reward";
+        }
     }
 }

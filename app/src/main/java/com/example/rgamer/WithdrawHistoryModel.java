@@ -24,14 +24,14 @@ public class WithdrawHistoryModel {
 
     public WithdrawHistoryModel(
             String uid,
-            String type,
+            String Type,
             String amount,
             String status,
             String voucher_code,
             Timestamp created_at
     ) {
         this.uid = uid;
-        this.type = type;
+        this.type = Type;
         this.amount = amount;
         this.status = status;
         this.voucher_code = voucher_code;
