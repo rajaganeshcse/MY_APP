@@ -22,7 +22,7 @@ public class activity_withdraw_success extends AppCompatActivity {
     public static final String EXTRA_REQUEST_ID = "request_id";
 
     // UI
-    ImageView btnBack, imgSuccess;
+    ImageView btnBack, imgSuccess, imgMethod;
     TextView txtHeader, txtTitle, txtMessage, txtRewardType,
             txtAmount, txtVoucherCode, btnDone;
 
@@ -48,6 +48,7 @@ public class activity_withdraw_success extends AppCompatActivity {
         // 🔹 BIND UI
         btnBack = findViewById(R.id.btnBack);
         imgSuccess = findViewById(R.id.imgSuccess);
+        imgMethod = findViewById(R.id.imgMethod);
 
         txtHeader = findViewById(R.id.txtHeader);
         txtTitle = findViewById(R.id.txtTitle);
@@ -68,28 +69,70 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtAmount.setText(amount);
         txtVoucherCode.setVisibility(View.GONE);
 
+        // 🔹 SET METHOD ICON + TEXT
+        setMethodUI(type);
+
         // 🔹 HANDLE TYPES
         if (RedeemFragment.UPI.equals(type)) {
 
             setSuccessUI();
             txtTitle.setText("Withdraw Submitted 🎉");
             txtMessage.setText("UPI amount will be credited within 24 hours.");
-            txtRewardType.setText("Payment Method: UPI");
 
         } else if (RedeemFragment.BANK.equals(type)) {
 
             setSuccessUI();
             txtTitle.setText("Withdraw Submitted 🎉");
             txtMessage.setText("Bank transfer will complete within 24–48 hours.");
-            txtRewardType.setText("Payment Method: Bank");
 
         } else {
-            txtRewardType.setText("Reward: " + getRewardName(type));
             observeRedeemRequest(requestId);
         }
 
         // 🔹 DONE
         btnDone.setOnClickListener(v -> finish());
+    }
+
+    // ================= METHOD UI =================
+    private void setMethodUI(String type) {
+
+        if (type == null) {
+            imgMethod.setImageResource(R.drawable.wallet_icon);
+            txtRewardType.setText("Reward");
+            return;
+        }
+
+        switch (type) {
+
+            case RedeemFragment.GOOGLE:
+                imgMethod.setImageResource(R.drawable.ic_google_play);
+                txtRewardType.setText("Reward: Google Play Voucher");
+                break;
+
+            case RedeemFragment.AMAZON:
+                imgMethod.setImageResource(R.drawable.ic_amazon);
+                txtRewardType.setText("Reward: Amazon Gift Voucher");
+                break;
+
+            case RedeemFragment.PHONEPE:
+                imgMethod.setImageResource(R.drawable.ic_phonepe);
+                txtRewardType.setText("Reward: PhonePe Gift Voucher");
+                break;
+
+            case RedeemFragment.UPI:
+                imgMethod.setImageResource(R.drawable.ic_upi);
+                txtRewardType.setText("Payment Method: UPI");
+                break;
+
+            case RedeemFragment.BANK:
+                imgMethod.setImageResource(R.drawable.ic_bank);
+                txtRewardType.setText("Payment Method: Bank");
+                break;
+
+            default:
+                imgMethod.setImageResource(R.drawable.wallet_icon);
+                txtRewardType.setText("Reward");
+        }
     }
 
     // ================= FIRESTORE =================
@@ -162,19 +205,5 @@ public class activity_withdraw_success extends AppCompatActivity {
             );
             Toast.makeText(this, "Voucher code copied", Toast.LENGTH_SHORT).show();
         });
-    }
-
-    // ================= REWARD NAME =================
-    private String getRewardName(String type) {
-        switch (type) {
-            case RedeemFragment.GOOGLE:
-                return "Google Play Voucher";
-            case RedeemFragment.AMAZON:
-                return "Amazon Gift Voucher";
-            case RedeemFragment.PHONEPE:
-                return "PhonePe Gift Voucher";
-            default:
-                return "Reward";
-        }
     }
 }

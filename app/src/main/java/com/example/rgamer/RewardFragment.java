@@ -1,7 +1,5 @@
 package com.example.rgamer;
 
-import static com.example.rgamer.R.id.phonepeOption;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,20 +8,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
-
 public class RewardFragment extends Fragment {
 
     private TextView txtCoins;
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
+
+    // 🔹 Local cache
+    private UserPref userPref;
 
     @Nullable
     @Override
@@ -34,8 +29,9 @@ public class RewardFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_reward, container, false);
 
         txtCoins = view.findViewById(R.id.txtCoins);
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
+
+        // ✅ INIT USER PREF
+        userPref = new UserPref(requireContext());
 
         loadCoins();
         setupOptions(view);
@@ -44,22 +40,10 @@ public class RewardFragment extends Fragment {
         return view;
     }
 
-    /* ================= LOAD COINS ================= */
+    /* ================= LOAD COINS (FROM USERPREF) ================= */
     private void loadCoins() {
-
-        if (auth.getCurrentUser() == null) {
-            txtCoins.setText("0");
-            return;
-        }
-
-        db.collection("users")
-                .document(auth.getCurrentUser().getUid())
-                .get()
-                .addOnSuccessListener(doc -> {
-                    Long coins = doc.getLong("coins");
-                    txtCoins.setText(coins == null ? "0" : String.valueOf(coins));
-                })
-                .addOnFailureListener(e -> txtCoins.setText("0"));
+        long coins = userPref.getCoins();   // ✅ FROM LOCAL PREF
+        txtCoins.setText(String.valueOf(coins));
     }
 
     /* ================= OPTIONS ================= */
@@ -71,12 +55,12 @@ public class RewardFragment extends Fragment {
                 RedeemFragment.GOOGLE);
 
         setupItem(view, R.id.amazonOption,
-                R.drawable.ic_amazon,          // ✅ AMAZON ICON
+                R.drawable.ic_amazon,
                 "Amazon Gift Voucher",
                 RedeemFragment.AMAZON);
 
-        setupItem(view, phonepeOption,
-                R.drawable.ic_phonepe,         // ✅ PHONEPE ICON
+        setupItem(view, R.id.phonepeOption,
+                R.drawable.ic_phonepe,
                 "PhonePe Gift Voucher",
                 RedeemFragment.PHONEPE);
 
@@ -119,19 +103,8 @@ public class RewardFragment extends Fragment {
     /* ================= OPEN REDEEM ================= */
     private void openRedeem(String type) {
 
-        long coins;
-        try {
-            coins = Long.parseLong(txtCoins.getText().toString());
-        } catch (Exception e) {
-            coins = 0;
-        }
-
-        if (coins < 100) {
-            Toast.makeText(getContext(),
-                    "Minimum 100 coins required",
-                    Toast.LENGTH_SHORT).show();
-            return;
-        }
+        // ❌ NO MINIMUM COIN CHECK
+        // Coins validation removed completely
 
         requireActivity()
                 .getSupportFragmentManager()

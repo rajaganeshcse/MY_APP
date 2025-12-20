@@ -41,6 +41,8 @@ public class RedeemFragment extends Fragment {
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
+    /* ================= LOCAL ================= */
+    private UserPref userPref;
     private long userCoins = 0;
 
     /* ================= INSTANCE ================= */
@@ -67,13 +69,14 @@ public class RedeemFragment extends Fragment {
 
         auth = FirebaseAuth.getInstance();
         db = FirebaseFirestore.getInstance();
+        userPref = new UserPref(requireContext());
 
         if (getArguments() != null) {
             redeemType = getArguments().getString(TYPE, GOOGLE);
         }
 
         setupHeader();
-        loadCoins();
+        loadCoins();      // ✅ FROM USERPREF
         setupCards();
 
         return view;
@@ -100,16 +103,10 @@ public class RedeemFragment extends Fragment {
         }
     }
 
-    /* ================= LOAD COINS ================= */
+    /* ================= LOAD COINS (USERPREF) ================= */
     private void loadCoins() {
-        db.collection("users")
-                .document(auth.getCurrentUser().getUid())
-                .get()
-                .addOnSuccessListener(doc -> {
-                    Long c = doc.getLong("coins");
-                    userCoins = c == null ? 0 : c;
-                    txtCoins.setText(String.valueOf(userCoins));
-                });
+        userCoins = userPref.getCoins();   // ✅ LOCAL CACHE
+        txtCoins.setText(String.valueOf(userCoins));
     }
 
     /* ================= CARDS ================= */
@@ -172,8 +169,6 @@ public class RedeemFragment extends Fragment {
         String uid = auth.getCurrentUser().getUid();
         String email = auth.getCurrentUser().getEmail();
 
-        UserPref userPref = new UserPref(requireContext());
-
         db.runTransaction(transaction -> {
 
             var userRef = db.collection("users").document(uid);
@@ -186,21 +181,19 @@ public class RedeemFragment extends Fragment {
             String name = snap.getString("name");
 
             long updated = current - coinsUsed;
+
+            // 🔹 UPDATE FIRESTORE
             transaction.update(userRef, "coins", updated);
 
+            // 🔹 CREATE REQUEST
             var requestRef = db.collection("redeem_requests").document();
 
             Map<String, Object> req = new HashMap<>();
             req.put("uid", uid);
             req.put("name", name);
             req.put("email", email);
-
-            // ✅ STORE TYPE (LOGIC)
             req.put("type", redeemType);
-
-            // ✅ STORE TYPE LABEL (UI / ADMIN)
             req.put("type_label", getRewardName(redeemType));
-
             req.put("amount", amount);
             req.put("coins", coinsUsed);
             req.put("status", "pending");
@@ -216,7 +209,10 @@ public class RedeemFragment extends Fragment {
             long updatedCoins = (long) ((Object[]) result)[0];
             String requestId = (String) ((Object[]) result)[1];
 
-            userPref.setCoins((int) updatedCoins);
+            // ✅ UPDATE USERPREF IMMEDIATELY
+            userPref.setCoins(updatedCoins);
+            userCoins = updatedCoins;
+            txtCoins.setText(String.valueOf(updatedCoins));
 
             startActivity(
                     new Intent(getContext(), activity_withdraw_success.class)
