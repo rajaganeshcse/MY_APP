@@ -15,7 +15,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -23,7 +22,6 @@ import java.util.Map;
 
 public class RedeemFragment extends Fragment {
 
-    /* ================= TYPES ================= */
     public static final String TYPE = "type";
     public static final String GOOGLE = "google";
     public static final String AMAZON = "amazon";
@@ -33,24 +31,19 @@ public class RedeemFragment extends Fragment {
 
     private String redeemType = GOOGLE;
 
-    /* ================= UI ================= */
     private TextView txtTitle, txtCoins;
     private GridLayout gridLayout;
 
-    /* ================= FIREBASE ================= */
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
-    /* ================= LOCAL ================= */
     private UserPref userPref;
     private long userCoins = 0;
 
-    /* ================= TEMP ================= */
     private long pendingCoins = 0;
-    private String pendingAmount = "";
+    private long pendingAmount = 0;
     private String withdrawDetails = "";
 
-    /* ================= INSTANCE ================= */
     public static RedeemFragment newInstance(String type) {
         RedeemFragment f = new RedeemFragment();
         Bundle b = new Bundle();
@@ -66,7 +59,11 @@ public class RedeemFragment extends Fragment {
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.fragment_redeem_options, container, false);
+        View view = inflater.inflate(
+                R.layout.fragment_redeem_options,
+                container,
+                false
+        );
 
         txtTitle = view.findViewById(R.id.txtTitle);
         txtCoins = view.findViewById(R.id.txtCoins);
@@ -83,12 +80,11 @@ public class RedeemFragment extends Fragment {
         setupHeader();
         loadCoins();
         setupCards();
-        setupBottomSheetResult(); // 🔥 IMPORTANT
+        setupBottomSheetResult();
 
         return view;
     }
 
-    /* ================= HEADER ================= */
     private void setupHeader() {
         switch (redeemType) {
             case GOOGLE:
@@ -109,44 +105,38 @@ public class RedeemFragment extends Fragment {
         }
     }
 
-    /* ================= COINS ================= */
     private void loadCoins() {
         userCoins = userPref.getCoins();
         txtCoins.setText(String.valueOf(userCoins));
     }
 
-    /* ================= GRID ================= */
     private void setupCards() {
         gridLayout.removeAllViews();
 
         if (redeemType.equals(UPI)) {
-
-            addCard(R.drawable.ic_upi, 1174, "₹10");
-            addCard(R.drawable.ic_upi, 2674, "₹25");
-            addCard(R.drawable.ic_upi, 10000, "₹100");
+            addCard(R.drawable.ic_upi, 1174, 10);
+            addCard(R.drawable.ic_upi, 2674, 25);
+            addCard(R.drawable.ic_upi, 10000, 100);
 
         } else if (redeemType.equals(BANK)) {
-
-            addCard(R.drawable.ic_bank, 10000, "₹100");
-            addCard(R.drawable.ic_bank, 20000, "₹200");
+            addCard(R.drawable.ic_bank, 10000, 100);
+            addCard(R.drawable.ic_bank, 20000, 200);
 
         } else {
-            // Voucher (Google / Amazon / PhonePe)
             int icon = redeemType.equals(AMAZON)
                     ? R.drawable.ic_amazon
                     : redeemType.equals(PHONEPE)
                     ? R.drawable.ic_phonepe
                     : R.drawable.ic_google_play;
 
-            addCard(icon, 1000, "₹10");
-            addCard(icon, 3500, "₹35");
-            addCard(icon, 5000, "₹50");
-            addCard(icon, 10000, "₹100");
+            addCard(icon, 1000, 10);
+            addCard(icon, 3500, 35);
+            addCard(icon, 5000, 50);
+            addCard(icon, 10000, 100);
         }
     }
 
-    /* ================= ADD CARD ================= */
-    private void addCard(int icon, long cost, String amount) {
+    private void addCard(int icon, long cost, long amount) {
 
         View card = LayoutInflater.from(getContext())
                 .inflate(R.layout.item_redeem_card, gridLayout, false);
@@ -158,7 +148,7 @@ public class RedeemFragment extends Fragment {
 
         imgIcon.setImageResource(icon);
         txtCoinCost.setText(String.valueOf(cost));
-        txtAmount.setText(amount);
+        txtAmount.setText("₹" + amount);
         txtMethod.setText(getMethodDetailText());
 
         card.setOnClickListener(v -> {
@@ -168,21 +158,14 @@ public class RedeemFragment extends Fragment {
                 return;
             }
 
-            // 🔹 CASH FLOW → OPEN BOTTOM SHEET
             if (redeemType.equals(UPI) || redeemType.equals(BANK)) {
-
                 pendingCoins = cost;
                 pendingAmount = amount;
 
                 bottomsheet_withdraw_details
                         .newInstance(redeemType)
-                        .show(
-                                getParentFragmentManager(),
-                                "withdraw_sheet"
-                        );
-
+                        .show(getParentFragmentManager(), "withdraw_sheet");
             } else {
-                // 🔹 VOUCHER FLOW
                 submitRedeem(cost, amount);
             }
         });
@@ -190,9 +173,7 @@ public class RedeemFragment extends Fragment {
         gridLayout.addView(card);
     }
 
-    /* ================= BOTTOM SHEET RESULT ================= */
     private void setupBottomSheetResult() {
-
         getParentFragmentManager()
                 .setFragmentResultListener(
                         bottomsheet_withdraw_details.KEY_RESULT,
@@ -201,18 +182,19 @@ public class RedeemFragment extends Fragment {
 
                             withdrawDetails =
                                     bundle.getString(
-                                            bottomsheet_withdraw_details.KEY_RESULT
+                                            bottomsheet_withdraw_details.KEY_RESULT,
+                                            ""
                                     );
 
                             submitRedeem(pendingCoins, pendingAmount);
                         });
     }
 
-    /* ================= SUBMIT ================= */
-    private void submitRedeem(long coinsUsed, String amount) {
+    private void submitRedeem(long coinsUsed, long amount) {
 
         String uid = auth.getCurrentUser().getUid();
         String email = auth.getCurrentUser().getEmail();
+        long createdAtMillis = System.currentTimeMillis(); // ✅ MILLIS
 
         db.runTransaction(transaction -> {
 
@@ -237,19 +219,20 @@ public class RedeemFragment extends Fragment {
             req.put("coins", coinsUsed);
             req.put("withdraw_details", withdrawDetails);
             req.put("status", "pending");
-            req.put("created_at", FieldValue.serverTimestamp());
+            req.put("created_at", createdAtMillis); // ✅ MILLIS
 
             transaction.set(reqRef, req);
-
             return updated;
 
         }).addOnSuccessListener(updated -> {
 
-            userPref.setCoins((long) updated);
+            if (!isAdded()) return;
+
+            userPref.setCoins(updated);
             txtCoins.setText(String.valueOf(updated));
 
             Intent i = new Intent(
-                    getContext(),
+                    requireActivity(),
                     activity_withdraw_success.class
             );
             i.putExtra(activity_withdraw_success.EXTRA_TYPE, redeemType);
@@ -267,7 +250,6 @@ public class RedeemFragment extends Fragment {
         }).addOnFailureListener(e -> toast(e.getMessage()));
     }
 
-    /* ================= HELPERS ================= */
     private String getMethodDetailText() {
         return redeemType.equals(UPI)
                 ? "Cash (UPI)"
