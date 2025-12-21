@@ -9,6 +9,7 @@ import java.util.Map;
 @IgnoreExtraProperties
 public class WithdrawHistoryModel {
 
+    /* ================= FIRESTORE FIELDS ================= */
     private String uid;
     private String type;
     private String amount;
@@ -16,29 +17,30 @@ public class WithdrawHistoryModel {
     private String voucher_code;
     private Timestamp created_at;
 
-    // 🔹 Firestore document ID (NOT stored in Firestore)
+    /* ================= LOCAL ONLY ================= */
     private String request_id;
 
-    // REQUIRED by Firestore
+    /* ================= REQUIRED ================= */
     public WithdrawHistoryModel() {}
 
+    /* ================= FULL CONSTRUCTOR ================= */
     public WithdrawHistoryModel(
             String uid,
-            String Type,
+            String type,
             String amount,
             String status,
             String voucher_code,
             Timestamp created_at
     ) {
         this.uid = uid;
-        this.type = Type;
+        this.type = type;
         this.amount = amount;
         this.status = status;
         this.voucher_code = voucher_code;
         this.created_at = created_at;
     }
 
-    // ================= GETTERS =================
+    /* ================= GETTERS ================= */
     public String getUid() {
         return uid;
     }
@@ -67,18 +69,24 @@ public class WithdrawHistoryModel {
         return request_id;
     }
 
-    // ================= SETTERS =================
+    /* ================= SETTERS ================= */
     public void setRequest_id(String request_id) {
         this.request_id = request_id;
     }
 
-    // ================= HELPERS =================
-    public long getCreatedAtMillis() {
-        return created_at != null ? created_at.toDate().getTime() : 0;
+    // 🔥🔥🔥 THIS WAS MISSING (MAIN FIX)
+    public void setType(String type) {
+        this.type = type;
     }
 
-    // ================= FIRESTORE MAP =================
-    // (Used only when creating a request, NOT for history click)
+    /* ================= HELPERS ================= */
+    public long getCreatedAtMillis() {
+        return created_at != null
+                ? created_at.toDate().getTime()
+                : 0;
+    }
+
+    /* ================= FIRESTORE MAP ================= */
     public Map<String, Object> toMap() {
         Map<String, Object> map = new HashMap<>();
         map.put("uid", uid);
@@ -86,7 +94,7 @@ public class WithdrawHistoryModel {
         map.put("amount", amount);
         map.put("status", status);
         map.put("voucher_code", voucher_code);
-        map.put("created_at", created_at); // Timestamp
+        map.put("created_at", created_at);
         return map;
     }
 }
