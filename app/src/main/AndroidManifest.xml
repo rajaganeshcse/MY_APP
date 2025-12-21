@@ -30,6 +30,10 @@
             android:name=".layout_my_earnings"
             android:exported="false" />
         <activity
+            android:name=".bottomsheet_withdraw_details"
+            android:exported="false" />
+
+        <activity
             android:name=".layout_invite"
             android:exported="false" />
         <activity

@@ -27,4 +27,5 @@
     <item name="phonepeOption" type="id" />
     <item name="txtHeader" type="id" />
     <item name="recyclerHistory" type="id" />
+    <item name="txtdetail" type="id" />
 </resources>

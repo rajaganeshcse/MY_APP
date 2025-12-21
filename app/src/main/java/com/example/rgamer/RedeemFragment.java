@@ -45,6 +45,11 @@ public class RedeemFragment extends Fragment {
     private UserPref userPref;
     private long userCoins = 0;
 
+    /* ================= TEMP ================= */
+    private long pendingCoins = 0;
+    private String pendingAmount = "";
+    private String withdrawDetails = "";
+
     /* ================= INSTANCE ================= */
     public static RedeemFragment newInstance(String type) {
         RedeemFragment f = new RedeemFragment();
@@ -76,8 +81,9 @@ public class RedeemFragment extends Fragment {
         }
 
         setupHeader();
-        loadCoins();      // ✅ FROM USERPREF
+        loadCoins();
         setupCards();
+        setupBottomSheetResult(); // 🔥 IMPORTANT
 
         return view;
     }
@@ -103,32 +109,17 @@ public class RedeemFragment extends Fragment {
         }
     }
 
-    /* ================= LOAD COINS (USERPREF) ================= */
+    /* ================= COINS ================= */
     private void loadCoins() {
-        userCoins = userPref.getCoins();   // ✅ LOCAL CACHE
+        userCoins = userPref.getCoins();
         txtCoins.setText(String.valueOf(userCoins));
     }
 
-    /* ================= CARDS ================= */
+    /* ================= GRID ================= */
     private void setupCards() {
-
         gridLayout.removeAllViews();
 
-        if (redeemType.equals(GOOGLE) ||
-                redeemType.equals(AMAZON) ||
-                redeemType.equals(PHONEPE)) {
-
-            int icon =
-                    redeemType.equals(AMAZON) ? R.drawable.ic_amazon :
-                            redeemType.equals(PHONEPE) ? R.drawable.ic_phonepe :
-                                    R.drawable.ic_google_play;
-
-            addCard(icon, 1000, "₹10");
-            addCard(icon, 3500, "₹35");
-            addCard(icon, 5000, "₹50");
-            addCard(icon, 10000, "₹100");
-
-        } else if (redeemType.equals(UPI)) {
+        if (redeemType.equals(UPI)) {
 
             addCard(R.drawable.ic_upi, 1174, "₹10");
             addCard(R.drawable.ic_upi, 2674, "₹25");
@@ -138,24 +129,60 @@ public class RedeemFragment extends Fragment {
 
             addCard(R.drawable.ic_bank, 10000, "₹100");
             addCard(R.drawable.ic_bank, 20000, "₹200");
+
+        } else {
+            // Voucher (Google / Amazon / PhonePe)
+            int icon = redeemType.equals(AMAZON)
+                    ? R.drawable.ic_amazon
+                    : redeemType.equals(PHONEPE)
+                    ? R.drawable.ic_phonepe
+                    : R.drawable.ic_google_play;
+
+            addCard(icon, 1000, "₹10");
+            addCard(icon, 3500, "₹35");
+            addCard(icon, 5000, "₹50");
+            addCard(icon, 10000, "₹100");
         }
     }
 
+    /* ================= ADD CARD ================= */
     private void addCard(int icon, long cost, String amount) {
 
         View card = LayoutInflater.from(getContext())
                 .inflate(R.layout.item_redeem_card, gridLayout, false);
 
-        ((ImageView) card.findViewById(R.id.imgIcon)).setImageResource(icon);
-        ((TextView) card.findViewById(R.id.txtCoinCost))
-                .setText(String.valueOf(cost));
-        ((TextView) card.findViewById(R.id.txtAmount))
-                .setText(amount);
+        ImageView imgIcon = card.findViewById(R.id.imgIcon);
+        TextView txtCoinCost = card.findViewById(R.id.txtCoinCost);
+        TextView txtAmount = card.findViewById(R.id.txtAmount);
+        TextView txtMethod = card.findViewById(R.id.methoddetail);
+
+        imgIcon.setImageResource(icon);
+        txtCoinCost.setText(String.valueOf(cost));
+        txtAmount.setText(amount);
+        txtMethod.setText(getMethodDetailText());
 
         card.setOnClickListener(v -> {
+
             if (userCoins < cost) {
                 toast("Not enough coins");
+                return;
+            }
+
+            // 🔹 CASH FLOW → OPEN BOTTOM SHEET
+            if (redeemType.equals(UPI) || redeemType.equals(BANK)) {
+
+                pendingCoins = cost;
+                pendingAmount = amount;
+
+                bottomsheet_withdraw_details
+                        .newInstance(redeemType)
+                        .show(
+                                getParentFragmentManager(),
+                                "withdraw_sheet"
+                        );
+
             } else {
+                // 🔹 VOUCHER FLOW
                 submitRedeem(cost, amount);
             }
         });
@@ -163,7 +190,25 @@ public class RedeemFragment extends Fragment {
         gridLayout.addView(card);
     }
 
-    /* ================= SUBMIT REDEEM ================= */
+    /* ================= BOTTOM SHEET RESULT ================= */
+    private void setupBottomSheetResult() {
+
+        getParentFragmentManager()
+                .setFragmentResultListener(
+                        bottomsheet_withdraw_details.KEY_RESULT,
+                        this,
+                        (requestKey, bundle) -> {
+
+                            withdrawDetails =
+                                    bundle.getString(
+                                            bottomsheet_withdraw_details.KEY_RESULT
+                                    );
+
+                            submitRedeem(pendingCoins, pendingAmount);
+                        });
+    }
+
+    /* ================= SUBMIT ================= */
     private void submitRedeem(long coinsUsed, String amount) {
 
         String uid = auth.getCurrentUser().getUid();
@@ -175,51 +220,45 @@ public class RedeemFragment extends Fragment {
             var snap = transaction.get(userRef);
 
             Long current = snap.getLong("coins");
-            if (current == null || current < coinsUsed)
+            if (current == null || current < coinsUsed) {
                 throw new RuntimeException("Insufficient coins");
-
-            String name = snap.getString("name");
+            }
 
             long updated = current - coinsUsed;
-
-            // 🔹 UPDATE FIRESTORE
             transaction.update(userRef, "coins", updated);
 
-            // 🔹 CREATE REQUEST
-            var requestRef = db.collection("redeem_requests").document();
+            var reqRef = db.collection("redeem_requests").document();
 
             Map<String, Object> req = new HashMap<>();
             req.put("uid", uid);
-            req.put("name", name);
             req.put("email", email);
             req.put("type", redeemType);
-            req.put("type_label", getRewardName(redeemType));
             req.put("amount", amount);
             req.put("coins", coinsUsed);
+            req.put("withdraw_details", withdrawDetails);
             req.put("status", "pending");
-            req.put("voucher_code", "");
             req.put("created_at", FieldValue.serverTimestamp());
 
-            transaction.set(requestRef, req);
+            transaction.set(reqRef, req);
 
-            return new Object[]{updated, requestRef.getId()};
+            return updated;
 
-        }).addOnSuccessListener(result -> {
+        }).addOnSuccessListener(updated -> {
 
-            long updatedCoins = (long) ((Object[]) result)[0];
-            String requestId = (String) ((Object[]) result)[1];
+            userPref.setCoins((long) updated);
+            txtCoins.setText(String.valueOf(updated));
 
-            // ✅ UPDATE USERPREF IMMEDIATELY
-            userPref.setCoins(updatedCoins);
-            userCoins = updatedCoins;
-            txtCoins.setText(String.valueOf(updatedCoins));
-
-            startActivity(
-                    new Intent(getContext(), activity_withdraw_success.class)
-                            .putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, requestId)
-                            .putExtra(activity_withdraw_success.EXTRA_TYPE, redeemType)
-                            .putExtra(activity_withdraw_success.EXTRA_AMOUNT, amount)
+            Intent i = new Intent(
+                    getContext(),
+                    activity_withdraw_success.class
             );
+            i.putExtra(activity_withdraw_success.EXTRA_TYPE, redeemType);
+            i.putExtra(activity_withdraw_success.EXTRA_AMOUNT, amount);
+            i.putExtra(
+                    activity_withdraw_success.EXTRA_WITHDRAW_DETAILS,
+                    withdrawDetails
+            );
+            startActivity(i);
 
             requireActivity()
                     .getSupportFragmentManager()
@@ -229,24 +268,15 @@ public class RedeemFragment extends Fragment {
     }
 
     /* ================= HELPERS ================= */
-    private void toast(String msg) {
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    private String getMethodDetailText() {
+        return redeemType.equals(UPI)
+                ? "Cash (UPI)"
+                : redeemType.equals(BANK)
+                ? "Cash (Bank)"
+                : "Voucher Code";
     }
 
-    private String getRewardName(String type) {
-        switch (type) {
-            case GOOGLE:
-                return "Google Play Voucher";
-            case AMAZON:
-                return "Amazon Gift Voucher";
-            case PHONEPE:
-                return "PhonePe Gift Voucher";
-            case UPI:
-                return "UPI Withdraw";
-            case BANK:
-                return "Bank Withdraw";
-            default:
-                return "Reward";
-        }
+    private void toast(String msg) {
+        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 }

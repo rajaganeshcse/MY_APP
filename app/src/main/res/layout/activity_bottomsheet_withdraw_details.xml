@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@color/white"
+    android:padding="20dp">
+
+    <!-- TITLE -->
+    <TextView
+        android:id="@+id/txtTitle"
+        android:text="Withdraw Details"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:background="@color/white"
+        android:textColor="@color/black"
+        android:layout_marginBottom="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <!-- UPI ID -->
+    <EditText
+        android:id="@+id/edtUpi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Enter UPI ID"
+        android:visibility="gone"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/bg_edit"
+        android:padding="12dp"/>
+
+    <!-- BANK NAME -->
+    <EditText
+        android:id="@+id/edtBankName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Bank Name"
+        android:visibility="gone"
+        android:background="@drawable/bg_edit"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"/>
+
+    <!-- ACCOUNT NUMBER -->
+    <EditText
+        android:id="@+id/edtAccount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Account Number"
+        android:visibility="gone"
+        android:inputType="number"
+        android:background="@drawable/bg_edit"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"/>
+
+    <!-- IFSC -->
+    <EditText
+        android:id="@+id/edtIfsc"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="IFSC Code"
+        android:visibility="gone"
+        android:inputType="textCapCharacters"
+        android:background="@drawable/bg_edit"
+        android:padding="12dp"
+        android:layout_marginTop="8dp"/>
+
+    <!-- SUBMIT -->
+    <TextView
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="SUBMIT"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:padding="14dp"
+        android:layout_marginTop="16dp"
+        android:background="@drawable/bg_button_ripple"
+        android:textColor="@color/black"/>
+</LinearLayout>

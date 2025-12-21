@@ -60,7 +60,7 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtRewardType = findViewById(R.id.txtRewardType);
         txtAmount = findViewById(R.id.txtAmount);
         txtVoucherCode = findViewById(R.id.txtVoucherCode);
-        txtWithdrawDetails = findViewById(R.id.txtAmount);
+        txtWithdrawDetails = findViewById(R.id.txtdetail); // ✅ FIX
         btnDone = findViewById(R.id.btnDone);
 
         btnBack.setOnClickListener(v -> finish());
@@ -143,16 +143,13 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtWithdrawDetails.setVisibility(View.VISIBLE);
         txtWithdrawDetails.setText(title + ":\n" + details);
 
-        // copy on tap
         txtWithdrawDetails.setOnClickListener(v -> {
             ClipboardManager cm =
                     (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             cm.setPrimaryClip(
                     ClipData.newPlainText(title, details)
             );
-            Toast.makeText(this,
-                    "Details copied",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Details copied", Toast.LENGTH_SHORT).show();
         });
     }
 
@@ -222,9 +219,7 @@ public class activity_withdraw_success extends AppCompatActivity {
             cm.setPrimaryClip(
                     ClipData.newPlainText("Voucher Code", code)
             );
-            Toast.makeText(this,
-                    "Voucher copied",
-                    Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Voucher copied", Toast.LENGTH_SHORT).show();
         });
     }
 }

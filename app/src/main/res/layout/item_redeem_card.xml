@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"/>
 
     <TextView
-        android:id="@+id/txtType"
+        android:id="@+id/methoddetail"
         android:text="Google Play Voucher"
         android:textColor="#555"
         android:textSize="12sp"

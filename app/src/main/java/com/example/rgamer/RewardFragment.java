@@ -42,37 +42,44 @@ public class RewardFragment extends Fragment {
 
     /* ================= LOAD COINS (FROM USERPREF) ================= */
     private void loadCoins() {
-        long coins = userPref.getCoins();   // ✅ FROM LOCAL PREF
+        long coins = userPref.getCoins();
         txtCoins.setText(String.valueOf(coins));
     }
 
     /* ================= OPTIONS ================= */
     private void setupOptions(View view) {
 
-        setupItem(view, R.id.googleOption,
-                R.drawable.ic_google_play,
-                "Google Play Voucher",
-                RedeemFragment.GOOGLE);
-
-        setupItem(view, R.id.amazonOption,
-                R.drawable.ic_amazon,
-                "Amazon Gift Voucher",
-                RedeemFragment.AMAZON);
-
-        setupItem(view, R.id.phonepeOption,
-                R.drawable.ic_phonepe,
-                "PhonePe Gift Voucher",
-                RedeemFragment.PHONEPE);
-
+        // 🔹 CASH OPTIONS
         setupItem(view, R.id.upiOption,
                 R.drawable.ic_upi,
                 "UPI Withdraw",
+                "Cash",
                 RedeemFragment.UPI);
 
         setupItem(view, R.id.bankOption,
                 R.drawable.ic_bank,
                 "Bank Withdraw",
+                "Cash",
                 RedeemFragment.BANK);
+
+        // 🔹 VOUCHER OPTIONS
+        setupItem(view, R.id.googleOption,
+                R.drawable.ic_google_play,
+                "Google Play Voucher",
+                "Voucher Code",
+                RedeemFragment.GOOGLE);
+
+        setupItem(view, R.id.amazonOption,
+                R.drawable.ic_amazon,
+                "Amazon Gift Voucher",
+                "Voucher Code",
+                RedeemFragment.AMAZON);
+
+        setupItem(view, R.id.phonepeOption,
+                R.drawable.ic_phonepe,
+                "PhonePe Gift Voucher",
+                "Voucher Code",
+                RedeemFragment.PHONEPE);
     }
 
     /* ================= HISTORY ================= */
@@ -84,18 +91,20 @@ public class RewardFragment extends Fragment {
         );
     }
 
-    /* ================= SINGLE ITEM ================= */
+    /* ================= SINGLE ITEM (WITH SUBTITLE) ================= */
     private void setupItem(View root, int id, int icon,
-                           String title, String type) {
+                           String title, String subtitle, String type) {
 
         LinearLayout layout = root.findViewById(id);
         if (layout == null) return;
 
         ImageView img = layout.findViewById(R.id.icon);
         TextView txtTitle = layout.findViewById(R.id.title);
+        TextView txtSubtitle = layout.findViewById(R.id.subtitle);
 
         img.setImageResource(icon);
         txtTitle.setText(title);
+        txtSubtitle.setText(subtitle);
 
         layout.setOnClickListener(v -> openRedeem(type));
     }
@@ -104,7 +113,6 @@ public class RewardFragment extends Fragment {
     private void openRedeem(String type) {
 
         // ❌ NO MINIMUM COIN CHECK
-        // Coins validation removed completely
 
         requireActivity()
                 .getSupportFragmentManager()
