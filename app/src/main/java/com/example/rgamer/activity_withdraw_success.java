@@ -35,7 +35,7 @@ public class activity_withdraw_success extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // 🔹 FULL SCREEN STATUS BAR
+        // 🔹 FULL SCREEN
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
             getWindow().getDecorView().setSystemUiVisibility(
@@ -60,11 +60,14 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtRewardType = findViewById(R.id.txtRewardType);
         txtAmount = findViewById(R.id.txtAmount);
         txtVoucherCode = findViewById(R.id.txtVoucherCode);
-        txtWithdrawDetails = findViewById(R.id.txtdetail); // ✅ FIX
+        txtWithdrawDetails = findViewById(R.id.txtdetail);
         btnDone = findViewById(R.id.btnDone);
 
         btnBack.setOnClickListener(v -> finish());
         btnDone.setOnClickListener(v -> finish());
+
+        /* ================= INITIAL UI ================= */
+        setProcessingUI();
 
         /* ================= GET DATA ================= */
         String type = getIntent().getStringExtra(EXTRA_TYPE);
@@ -79,24 +82,21 @@ public class activity_withdraw_success extends AppCompatActivity {
 
         setMethodUI(type);
 
-        /* ================= HANDLE TYPE ================= */
+        /* ================= FLOW ================= */
         if (RedeemFragment.UPI.equals(type)) {
 
-            setSuccessUI();
-            txtTitle.setText("Withdraw Submitted 🎉");
+            txtTitle.setText("Withdraw Submitted ⏳");
             txtMessage.setText("UPI amount will be credited within 24 hours.");
-
             showWithdrawDetails("UPI ID", withdrawDetails);
 
         } else if (RedeemFragment.BANK.equals(type)) {
 
-            setSuccessUI();
-            txtTitle.setText("Withdraw Submitted 🎉");
+            txtTitle.setText("Withdraw Submitted ⏳");
             txtMessage.setText("Bank transfer will complete within 24–48 hours.");
-
             showWithdrawDetails("Bank Details", withdrawDetails);
 
         } else {
+            // 🔥 Voucher flow → LIVE Firestore update
             observeRedeemRequest(requestId);
         }
     }
@@ -135,7 +135,7 @@ public class activity_withdraw_success extends AppCompatActivity {
         }
     }
 
-    /* ================= SHOW WITHDRAW DETAILS ================= */
+    /* ================= WITHDRAW DETAILS ================= */
     private void showWithdrawDetails(String title, String details) {
 
         if (details == null || details.isEmpty()) return;
@@ -153,21 +153,20 @@ public class activity_withdraw_success extends AppCompatActivity {
         });
     }
 
-    /* ================= FIRESTORE ================= */
+    /* ================= FIRESTORE LISTENER ================= */
     private void observeRedeemRequest(String requestId) {
 
         if (requestId == null) return;
-
-        setProcessingUI();
 
         db.collection("redeem_requests")
                 .document(requestId)
                 .addSnapshotListener((doc, e) -> {
 
-                    if (doc == null || !doc.exists()) return;
+                    if (e != null || doc == null || !doc.exists()) return;
 
                     String status = doc.getString("status");
                     String voucher = doc.getString("voucher_code");
+                    String type = doc.getString("type");
 
                     if ("pending".equals(status)) {
 
@@ -177,13 +176,20 @@ public class activity_withdraw_success extends AppCompatActivity {
                     } else if ("success".equals(status)) {
 
                         setSuccessUI();
-                        txtVoucherCode.setVisibility(View.VISIBLE);
+                        txtTitle.setText("Redeem Successful 🎉");
+                        txtMessage.setText("Your voucher is ready!");
 
-                        if (voucher == null || voucher.isEmpty()) {
-                            txtVoucherCode.setText("CODE: N/A");
-                        } else {
+                        // ✅ SHOW VOUCHER ONLY FOR VOUCHER TYPES
+                        if (isVoucherType(type) &&
+                                voucher != null &&
+                                !voucher.isEmpty()) {
+
+                            txtVoucherCode.setVisibility(View.VISIBLE);
                             txtVoucherCode.setText("CODE: " + voucher);
                             enableCopy(voucher);
+
+                        } else {
+                            txtVoucherCode.setVisibility(View.GONE);
                         }
 
                     } else if ("failed".equals(status)) {
@@ -194,7 +200,13 @@ public class activity_withdraw_success extends AppCompatActivity {
                 });
     }
 
-    /* ================= UI STATES ================= */
+    /* ================= HELPERS ================= */
+    private boolean isVoucherType(String type) {
+        return RedeemFragment.GOOGLE.equals(type)
+                || RedeemFragment.AMAZON.equals(type)
+                || RedeemFragment.PHONEPE.equals(type);
+    }
+
     private void setProcessingUI() {
         imgSuccess.setImageResource(R.drawable.ic_processing);
         txtTitle.setText("Processing ⏳");
@@ -211,7 +223,6 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtMessage.setText("Coins will be refunded automatically.");
     }
 
-    /* ================= COPY ================= */
     private void enableCopy(String code) {
         txtVoucherCode.setOnClickListener(v -> {
             ClipboardManager cm =
