@@ -17,14 +17,18 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 public class activity_withdraw_success extends AppCompatActivity {
 
+    /* ================= EXTRAS ================= */
     public static final String EXTRA_TYPE = "type";
     public static final String EXTRA_AMOUNT = "amount";
     public static final String EXTRA_REQUEST_ID = "request_id";
+    public static final String EXTRA_WITHDRAW_DETAILS = "withdraw_details";
 
-    // UI
+    /* ================= UI ================= */
     ImageView btnBack, imgSuccess, imgMethod;
-    TextView txtHeader, txtTitle, txtMessage, txtRewardType,
-            txtAmount, txtVoucherCode, btnDone;
+    TextView txtHeader, txtTitle, txtMessage;
+    TextView txtRewardType, txtAmount;
+    TextView txtVoucherCode, txtWithdrawDetails;
+    TextView btnDone;
 
     FirebaseFirestore db;
 
@@ -45,7 +49,7 @@ public class activity_withdraw_success extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        // 🔹 BIND UI
+        /* ================= BIND UI ================= */
         btnBack = findViewById(R.id.btnBack);
         imgSuccess = findViewById(R.id.imgSuccess);
         imgMethod = findViewById(R.id.imgMethod);
@@ -56,28 +60,33 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtRewardType = findViewById(R.id.txtRewardType);
         txtAmount = findViewById(R.id.txtAmount);
         txtVoucherCode = findViewById(R.id.txtVoucherCode);
+        txtWithdrawDetails = findViewById(R.id.txtAmount);
         btnDone = findViewById(R.id.btnDone);
 
-        // 🔹 BACK BUTTON
         btnBack.setOnClickListener(v -> finish());
+        btnDone.setOnClickListener(v -> finish());
 
-        // 🔹 GET INTENT DATA
+        /* ================= GET DATA ================= */
         String type = getIntent().getStringExtra(EXTRA_TYPE);
         String amount = getIntent().getStringExtra(EXTRA_AMOUNT);
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
+        String withdrawDetails =
+                getIntent().getStringExtra(EXTRA_WITHDRAW_DETAILS);
 
         txtAmount.setText(amount);
         txtVoucherCode.setVisibility(View.GONE);
+        txtWithdrawDetails.setVisibility(View.GONE);
 
-        // 🔹 SET METHOD ICON + TEXT
         setMethodUI(type);
 
-        // 🔹 HANDLE TYPES
+        /* ================= HANDLE TYPE ================= */
         if (RedeemFragment.UPI.equals(type)) {
 
             setSuccessUI();
             txtTitle.setText("Withdraw Submitted 🎉");
             txtMessage.setText("UPI amount will be credited within 24 hours.");
+
+            showWithdrawDetails("UPI ID", withdrawDetails);
 
         } else if (RedeemFragment.BANK.equals(type)) {
 
@@ -85,22 +94,17 @@ public class activity_withdraw_success extends AppCompatActivity {
             txtTitle.setText("Withdraw Submitted 🎉");
             txtMessage.setText("Bank transfer will complete within 24–48 hours.");
 
+            showWithdrawDetails("Bank Details", withdrawDetails);
+
         } else {
             observeRedeemRequest(requestId);
         }
-
-        // 🔹 DONE
-        btnDone.setOnClickListener(v -> finish());
     }
 
-    // ================= METHOD UI =================
+    /* ================= METHOD UI ================= */
     private void setMethodUI(String type) {
 
-        if (type == null) {
-            imgMethod.setImageResource(R.drawable.wallet_icon);
-            txtRewardType.setText("Reward");
-            return;
-        }
+        if (type == null) return;
 
         switch (type) {
 
@@ -128,14 +132,31 @@ public class activity_withdraw_success extends AppCompatActivity {
                 imgMethod.setImageResource(R.drawable.ic_bank);
                 txtRewardType.setText("Payment Method: Bank");
                 break;
-
-            default:
-                imgMethod.setImageResource(R.drawable.wallet_icon);
-                txtRewardType.setText("Reward");
         }
     }
 
-    // ================= FIRESTORE =================
+    /* ================= SHOW WITHDRAW DETAILS ================= */
+    private void showWithdrawDetails(String title, String details) {
+
+        if (details == null || details.isEmpty()) return;
+
+        txtWithdrawDetails.setVisibility(View.VISIBLE);
+        txtWithdrawDetails.setText(title + ":\n" + details);
+
+        // copy on tap
+        txtWithdrawDetails.setOnClickListener(v -> {
+            ClipboardManager cm =
+                    (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            cm.setPrimaryClip(
+                    ClipData.newPlainText(title, details)
+            );
+            Toast.makeText(this,
+                    "Details copied",
+                    Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    /* ================= FIRESTORE ================= */
     private void observeRedeemRequest(String requestId) {
 
         if (requestId == null) return;
@@ -176,26 +197,24 @@ public class activity_withdraw_success extends AppCompatActivity {
                 });
     }
 
-    // ================= UI STATES =================
+    /* ================= UI STATES ================= */
     private void setProcessingUI() {
         imgSuccess.setImageResource(R.drawable.ic_processing);
         txtTitle.setText("Processing ⏳");
-        txtMessage.setText("Please wait while we process your reward.");
+        txtMessage.setText("Please wait while we process your request.");
     }
 
     private void setSuccessUI() {
         imgSuccess.setImageResource(R.drawable.ic_success);
-        txtTitle.setText("Redeem Successful 🎉");
-        txtMessage.setText("Your reward is ready!");
     }
 
     private void setFailedUI() {
         imgSuccess.setImageResource(R.drawable.ic_failed);
-        txtTitle.setText("Redeem Failed ❌");
+        txtTitle.setText("Failed ❌");
         txtMessage.setText("Coins will be refunded automatically.");
     }
 
-    // ================= COPY =================
+    /* ================= COPY ================= */
     private void enableCopy(String code) {
         txtVoucherCode.setOnClickListener(v -> {
             ClipboardManager cm =
@@ -203,7 +222,9 @@ public class activity_withdraw_success extends AppCompatActivity {
             cm.setPrimaryClip(
                     ClipData.newPlainText("Voucher Code", code)
             );
-            Toast.makeText(this, "Voucher code copied", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,
+                    "Voucher copied",
+                    Toast.LENGTH_SHORT).show();
         });
     }
 }
