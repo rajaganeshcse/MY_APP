@@ -15,15 +15,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class bottomsheet_withdraw_details extends BottomSheetDialogFragment {
 
-    // 🔹 Fragment Result Keys
+    /* ================= RESULT KEYS ================= */
     public static final String KEY_RESULT = "withdraw_result";
     public static final String KEY_TYPE = "withdraw_type";
 
-    // 🔹 UI
+    /* ================= UI ================= */
+    private TextView txtTitle, btnSubmit;
     private EditText edtUpi, edtBank, edtAcc, edtIfsc;
-    private TextView btnSubmit, txtTitle;
 
-    private String type;
+    private String type = "";
+    private boolean isSubmitting = false;
 
     /* ================= INSTANCE ================= */
     public static bottomsheet_withdraw_details newInstance(String type) {
@@ -39,7 +40,8 @@ public class bottomsheet_withdraw_details extends BottomSheetDialogFragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState
+    ) {
 
         View view = inflater.inflate(
                 R.layout.activity_bottomsheet_withdraw_details,
@@ -47,28 +49,28 @@ public class bottomsheet_withdraw_details extends BottomSheetDialogFragment {
                 false
         );
 
-        // 🔹 GET TYPE
-        type = getArguments() != null
-                ? getArguments().getString(KEY_TYPE)
-                : "";
+        /* ================= GET TYPE ================= */
+        if (getArguments() != null) {
+            type = getArguments().getString(KEY_TYPE, "");
+        }
 
-        // 🔹 BIND UI
+        /* ================= BIND UI ================= */
         txtTitle = view.findViewById(R.id.txtTitle);
+        btnSubmit = view.findViewById(R.id.btnSubmit);
+
         edtUpi = view.findViewById(R.id.edtUpi);
         edtBank = view.findViewById(R.id.edtBankName);
         edtAcc = view.findViewById(R.id.edtAccount);
         edtIfsc = view.findViewById(R.id.edtIfsc);
-        btnSubmit = view.findViewById(R.id.btnSubmit);
 
         hideAllInputs();
 
-        // 🔹 SHOW BASED ON TYPE
+        /* ================= SHOW BASED ON TYPE ================= */
         if (RedeemFragment.UPI.equals(type)) {
             txtTitle.setText("Enter UPI ID");
             edtUpi.setVisibility(View.VISIBLE);
         }
-
-        if (RedeemFragment.BANK.equals(type)) {
+        else if (RedeemFragment.BANK.equals(type)) {
             txtTitle.setText("Enter Bank Details");
             edtBank.setVisibility(View.VISIBLE);
             edtAcc.setVisibility(View.VISIBLE);
@@ -83,28 +85,48 @@ public class bottomsheet_withdraw_details extends BottomSheetDialogFragment {
     /* ================= SUBMIT ================= */
     private void submit() {
 
-        // 🔹 UPI FLOW
+        if (isSubmitting) return;
+        isSubmitting = true;
+        btnSubmit.setEnabled(false);
+
+        /* ----------- UPI ----------- */
         if (RedeemFragment.UPI.equals(type)) {
 
             String upi = edtUpi.getText().toString().trim();
 
-            if (upi.isEmpty() || !upi.contains("@")) {
-                toast("Enter valid UPI ID");
+            if (upi.isEmpty()) {
+                reset("Enter UPI ID");
+                return;
+            }
+
+            if (!upi.contains("@")) {
+                reset("Invalid UPI ID");
                 return;
             }
 
             sendResult(upi);
+            return;
         }
 
-        // 🔹 BANK FLOW
+        /* ----------- BANK ----------- */
         if (RedeemFragment.BANK.equals(type)) {
 
             String bank = edtBank.getText().toString().trim();
             String acc = edtAcc.getText().toString().trim();
-            String ifsc = edtIfsc.getText().toString().trim();
+            String ifsc = edtIfsc.getText().toString().trim().toUpperCase();
 
             if (bank.isEmpty() || acc.isEmpty() || ifsc.isEmpty()) {
-                toast("Fill all bank details");
+                reset("Fill all bank details");
+                return;
+            }
+
+            if (acc.length() < 6) {
+                reset("Invalid account number");
+                return;
+            }
+
+            if (ifsc.length() < 6) {
+                reset("Invalid IFSC code");
                 return;
             }
 
@@ -133,7 +155,9 @@ public class bottomsheet_withdraw_details extends BottomSheetDialogFragment {
         edtIfsc.setVisibility(View.GONE);
     }
 
-    private void toast(String msg) {
+    private void reset(String msg) {
+        isSubmitting = false;
+        btnSubmit.setEnabled(true);
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 }

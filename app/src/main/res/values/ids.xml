@@ -29,4 +29,10 @@
     <item name="recyclerHistory" type="id" />
     <item name="txtdetail" type="id" />
     <item name="main_container" type="id" />
+    <item name="btnConfirm" type="id" />
+    <item name="btnCancel" type="id" />
+    <item name="txtConfirmDetails" type="id" />
+    <item name="txtConfirmCoins" type="id" />
+    <item name="txtConfirmAmount" type="id" />
+    <item name="txtConfirmTitle" type="id" />
 </resources>

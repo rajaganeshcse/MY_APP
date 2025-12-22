@@ -12,6 +12,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -123,6 +124,7 @@ public class RedeemFragment extends Fragment {
 
     /* ================= CARDS ================= */
     private void setupCards() {
+
         gridLayout.removeAllViews();
 
         if (UPI.equals(redeemType)) {
@@ -171,14 +173,16 @@ public class RedeemFragment extends Fragment {
             }
 
             if (UPI.equals(redeemType) || BANK.equals(redeemType)) {
+
                 pendingCoins = cost;
                 pendingAmount = amount;
 
                 bottomsheet_withdraw_details
                         .newInstance(redeemType)
                         .show(getParentFragmentManager(), "withdraw_sheet");
+
             } else {
-                submitRedeem(cost, amount);
+                showConfirmDialog(cost, amount);
             }
         });
 
@@ -187,6 +191,7 @@ public class RedeemFragment extends Fragment {
 
     /* ================= BOTTOM SHEET RESULT ================= */
     private void setupBottomSheetResult() {
+
         getParentFragmentManager()
                 .setFragmentResultListener(
                         bottomsheet_withdraw_details.KEY_RESULT,
@@ -197,8 +202,50 @@ public class RedeemFragment extends Fragment {
                                     bottomsheet_withdraw_details.KEY_RESULT, ""
                             );
 
-                            submitRedeem(pendingCoins, pendingAmount);
+                            showConfirmDialog(pendingCoins, pendingAmount);
                         });
+    }
+
+    /* ================= XML CONFIRMATION DIALOG ================= */
+    private void showConfirmDialog(long coins, long amount) {
+
+        View view = LayoutInflater.from(requireContext())
+                .inflate(R.layout.layout_confirm_redeem, null, false);
+
+        TextView txtAmount = view.findViewById(R.id.txtConfirmAmount);
+        TextView txtCoins = view.findViewById(R.id.txtConfirmCoins);
+        TextView txtDetails = view.findViewById(R.id.txtConfirmDetails);
+        TextView btnCancel = view.findViewById(R.id.btnCancel);
+        TextView btnConfirm = view.findViewById(R.id.btnConfirm);
+
+        txtAmount.setText("Amount: ₹" + amount);
+        txtCoins.setText("Coins: " + coins);
+
+        if (UPI.equals(redeemType)) {
+            txtDetails.setVisibility(View.VISIBLE);
+            txtDetails.setText("UPI ID:\n" + withdrawDetails);
+        }
+        else if (BANK.equals(redeemType)) {
+            txtDetails.setVisibility(View.VISIBLE);
+            txtDetails.setText("Bank Details:\n" + withdrawDetails);
+        }
+        else {
+            txtDetails.setVisibility(View.GONE);
+        }
+
+        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+            submitRedeem(coins, amount);
+        });
+
+        dialog.show();
     }
 
     /* ================= SUBMIT ================= */
