@@ -77,26 +77,29 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtVoucherCode.setVisibility(View.GONE);
         txtWithdrawDetails.setVisibility(View.GONE);
 
-        /* INITIAL UI */
+        /* METHOD ICON */
         setMethodUI(type);
-        setProcessingUI();
 
-        /* FLOW */
+        /* INITIAL STATE = PROCESSING / SUBMITTED */
+        imgSuccess.setImageResource(R.drawable.ic_processing);
+
         if (RedeemFragment.UPI.equals(type)) {
-
             txtTitle.setText("Withdraw Submitted ⏳");
             txtMessage.setText("UPI amount will be credited within 24 hours.");
             showWithdrawDetails("UPI ID", withdrawDetails);
 
         } else if (RedeemFragment.BANK.equals(type)) {
-
             txtTitle.setText("Withdraw Submitted ⏳");
             txtMessage.setText("Bank transfer will complete within 24–48 hours.");
             showWithdrawDetails("Bank Details", withdrawDetails);
 
         } else {
-            observeRedeemRequest(requestId);
+            txtTitle.setText("Processing ⏳");
+            txtMessage.setText("Please wait while we process your request.");
         }
+
+        /* 🔥 LISTEN FOR STATUS UPDATES (ALL TYPES) */
+        observeRequestStatus(requestId);
     }
 
     /* ================= METHOD ICON ================= */
@@ -133,8 +136,8 @@ public class activity_withdraw_success extends AppCompatActivity {
         }
     }
 
-    /* ================= FIRESTORE ================= */
-    private void observeRedeemRequest(String requestId) {
+    /* ================= FIRESTORE STATUS (ALL TYPES) ================= */
+    private void observeRequestStatus(String requestId) {
 
         if (requestId == null) return;
 
@@ -149,51 +152,38 @@ public class activity_withdraw_success extends AppCompatActivity {
 
                     if ("pending".equals(status)) {
 
-                        setProcessingUI();
-                        txtVoucherCode.setVisibility(View.GONE);
+                        imgSuccess.setImageResource(R.drawable.ic_processing);
 
-                    } else if ("success".equals(status)) {
+                    }
+                    else if ("success".equals(status)) {
 
-                        setSuccessUI();
-                        txtTitle.setText("Redeem Successful 🎉");
-                        txtMessage.setText("Your voucher is ready!");
+                        imgSuccess.setImageResource(R.drawable.ic_success);
 
-                        if (isVoucherType(type)
-                                && voucher != null
-                                && !voucher.trim().isEmpty()) {
+                        if (isVoucherType(type)) {
+                            txtTitle.setText("Redeem Successful 🎉");
+                            txtMessage.setText("Your voucher is ready!");
 
-                            txtVoucherCode.setVisibility(View.VISIBLE);
-                            txtVoucherCode.setText("CODE: " + voucher);
-                            enableCopy(voucher);
-
-                        } else {
+                            if (voucher != null && !voucher.trim().isEmpty()) {
+                                txtVoucherCode.setVisibility(View.VISIBLE);
+                                txtVoucherCode.setText("CODE: " + voucher);
+                                enableCopy(voucher);
+                            }
+                        }
+                        else {
+                            txtTitle.setText("Withdraw Successful 🎉");
+                            txtMessage.setText("Amount credited successfully.");
                             txtVoucherCode.setVisibility(View.GONE);
-
                         }
 
-                    } else if ("failed".equals(status)) {
+                    }
+                    else if ("failed".equals(status)) {
 
-                        setFailedUI();
+                        imgSuccess.setImageResource(R.drawable.ic_failed);
+                        txtTitle.setText("Failed ❌");
+                        txtMessage.setText("Coins will be refunded automatically.");
                         txtVoucherCode.setVisibility(View.GONE);
                     }
                 });
-    }
-
-    /* ================= STATUS UI ================= */
-    private void setProcessingUI() {
-        imgSuccess.setImageResource(R.drawable.ic_processing);
-        txtTitle.setText("Processing ⏳");
-        txtMessage.setText("Please wait while we process your request.");
-    }
-
-    private void setSuccessUI() {
-        imgSuccess.setImageResource(R.drawable.ic_success);
-    }
-
-    private void setFailedUI() {
-        imgSuccess.setImageResource(R.drawable.ic_failed);
-        txtTitle.setText("Failed ❌");
-        txtMessage.setText("Coins will be refunded automatically.");
     }
 
     /* ================= HELPERS ================= */
