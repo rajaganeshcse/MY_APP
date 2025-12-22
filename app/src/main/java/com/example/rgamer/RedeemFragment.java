@@ -125,19 +125,19 @@ public class RedeemFragment extends Fragment {
     private void setupCards() {
         gridLayout.removeAllViews();
 
-        if (redeemType.equals(UPI)) {
+        if (UPI.equals(redeemType)) {
             addCard(R.drawable.ic_upi, 1174, 10);
             addCard(R.drawable.ic_upi, 2674, 25);
             addCard(R.drawable.ic_upi, 10000, 100);
 
-        } else if (redeemType.equals(BANK)) {
+        } else if (BANK.equals(redeemType)) {
             addCard(R.drawable.ic_bank, 10000, 100);
             addCard(R.drawable.ic_bank, 20000, 200);
 
         } else {
-            int icon = redeemType.equals(AMAZON)
+            int icon = AMAZON.equals(redeemType)
                     ? R.drawable.ic_amazon
-                    : redeemType.equals(PHONEPE)
+                    : PHONEPE.equals(redeemType)
                     ? R.drawable.ic_phonepe
                     : R.drawable.ic_google_play;
 
@@ -170,7 +170,7 @@ public class RedeemFragment extends Fragment {
                 return;
             }
 
-            if (redeemType.equals(UPI) || redeemType.equals(BANK)) {
+            if (UPI.equals(redeemType) || BANK.equals(redeemType)) {
                 pendingCoins = cost;
                 pendingAmount = amount;
 
@@ -193,17 +193,15 @@ public class RedeemFragment extends Fragment {
                         this,
                         (requestKey, bundle) -> {
 
-                            withdrawDetails =
-                                    bundle.getString(
-                                            bottomsheet_withdraw_details.KEY_RESULT,
-                                            ""
-                                    );
+                            withdrawDetails = bundle.getString(
+                                    bottomsheet_withdraw_details.KEY_RESULT, ""
+                            );
 
                             submitRedeem(pendingCoins, pendingAmount);
                         });
     }
 
-    /* ================= SUBMIT (FIXED) ================= */
+    /* ================= SUBMIT ================= */
     private void submitRedeem(long coinsUsed, long amount) {
 
         if (isSubmitting) return;
@@ -238,7 +236,7 @@ public class RedeemFragment extends Fragment {
             transaction.update(userRef, "coins", updated);
 
             var reqRef = db.collection("redeem_requests").document();
-            String requestId = reqRef.getId(); // 🔥 KEY FIX
+            String requestId = reqRef.getId();
 
             Map<String, Object> req = new HashMap<>();
             req.put("uid", uid);
@@ -275,10 +273,10 @@ public class RedeemFragment extends Fragment {
             );
             i.putExtra(activity_withdraw_success.EXTRA_TYPE, redeemType);
             i.putExtra(activity_withdraw_success.EXTRA_AMOUNT, "₹" + amount);
-            i.putExtra(activity_withdraw_success.EXTRA_WITHDRAW_DETAILS, withdrawDetails);
-            i.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, requestId); // 🔥 FIX
+            i.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, requestId);
 
             startActivity(i);
+
         }).addOnFailureListener(e -> {
             isSubmitting = false;
             toast(e.getMessage());
@@ -286,9 +284,9 @@ public class RedeemFragment extends Fragment {
     }
 
     private String getMethodDetailText() {
-        return redeemType.equals(UPI)
+        return UPI.equals(redeemType)
                 ? "Cash (UPI)"
-                : redeemType.equals(BANK)
+                : BANK.equals(redeemType)
                 ? "Cash (Bank)"
                 : "Voucher Code";
     }
