@@ -113,6 +113,7 @@
             android:paddingHorizontal="16dp"
             android:background="@drawable/bg_voucher_code"
             android:text="CODE: XXXX-XXXX-XXXX"
+            android:textColor="@color/black"
             android:textStyle="bold"
             android:layout_marginBottom="14dp"
             android:visibility="gone" />

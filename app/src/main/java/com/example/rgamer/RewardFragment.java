@@ -22,9 +22,11 @@ public class RewardFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState
+    ) {
 
         View view = inflater.inflate(R.layout.fragment_reward, container, false);
 
@@ -40,7 +42,7 @@ public class RewardFragment extends Fragment {
         return view;
     }
 
-    /* ================= LOAD COINS (FROM USERPREF) ================= */
+    /* ================= LOAD COINS ================= */
     private void loadCoins() {
         long coins = userPref.getCoins();
         txtCoins.setText(String.valueOf(coins));
@@ -49,7 +51,6 @@ public class RewardFragment extends Fragment {
     /* ================= OPTIONS ================= */
     private void setupOptions(View view) {
 
-        // 🔹 CASH OPTIONS
         setupItem(view, R.id.upiOption,
                 R.drawable.ic_upi,
                 "UPI Withdraw",
@@ -62,7 +63,6 @@ public class RewardFragment extends Fragment {
                 "Cash",
                 RedeemFragment.BANK);
 
-        // 🔹 VOUCHER OPTIONS
         setupItem(view, R.id.googleOption,
                 R.drawable.ic_google_play,
                 "Google Play Voucher",
@@ -82,16 +82,21 @@ public class RewardFragment extends Fragment {
                 RedeemFragment.PHONEPE);
     }
 
-    /* ================= HISTORY ================= */
+    /* ================= HISTORY (ACTIVITY) ================= */
     private void setupHistory(View view) {
+
         LinearLayout btnHistory = view.findViewById(R.id.btnHistory);
-        btnHistory.setOnClickListener(v ->
-                startActivity(new Intent(requireContext(),
-                        TransactionHistoryFragment.class))
-        );
+
+        btnHistory.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    requireContext(),
+                    TransactionHistoryFragment.class // ✅ ACTIVITY
+            );
+            startActivity(intent);
+        });
     }
 
-    /* ================= SINGLE ITEM (WITH SUBTITLE) ================= */
+    /* ================= SINGLE ITEM ================= */
     private void setupItem(View root, int id, int icon,
                            String title, String subtitle, String type) {
 
@@ -109,10 +114,8 @@ public class RewardFragment extends Fragment {
         layout.setOnClickListener(v -> openRedeem(type));
     }
 
-    /* ================= OPEN REDEEM ================= */
+    /* ================= OPEN REDEEM (FRAGMENT) ================= */
     private void openRedeem(String type) {
-
-        // ❌ NO MINIMUM COIN CHECK
 
         requireActivity()
                 .getSupportFragmentManager()

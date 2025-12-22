@@ -49,7 +49,7 @@ public class RedeemFragment extends Fragment {
     private long pendingAmount = 0;
     private String withdrawDetails = "";
 
-    private boolean isSubmitting = false; // 🔒 prevent double submit
+    private boolean isSubmitting = false;
 
     /* ================= FACTORY ================= */
     public static RedeemFragment newInstance(String type) {
@@ -203,7 +203,7 @@ public class RedeemFragment extends Fragment {
                         });
     }
 
-    /* ================= SUBMIT ================= */
+    /* ================= SUBMIT (FIXED) ================= */
     private void submitRedeem(long coinsUsed, long amount) {
 
         if (isSubmitting) return;
@@ -211,18 +211,17 @@ public class RedeemFragment extends Fragment {
 
         if (auth.getCurrentUser() == null) {
             isSubmitting = false;
-            toast("Session expired. Please login again.");
+            toast("Session expired");
             return;
         }
 
         String uid = auth.getCurrentUser().getUid();
         String email = auth.getCurrentUser().getEmail();
-
-        // ✅ USERNAME (FINAL for lambda)
         String username = userPref.getName();
         if (username == null || username.isEmpty()) {
             username = email != null ? email : "Unknown";
         }
+
         final String finalUsername = username;
 
         db.runTransaction(transaction -> {
@@ -239,10 +238,11 @@ public class RedeemFragment extends Fragment {
             transaction.update(userRef, "coins", updated);
 
             var reqRef = db.collection("redeem_requests").document();
+            String requestId = reqRef.getId(); // 🔥 KEY FIX
 
             Map<String, Object> req = new HashMap<>();
             req.put("uid", uid);
-            req.put("username", finalUsername); // ✅ FIXED
+            req.put("username", finalUsername);
             req.put("email", email);
             req.put("type", redeemType);
             req.put("amount", amount);
@@ -252,12 +252,19 @@ public class RedeemFragment extends Fragment {
             req.put("created_at", FieldValue.serverTimestamp());
 
             transaction.set(reqRef, req);
-            return updated;
 
-        }).addOnSuccessListener(updated -> {
+            Map<String, Object> result = new HashMap<>();
+            result.put("coins", updated);
+            result.put("requestId", requestId);
+            return result;
+
+        }).addOnSuccessListener(result -> {
 
             isSubmitting = false;
             if (!isAdded()) return;
+
+            long updated = (long) result.get("coins");
+            String requestId = (String) result.get("requestId");
 
             userPref.setCoins(updated);
             txtCoins.setText(String.valueOf(updated));
@@ -267,24 +274,17 @@ public class RedeemFragment extends Fragment {
                     activity_withdraw_success.class
             );
             i.putExtra(activity_withdraw_success.EXTRA_TYPE, redeemType);
-            i.putExtra(activity_withdraw_success.EXTRA_AMOUNT, amount);
-            i.putExtra(
-                    activity_withdraw_success.EXTRA_WITHDRAW_DETAILS,
-                    withdrawDetails
-            );
+            i.putExtra(activity_withdraw_success.EXTRA_AMOUNT, "₹" + amount);
+            i.putExtra(activity_withdraw_success.EXTRA_WITHDRAW_DETAILS, withdrawDetails);
+            i.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, requestId); // 🔥 FIX
+
             startActivity(i);
-
-            requireActivity()
-                    .getSupportFragmentManager()
-                    .popBackStack();
-
         }).addOnFailureListener(e -> {
             isSubmitting = false;
             toast(e.getMessage());
         });
     }
 
-    /* ================= HELPERS ================= */
     private String getMethodDetailText() {
         return redeemType.equals(UPI)
                 ? "Cash (UPI)"
