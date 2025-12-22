@@ -218,6 +218,13 @@ public class RedeemFragment extends Fragment {
         String uid = auth.getCurrentUser().getUid();
         String email = auth.getCurrentUser().getEmail();
 
+        // ✅ USERNAME (FINAL for lambda)
+        String username = userPref.getName();
+        if (username == null || username.isEmpty()) {
+            username = email != null ? email : "Unknown";
+        }
+        final String finalUsername = username;
+
         db.runTransaction(transaction -> {
 
             var userRef = db.collection("users").document(uid);
@@ -235,13 +242,14 @@ public class RedeemFragment extends Fragment {
 
             Map<String, Object> req = new HashMap<>();
             req.put("uid", uid);
+            req.put("username", finalUsername); // ✅ FIXED
             req.put("email", email);
             req.put("type", redeemType);
             req.put("amount", amount);
             req.put("coins", coinsUsed);
             req.put("withdraw_details", withdrawDetails);
             req.put("status", "pending");
-            req.put("created_at", FieldValue.serverTimestamp()); // ✅ FIXED
+            req.put("created_at", FieldValue.serverTimestamp());
 
             transaction.set(reqRef, req);
             return updated;
