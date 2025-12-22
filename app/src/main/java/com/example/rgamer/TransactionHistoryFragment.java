@@ -4,12 +4,16 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -19,17 +23,21 @@ import java.util.List;
 
 public class TransactionHistoryFragment extends AppCompatActivity {
 
-    RecyclerView recyclerHistory;
-    WithdrawHistoryAdapter adapter;
-    List<WithdrawHistoryModel> list;
+    private static final String TAG = "HISTORY";
 
-    FirebaseFirestore db;
-    String uid;
+    private RecyclerView recyclerHistory;
+    private WithdrawHistoryAdapter adapter;
+    private final List<WithdrawHistoryModel> list = new ArrayList<>();
+
+    private FirebaseFirestore db;
+    private String uid;
+
+    private ImageView btnBack;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
 
-        // 🔹 FULL SCREEN STATUS BAR
+        // Full screen status bar
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
             getWindow().getDecorView().setSystemUiVisibility(
@@ -41,55 +49,74 @@ public class TransactionHistoryFragment extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_history_fragment);
 
+        // Views
+        btnBack = findViewById(R.id.btnBack);
         recyclerHistory = findViewById(R.id.recyclerHistory);
+
         recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
 
-        list = new ArrayList<>();
-
+        // Adapter
         adapter = new WithdrawHistoryAdapter(list, model -> {
-
-            // 🔥 OPEN WITHDRAW DETAIL SCREEN
             Intent intent = new Intent(
                     TransactionHistoryFragment.this,
                     activity_withdraw_success.class
             );
-
-            intent.putExtra(activity_withdraw_success.EXTRA_TYPE, model.getType());
-            intent.putExtra(activity_withdraw_success.EXTRA_AMOUNT, model.getAmount());
-            intent.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, model.getRequest_id());
-
+            intent.putExtra(
+                    activity_withdraw_success.EXTRA_TYPE,
+                    model.getType()
+            );
+            intent.putExtra(
+                    activity_withdraw_success.EXTRA_AMOUNT,
+                    model.getAmount()
+            );
+            intent.putExtra(
+                    activity_withdraw_success.EXTRA_REQUEST_ID,
+                    model.getRequest_id()
+            );
             startActivity(intent);
         });
 
         recyclerHistory.setAdapter(adapter);
 
+        // Firebase
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
+
+        btnBack.setOnClickListener(v -> onBackPressed());
 
         loadWithdrawHistory();
     }
 
+    // ================= LOAD HISTORY =================
     private void loadWithdrawHistory() {
+
+        if (uid == null) {
+            Log.e(TAG, "UID is null");
+            return;
+        }
 
         db.collection("redeem_requests")
                 .whereEqualTo("uid", uid)
                 .orderBy("created_at", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
 
+                    if (error != null) {
+                        Log.e(TAG, "Firestore error", error);
+                        return;
+                    }
+
                     if (value == null) return;
 
                     list.clear();
 
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                        value.getDocuments().forEach(doc -> {
-                            WithdrawHistoryModel model =
-                                    doc.toObject(WithdrawHistoryModel.class);
+                    for (var doc : value.getDocuments()) {
+                        WithdrawHistoryModel model =
+                                doc.toObject(WithdrawHistoryModel.class);
 
-                            if (model != null) {
-                                model.setRequest_id(doc.getId()); // 🔑 IMPORTANT
-                                list.add(model);
-                            }
-                        });
+                        if (model == null) continue;
+
+                        model.setRequest_id(doc.getId());
+                        list.add(model);
                     }
 
                     adapter.notifyDataSetChanged();

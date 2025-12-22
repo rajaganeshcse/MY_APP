@@ -1,5 +1,7 @@
 package com.example.rgamer;
 
+import androidx.annotation.Nullable;
+
 import com.google.firebase.Timestamp;
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
@@ -12,10 +14,12 @@ public class WithdrawHistoryModel {
     /* ================= FIRESTORE FIELDS ================= */
     private String uid;
     private String type;
-    private String amount;
+    private Object amount;        // String OR Long
     private String status;
     private String voucher_code;
-    private Timestamp created_at;
+
+    @Nullable
+    private Timestamp created_at; // ✅ FIXED (Firestore Timestamp)
 
     /* ================= LOCAL ONLY ================= */
     private String request_id;
@@ -23,46 +27,61 @@ public class WithdrawHistoryModel {
     /* ================= REQUIRED ================= */
     public WithdrawHistoryModel() {}
 
-    /* ================= FULL CONSTRUCTOR ================= */
-    public WithdrawHistoryModel(
-            String uid,
-            String type,
-            String amount,
-            String status,
-            String voucher_code,
-            Timestamp created_at
-    ) {
-        this.uid = uid;
-        this.type = type;
-        this.amount = amount;
-        this.status = status;
-        this.voucher_code = voucher_code;
-        this.created_at = created_at;
-    }
-
     /* ================= GETTERS ================= */
+
     public String getUid() {
         return uid;
     }
 
     public String getType() {
-        return type;
+        return type != null ? type : "withdraw";
     }
 
-    public String getAmount() {
-        return amount;
+    /** 🔥 SAFE AMOUNT PARSER */
+    public long getAmount() {
+        if (amount == null) return 0;
+
+        if (amount instanceof Long) {
+            return (Long) amount;
+        }
+
+        if (amount instanceof String) {
+            try {
+                return Long.parseLong(
+                        ((String) amount)
+                                .replace("₹", "")
+                                .replace(",", "")
+                                .trim()
+                );
+            } catch (Exception ignored) {
+                return 0;
+            }
+        }
+        return 0;
     }
 
     public String getStatus() {
-        return status;
+        return status != null ? status : "pending";
     }
 
     public String getVoucher_code() {
         return voucher_code;
     }
 
-    public Timestamp getCreated_at() {
-        return created_at;
+    /** ✅ TIMESTAMP → MILLIS */
+    public long getCreatedAt() {
+        return created_at != null
+                ? created_at.toDate().getTime()
+                : 0;
+    }
+
+    /** ✅ FORMATTED DATE (OPTIONAL UI) */
+    public String getFormattedDate() {
+        if (created_at == null) return "";
+        return android.text.format.DateFormat
+                .format("dd MMM yyyy, hh:mm a",
+                        created_at.toDate())
+                .toString();
     }
 
     public String getRequest_id() {
@@ -70,20 +89,9 @@ public class WithdrawHistoryModel {
     }
 
     /* ================= SETTERS ================= */
+
     public void setRequest_id(String request_id) {
         this.request_id = request_id;
-    }
-
-    // 🔥🔥🔥 THIS WAS MISSING (MAIN FIX)
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    /* ================= HELPERS ================= */
-    public long getCreatedAtMillis() {
-        return created_at != null
-                ? created_at.toDate().getTime()
-                : 0;
     }
 
     /* ================= FIRESTORE MAP ================= */
@@ -92,9 +100,9 @@ public class WithdrawHistoryModel {
         map.put("uid", uid);
         map.put("type", type);
         map.put("amount", amount);
-        map.put("status", status);
+        map.put("status", getStatus());
         map.put("voucher_code", voucher_code);
-        map.put("created_at", created_at);
+        map.put("created_at", created_at); // Timestamp
         return map;
     }
 }

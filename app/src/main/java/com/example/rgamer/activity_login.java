@@ -14,11 +14,16 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class activity_login extends AppCompatActivity {
 
@@ -53,7 +58,8 @@ public class activity_login extends AppCompatActivity {
         btnGoogle.setOnClickListener(v -> signIn());
     }
 
-    // ================= GOOGLE SIGN IN =================
+    /* ================= GOOGLE SIGN IN ================= */
+
     private void signIn() {
         startActivityForResult(
                 googleSignInClient.getSignInIntent(),
@@ -62,9 +68,11 @@ public class activity_login extends AppCompatActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode,
-                                    int resultCode,
-                                    @Nullable Intent data) {
+    protected void onActivityResult(
+            int requestCode,
+            int resultCode,
+            @Nullable Intent data
+    ) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == RC_SIGN_IN) {
@@ -76,14 +84,17 @@ public class activity_login extends AppCompatActivity {
                 firebaseAuth(account);
 
             } catch (Exception e) {
-                Toast.makeText(this,
+                Toast.makeText(
+                        this,
                         "Google Login Failed",
-                        Toast.LENGTH_SHORT).show();
+                        Toast.LENGTH_SHORT
+                ).show();
             }
         }
     }
 
-    // ================= FIREBASE AUTH =================
+    /* ================= FIREBASE AUTH ================= */
+
     private void firebaseAuth(GoogleSignInAccount account) {
 
         AuthCredential credential =
@@ -115,16 +126,21 @@ public class activity_login extends AppCompatActivity {
                     );
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this,
+                        Toast.makeText(
+                                this,
                                 e.getMessage(),
-                                Toast.LENGTH_LONG).show());
+                                Toast.LENGTH_LONG
+                        ).show());
     }
 
-    // ================= FIRESTORE USER CHECK =================
-    private void checkUserInFirestore(String uid,
-                                      String name,
-                                      String email,
-                                      String profileImage) {
+    /* ================= FIRESTORE USER CHECK ================= */
+
+    private void checkUserInFirestore(
+            String uid,
+            String name,
+            String email,
+            String profileImage
+    ) {
 
         db.collection("users")
                 .document(uid)
@@ -141,58 +157,80 @@ public class activity_login extends AppCompatActivity {
 
                     } else {
                         // 🆕 NEW USER
-                        UserModel newUser =
-                                createNewUser(uid, name, email, profileImage);
-
-                        db.collection("users")
-                                .document(uid)
-                                .set(newUser.toMap())
-                                .addOnSuccessListener(aVoid -> {
-                                    saveUserToPref(newUser);
-                                    openMain();
-                                })
-                                .addOnFailureListener(e ->
-                                        Toast.makeText(this,
-                                                e.getMessage(),
-                                                Toast.LENGTH_LONG).show());
+                        createNewUser(uid, name, email, profileImage);
                     }
                 })
                 .addOnFailureListener(e ->
-                        Toast.makeText(this,
+                        Toast.makeText(
+                                this,
                                 e.getMessage(),
-                                Toast.LENGTH_LONG).show());
+                                Toast.LENGTH_LONG
+                        ).show());
     }
 
-    // ================= CREATE NEW USER =================
-    private UserModel createNewUser(String uid,
-                                    String name,
-                                    String email,
-                                    String profileImage) {
+    /* ================= CREATE NEW USER ================= */
 
-        return new UserModel(
-                uid,
-                name,
-                email,
-                100,                // coins
-                0,                  // tickets
-                0,                  // walletToken
-                "",                 // fcmToken
-                profileImage,
-                "",                 // dailyBonusClaimedDate
-                generateReferralCode(uid),
-                "",                 // referredBy
-                false,              // referralUsed
-                0,                  // referral coins
-                0,                  // referral tickets
-                System.currentTimeMillis()
-        );
+    private void createNewUser(
+            String uid,
+            String name,
+            String email,
+            String profileImage
+    ) {
+
+        Map<String, Object> user = new HashMap<>();
+
+        user.put("uid", uid);
+        user.put("name", name);
+        user.put("email", email);
+
+        user.put("coins", 100L);          // ✅ long
+        user.put("tickets", 0);
+        user.put("walletToken", 0);
+
+        user.put("fcmToken", "");
+        user.put("profile_image", profileImage);
+
+        user.put("dailyBonusClaimedDate", "");
+        user.put("referralCode", generateReferralCode(uid));
+        user.put("referredBy", "");
+        user.put("referralUsed", false);
+        user.put("totalReferralCoins", 0L);
+        user.put("totalReferralTickets", 0L);
+
+        user.put("created_at", FieldValue.serverTimestamp()); // ✅ FIXED
+
+        db.collection("users")
+                .document(uid)
+                .set(user)
+                .addOnSuccessListener(aVoid -> {
+
+                    // Fetch again to get serverTimestamp populated
+                    db.collection("users")
+                            .document(uid)
+                            .get()
+                            .addOnSuccessListener(doc -> {
+                                UserModel newUser =
+                                        doc.toObject(UserModel.class);
+                                if (newUser != null) {
+                                    saveUserToPref(newUser);
+                                    openMain();
+                                }
+                            });
+                })
+                .addOnFailureListener(e ->
+                        Toast.makeText(
+                                this,
+                                e.getMessage(),
+                                Toast.LENGTH_LONG
+                        ).show());
     }
 
     private String generateReferralCode(String uid) {
         return uid.substring(0, 6).toUpperCase();
     }
 
-    // ================= SAVE USER PREF =================
+    /* ================= SAVE USER PREF ================= */
+
     private void saveUserToPref(UserModel user) {
 
         userPref.setUid(user.getUid());
@@ -211,7 +249,8 @@ public class activity_login extends AppCompatActivity {
         userPref.setLogin(true);
     }
 
-    // ================= OPEN MAIN =================
+    /* ================= OPEN MAIN ================= */
+
     private void openMain() {
         startActivity(new Intent(this, MainActivity.class));
         finish();

@@ -18,7 +18,7 @@ public class UserPref {
     private static final String KEY_IS_LOGIN = "is_login";
 
     /* ================= WALLET ================= */
-    private static final String KEY_COINS = "coins";              // 🔥 long (migrated)
+    private static final String KEY_COINS = "coins";   // 🔥 long
     private static final String KEY_TICKETS = "tickets";
     private static final String KEY_WALLET_TOKEN = "wallet_token";
 
@@ -151,20 +151,17 @@ public class UserPref {
     }
 
     /* ==================================================
-       DAILY BONUS (✅ COMPLETE)
+       DAILY BONUS
        ================================================== */
 
-    // Can user claim daily bonus today?
     public boolean canClaimDailyBonus() {
         return !getTodayDate().equals(pref.getString(KEY_DAILY_DATE, ""));
     }
 
-    // Mark today as claimed (recommended)
     public void setDailyBonusClaimed() {
         editor.putString(KEY_DAILY_DATE, getTodayDate()).apply();
     }
 
-    // Set claimed date manually (Firebase sync)
     public void setDailyClaimedDate(String date) {
         editor.putString(KEY_DAILY_DATE, date).apply();
     }
@@ -223,6 +220,25 @@ public class UserPref {
                 .format(new Date());
     }
 
+    /**
+     * ✅ SAFE LOGOUT (recommended instead of clear())
+     */
+    public void logout() {
+        editor.remove(KEY_UID);
+        editor.remove(KEY_NAME);
+        editor.remove(KEY_EMAIL);
+        editor.remove(KEY_COINS);
+        editor.remove(KEY_TICKETS);
+        editor.remove(KEY_WALLET_TOKEN);
+        editor.remove(KEY_PROFILE_IMAGE);
+        editor.remove(KEY_FCM_TOKEN);
+        editor.putBoolean(KEY_IS_LOGIN, false);
+        editor.apply();
+    }
+
+    /**
+     * ⚠️ FULL CLEAR (use only if really needed)
+     */
     public void clear() {
         editor.clear().apply();
     }

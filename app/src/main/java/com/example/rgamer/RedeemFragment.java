@@ -15,6 +15,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
@@ -22,6 +23,7 @@ import java.util.Map;
 
 public class RedeemFragment extends Fragment {
 
+    /* ================= TYPES ================= */
     public static final String TYPE = "type";
     public static final String GOOGLE = "google";
     public static final String AMAZON = "amazon";
@@ -31,12 +33,15 @@ public class RedeemFragment extends Fragment {
 
     private String redeemType = GOOGLE;
 
+    /* ================= UI ================= */
     private TextView txtTitle, txtCoins;
     private GridLayout gridLayout;
 
+    /* ================= FIREBASE ================= */
     private FirebaseAuth auth;
     private FirebaseFirestore db;
 
+    /* ================= LOCAL ================= */
     private UserPref userPref;
     private long userCoins = 0;
 
@@ -44,6 +49,9 @@ public class RedeemFragment extends Fragment {
     private long pendingAmount = 0;
     private String withdrawDetails = "";
 
+    private boolean isSubmitting = false; // 🔒 prevent double submit
+
+    /* ================= FACTORY ================= */
     public static RedeemFragment newInstance(String type) {
         RedeemFragment f = new RedeemFragment();
         Bundle b = new Bundle();
@@ -57,7 +65,8 @@ public class RedeemFragment extends Fragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+            @Nullable Bundle savedInstanceState
+    ) {
 
         View view = inflater.inflate(
                 R.layout.fragment_redeem_options,
@@ -85,6 +94,7 @@ public class RedeemFragment extends Fragment {
         return view;
     }
 
+    /* ================= HEADER ================= */
     private void setupHeader() {
         switch (redeemType) {
             case GOOGLE:
@@ -105,11 +115,13 @@ public class RedeemFragment extends Fragment {
         }
     }
 
+    /* ================= COINS ================= */
     private void loadCoins() {
         userCoins = userPref.getCoins();
         txtCoins.setText(String.valueOf(userCoins));
     }
 
+    /* ================= CARDS ================= */
     private void setupCards() {
         gridLayout.removeAllViews();
 
@@ -173,6 +185,7 @@ public class RedeemFragment extends Fragment {
         gridLayout.addView(card);
     }
 
+    /* ================= BOTTOM SHEET RESULT ================= */
     private void setupBottomSheetResult() {
         getParentFragmentManager()
                 .setFragmentResultListener(
@@ -190,11 +203,20 @@ public class RedeemFragment extends Fragment {
                         });
     }
 
+    /* ================= SUBMIT ================= */
     private void submitRedeem(long coinsUsed, long amount) {
+
+        if (isSubmitting) return;
+        isSubmitting = true;
+
+        if (auth.getCurrentUser() == null) {
+            isSubmitting = false;
+            toast("Session expired. Please login again.");
+            return;
+        }
 
         String uid = auth.getCurrentUser().getUid();
         String email = auth.getCurrentUser().getEmail();
-        long createdAtMillis = System.currentTimeMillis(); // ✅ MILLIS
 
         db.runTransaction(transaction -> {
 
@@ -219,13 +241,14 @@ public class RedeemFragment extends Fragment {
             req.put("coins", coinsUsed);
             req.put("withdraw_details", withdrawDetails);
             req.put("status", "pending");
-            req.put("created_at", createdAtMillis); // ✅ MILLIS
+            req.put("created_at", FieldValue.serverTimestamp()); // ✅ FIXED
 
             transaction.set(reqRef, req);
             return updated;
 
         }).addOnSuccessListener(updated -> {
 
+            isSubmitting = false;
             if (!isAdded()) return;
 
             userPref.setCoins(updated);
@@ -247,9 +270,13 @@ public class RedeemFragment extends Fragment {
                     .getSupportFragmentManager()
                     .popBackStack();
 
-        }).addOnFailureListener(e -> toast(e.getMessage()));
+        }).addOnFailureListener(e -> {
+            isSubmitting = false;
+            toast(e.getMessage());
+        });
     }
 
+    /* ================= HELPERS ================= */
     private String getMethodDetailText() {
         return redeemType.equals(UPI)
                 ? "Cash (UPI)"

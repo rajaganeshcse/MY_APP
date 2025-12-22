@@ -17,14 +17,16 @@
         <activity
             android:name=".activity_withdraw_success"
             android:exported="false" />
-        <activity
-            android:name=".TransactionHistoryFragment"
-            android:exported="false" />
+
         <activity
             android:name=".RedeemFragment"
             android:exported="false" />
+
         <activity
             android:name=".layout_referral_info"
+            android:exported="false" />
+        <activity
+            android:name=".TransactionHistoryFragment"
             android:exported="false" />
         <activity
             android:name=".layout_my_earnings"

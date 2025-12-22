@@ -1,8 +1,12 @@
 package com.example.rgamer.models;
 
+import com.google.firebase.Timestamp;
+import com.google.firebase.firestore.IgnoreExtraProperties;
+
 import java.util.HashMap;
 import java.util.Map;
 
+@IgnoreExtraProperties
 public class UserModel {
 
     /* ================= BASIC INFO ================= */
@@ -11,7 +15,7 @@ public class UserModel {
     private String email;
 
     /* ================= WALLET ================= */
-    private long coins;         // ✅ FIXED (was int)
+    private long coins;          // ✅ long
     private int tickets;
     private int walletToken;
 
@@ -20,7 +24,7 @@ public class UserModel {
 
     /* ================= PROFILE ================= */
     private String profile_image;
-    private long created_at;
+    private Timestamp created_at;   // ✅ FIXED (Timestamp)
 
     /* ================= DAILY BONUS ================= */
     private String dailyBonusClaimedDate;
@@ -42,7 +46,7 @@ public class UserModel {
             String uid,
             String name,
             String email,
-            long coins,              // ✅ FIXED
+            long coins,
             int tickets,
             int walletToken,
             String fcmToken,
@@ -53,7 +57,7 @@ public class UserModel {
             boolean referralUsed,
             long totalReferralCoins,
             long totalReferralTickets,
-            long created_at
+            Timestamp created_at
     ) {
         this.uid = uid;
         this.name = name;
@@ -77,7 +81,7 @@ public class UserModel {
     public String getName() { return name; }
     public String getEmail() { return email; }
 
-    public long getCoins() { return coins; }          // ✅ FIXED
+    public long getCoins() { return coins; }
     public int getTickets() { return tickets; }
     public int getWalletToken() { return walletToken; }
 
@@ -92,10 +96,25 @@ public class UserModel {
     public long getTotalReferralCoins() { return totalReferralCoins; }
     public long getTotalReferralTickets() { return totalReferralTickets; }
 
-    public long getCreatedAt() { return created_at; }
+    /** ✅ Timestamp → millis (safe for UI) */
+    public long getCreatedAt() {
+        return created_at != null
+                ? created_at.toDate().getTime()
+                : 0;
+    }
+
+    /** ✅ Optional formatted date */
+    public String getFormattedCreatedAt() {
+        if (created_at == null) return "";
+        return android.text.format.DateFormat
+                .format("dd MMM yyyy", created_at.toDate())
+                .toString();
+    }
 
     /* ================= SETTERS ================= */
-    public void setCoins(long coins) { this.coins = coins; }   // ✅ FIXED
+    public void setCoins(long coins) {
+        this.coins = coins;
+    }
 
     /* ================= FIRESTORE MAP ================= */
     public Map<String, Object> toMap() {
@@ -106,7 +125,7 @@ public class UserModel {
         map.put("name", name);
         map.put("email", email);
 
-        map.put("coins", coins);              // ✅ long
+        map.put("coins", coins);
         map.put("tickets", tickets);
         map.put("walletToken", walletToken);
 
@@ -121,7 +140,7 @@ public class UserModel {
         map.put("totalReferralCoins", totalReferralCoins);
         map.put("totalReferralTickets", totalReferralTickets);
 
-        map.put("created_at", created_at);
+        map.put("created_at", created_at); // ✅ Timestamp
 
         return map;
     }
