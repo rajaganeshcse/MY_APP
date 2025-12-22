@@ -24,10 +24,10 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textColor="@color/black"
             android:text="Status"
             android:textSize="22sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/black" />
 
         <View
             android:layout_width="40dp"
@@ -43,65 +43,50 @@
         android:gravity="center_horizontal"
         android:padding="20dp">
 
-        <!-- STATUS IMAGE -->
         <ImageView
             android:id="@+id/imgSuccess"
             android:layout_width="180dp"
             android:layout_height="180dp"
-            android:layout_marginTop="70dp"
-            android:layout_marginBottom="12dp"
-            android:src="@drawable/ic_success" />
+            android:layout_marginTop="60dp"
+            android:src="@drawable/ic_processing" />
 
-        <!-- TITLE -->
         <TextView
             android:id="@+id/txtTitle"
-            android:text="Success"
+            android:text="Processing"
             android:textSize="22sp"
             android:textStyle="bold"
             android:textColor="@color/color_green"
-            android:layout_marginBottom="6dp"
+            android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <!-- MESSAGE -->
         <TextView
             android:id="@+id/txtMessage"
-            android:textColor="@color/black"
-            android:text="Your request is being processed"
+            android:text="Please wait while we process your request"
             android:textSize="15sp"
+            android:textColor="@color/black"
             android:layout_marginBottom="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <!-- REWARD TYPE -->
         <TextView
             android:id="@+id/txtRewardType"
-            android:text="Reward: Google Play Voucher"
+            android:text="Reward"
             android:textSize="14sp"
-            android:textColor="@color/black"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/txtdetail"
-            android:text="Reward: Google Play Voucher"
-            android:textSize="14sp"
             android:textColor="@color/black"
-            android:textStyle="bold"
             android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-        <!-- ✅ METHOD IMAGE + AMOUNT ROW -->
+        <!-- METHOD + AMOUNT -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="12dp">
+            android:gravity="center"
+            android:layout_marginBottom="12dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
 
-            <!-- METHOD IMAGE (LEFT) -->
             <ImageView
                 android:id="@+id/imgMethod"
                 android:layout_width="40dp"
@@ -109,7 +94,6 @@
                 android:layout_marginEnd="10dp"
                 android:src="@drawable/wallet_icon" />
 
-            <!-- AMOUNT (RIGHT) -->
             <TextView
                 android:id="@+id/txtAmount"
                 android:text="₹0"
@@ -130,9 +114,23 @@
             android:background="@drawable/bg_voucher_code"
             android:text="CODE: XXXX-XXXX-XXXX"
             android:textStyle="bold"
-            android:layout_marginBottom="20dp" />
+            android:layout_marginBottom="14dp"
+            android:visibility="gone" />
 
-        <!-- DONE BUTTON -->
+        <!-- UPI / BANK DETAILS -->
+        <TextView
+            android:id="@+id/txtdetail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="12dp"
+            android:textColor="@color/black"
+            android:textSize="14sp"
+            android:background="@drawable/bg_light_border"
+            android:gravity="center"
+            android:layout_marginBottom="20dp"
+            android:visibility="gone" />
+
+        <!-- DONE -->
         <TextView
             android:id="@+id/btnDone"
             android:layout_width="match_parent"
@@ -141,8 +139,8 @@
             android:gravity="center"
             android:padding="14dp"
             android:text="DONE"
-            android:textColor="@color/black"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:textStyle="bold"
+            android:textColor="@color/black" />
 
+    </LinearLayout>
 </LinearLayout>

@@ -27,15 +27,15 @@ public class activity_withdraw_success extends AppCompatActivity {
     ImageView btnBack, imgSuccess, imgMethod;
     TextView txtHeader, txtTitle, txtMessage;
     TextView txtRewardType, txtAmount;
-    TextView txtVoucherCode, txtWithdrawDetails;
-    TextView btnDone;
+    TextView txtVoucherCode, txtWithdrawDetails, btnDone;
 
     FirebaseFirestore db;
+    String type;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-        // 🔹 FULL SCREEN
+        /* FULL SCREEN */
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
             getWindow().getDecorView().setSystemUiVisibility(
@@ -49,7 +49,7 @@ public class activity_withdraw_success extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
 
-        /* ================= BIND UI ================= */
+        /* BIND UI */
         btnBack = findViewById(R.id.btnBack);
         imgSuccess = findViewById(R.id.imgSuccess);
         imgMethod = findViewById(R.id.imgMethod);
@@ -66,11 +66,8 @@ public class activity_withdraw_success extends AppCompatActivity {
         btnBack.setOnClickListener(v -> finish());
         btnDone.setOnClickListener(v -> finish());
 
-        /* ================= INITIAL UI ================= */
-        setProcessingUI();
-
-        /* ================= GET DATA ================= */
-        String type = getIntent().getStringExtra(EXTRA_TYPE);
+        /* GET DATA */
+        type = getIntent().getStringExtra(EXTRA_TYPE);
         String amount = getIntent().getStringExtra(EXTRA_AMOUNT);
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         String withdrawDetails =
@@ -80,9 +77,11 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtVoucherCode.setVisibility(View.GONE);
         txtWithdrawDetails.setVisibility(View.GONE);
 
+        /* INITIAL UI */
         setMethodUI(type);
+        setProcessingUI();
 
-        /* ================= FLOW ================= */
+        /* FLOW */
         if (RedeemFragment.UPI.equals(type)) {
 
             txtTitle.setText("Withdraw Submitted ⏳");
@@ -96,12 +95,11 @@ public class activity_withdraw_success extends AppCompatActivity {
             showWithdrawDetails("Bank Details", withdrawDetails);
 
         } else {
-            // 🔥 Voucher flow → LIVE Firestore update
             observeRedeemRequest(requestId);
         }
     }
 
-    /* ================= METHOD UI ================= */
+    /* ================= METHOD ICON ================= */
     private void setMethodUI(String type) {
 
         if (type == null) return;
@@ -135,25 +133,7 @@ public class activity_withdraw_success extends AppCompatActivity {
         }
     }
 
-    /* ================= WITHDRAW DETAILS ================= */
-    private void showWithdrawDetails(String title, String details) {
-
-        if (details == null || details.isEmpty()) return;
-
-        txtWithdrawDetails.setVisibility(View.VISIBLE);
-        txtWithdrawDetails.setText(title + ":\n" + details);
-
-        txtWithdrawDetails.setOnClickListener(v -> {
-            ClipboardManager cm =
-                    (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-            cm.setPrimaryClip(
-                    ClipData.newPlainText(title, details)
-            );
-            Toast.makeText(this, "Details copied", Toast.LENGTH_SHORT).show();
-        });
-    }
-
-    /* ================= FIRESTORE LISTENER ================= */
+    /* ================= FIRESTORE ================= */
     private void observeRedeemRequest(String requestId) {
 
         if (requestId == null) return;
@@ -166,7 +146,6 @@ public class activity_withdraw_success extends AppCompatActivity {
 
                     String status = doc.getString("status");
                     String voucher = doc.getString("voucher_code");
-                    String type = doc.getString("type");
 
                     if ("pending".equals(status)) {
 
@@ -179,10 +158,9 @@ public class activity_withdraw_success extends AppCompatActivity {
                         txtTitle.setText("Redeem Successful 🎉");
                         txtMessage.setText("Your voucher is ready!");
 
-                        // ✅ SHOW VOUCHER ONLY FOR VOUCHER TYPES
-                        if (isVoucherType(type) &&
-                                voucher != null &&
-                                !voucher.isEmpty()) {
+                        if (isVoucherType(type)
+                                && voucher != null
+                                && !voucher.trim().isEmpty()) {
 
                             txtVoucherCode.setVisibility(View.VISIBLE);
                             txtVoucherCode.setText("CODE: " + voucher);
@@ -190,6 +168,7 @@ public class activity_withdraw_success extends AppCompatActivity {
 
                         } else {
                             txtVoucherCode.setVisibility(View.GONE);
+
                         }
 
                     } else if ("failed".equals(status)) {
@@ -200,13 +179,7 @@ public class activity_withdraw_success extends AppCompatActivity {
                 });
     }
 
-    /* ================= HELPERS ================= */
-    private boolean isVoucherType(String type) {
-        return RedeemFragment.GOOGLE.equals(type)
-                || RedeemFragment.AMAZON.equals(type)
-                || RedeemFragment.PHONEPE.equals(type);
-    }
-
+    /* ================= STATUS UI ================= */
     private void setProcessingUI() {
         imgSuccess.setImageResource(R.drawable.ic_processing);
         txtTitle.setText("Processing ⏳");
@@ -221,6 +194,30 @@ public class activity_withdraw_success extends AppCompatActivity {
         imgSuccess.setImageResource(R.drawable.ic_failed);
         txtTitle.setText("Failed ❌");
         txtMessage.setText("Coins will be refunded automatically.");
+    }
+
+    /* ================= HELPERS ================= */
+    private boolean isVoucherType(String type) {
+        return RedeemFragment.GOOGLE.equals(type)
+                || RedeemFragment.AMAZON.equals(type)
+                || RedeemFragment.PHONEPE.equals(type);
+    }
+
+    private void showWithdrawDetails(String title, String details) {
+
+        if (details == null || details.trim().isEmpty()) return;
+
+        txtWithdrawDetails.setVisibility(View.VISIBLE);
+        txtWithdrawDetails.setText(title + ":\n" + details);
+
+        txtWithdrawDetails.setOnClickListener(v -> {
+            ClipboardManager cm =
+                    (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+            cm.setPrimaryClip(
+                    ClipData.newPlainText(title, details)
+            );
+            Toast.makeText(this, "Details copied", Toast.LENGTH_SHORT).show();
+        });
     }
 
     private void enableCopy(String code) {
