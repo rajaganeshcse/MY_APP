@@ -56,5 +56,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth:23.0.0")
     implementation("com.google.android.material:material:1.11.0")
     implementation("com.google.android.material:material:1.11.0")
+    //notification
+    implementation("com.google.firebase:firebase-messaging:24.0.0")
 
 }

@@ -25,6 +25,8 @@
         android:layout_height="wrap_content"
         android:hint="Enter UPI ID"
         android:visibility="gone"
+        android:textColorHint="@color/black"
+        android:textColor="@color/black"
         android:inputType="textEmailAddress"
         android:background="@drawable/bg_edit"
         android:padding="12dp"/>
@@ -36,8 +38,10 @@
         android:layout_height="wrap_content"
         android:hint="Bank Name"
         android:visibility="gone"
+        android:textColor="@color/black"
         android:background="@drawable/bg_edit"
         android:padding="12dp"
+        android:textColorHint="@color/black"
         android:layout_marginTop="8dp"/>
 
     <!-- ACCOUNT NUMBER -->
@@ -45,11 +49,13 @@
         android:id="@+id/edtAccount"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/black"
         android:hint="Account Number"
         android:visibility="gone"
         android:inputType="number"
         android:background="@drawable/bg_edit"
         android:padding="12dp"
+        android:textColorHint="@color/black"
         android:layout_marginTop="8dp"/>
 
     <!-- IFSC -->
@@ -59,6 +65,8 @@
         android:layout_height="wrap_content"
         android:hint="IFSC Code"
         android:visibility="gone"
+        android:textColor="@color/black"
+        android:textColorHint="@color/black"
         android:inputType="textCapCharacters"
         android:background="@drawable/bg_edit"
         android:padding="12dp"
