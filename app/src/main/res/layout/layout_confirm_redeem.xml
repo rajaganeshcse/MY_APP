@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:text="CONFIRM"
             android:textStyle="bold"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:background="@drawable/bg_button_ripple"
             android:padding="10dp"/>
     </LinearLayout>
