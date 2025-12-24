@@ -38,6 +38,7 @@ public class UserPref {
     /* ================= REFERRAL ================= */
     private static final String KEY_REF_COINS = "referral_coins";
     private static final String KEY_REF_TICKETS = "referral_tickets";
+    private static final String KEY_REFERRAL_CODE = "referral_code"; // ✅ NEW
 
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
@@ -212,6 +213,18 @@ public class UserPref {
     }
 
     /* ==================================================
+       REFERRAL CODE (✅ NEW)
+       ================================================== */
+
+    public void setReferralCode(String referralCode) {
+        editor.putString(KEY_REFERRAL_CODE, referralCode).apply();
+    }
+
+    public String getReferralCode() {
+        return pref.getString(KEY_REFERRAL_CODE, "");
+    }
+
+    /* ==================================================
        HELPERS
        ================================================== */
 
@@ -221,7 +234,7 @@ public class UserPref {
     }
 
     /**
-     * ✅ SAFE LOGOUT (recommended instead of clear())
+     * ✅ SAFE LOGOUT
      */
     public void logout() {
         editor.remove(KEY_UID);
@@ -232,12 +245,13 @@ public class UserPref {
         editor.remove(KEY_WALLET_TOKEN);
         editor.remove(KEY_PROFILE_IMAGE);
         editor.remove(KEY_FCM_TOKEN);
+        editor.remove(KEY_REFERRAL_CODE); // ✅ important
         editor.putBoolean(KEY_IS_LOGIN, false);
         editor.apply();
     }
 
     /**
-     * ⚠️ FULL CLEAR (use only if really needed)
+     * ⚠️ FULL CLEAR
      */
     public void clear() {
         editor.clear().apply();

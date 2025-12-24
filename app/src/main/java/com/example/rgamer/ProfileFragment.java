@@ -19,7 +19,7 @@ import com.bumptech.glide.Glide;
 
 public class ProfileFragment extends Fragment {
 
-    // UI
+    // ================= UI =================
     private ImageView imgProfile;
     private TextView txtName, txtUid, txtCoins, txtTickets;
 
@@ -28,7 +28,7 @@ public class ProfileFragment extends Fragment {
 
     private TextView btnFacebook, btnInstagram, btnTelegram, btnYoutube;
 
-    // Local storage
+    // ================= LOCAL STORAGE =================
     private UserPref userPref;
 
     @Nullable
@@ -71,37 +71,50 @@ public class ProfileFragment extends Fragment {
     }
 
     /**
-     * 🔥 Load data from UserPref
+     * ================= LOAD DATA FROM USER PREF =================
      */
     private void loadUserFromPref() {
 
         txtName.setText(userPref.getName());
-        txtUid.setText("UID: " + userPref.getUid());
+
+        // 🔥 SHOW REFERRAL CODE INSTEAD OF UID
+        txtUid.setText("Referral Code: " + userPref.getReferralCode());
 
         txtCoins.setText(userPref.getCoins() + " Coins");
         txtTickets.setText(userPref.getTickets() + " Tickets");
 
         String profileUrl = userPref.getProfileImage();
-        if (profileUrl != null && !profileUrl.isEmpty()) {
-            Glide.with(this)
-                    .load(profileUrl)
-                    .placeholder(R.drawable.ic_profile)
-                    .into(imgProfile);
-        }
+
+        Glide.with(this)
+                .load(profileUrl == null || profileUrl.isEmpty()
+                        ? R.drawable.ic_profile
+                        : profileUrl)
+                .circleCrop()
+                .placeholder(R.drawable.ic_profile)
+                .into(imgProfile);
     }
 
     /**
-     * 🔘 Click handlers
+     * ================= CLICK HANDLERS =================
      */
     private void setClicks() {
 
-        btnAccountHistory.setOnClickListener(v ->
-                Toast.makeText(getContext(), "Account History", Toast.LENGTH_SHORT).show()
+        btnAccountHistory.setOnClickListener(v ->{
+                    Intent intent = new Intent(
+                            requireContext(),
+                            TransactionHistoryFragment.class
+                    );
+                    startActivity(intent);
+                }
         );
 
-        btnMyRewards.setOnClickListener(v ->
-                Toast.makeText(getContext(), "My Rewards", Toast.LENGTH_SHORT).show()
-        );
+        btnMyRewards.setOnClickListener(v ->{
+            Intent intent = new Intent(
+                    requireContext(),
+                    TransactionHistoryFragment.class
+            );
+            startActivity(intent);
+        });
 
         btnHelp.setOnClickListener(v ->
                 openUrl("https://yourdomain.com/help")
@@ -119,36 +132,34 @@ public class ProfileFragment extends Fragment {
             userPref.logout();
             Toast.makeText(getContext(), "Logged out", Toast.LENGTH_SHORT).show();
 
-            // Redirect to Login
-            startActivity(new Intent(getActivity(),activity_login.class));
+            startActivity(new Intent(getActivity(), activity_login.class));
             requireActivity().finish();
         });
 
-        // 🌐 Social links
+        // ================= SOCIAL LINKS =================
         btnFacebook.setOnClickListener(v ->
-                openUrl("https://www.facebook.com/yourpage")
+                openUrl("https://t.me/+aTdeGXEDpt84ZDVl")
         );
 
         btnInstagram.setOnClickListener(v ->
-                openUrl("https://www.instagram.com/yourpage")
+                openUrl("https://t.me/+aTdeGXEDpt84ZDVl")
         );
 
         btnTelegram.setOnClickListener(v ->
-                openUrl("https://t.me/yourchannel")
+                openUrl("https://t.me/+aTdeGXEDpt84ZDVl")
         );
 
         btnYoutube.setOnClickListener(v ->
-                openUrl("https://www.youtube.com/@yourchannel")
+                openUrl("https://t.me/+aTdeGXEDpt84ZDVl")
         );
     }
 
     /**
-     * 🌍 Open browser safely
+     * ================= OPEN LINK SAFELY =================
      */
     private void openUrl(String url) {
         try {
-            Intent i = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            startActivity(i);
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(url)));
         } catch (Exception e) {
             Toast.makeText(getContext(), "Unable to open link", Toast.LENGTH_SHORT).show();
         }

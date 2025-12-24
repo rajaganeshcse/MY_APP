@@ -5,6 +5,7 @@
     android:background="#FFFFFF">
 
     <LinearLayout
+        android:layout_marginTop="15dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -12,32 +13,28 @@
 
         <!-- PROFILE HEADER -->
         <LinearLayout
-            android:layout_width="393dp"
+            android:layout_width="match_parent"
             android:layout_height="101dp"
+            android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@drawable/bg_social_card"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp">
 
-            <ImageView
-                android:id="@+id/imgProfile"
-                android:layout_width="98dp"
-                android:layout_height="match_parent"
-                android:background="@drawable/circle_bg"
-                android:padding="2dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_profile" />
-
+            <!-- LEFT SIDE : NAME + UID -->
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="12dp"
-                android:orientation="vertical">
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="center_vertical">
 
                 <TextView
                     android:id="@+id/txtName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="User Name"
-                    android:textColor="#000"
+                    android:textColor="@color/black"
                     android:textSize="18sp"
                     android:textStyle="bold" />
 
@@ -49,7 +46,18 @@
                     android:textColor="#777"
                     android:textSize="12sp" />
             </LinearLayout>
+
+            <!-- RIGHT SIDE : PROFILE IMAGE -->
+            <ImageView
+                android:id="@+id/imgProfile"
+                android:layout_width="72dp"
+                android:layout_height="72dp"
+                android:background="@drawable/circle_bg"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_profile" />
         </LinearLayout>
+
 
         <!-- WALLET -->
         <LinearLayout
@@ -59,169 +67,196 @@
             android:orientation="horizontal"
             android:weightSum="2">
 
-            <TextView
-                android:id="@+id/txtCoins"
-                android:layout_width="1dp"
-                android:layout_height="121dp"
+            <!-- COINS -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="79dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_coin_gradient"
+                android:background="@drawable/bg_reward_card"
                 android:gravity="center"
-                android:textColor="@color/black"
-                android:text="0 Coins"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:padding="12dp">
 
-            <TextView
-                android:id="@+id/txtTickets"
-                android:layout_width="7dp"
-                android:layout_height="121dp"
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_coin"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:id="@+id/txtCoins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 Coins"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
+            <!-- TICKETS -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="79dp"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:background="@drawable/bg_token_gradient"
+                android:background="@drawable/bg_history"
                 android:gravity="center"
-                android:textColor="@color/black"
-                android:text="0 Tickets"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:padding="12dp">
+
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_ticket"
+                    android:layout_marginEnd="8dp"/>
+
+                <TextView
+                    android:id="@+id/txtTickets"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0 Tickets"
+                    android:textColor="@color/black"
+                    android:textSize="16sp"
+                    android:textStyle="bold"/>
+            </LinearLayout>
+
         </LinearLayout>
 
+
         <!-- MENU -->
+        <!-- Account History -->
         <LinearLayout
             android:id="@+id/btnAccountHistory"
             style="@style/ProfileRow"
-            android:layout_marginTop="16dp"
-            android:drawableStart="@drawable/ic_history"
-            android:text="Account History">
+            android:layout_marginTop="16dp">
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_history"/>
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/ic_history" />
+
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
                 android:text="Account History"
-                android:textFontWeight="1"
                 android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:textColor="@color/black"
-                />
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"/>
         </LinearLayout>
 
-
+        <!-- My Rewards -->
         <LinearLayout
             android:id="@+id/btnMyRewards"
-            style="@style/ProfileRow"
-            android:drawableStart="@drawable/ic_reward"
-            android:text="My Rewards">
+            style="@style/ProfileRow">
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_reward"/>
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:src="@drawable/ic_reward" />
+
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
                 android:text="My Rewards"
-                android:textFontWeight="1"
                 android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:textColor="@color/black"
-                />
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"/>
         </LinearLayout>
 
-
+        <!-- Help / FAQ -->
         <LinearLayout
             android:id="@+id/btnHelp"
-            style="@style/ProfileRow"
-            android:drawableStart="@drawable/ic_help"
-            android:text="Help || FAQ">
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_help"/>
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Help || FAQ"
-        android:textFontWeight="1"
-        android:textStyle="bold"
-        android:textSize="20sp"
-        android:layout_gravity="center"
-        android:gravity="center_horizontal"
-        android:textColor="@color/black"
-        />
+            style="@style/ProfileRow">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_help" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:text="Help | FAQ"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"/>
         </LinearLayout>
 
-
-    <LinearLayout
+        <!-- Privacy Policy -->
+        <LinearLayout
             android:id="@+id/btnPrivacy"
-            style="@style/ProfileRow"
-            android:drawableStart="@drawable/ic_privacy"
-            android:orientation="horizontal"
-            android:text="Privacy Policy">
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_privacy"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Privacy Policy"
-                android:textFontWeight="3"
-                android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:textColor="@color/black"
-                />
-    </LinearLayout>
+            style="@style/ProfileRow">
 
+            <ImageView
+                android:layout_width="41dp"
+                android:layout_height="41dp"
+                android:src="@drawable/ic_privacy" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:text="Privacy Policy"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+
+        <!-- Terms & Conditions -->
         <LinearLayout
             android:id="@+id/btnTerms"
-            style="@style/ProfileRow"
-            android:drawableStart="@drawable/ic_terms"
-            android:text="Terms || Conditions">
+            style="@style/ProfileRow">
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_terms"/>
+                android:layout_width="42dp"
+                android:layout_height="41dp"
+                android:src="@drawable/ic_terms" />
+
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Terms || Conditions"
-                android:textFontWeight="1"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
+                android:text="Terms | Conditions"
                 android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:textColor="@color/black"
-                />
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"/>
         </LinearLayout>
 
+        <!-- Logout -->
         <LinearLayout
             android:id="@+id/btnLogout"
-            style="@style/ProfileRow"
-            android:drawableStart="@drawable/ic_logout"
-            android:text="Logout">
+            style="@style/ProfileRow">
+
             <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_logout"/>
+                android:layout_width="43dp"
+                android:layout_height="40dp"
+                android:src="@drawable/ic_logout" />
+
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="12dp"
                 android:text="Logout"
-                android:textFontWeight="1"
                 android:textStyle="bold"
-                android:textSize="20sp"
-                android:layout_gravity="center"
-                android:gravity="center_horizontal"
-                android:textColor="@color/black"
-                />
+                android:textSize="16sp"
+                android:gravity="center_vertical"
+                android:textColor="@color/black"/>
         </LinearLayout>
+
         <!-- ================= SOCIAL MEDIA SECTION ================= -->
         <LinearLayout
             android:layout_width="match_parent"
