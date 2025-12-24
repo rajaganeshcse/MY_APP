@@ -1,15 +1,17 @@
 package com.example.rgamer;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.rgamer.models.UserModel;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
@@ -18,119 +20,195 @@ import java.util.List;
 
 public class TournamentActivity extends AppCompatActivity {
 
-    ImageView btnBack;
-    TextView btnHistory;
+    // UI
+    private ImageView btnBack, imgBanner;
+    private TextView txtTitle;
+    private RecyclerView recyclerTournament;
 
-    RecyclerView recyclerTournament;
-    FreeFireTournamentAdapter adapter;
-    List<FreeFireTournamentModel> list;
+    // Adapter
+    private FreeFireTournamentAdapter adapter;
+    private final List<FreeFireTournamentModel> list = new ArrayList<>();
 
-    FirebaseFirestore db;
-    FirebaseAuth auth;
-    String uid;
+    // Firebase
+    private FirebaseFirestore db;
+    private String uid;
+    private String game;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament);
 
-        // INIT
+        /* ================= GET INTENT DATA ================= */
+
+        game = getIntent().getStringExtra("game");
+        String title = getIntent().getStringExtra("title");
+        int banner = getIntent().getIntExtra("banner", 0);
+
+        if (game == null) {
+            Toast.makeText(this, "Game not found", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        /* ================= INIT UI ================= */
+
         btnBack = findViewById(R.id.btnBack);
-        btnHistory = findViewById(R.id.btnHistory);
+        imgBanner = findViewById(R.id.imgBanner);
+        txtTitle = findViewById(R.id.txtTitle);
         recyclerTournament = findViewById(R.id.recyclerTournament);
 
-        recyclerTournament.setLayoutManager(new LinearLayoutManager(this));
-        list = new ArrayList<>();
+        if (txtTitle != null && title != null) {
+            txtTitle.setText(title);
+        }
 
-        db = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-        uid = auth.getCurrentUser().getUid();
+        if (imgBanner != null && banner != 0) {
+            imgBanner.setImageResource(banner);
+        }
 
-        adapter = new FreeFireTournamentAdapter(this, list, this::joinTournament);
+        recyclerTournament.setLayoutManager(
+                new LinearLayoutManager(this));
+
+        /* ================= ADAPTER ================= */
+
+        adapter = new FreeFireTournamentAdapter(
+                this,
+                list,
+                new FreeFireTournamentAdapter.Listener() {
+                    @Override
+                    public void onJoin(FreeFireTournamentModel model) {
+                        joinTournament(model);
+                    }
+
+                    @Override
+                    public void onCheckWinners(FreeFireTournamentModel model) {
+                        openWinners(model);
+                    }
+                });
+
         recyclerTournament.setAdapter(adapter);
 
-        btnBack.setOnClickListener(v -> finish());
+        /* ================= FIREBASE ================= */
 
-        btnHistory.setOnClickListener(v ->
-                Toast.makeText(this, "Tournament History", Toast.LENGTH_SHORT).show());
+        db = FirebaseFirestore.getInstance();
+        uid = FirebaseAuth.getInstance().getUid();
+
+        if (uid == null) {
+            Toast.makeText(this, "Please login again", Toast.LENGTH_SHORT).show();
+            finish();
+            return;
+        }
+
+        btnBack.setOnClickListener(v -> finish());
 
         loadTournaments();
     }
 
-    // 🔥 Load tournaments (Admin controlled)
+    /* ================= LOAD TOURNAMENTS ================= */
+
     private void loadTournaments() {
-
-        db.collection("freefire_tournaments")
+        db.collection("tournaments")
+                .whereEqualTo("game", game)        // freefire / pubg / ludo / jackpot
                 .whereEqualTo("status", "OPEN")
-                .addSnapshotListener((value, error) -> {
+                .addSnapshotListener((snap, e) -> {
 
-                    if (error != null || value == null) return;
+                    if (e != null) {
+                        Log.e("TOUR", "Firestore error", e);
+                        return;
+                    }
+
+                    if (snap == null) return;
+
+                    Log.d("TOUR", "Game=" + game + " Docs=" + snap.size());
 
                     list.clear();
-                    for (DocumentSnapshot doc : value.getDocuments()) {
-                        FreeFireTournamentModel model =
-                                doc.toObject(FreeFireTournamentModel.class);
-                        list.add(model);
+                    for (DocumentSnapshot d : snap.getDocuments()) {
+                        FreeFireTournamentModel m =
+                                d.toObject(FreeFireTournamentModel.class);
+
+                        if (m != null) {
+                            m.setId(d.getId());
+                            list.add(m);
+                        }
                     }
                     adapter.notifyDataSetChanged();
                 });
     }
 
-    // 🔥 JOIN TOURNAMENT (SAFE)
-    private void joinTournament(FreeFireTournamentModel tournament) {
+    /* ================= JOIN TOURNAMENT ================= */
 
-        db.collection("users").document(uid)
-                .get()
-                .addOnSuccessListener(snapshot -> {
+    private void joinTournament(FreeFireTournamentModel t) {
 
-                    UserModel user = snapshot.toObject(UserModel.class);
+        db.runTransaction(transaction -> {
 
-                    if (user.getCoins() < tournament.getEntryTickets()) {
-                        Toast.makeText(this,
-                                "Not enough tickets",
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+            DocumentReference userRef =
+                    db.collection("users").document(uid);
 
-                    if (tournament.getJoinedSlots() >= tournament.getTotalSlots()) {
-                        Toast.makeText(this,
-                                "Tournament Full",
-                                Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+            DocumentReference tourRef =
+                    db.collection("tournaments").document(t.getId());
 
-                    WriteBatch batch = db.batch();
+            DocumentReference joinRef =
+                    tourRef.collection("participants").document(uid);
 
-                    // Deduct tickets
-                    DocumentReference userRef =
-                            db.collection("users").document(uid);
-                    batch.update(userRef,
-                            "coins",
-                            FieldValue.increment(-tournament.getEntryTickets()));
+            if (transaction.get(joinRef).exists()) {
+                throw new RuntimeException("Already joined");
+            }
 
-                    // Increase joined slots
-                    DocumentReference tourRef =
-                            db.collection("freefire_tournaments")
-                                    .document(tournament.getTournamentId());
+            Long ticketsObj = transaction.get(userRef).getLong("tickets");
+            if (ticketsObj == null) {
+                throw new RuntimeException("Tickets not found");
+            }
 
-                    batch.update(tourRef,
-                            "joined_slots",
-                            FieldValue.increment(1));
+            long tickets = ticketsObj;
 
-                    // Save participant
-                    DocumentReference partRef =
-                            tourRef.collection("participants").document(uid);
+            if (tickets < t.getEntryTickets()) {
+                throw new RuntimeException("Not enough tickets");
+            }
 
-                    batch.set(partRef, new Participant(uid));
+            transaction.update(
+                    userRef,
+                    "tickets",
+                    tickets - t.getEntryTickets()
+            );
 
-                    batch.commit().addOnSuccessListener(unused ->
-                            Toast.makeText(this,
-                                    "Joined Free Fire Tournament",
-                                    Toast.LENGTH_SHORT).show());
-                });
+            transaction.update(
+                    tourRef,
+                    "joined_slots",
+                    FieldValue.increment(1)
+            );
+
+            transaction.set(
+                    joinRef,
+                    new Participant(uid)
+            );
+
+            return null;
+
+        }).addOnSuccessListener(unused ->
+                Toast.makeText(
+                        this,
+                        "Joined Successfully",
+                        Toast.LENGTH_SHORT
+                ).show()
+        ).addOnFailureListener(e ->
+                Toast.makeText(
+                        this,
+                        e.getMessage(),
+                        Toast.LENGTH_SHORT
+                ).show()
+        );
     }
 
-    // 🔹 Participant inner model
+    /* ================= OPEN WINNERS ================= */
+
+    private void openWinners(FreeFireTournamentModel model) {
+        Intent i = new Intent(this, activity_winners.class);
+        i.putExtra("tournamentId", model.getId());
+        startActivity(i);
+    }
+
+    /* ================= PARTICIPANT MODEL ================= */
+
     static class Participant {
         public String uid;
         public long joined_at;
