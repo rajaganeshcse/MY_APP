@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_marginBottom="12dp"
     android:background="@color/white"
     app:cardCornerRadius="14dp"
@@ -11,20 +11,83 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_token_gradient"
         android:orientation="vertical"
         android:padding="14dp">
 
+        <!-- 🔹 TOP RIGHT : TIME / DATE / PRIZE -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- spacer -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- right aligned block -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:gravity="end">
+
+                <TextView
+                    android:id="@+id/txtTimeLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="8:30 PM"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/txtDateLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Today"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/black" />
+
+                <TextView
+                    android:id="@+id/txtCountdown"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Starts in 00:00:00"
+                    android:textSize="11sp"
+                    android:textColor="#D32F2F"
+                    android:visibility="gone" />
+
+                <!-- 🏆 FIRST PRIZE -->
+                <TextView
+                    android:id="@+id/txtFirstPrize"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="1st Prize 5000 🪙"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:textColor="#2E7D32" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 🔹 MAIN PRIZE TEXT -->
         <TextView
             android:id="@+id/txtPrize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
             android:text="Win 500 Coins"
             android:textColor="#000"
             android:textSize="18sp"
             android:textStyle="bold" />
 
+        <!-- 🔹 SLOTS -->
         <TextView
             android:id="@+id/txtSlots"
             android:layout_width="wrap_content"
@@ -43,7 +106,7 @@
             android:max="100"
             android:progress="0" />
 
-
+        <!-- 🔹 GAME ID / PASSWORD -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -57,8 +120,8 @@
                 android:background="@drawable/bg_yellow_outline"
                 android:gravity="center"
                 android:text="00000000"
-                android:visibility="gone"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:visibility="gone" />
 
             <TextView
                 android:id="@+id/gamePassword"
@@ -68,36 +131,38 @@
                 android:layout_weight="1"
                 android:background="@drawable/bg_outline_button"
                 android:gravity="center"
-                android:visibility="gone"
                 android:text="0000000000"
+                android:textColor="@color/black"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <!-- 🔹 BUTTONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp">
+
+            <TextView
+                android:id="@+id/btnWinners"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_yellow_outline"
+                android:gravity="center"
+                android:text="Check Winners"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/btnJoin"
+                android:layout_width="0dp"
+                android:layout_height="40dp"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_outline_button"
+                android:gravity="center"
+                android:text="Join (10 Tickets)"
                 android:textColor="@color/black" />
         </LinearLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:id="@+id/btnWinners"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_yellow_outline"
-            android:gravity="center"
-            android:text="Check Winners"
-            android:textColor="@color/black" />
-
-        <TextView
-            android:id="@+id/btnJoin"
-            android:layout_width="0dp"
-            android:layout_height="40dp"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:background="@drawable/bg_outline_button"
-            android:gravity="center"
-            android:text="Join (10 Tickets)"
-            android:textColor="@color/black" />
-    </LinearLayout>
 
     </LinearLayout>
 </androidx.cardview.widget.CardView>

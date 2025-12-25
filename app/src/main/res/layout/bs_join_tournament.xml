@@ -1,0 +1,41 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtGame"
+        android:text="FREE FIRE"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <EditText
+        android:id="@+id/edtGameName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Game Name"
+        android:enabled="false"
+        android:layout_marginTop="8dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/txtNote"
+        android:text="Game name is auto-used from your profile"
+        android:textSize="12sp"
+        android:layout_marginTop="6dp"/>
+
+    <TextView
+        android:id="@+id/btnConfirmJoin"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="CONFIRM JOIN"
+        android:textStyle="bold"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/bg_btn_primary"/>
+</LinearLayout>

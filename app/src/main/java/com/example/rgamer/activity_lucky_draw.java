@@ -1,21 +1,31 @@
 package com.example.rgamer;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
-public class activity_lucky_draw extends AppCompatActivity {
+public class activity_lucky_draw extends AppCompatActivity
+        implements LuckyDrawAdapter.Listener {
 
     FirebaseFirestore db;
     String uid;
+
+    RecyclerView recyclerView;
+    LuckyDrawAdapter adapter;
+    List<LuckyDrawModel> list = new ArrayList<>();
+
+    ListenerRegistration drawListener;
+    ListenerRegistration joinedListener;
+
+    Set<String> joinedDrawIds = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,42 +37,109 @@ public class activity_lucky_draw extends AppCompatActivity {
 
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
+        recyclerView = findViewById(R.id.luckyDrawRecycler);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        adapter = new LuckyDrawAdapter(list, this);
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        listenJoinedDraws();
         loadLuckyDraws();
     }
 
-    private void loadLuckyDraws() {
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (drawListener != null) drawListener.remove();
+        if (joinedListener != null) joinedListener.remove();
+    }
 
-        db.collection("lucky_draws")
-                .whereEqualTo("status", "OPEN")
-                .addSnapshotListener((value, error) -> {
+    /* ================= JOINED DRAWS (SAFE) ================= */
 
-                    if (value == null || value.isEmpty()) return;
+    private void listenJoinedDraws() {
 
-                    for (DocumentSnapshot doc : value.getDocuments()) {
-                        setupCard(doc);
+        if (uid == null) return;
+
+        joinedListener = db.collection("users")
+                .document(uid)
+                .collection("joinedLuckyDraws")
+                .addSnapshotListener((snap, e) -> {
+
+                    if (snap == null || e != null) return;
+
+                    joinedDrawIds.clear();
+                    for (DocumentSnapshot d : snap.getDocuments()) {
+                        joinedDrawIds.add(d.getId());
                     }
+
+                    applyJoinedState();
                 });
     }
 
-    private void setupCard(DocumentSnapshot doc) {
+    /* ================= READ DRAWS ================= */
 
-        String drawId = doc.getId();
-        int reward = doc.getLong("rewardCoins").intValue();
+    private void loadLuckyDraws() {
 
-        View card = findViewById(R.id.card_root_1); // demo card
+        drawListener = db.collection("lucky_draws")
+                .whereEqualTo("status", "OPEN")
+                .addSnapshotListener((snap, e) -> {
 
-        card.findViewById(R.id.btnFreeEntry)
-                .setOnClickListener(v -> joinDraw(drawId));
+                    if (snap == null || e != null) return;
 
-        card.findViewById(R.id.btnCheckWinners)
-                .setOnClickListener(v ->
-                        Toast.makeText(this,
-                                "Winner announced after draw completes",
-                                Toast.LENGTH_SHORT).show()
-                );
+                    list.clear();
+
+                    for (DocumentSnapshot doc : snap.getDocuments()) {
+
+                        LuckyDrawModel model =
+                                doc.toObject(LuckyDrawModel.class);
+
+                        if (model == null) continue;
+
+                        model.setId(doc.getId());
+                        model.setJoinedByMe(
+                                joinedDrawIds.contains(doc.getId())
+                        );
+
+                        list.add(model);
+                    }
+
+                    adapter.notifyDataSetChanged();
+                });
     }
 
+    private void applyJoinedState() {
+        for (LuckyDrawModel m : list) {
+            m.setJoinedByMe(joinedDrawIds.contains(m.getId()));
+        }
+        adapter.notifyDataSetChanged();
+    }
+
+    /* ================= ADAPTER CALLBACKS ================= */
+
+    @Override
+    public void onJoin(LuckyDrawModel model) {
+        joinDraw(model.getId());
+    }
+
+    @Override
+    public void onCheckWinners(LuckyDrawModel model) {
+        Toast.makeText(
+                this,
+                "Winner will be announced after draw completes",
+                Toast.LENGTH_SHORT
+        ).show();
+    }
+
+    /* ================= SAFE JOIN ================= */
+
     private void joinDraw(String drawId) {
+
+        DocumentReference drawRef =
+                db.collection("lucky_draws").document(drawId);
 
         DocumentReference entryRef =
                 db.collection("lucky_draw_entries")
@@ -70,30 +147,47 @@ public class activity_lucky_draw extends AppCompatActivity {
                         .collection("users")
                         .document(uid);
 
-        entryRef.get().addOnSuccessListener(doc -> {
+        DocumentReference userJoinRef =
+                db.collection("users")
+                        .document(uid)
+                        .collection("joinedLuckyDraws")
+                        .document(drawId);
 
-            if (doc.exists()) {
-                Toast.makeText(this,
-                        "Already joined",
-                        Toast.LENGTH_SHORT).show();
-                return;
-            }
+        db.runTransaction(transaction -> {
 
-            // Add entry
+            DocumentSnapshot drawSnap = transaction.get(drawRef);
+
+            long filled = drawSnap.getLong("filledSlots");
+            long total = drawSnap.getLong("totalSlots");
+            String status = drawSnap.getString("status");
+
+            if (!"OPEN".equals(status))
+                throw new RuntimeException("Draw closed");
+
+            if (filled >= total)
+                throw new RuntimeException("Draw full");
+
+            if (transaction.get(entryRef).exists())
+                throw new RuntimeException("Already joined");
+
             Map<String, Object> data = new HashMap<>();
-            data.put("uid", uid);
             data.put("joinedAt", FieldValue.serverTimestamp());
 
-            entryRef.set(data);
+            transaction.set(entryRef, data);
+            transaction.set(userJoinRef, data);
+            transaction.update(drawRef,
+                    "filledSlots", FieldValue.increment(1));
 
-            // Increase count
-            db.collection("lucky_draws")
-                    .document(drawId)
-                    .update("filledSlots", FieldValue.increment(1));
+            return null;
 
-            Toast.makeText(this,
-                    "Free entry added!",
-                    Toast.LENGTH_SHORT).show();
-        });
+        }).addOnSuccessListener(v ->
+                Toast.makeText(this,
+                        "Joined Lucky Draw",
+                        Toast.LENGTH_SHORT).show()
+        ).addOnFailureListener(e ->
+                Toast.makeText(this,
+                        e.getMessage(),
+                        Toast.LENGTH_SHORT).show()
+        );
     }
 }
