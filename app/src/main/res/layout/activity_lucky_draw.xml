@@ -51,6 +51,8 @@
         android:layout_margin="12dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="2dp"
+        app:cardBackgroundColor="@color/white"
+        app:cardForegroundColor="@color/white"
         android:background="@color/white"
         app:strokeColor="#6A1BFF"
         app:strokeWidth="1dp">
