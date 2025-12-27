@@ -38,7 +38,11 @@ public class UserPref {
     /* ================= REFERRAL ================= */
     private static final String KEY_REF_COINS = "referral_coins";
     private static final String KEY_REF_TICKETS = "referral_tickets";
-    private static final String KEY_REFERRAL_CODE = "referral_code"; // ✅ NEW
+    private static final String KEY_REFERRAL_CODE = "referral_code";
+
+    /* ================= DAILY SPIN (ADDED ONLY) ================= */
+    private static final String KEY_SPIN_DATE = "spin_date";
+    private static final String KEY_SPIN_COUNT = "spin_count";
 
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
@@ -84,15 +88,27 @@ public class UserPref {
         return pref.getBoolean(KEY_IS_LOGIN, false);
     }
 
+     /* ==================================================
+       DAILY BONUS
+       ================================================== */
+
+
+    public void setDailyClaimedDate(String date) {
+        editor.putString(KEY_DAILY_DATE, date).apply();
+    }
+
+    public String getDailyClaimedDate() {
+        return pref.getString(KEY_DAILY_DATE, "");
+    }
+
     /* ==================================================
-       WALLET (🔥 SAFE)
+       WALLET (SAFE)
        ================================================== */
 
     public void setCoins(long coins) {
         editor.putLong(KEY_COINS, coins).apply();
     }
 
-    // 🔥 int → long migration safe
     public long getCoins() {
         try {
             return pref.getLong(KEY_COINS, 0L);
@@ -163,14 +179,6 @@ public class UserPref {
         editor.putString(KEY_DAILY_DATE, getTodayDate()).apply();
     }
 
-    public void setDailyClaimedDate(String date) {
-        editor.putString(KEY_DAILY_DATE, date).apply();
-    }
-
-    public String getDailyClaimedDate() {
-        return pref.getString(KEY_DAILY_DATE, "");
-    }
-
     /* ==================================================
        DAILY ADS
        ================================================== */
@@ -193,28 +201,28 @@ public class UserPref {
     }
 
     /* ==================================================
-       REFERRAL CACHE
+       DAILY SPIN (ADDED ONLY)
        ================================================== */
 
-    public void setReferralCoins(long coins) {
-        editor.putLong(KEY_REF_COINS, coins).apply();
+    public int getTodaySpinCount() {
+        String today = getTodayDate();
+        String savedDate = pref.getString(KEY_SPIN_DATE, "");
+
+        if (!today.equals(savedDate)) {
+            editor.putString(KEY_SPIN_DATE, today);
+            editor.putInt(KEY_SPIN_COUNT, 0);
+            editor.apply();
+            return 0;
+        }
+        return pref.getInt(KEY_SPIN_COUNT, 0);
     }
 
-    public long getReferralCoins() {
-        return pref.getLong(KEY_REF_COINS, 0);
+    public void increaseSpinCount() {
+        editor.putInt(KEY_SPIN_COUNT, getTodaySpinCount() + 1).apply();
     }
-
-    public void setReferralTickets(long tickets) {
-        editor.putLong(KEY_REF_TICKETS, tickets).apply();
-    }
-
-    public long getReferralTickets() {
-        return pref.getLong(KEY_REF_TICKETS, 0);
-    }
-
     /* ==================================================
-       REFERRAL CODE (✅ NEW)
-       ================================================== */
+   REFERRAL CODE
+   ================================================== */
 
     public void setReferralCode(String referralCode) {
         editor.putString(KEY_REFERRAL_CODE, referralCode).apply();
@@ -223,6 +231,7 @@ public class UserPref {
     public String getReferralCode() {
         return pref.getString(KEY_REFERRAL_CODE, "");
     }
+
 
     /* ==================================================
        HELPERS
@@ -233,9 +242,10 @@ public class UserPref {
                 .format(new Date());
     }
 
-    /**
-     * ✅ SAFE LOGOUT
-     */
+    /* ==================================================
+       LOGOUT / CLEAR
+       ================================================== */
+
     public void logout() {
         editor.remove(KEY_UID);
         editor.remove(KEY_NAME);
@@ -245,14 +255,11 @@ public class UserPref {
         editor.remove(KEY_WALLET_TOKEN);
         editor.remove(KEY_PROFILE_IMAGE);
         editor.remove(KEY_FCM_TOKEN);
-        editor.remove(KEY_REFERRAL_CODE); // ✅ important
+        editor.remove(KEY_REFERRAL_CODE);
         editor.putBoolean(KEY_IS_LOGIN, false);
         editor.apply();
     }
 
-    /**
-     * ⚠️ FULL CLEAR
-     */
     public void clear() {
         editor.clear().apply();
     }

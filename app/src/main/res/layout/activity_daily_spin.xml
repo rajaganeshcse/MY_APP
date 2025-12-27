@@ -28,8 +28,8 @@
         <!-- Coins (RIGHT SIDE) -->
         <LinearLayout
             android:id="@+id/layoutCoins"
-            android:layout_width="69dp"
-            android:layout_height="49dp"
+            android:layout_width="144dp"
+            android:layout_height="45dp"
             android:background="@drawable/bg_coin_gradient"
             android:gravity="center_vertical"
             android:orientation="horizontal"
@@ -144,17 +144,17 @@
             app:backgroundTint="@null"
             app:rippleColor="@null" />
 
+
         <com.google.android.gms.ads.AdView
             android:id="@+id/adView"
-            android:layout_marginTop="30dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
             app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-3940256099942544/6300978111"/>
-
-
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
 
 
     </LinearLayout>
+
 
 </LinearLayout>
