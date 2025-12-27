@@ -7,28 +7,28 @@
 
     <!-- HEADER -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_width="428dp"
+        android:layout_height="85dp"
         android:background="@android:color/white"
+        android:elevation="6dp"
         android:gravity="center_vertical"
-        android:paddingHorizontal="12dp"
-        android:elevation="6dp">
+        android:paddingHorizontal="12dp">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/back_arrow"
-            android:contentDescription="Back"/>
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Back"
+            android:src="@drawable/back_arrow" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:text="Lucky Draw Winners"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"/>
+            android:textColor="@color/black"
+            android:textSize="22sp"
+            android:textStyle="bold" />
     </LinearLayout>
 
     <!-- CONTENT -->

@@ -9,16 +9,16 @@
     <!-- HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="56dp"
+        android:layout_height="79dp"
         android:background="@android:color/white"
+        android:elevation="6dp"
         android:gravity="center_vertical"
-        android:paddingHorizontal="12dp"
-        android:elevation="6dp">
+        android:paddingHorizontal="12dp">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:src="@drawable/back_arrow" />
 
         <LinearLayout
@@ -28,19 +28,19 @@
             android:orientation="vertical">
 
             <TextView
-                android:text="Lucky Draw"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="Lucky Draw"
+                android:textColor="@color/black"
+                android:textSize="22sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:text="Win Coins"
-                android:textSize="13sp"
-                android:textColor="#777777"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="Win Coins"
+                android:textColor="#777777"
+                android:textSize="18sp" />
         </LinearLayout>
     </LinearLayout>
 
@@ -54,6 +54,7 @@
         app:cardElevation="2dp"
         app:strokeColor="#6A1BFF"
         app:strokeWidth="1dp"
+        app:cardBackgroundColor="@color/white"
         android:background="@color/white">
 
         <TextView

@@ -1,7 +1,11 @@
 package com.example.rgamer;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -49,6 +53,7 @@ public class activity_lucky_draw extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        makeFullScreen();
         setContentView(R.layout.activity_lucky_draw);
 
         db = FirebaseFirestore.getInstance();
@@ -92,6 +97,20 @@ public class activity_lucky_draw extends AppCompatActivity
         if (drawListener != null) drawListener.remove();
         if (joinedListener != null) joinedListener.remove();
     }
+    private void makeFullScreen() {
+        Window window = getWindow();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+
+        window.getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
+    }
+
 
     /* ================= JOINED DRAWS ================= */
 

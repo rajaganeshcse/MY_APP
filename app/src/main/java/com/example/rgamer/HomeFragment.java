@@ -100,7 +100,7 @@ public class HomeFragment extends Fragment {
 
         /* ================= OTHER CARDS ================= */
 
-        cardInvite = view.findViewById(R.id.card_invite);
+        cardInvite = view.findViewById(R.id.btnInviteNow);
 
         /* ================= WATCH & EARN ================= */
 
