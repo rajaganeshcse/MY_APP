@@ -77,6 +77,7 @@
             android:layout_height="wrap_content"
             android:text="Have a referral code?"
             android:textStyle="bold"
+            android:textColor="@color/black"
             android:background="@color/white"
             android:layout_marginTop="24dp" />
 
@@ -92,6 +93,8 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="Enter Code"
+                android:textColor="@color/black"
+                android:textColorHint="@color/black"
                 android:background="@drawable/bg_edit"
                 android:padding="12dp" />
 
@@ -100,8 +103,8 @@
                 android:id="@+id/btnValidate"
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
-                android:textColorHint="@color/black"
                 android:textColor="@color/black"
+                android:textColorHint="@color/black"
                 android:text="Validate"
                 android:backgroundTint="#FFB300"/>
         </LinearLayout>
