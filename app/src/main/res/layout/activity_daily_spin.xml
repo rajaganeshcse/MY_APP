@@ -17,13 +17,13 @@
         <!-- Back Button -->
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="42dp"
-            android:layout_height="42dp"
-            android:src="@drawable/back_arrow"
+            android:layout_width="55dp"
+            android:layout_height="54dp"
             android:contentDescription="Back"
+            android:src="@drawable/back_arrow"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Coins (RIGHT SIDE) -->
         <LinearLayout
@@ -143,6 +143,17 @@
             android:textStyle="bold"
             app:backgroundTint="@null"
             app:rippleColor="@null" />
+
+        <com.google.android.gms.ads.AdView
+            android:id="@+id/adView"
+            android:layout_marginTop="30dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:adSize="BANNER"
+            app:adUnitId="ca-app-pub-3940256099942544/6300978111"/>
+
+
+
 
     </LinearLayout>
 

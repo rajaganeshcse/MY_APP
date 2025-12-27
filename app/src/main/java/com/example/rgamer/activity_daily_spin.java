@@ -1,208 +1,149 @@
 package com.example.rgamer;
 
-import android.app.Dialog;
-import android.graphics.Color;
-import android.os.Build;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.view.Window;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.LoadAdError;
-import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.gms.ads.AdView;
+import com.google.android.gms.ads.MobileAds;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 import java.util.Random;
 
 public class activity_daily_spin extends AppCompatActivity {
 
-    /* ================= CONFIG ================= */
-
-    private static final int FREE_SPINS_PER_DAY = 5;
-    private static final int[] WHEEL_VALUES = {0, 2, 4, 6, 7, 8, 10};
-
     /* ================= UI ================= */
+    private ImageView btnBack, imgWheel;
+    private TextView txtCoins, txtSpinsLeft;
+    private MaterialButton btnSpin;
+    private AdView adView;
 
-    TextView txtSpinsLeft, txtCoins;
-    MaterialButton btnSpin;
-    ImageView imgWheel, btnBack;
+    /* ================= PREF ================= */
+    private UserPref userPref;
 
-    /* ================= FIREBASE ================= */
-
-    FirebaseFirestore db;
-    String uid;
-
-    /* ================= LOCAL ================= */
-
-    UserPref userPref;
-    int spinsUsedToday = 0;
-    float currentRotation = 0f;
-    int pendingReward = 0;
-    boolean isSpinning = false;
-
-    /* ================= ADS ================= */
-
-    RewardedAd rewardedAd;
-    boolean adLoading = false;
-
-    /* ================= LIFECYCLE ================= */
+    /* ================= SPIN ================= */
+    private static final int[] REWARDS = {10, 20, 50, 100, 200, 500};
+    private boolean isSpinning = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setupStatusBar();
         setContentView(R.layout.activity_daily_spin);
 
-        /* ---------- UI ---------- */
-        txtSpinsLeft = findViewById(R.id.txtSpinsLeft);
-        txtCoins = findViewById(R.id.txtCoins);
-        btnSpin = findViewById(R.id.btnSpin);
-        imgWheel = findViewById(R.id.imgWheel);
-        btnBack = findViewById(R.id.btnBack);
-
-        btnBack.setOnClickListener(v -> finish());
-
-        /* ---------- INIT ---------- */
-        db = FirebaseFirestore.getInstance();
-        uid = FirebaseAuth.getInstance().getUid();
+        /* ================= PREF ================= */
         userPref = new UserPref(this);
 
-        updateCoinsUI();      // ✅ show coins immediately
-        loadRewardedAd();
-        checkDailySpin();
+        /* ================= UI INIT ================= */
+        btnBack = findViewById(R.id.btnBack);
+        imgWheel = findViewById(R.id.imgWheel);
+        txtCoins = findViewById(R.id.txtCoins);
+        txtSpinsLeft = findViewById(R.id.txtSpinsLeft);
+        btnSpin = findViewById(R.id.btnSpin);
+        adView = findViewById(R.id.adView);
 
-        btnSpin.setOnClickListener(v -> handleSpinClick());
-    }
+        /* ================= ADS (SAFE) ================= */
+        MobileAds.initialize(this, initializationStatus -> {});
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        updateCoinsUI(); // ✅ keep header synced
-    }
-
-    /* ================= SPIN LOGIC ================= */
-
-    private void handleSpinClick() {
-        if (isSpinning) return;
-
-        if (spinsUsedToday < FREE_SPINS_PER_DAY) {
-            startSpin();
-            return;
+        if (adView != null) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
         }
 
-        if (rewardedAd != null) {
-            rewardedAd.show(this, rewardItem -> startSpin());
-            rewardedAd = null;
-            loadRewardedAd();
-        }
+        /* ================= UI ================= */
+        txtSpinsLeft.setText("Unlimited Spins");
+        updateCoinsUI();
+
+        /* ================= BACK ================= */
+        btnBack.setOnClickListener(v -> finish());
+
+        /* ================= SPIN ================= */
+        btnSpin.setOnClickListener(v -> {
+            if (!isSpinning) {
+                startSpin();
+            }
+        });
     }
+
+    /* ==================================================
+       SPIN LOGIC
+       ================================================== */
 
     private void startSpin() {
         isSpinning = true;
         btnSpin.setEnabled(false);
 
-        int index = new Random().nextInt(WHEEL_VALUES.length);
-        pendingReward = WHEEL_VALUES[index];
+        int reward = REWARDS[new Random().nextInt(REWARDS.length)];
 
-        float slice = 360f / WHEEL_VALUES.length;
-        float rotateBy = 720 + index * slice;
+        int rotation = (360 * (5 + new Random().nextInt(4)))
+                + new Random().nextInt(360);
 
-        RotateAnimation rotate = new RotateAnimation(
-                currentRotation,
-                currentRotation + rotateBy,
-                RotateAnimation.RELATIVE_TO_SELF, 0.5f,
-                RotateAnimation.RELATIVE_TO_SELF, 0.5f
+        ObjectAnimator animator = ObjectAnimator.ofFloat(
+                imgWheel,
+                "rotation",
+                imgWheel.getRotation(),
+                imgWheel.getRotation() + rotation
         );
 
-        rotate.setDuration(2500);
-        rotate.setFillAfter(true);
-        rotate.setInterpolator(new DecelerateInterpolator());
+        animator.setDuration(4000);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
 
-        rotate.setAnimationListener(new android.view.animation.Animation.AnimationListener() {
-            @Override public void onAnimationStart(android.view.animation.Animation animation) {}
-
+        animator.addListener(new android.animation.AnimatorListenerAdapter() {
             @Override
-            public void onAnimationEnd(android.view.animation.Animation animation) {
-                currentRotation = (currentRotation + rotateBy) % 360;
-                spinsUsedToday++;
-
-                new Handler(Looper.getMainLooper()).postDelayed(
-                        () -> showWinDialog(pendingReward), 300
-                );
+            public void onAnimationEnd(android.animation.Animator animation) {
+                onSpinComplete(reward);
             }
-
-            @Override public void onAnimationRepeat(android.view.animation.Animation animation) {}
         });
-
-        imgWheel.startAnimation(rotate);
     }
 
-    /* ================= RESULT DIALOG ================= */
-
-    private void showWinDialog(int reward) {
-
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_spin_result);
-        dialog.setCancelable(false);
-
-        TextView txtWinAmount = dialog.findViewById(R.id.txtWinAmount);
-        MaterialButton btnOk = dialog.findViewById(R.id.btnOk);
-
-        txtWinAmount.setText("+" + reward + " Coins");
-
-        btnOk.setOnClickListener(v -> {
-            dialog.dismiss();
-            saveSpinResult(reward);
-            isSpinning = false;
-            btnSpin.setEnabled(true);
-        });
-
-        dialog.show();
-    }
-
-    /* ================= SAVE RESULT ================= */
-
-    private void saveSpinResult(int reward) {
-
-        if (uid == null) return;
-
-        /* ✅ LOCAL UPDATE (INSTANT UI) */
+    private void onSpinComplete(int reward) {
+        // Add coins using UserPref
         userPref.addCoins(reward);
+
         updateCoinsUI();
 
-        /* 🔄 FIRESTORE SYNC */
-        db.runTransaction(transaction -> {
-            DocumentReference userRef = db.collection("users").document(uid);
-            transaction.update(userRef,
-                    "coins", FieldValue.increment(reward),
-                    "dailySpinCount", spinsUsedToday,
-                    "dailySpinDate", today()
-            );
-            return null;
-        }).addOnSuccessListener(v -> updateUI());
+        Toast.makeText(
+                this,
+                "🎉 You won " + reward + " coins!",
+                Toast.LENGTH_SHORT
+        ).show();
+
+        isSpinning = false;
+        btnSpin.setEnabled(true);
     }
 
-    /* ================= DAILY CHECK ================= */
+    /* ==================================================
+       UI
+       ================================================== */
 
-    private void checkDailySpin() {
-        if (uid == null) return;
+    private void updateCoinsUI() {
+        txtCoins.setText(String.valueOf(userPref.getCoins()));
+    }
 
-        db.collection("users").document(uid).get()
-                .addOnSuccessListener(doc -> {
-                    String saved
+    /* ================= AD LIFECYCLE ================= */
+
+    @Override
+    protected void onPause() {
+        if (adView != null) adView.pause();
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adView != null) adView.resume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (adView != null) adView.destroy();
+        super.onDestroy();
+    }
+}

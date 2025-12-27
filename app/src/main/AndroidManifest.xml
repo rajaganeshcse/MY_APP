@@ -15,9 +15,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RGamer">
+
         <activity
             android:name=".activity_daily_spin"
-            android:exported="false" />
+            android:exported="false"
+            />
         <activity
             android:name=".activity_lucky_draw_winner"
             android:exported="false" />
@@ -42,15 +44,11 @@
         <activity
             android:name=".RedeemFragment"
             android:exported="false" />
-        <activity
-            android:name=".layout_referral_info"
-            android:exported="false" />
+
         <activity
             android:name=".TransactionHistoryFragment"
             android:exported="false" />
-        <activity
-            android:name=".layout_my_earnings"
-            android:exported="false" />
+
         <activity
             android:name=".bottomsheet_withdraw_details"
             android:exported="false" />
@@ -64,8 +62,9 @@
             android:name=".activity_lucky_draw"
             android:exported="false" />
         <activity
-            android:name=".activity_tournament"
-            android:exported="false" /> <!-- AdMob App ID -->
+            android:name=".activity_lucky_draw_winner"
+            android:exported="false" />
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713" />

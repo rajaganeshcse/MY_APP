@@ -35,4 +35,11 @@
     <item name="txtConfirmCoins" type="id" />
     <item name="txtConfirmAmount" type="id" />
     <item name="txtConfirmTitle" type="id" />
+    <item name="adView" type="id" />
+    <item name="btnSpin" type="id" />
+    <item name="imgWheel" type="id" />
+    <item name="txtSpinsLeft" type="id" />
+    <item name="layoutCoins" type="id" />
+    <item name="layoutContent" type="id" />
+    <item name="main" type="id" />
 </resources>
