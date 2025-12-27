@@ -1,12 +1,20 @@
 package com.example.rgamer;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
@@ -15,17 +23,28 @@ import java.util.*;
 public class activity_lucky_draw extends AppCompatActivity
         implements LuckyDrawAdapter.Listener {
 
+    /* ================= FIREBASE ================= */
+
     FirebaseFirestore db;
     String uid;
+
+    /* ================= UI ================= */
 
     RecyclerView recyclerView;
     LuckyDrawAdapter adapter;
     List<LuckyDrawModel> list = new ArrayList<>();
 
+    /* ================= LISTENERS ================= */
+
     ListenerRegistration drawListener;
     ListenerRegistration joinedListener;
 
     Set<String> joinedDrawIds = new HashSet<>();
+
+    /* ================= REWARDED AD ================= */
+
+    private RewardedAd rewardedAd;
+    private boolean isAdLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,13 +54,29 @@ public class activity_lucky_draw extends AppCompatActivity
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
 
+        /* ---------- BACK ---------- */
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
 
+        /* ---------- HISTORY CARD ---------- */
+        if (findViewById(R.id.cardLuckyDrawHistory) != null) {
+            findViewById(R.id.cardLuckyDrawHistory)
+                    .setOnClickListener(v ->
+                            startActivity(new Intent(
+                                    activity_lucky_draw.this,
+                                    activity_lucky_draw_winner.class
+                            ))
+                    );
+        }
+
+        /* ---------- RECYCLER ---------- */
         recyclerView = findViewById(R.id.luckyDrawRecycler);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new LuckyDrawAdapter(list, this);
         recyclerView.setAdapter(adapter);
+
+        /* ---------- LOAD AD ---------- */
+        loadRewardedAd();
     }
 
     @Override
@@ -58,7 +93,7 @@ public class activity_lucky_draw extends AppCompatActivity
         if (joinedListener != null) joinedListener.remove();
     }
 
-    /* ================= JOINED DRAWS (SAFE) ================= */
+    /* ================= JOINED DRAWS ================= */
 
     private void listenJoinedDraws() {
 
@@ -75,7 +110,6 @@ public class activity_lucky_draw extends AppCompatActivity
                     for (DocumentSnapshot d : snap.getDocuments()) {
                         joinedDrawIds.add(d.getId());
                     }
-
                     applyJoinedState();
                 });
     }
@@ -106,7 +140,6 @@ public class activity_lucky_draw extends AppCompatActivity
 
                         list.add(model);
                     }
-
                     adapter.notifyDataSetChanged();
                 });
     }
@@ -127,16 +160,17 @@ public class activity_lucky_draw extends AppCompatActivity
 
     @Override
     public void onCheckWinners(LuckyDrawModel model) {
-        Toast.makeText(
-                this,
-                "Winner will be announced after draw completes",
-                Toast.LENGTH_SHORT
-        ).show();
+        startActivity(new Intent(
+                activity_lucky_draw.this,
+                activity_lucky_draw_winner.class
+        ));
     }
 
     /* ================= SAFE JOIN ================= */
 
     private void joinDraw(String drawId) {
+
+        if (uid == null) return;
 
         DocumentReference drawRef =
                 db.collection("lucky_draws").document(drawId);
@@ -180,14 +214,88 @@ public class activity_lucky_draw extends AppCompatActivity
 
             return null;
 
-        }).addOnSuccessListener(v ->
-                Toast.makeText(this,
-                        "Joined Lucky Draw",
-                        Toast.LENGTH_SHORT).show()
-        ).addOnFailureListener(e ->
+        }).addOnSuccessListener(v -> {
+            Toast.makeText(this,
+                    "Joined Lucky Draw",
+                    Toast.LENGTH_SHORT).show();
+            showRewardedAd();
+        }).addOnFailureListener(e ->
                 Toast.makeText(this,
                         e.getMessage(),
                         Toast.LENGTH_SHORT).show()
         );
+    }
+
+    /* ================= REWARDED AD ================= */
+
+    private void loadRewardedAd() {
+
+        if (isAdLoading || rewardedAd != null) return;
+        isAdLoading = true;
+
+        RewardedAd.load(
+                this,
+                "ca-app-pub-3940256099942544/5224354917",
+                new AdRequest.Builder().build(),
+                new RewardedAdLoadCallback() {
+
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd ad) {
+                        rewardedAd = ad;
+                        isAdLoading = false;
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError error) {
+                        rewardedAd = null;
+                        isAdLoading = false;
+                    }
+                }
+        );
+    }
+
+    private void showRewardedAd() {
+
+        if (rewardedAd == null) {
+            loadRewardedAd();
+            return;
+        }
+
+        rewardedAd.setFullScreenContentCallback(
+                new FullScreenContentCallback() {
+
+                    @Override
+                    public void onAdDismissedFullScreenContent() {
+                        rewardedAd = null;
+                        loadRewardedAd();
+                    }
+
+                    @Override
+                    public void onAdFailedToShowFullScreenContent(
+                            AdError adError) {
+                        rewardedAd = null;
+                        loadRewardedAd();
+                    }
+                }
+        );
+
+        rewardedAd.show(this, rewardItem -> giveFreeReward());
+    }
+
+    /* ================= FREE REWARD ================= */
+
+    private void giveFreeReward() {
+
+        if (uid == null) return;
+
+        db.collection("users")
+                .document(uid)
+                .update("coins", FieldValue.increment(0));
+
+        Toast.makeText(
+                this,
+                "🎉 You earned free coins!",
+                Toast.LENGTH_SHORT
+        ).show();
     }
 }

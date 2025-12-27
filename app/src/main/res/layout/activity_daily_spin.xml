@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#02FFD7">
+
+    <!-- ================= HEADER ================= -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="97dp"
+        android:background="@android:color/white"
+        android:elevation="6dp"
+        android:paddingHorizontal="16dp">
+
+        <!-- Back Button -->
+        <ImageView
+            android:id="@+id/btnBack"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:src="@drawable/back_arrow"
+            android:contentDescription="Back"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <!-- Coins (RIGHT SIDE) -->
+        <LinearLayout
+            android:id="@+id/layoutCoins"
+            android:layout_width="69dp"
+            android:layout_height="49dp"
+            android:background="@drawable/bg_coin_gradient"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="8dp"
+            android:paddingVertical="4dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:src="@drawable/ic_coin" />
+
+            <TextView
+                android:id="@+id/txtCoins"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="0"
+                android:textColor="#8D6E00"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Title (CENTERED PROPERLY) -->
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Daily Spin"
+            android:textColor="@color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:gravity="center"
+            android:layout_marginHorizontal="12dp"
+            app:layout_constraintStart_toEndOf="@id/btnBack"
+            app:layout_constraintEnd_toStartOf="@id/layoutCoins"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ================= CONTENT ================= -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#AFEBE4"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Spins Left -->
+        <TextView
+            android:id="@+id/txtSpinsLeft"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="Spins Left: 5"
+            android:textColor="@color/black"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+
+        <!-- Subtitle -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:text="Spin Win Coins"
+            android:textColor="#777777"
+            android:textSize="14sp" />
+
+        <!-- ================= WHEEL AREA ================= -->
+        <FrameLayout
+            android:layout_width="300dp"
+            android:layout_height="340dp"
+            android:layout_marginBottom="28dp">
+
+            <!-- Wheel -->
+
+            <!-- Pointer -->
+
+            <ImageView
+                android:id="@+id/imgWheel"
+                android:layout_width="352dp"
+                android:layout_height="340dp"
+                android:layout_gravity="bottom|center_horizontal"
+                android:rotation="0"
+                android:src="@drawable/spin_wheel" />
+
+            <ImageView
+                android:id="@+id/imgPointer"
+                android:layout_width="84dp"
+                android:layout_height="49dp"
+                android:layout_gravity="top|center_horizontal"
+                android:src="@drawable/ic_pointer" />
+        </FrameLayout>
+
+        <!-- Spin Button -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnSpin"
+            android:layout_width="219dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_button_ripple"
+            android:paddingHorizontal="22dp"
+            android:paddingVertical="10dp"
+            android:text="SPIN"
+            android:textColor="#000000"
+            android:textSize="25sp"
+            android:textStyle="bold"
+            app:backgroundTint="@null"
+            app:rippleColor="@null" />
+
+    </LinearLayout>
+
+</LinearLayout>

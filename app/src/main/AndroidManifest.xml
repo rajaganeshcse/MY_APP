@@ -16,6 +16,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RGamer">
         <activity
+            android:name=".activity_daily_spin"
+            android:exported="false" />
+        <activity
+            android:name=".activity_lucky_draw_winner"
+            android:exported="false" />
+        <activity
+            android:name=".activity_winners"
+            android:exported="false" />
+        <activity
             android:name=".activity_winners"
             android:exported="false" />
 
@@ -30,8 +39,6 @@
         <activity
             android:name=".activity_withdraw_success"
             android:exported="false" />
-        <activity android:name=".activity_winners"
-            android:exported="false"/>
         <activity
             android:name=".RedeemFragment"
             android:exported="false" />

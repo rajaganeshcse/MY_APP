@@ -28,40 +28,39 @@
             android:orientation="vertical">
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="Lucky Draw"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textColor="@color/black"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="Win Coins"
                 android:textSize="13sp"
-                android:textColor="#777777" />
+                android:textColor="#777777"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
         </LinearLayout>
     </LinearLayout>
 
-    <!-- HOW IT WORKS -->
+    <!-- HISTORY CARD -->
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/cardLuckyDrawHistory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
         app:cardCornerRadius="10dp"
         app:cardElevation="2dp"
-        app:cardBackgroundColor="@color/white"
-        app:cardForegroundColor="@color/white"
-        android:background="@color/white"
         app:strokeColor="#6A1BFF"
-        app:strokeWidth="1dp">
+        app:strokeWidth="1dp"
+        android:background="@color/white">
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="14dp"
-            android:text="How Lucky Draw Works?"
+            android:text="Lucky Draw History?"
             android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="#3F51B5" />
@@ -73,7 +72,6 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:padding="8dp"
-        android:scrollbars="vertical" />
+        android:padding="8dp" />
 
 </LinearLayout>
