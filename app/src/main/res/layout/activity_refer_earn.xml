@@ -7,22 +7,26 @@
     android:background="#FFFFFF">
 
     <!-- Toolbar -->
+
+    <!-- Tabs -->
     <androidx.appcompat.widget.Toolbar
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="88dp"
+        android:layout_gravity="center"
         android:background="#6A1BFF"
-        app:navigationIcon="@drawable/ic_back_arrow"
+        android:gravity="center"
         app:title="Refer and Earn"
         app:titleTextColor="#FFFFFF" />
 
-    <!-- Tabs -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabIndicatorColor="#6A1BFF"
         app:tabSelectedTextColor="#6A1BFF"
-        app:tabTextColor="#888888">
+        android:backgroundTint="@color/white"
+        android:background="@color/white"
+        app:tabTextColor="@color/black">
 
         <com.google.android.material.tabs.TabItem
             android:text="INVITE"
