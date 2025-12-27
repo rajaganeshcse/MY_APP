@@ -2,6 +2,7 @@ package com.example.rgamer;
 
 import android.animation.ObjectAnimator;
 import android.app.Dialog;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -55,6 +56,7 @@ public class activity_daily_spin extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_spin);
+        makeFullScreen();
 
         enableFullScreen(); // 🔥 FULL SCREEN
 
@@ -92,6 +94,20 @@ public class activity_daily_spin extends AppCompatActivity {
 
             startSpin();
         });
+    }
+
+    private void makeFullScreen() {
+        Window window = getWindow();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+
+        window.getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
     }
 
     /* ==================================================
