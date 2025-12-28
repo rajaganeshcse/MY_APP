@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,6 +18,7 @@ import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.bottomsheet.BottomSheetDialog;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -44,6 +44,7 @@ public class GameFragment extends Fragment {
         userPref = new UserPref(requireContext());
         db = FirebaseFirestore.getInstance();
 
+        /* ================= ADS INIT ================= */
         MobileAds.initialize(requireContext());
         loadRewardAd();
 
@@ -51,7 +52,7 @@ public class GameFragment extends Fragment {
         view.findViewById(R.id.lytHowToWin)
                 .setOnClickListener(v -> showHowToWinPopup());
 
-        /* ================= TOURNAMENT CLICKS ================= */
+        /* ================= TOURNAMENT ================= */
         view.findViewById(R.id.cardFreeFire).setOnClickListener(v ->
                 openTournament("freefire", "Free Fire", R.drawable.img_freefire));
 
@@ -66,22 +67,40 @@ public class GameFragment extends Fragment {
 
         /* ================= DAILY BONUS ================= */
         View daily = view.findViewById(R.id.taskDailyBonus);
-        Button dailyBtn = daily.findViewById(R.id.btnAction);
+
+        ImageView dailyImg = daily.findViewById(R.id.imgIcon);
+        TextView dailyTitle = daily.findViewById(R.id.txtTitle);
+        MaterialButton dailyBtn = daily.findViewById(R.id.btnAction);
+
+        dailyImg.setImageResource(R.drawable.ic_money);
+        dailyTitle.setText("Daily Bonus");
+
         checkDailyBonus(dailyBtn);
         daily.setOnClickListener(v -> claimDailyBonus(dailyBtn));
 
         /* ================= VIDEO TASK ================= */
         View video = view.findViewById(R.id.taskVideo);
+
+        ImageView videoImg = video.findViewById(R.id.imgIcon);
+        TextView videoTitle = video.findViewById(R.id.txtTitle);
+        MaterialButton videoBtn = video.findViewById(R.id.btnAction);
+
+        videoImg.setImageResource(R.drawable.ic_watch);
+        videoTitle.setText("Watch Video & Earn");
+        videoBtn.setText("Watch");
+
         video.setOnClickListener(v -> {
             if (rewardedAd != null) {
                 rewardedAd.show(requireActivity(), rewardItem -> {
                     addCoins(25);
-                    Toast.makeText(getContext(),
-                            "+25 Coins Added",
-                            Toast.LENGTH_SHORT).show();
                     loadRewardAd();
                 });
             } else {
+                Toast.makeText(
+                        getContext(),
+                        "Ad not ready, try again",
+                        Toast.LENGTH_SHORT
+                ).show();
                 loadRewardAd();
             }
         });
@@ -89,57 +108,120 @@ public class GameFragment extends Fragment {
         return view;
     }
 
-    /* ================= OPEN TOURNAMENT ================= */
+    /* ================= TOURNAMENT ================= */
     private void openTournament(String gameId, String title, int banner) {
         Intent i = new Intent(getContext(), TournamentActivity.class);
-        i.putExtra("game", gameId);      // Firestore filter
-        i.putExtra("title", title);      // Header title
-        i.putExtra("banner", banner);    // Header image
+        i.putExtra("game", gameId);
+        i.putExtra("title", title);
+        i.putExtra("banner", banner);
         startActivity(i);
     }
 
-    /* ================= DAILY BONUS ================= */
-    private void checkDailyBonus(Button dailyBtn) {
+    /* ================= DAILY BONUS CHECK ================= */
+    private void checkDailyBonus(MaterialButton dailyBtn) {
         String uid = FirebaseAuth.getInstance().getUid();
         if (uid == null) return;
 
         String today = getTodayDate();
 
-        db.collection("users").document(uid)
+        db.collection("users")
+                .document(uid)
                 .get()
                 .addOnSuccessListener(doc -> {
-                    String claimedDate =
+
+                    String lastClaim =
                             doc.getString("daily_bonus.claimed_date");
-                    if (today.equals(claimedDate)) {
+
+                    if (today.equals(lastClaim)) {
                         dailyBtn.setText("Claimed");
                         dailyBtn.setEnabled(false);
+                    } else {
+                        dailyBtn.setText("Get");
+                        dailyBtn.setEnabled(true);
                     }
                 });
     }
 
-    private void claimDailyBonus(Button dailyBtn) {
+    /* ================= DAILY BONUS CLAIM (ONCE PER DAY) ================= */
+    private void claimDailyBonus(MaterialButton dailyBtn) {
         String uid = FirebaseAuth.getInstance().getUid();
         if (uid == null) return;
 
         String today = getTodayDate();
-        addCoins(50);
-        db.collection("users").document(uid)
-                .update("daily_bonus.claimed_date", today);
-        dailyBtn.setEnabled(false);
+
+        db.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(doc -> {
+
+                    String lastClaim =
+                            doc.getString("daily_bonus.claimed_date");
+
+                    // 🔒 BLOCK MULTIPLE CLAIMS
+                    if (today.equals(lastClaim)) {
+                        Toast.makeText(
+                                getContext(),
+                                "Daily bonus already claimed",
+                                Toast.LENGTH_SHORT
+                        ).show();
+                        dailyBtn.setText("Claimed");
+                        dailyBtn.setEnabled(false);
+                        return;
+                    }
+
+                    // ✅ ALLOW CLAIM
+                    addCoins(50);
+
+                    db.collection("users")
+                            .document(uid)
+                            .update("daily_bonus.claimed_date", today);
+
+                    dailyBtn.setText("Claimed");
+                    dailyBtn.setEnabled(false);
+                });
     }
 
     private String getTodayDate() {
-        return new SimpleDateFormat("yyyy-MM-dd",
-                Locale.getDefault()).format(new Date());
+        return new SimpleDateFormat(
+                "yyyy-MM-dd",
+                Locale.getDefault()
+        ).format(new Date());
     }
 
     /* ================= COINS ================= */
     private void addCoins(int coins) {
         long total = userPref.getCoins() + coins;
         userPref.setCoins(total);
+
         db.collection("users")
                 .document(FirebaseAuth.getInstance().getUid())
                 .update("coins", total);
+
+        showSpinDialog(coins);
+    }
+
+    /* ================= SPIN / COIN DIALOG ================= */
+    private void showSpinDialog(int coins) {
+
+        BottomSheetDialog dialog =
+                new BottomSheetDialog(requireContext());
+
+        View dialogView = LayoutInflater.from(requireContext())
+                .inflate(R.layout.dialog_spin_result, null);
+
+        dialog.setContentView(dialogView);
+        dialog.setCancelable(false);
+
+        TextView txtWinAmount =
+                dialogView.findViewById(R.id.txtWinAmount);
+        MaterialButton btnOk =
+                dialogView.findViewById(R.id.btnOk);
+
+        txtWinAmount.setText("+" + coins + " Coins");
+
+        btnOk.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
     }
 
     /* ================= ADS ================= */
@@ -156,6 +238,7 @@ public class GameFragment extends Fragment {
                 });
     }
 
+    /* ================= HOW TO WIN ================= */
     private void showHowToWinPopup() {
         BottomSheetDialog dialog =
                 new BottomSheetDialog(requireContext());
