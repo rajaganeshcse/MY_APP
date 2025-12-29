@@ -20,16 +20,18 @@ import java.util.List;
 
 public class TournamentActivity extends AppCompatActivity {
 
-    // UI
+    private static final String TAG = "TOUR";
+
+    /* ================= UI ================= */
     private ImageView btnBack, imgBanner;
     private TextView txtTitle;
     private RecyclerView recyclerTournament;
 
-    // Adapter
+    /* ================= ADAPTER ================= */
     private FreeFireTournamentAdapter adapter;
     private final List<FreeFireTournamentModel> list = new ArrayList<>();
 
-    // Firebase
+    /* ================= FIREBASE ================= */
     private FirebaseFirestore db;
     private String uid;
     private String game;
@@ -39,8 +41,9 @@ public class TournamentActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament);
 
-        /* ================= GET INTENT DATA ================= */
+        Log.d(TAG, "TournamentActivity started");
 
+        /* ================= INTENT ================= */
         game = getIntent().getStringExtra("game");
         String title = getIntent().getStringExtra("title");
         int banner = getIntent().getIntExtra("banner", 0);
@@ -51,26 +54,20 @@ public class TournamentActivity extends AppCompatActivity {
             return;
         }
 
-        /* ================= INIT UI ================= */
-
+        /* ================= UI INIT ================= */
         btnBack = findViewById(R.id.btnBack);
         imgBanner = findViewById(R.id.imgBanner);
         txtTitle = findViewById(R.id.txtTitle);
         recyclerTournament = findViewById(R.id.recyclerTournament);
 
-        if (txtTitle != null && title != null) {
-            txtTitle.setText(title);
-        }
-
-        if (imgBanner != null && banner != 0) {
-            imgBanner.setImageResource(banner);
-        }
+        txtTitle.setText(title);
+        imgBanner.setImageResource(banner);
 
         recyclerTournament.setLayoutManager(
-                new LinearLayoutManager(this));
+                new LinearLayoutManager(this)
+        );
 
         /* ================= ADAPTER ================= */
-
         adapter = new FreeFireTournamentAdapter(
                 this,
                 list,
@@ -84,12 +81,12 @@ public class TournamentActivity extends AppCompatActivity {
                     public void onCheckWinners(FreeFireTournamentModel model) {
                         openWinners(model);
                     }
-                });
+                }
+        );
 
         recyclerTournament.setAdapter(adapter);
 
         /* ================= FIREBASE ================= */
-
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
 
@@ -101,41 +98,56 @@ public class TournamentActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> finish());
 
+        /* ================= LOAD DATA ================= */
         loadTournaments();
     }
 
     /* ================= LOAD TOURNAMENTS ================= */
 
     private void loadTournaments() {
+
         db.collection("tournaments")
-                .whereEqualTo("game", game)        // freefire / pubg / ludo / jackpot
-                .whereEqualTo("status", "OPEN")
+                .whereEqualTo("game", game)
+                .orderBy("startTimeMillis", Query.Direction.ASCENDING)
                 .addSnapshotListener((snap, e) -> {
 
                     if (e != null) {
-                        Log.e("TOUR", "Firestore error", e);
+                        Log.e(TAG, "Firestore error", e);
                         return;
                     }
 
                     if (snap == null) return;
 
-                    Log.d("TOUR", "Game=" + game + " Docs=" + snap.size());
-
                     list.clear();
+
+                    long now = System.currentTimeMillis();
+
                     for (DocumentSnapshot d : snap.getDocuments()) {
+
                         FreeFireTournamentModel m =
                                 d.toObject(FreeFireTournamentModel.class);
 
-                        if (m != null) {
-                            m.setId(d.getId());
-                            list.add(m);
+                        if (m == null) continue;
+
+                        m.setId(d.getId());
+
+                        /* 🔥 AUTO UPDATE STATUS: scheduled → live */
+                        if ("scheduled".equalsIgnoreCase(m.getStatus())
+                                && m.getStartTimeMillis() <= now) {
+
+                            db.collection("tournaments")
+                                    .document(m.getId())
+                                    .update("status", "live");
                         }
+
+                        list.add(m);
                     }
+
                     adapter.notifyDataSetChanged();
                 });
     }
 
-    /* ================= JOIN TOURNAMENT ================= */
+    /* ================= JOIN TOURNAMENT (SAFE) ================= */
 
     private void joinTournament(FreeFireTournamentModel t) {
 
@@ -150,20 +162,42 @@ public class TournamentActivity extends AppCompatActivity {
             DocumentReference joinRef =
                     tourRef.collection("participants").document(uid);
 
+            /* ===== ALREADY JOINED CHECK ===== */
             if (transaction.get(joinRef).exists()) {
                 throw new RuntimeException("Already joined");
             }
 
-            Long ticketsObj = transaction.get(userRef).getLong("tickets");
-            if (ticketsObj == null) {
-                throw new RuntimeException("Tickets not found");
+            Long tickets =
+                    transaction.get(userRef).getLong("tickets");
+
+            Long joined =
+                    transaction.get(tourRef).getLong("joinedSlots");
+
+            Long total =
+                    transaction.get(tourRef).getLong("totalSlots");
+
+            Long startTime =
+                    transaction.get(tourRef).getLong("startTimeMillis");
+
+            if (tickets == null || joined == null
+                    || total == null || startTime == null) {
+                throw new RuntimeException("Data error");
             }
 
-            long tickets = ticketsObj;
+            /* 🔥 BLOCK JOIN AFTER START */
+            if (System.currentTimeMillis() >= startTime) {
+                throw new RuntimeException("Tournament already started");
+            }
 
             if (tickets < t.getEntryTickets()) {
                 throw new RuntimeException("Not enough tickets");
             }
+
+            if (joined >= total) {
+                throw new RuntimeException("Slots full");
+            }
+
+            /* ===== UPDATE DATA ===== */
 
             transaction.update(
                     userRef,
@@ -173,7 +207,7 @@ public class TournamentActivity extends AppCompatActivity {
 
             transaction.update(
                     tourRef,
-                    "joined_slots",
+                    "joinedSlots",
                     FieldValue.increment(1)
             );
 

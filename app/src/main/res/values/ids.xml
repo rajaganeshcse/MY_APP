@@ -42,4 +42,6 @@
     <item name="layoutCoins" type="id" />
     <item name="layoutContent" type="id" />
     <item name="main" type="id" />
+    <item name="txtWinAmount" type="id" />
+    <item name="btnOk" type="id" />
 </resources>

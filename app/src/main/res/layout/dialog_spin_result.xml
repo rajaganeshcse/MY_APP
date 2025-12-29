@@ -6,8 +6,9 @@
     android:orientation="vertical"
     android:padding="20dp">
 
-    <!-- Title -->
+    <!-- TITLE -->
     <TextView
+        android:id="@+id/txtTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Congratulations 🎉"
@@ -15,9 +16,9 @@
         android:textStyle="bold"
         android:textColor="@color/black"
         android:gravity="center"
-        android:layout_marginBottom="12dp"/>
+        android:layout_marginBottom="12dp" />
 
-    <!-- Winning Amount -->
+    <!-- WINNING AMOUNT -->
     <TextView
         android:id="@+id/txtWinAmount"
         android:layout_width="match_parent"
@@ -27,9 +28,9 @@
         android:textStyle="bold"
         android:textColor="#2E7D32"
         android:gravity="center"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="20dp" />
 
-    <!-- OK Button -->
+    <!-- OK BUTTON -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnOk"
         android:layout_width="120dp"
@@ -37,6 +38,7 @@
         android:text="OK"
         android:textSize="16sp"
         android:layout_gravity="center"
-        android:backgroundTint="#FFC107"/>
+        android:textAllCaps="false"
+        android:backgroundTint="#FFC107" />
 
 </LinearLayout>

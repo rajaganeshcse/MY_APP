@@ -10,12 +10,14 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FreeFireTournamentAdapter
         extends RecyclerView.Adapter<FreeFireTournamentAdapter.ViewHolder> {
 
-    /* ================= LISTENER ================= */
     public interface Listener {
         void onJoin(FreeFireTournamentModel model);
         void onCheckWinners(FreeFireTournamentModel model);
@@ -33,8 +35,6 @@ public class FreeFireTournamentAdapter
         this.list = list;
         this.listener = listener;
     }
-
-    /* ================= VIEW HOLDER ================= */
 
     @NonNull
     @Override
@@ -54,37 +54,45 @@ public class FreeFireTournamentAdapter
 
         FreeFireTournamentModel m = list.get(position);
 
-        /* ================= PRIZE ================= */
-        h.txtPrize.setText("Win " + m.getPrizeCoins() + " Coins");
+        /* PRIZE */
+        h.txtPrize.setText("Win " + m.getCoin() + " Coins");
 
-        /* ================= SLOTS ================= */
+        /* TIME & DATE */
+        if (m.getStartTimeMillis() > 0) {
+            Date d = new Date(m.getStartTimeMillis());
+            h.txtTimeLabel.setText(
+                    new SimpleDateFormat("hh:mm a", Locale.getDefault())
+                            .format(d)
+            );
+            h.txtDateLabel.setText(
+                    new SimpleDateFormat("dd MMM", Locale.getDefault())
+                            .format(d)
+            );
+        }
+
+        /* SLOTS */
         int total = m.getTotalSlots();
         int joined = m.getJoinedSlots();
         int left = Math.max(0, total - joined);
 
         h.txtSlots.setText("Slots Left : " + left + "/" + total);
+        h.progressSlots.setMax(100);
+        h.progressSlots.setProgress(
+                total > 0 ? (joined * 100) / total : 0
+        );
 
-        /* ================= PROGRESS ================= */
-        int percent = 0;
-        if (total > 0) {
-            percent = (joined * 100) / total;
-        }
-        h.progress.setMax(100);
-        h.progress.setProgress(percent);
+        /* HIDE UNUSED */
+        h.txtCountdown.setVisibility(View.GONE);
+        h.txtGameId.setVisibility(View.GONE);
+        h.txtGamePassword.setVisibility(View.GONE);
 
-        /* ================= JOIN BUTTON ================= */
-        h.btnJoin.setOnClickListener(null);
+        /* JOIN */
+        h.btnJoin.setText("Join (" + m.getEntryTickets() + " Tickets)");
+        h.btnJoin.setEnabled(true);
+        h.btnJoin.setOnClickListener(v ->
+                listener.onJoin(m));
 
-        if (!"OPEN".equalsIgnoreCase(m.getStatus()) || left <= 0) {
-            h.btnJoin.setText("CLOSED");
-            h.btnJoin.setEnabled(false);
-        } else {
-            h.btnJoin.setEnabled(true);
-            h.btnJoin.setText("Join (" + m.getEntryTickets() + " Tickets)");
-            h.btnJoin.setOnClickListener(v -> listener.onJoin(m));
-        }
-
-        /* ================= WINNERS BUTTON ================= */
+        /* WINNERS */
         h.btnWinners.setOnClickListener(v ->
                 listener.onCheckWinners(m));
     }
@@ -94,20 +102,26 @@ public class FreeFireTournamentAdapter
         return list == null ? 0 : list.size();
     }
 
-    /* ================= VIEW HOLDER ================= */
-
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtPrize, txtSlots, btnJoin, btnWinners;
-        ProgressBar progress;
+        TextView txtPrize, txtSlots,
+                txtTimeLabel, txtDateLabel,
+                txtCountdown, txtGameId,
+                txtGamePassword, btnJoin, btnWinners;
+        ProgressBar progressSlots;
 
         ViewHolder(View v) {
             super(v);
             txtPrize = v.findViewById(R.id.txtPrize);
             txtSlots = v.findViewById(R.id.txtSlots);
+            txtTimeLabel = v.findViewById(R.id.txtTimeLabel);
+            txtDateLabel = v.findViewById(R.id.txtDateLabel);
+            txtCountdown = v.findViewById(R.id.txtCountdown);
+            txtGameId = v.findViewById(R.id.gameid);
+            txtGamePassword = v.findViewById(R.id.gamePassword);
             btnJoin = v.findViewById(R.id.btnJoin);
             btnWinners = v.findViewById(R.id.btnWinners);
-            progress = v.findViewById(R.id.progressSlots);
+            progressSlots = v.findViewById(R.id.progressSlots);
         }
     }
 }

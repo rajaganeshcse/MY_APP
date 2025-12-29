@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="12dp"
-    android:background="@color/white"
     app:cardCornerRadius="14dp"
-    app:cardElevation="14dp"
-    android:elevation="6dp">
+    app:cardElevation="6dp"
+    android:background="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,19 +16,13 @@
         android:orientation="vertical"
         android:padding="14dp">
 
-        <!-- 🔹 TOP RIGHT : TIME / DATE / PRIZE -->
+        <!-- ================= TOP RIGHT INFO ================= -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:gravity="end">
 
-            <!-- spacer -->
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1" />
-
-            <!-- right aligned block -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -36,62 +30,59 @@
                 android:gravity="end">
 
                 <TextView
-                    android:id="@+id/txtTimeLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/txtTimeLabel"
                     android:text="8:30 PM"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:textColor="@color/black" />
 
                 <TextView
-                    android:id="@+id/txtDateLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/txtDateLabel"
                     android:text="Today"
                     android:textSize="12sp"
                     android:textStyle="bold"
                     android:textColor="@color/black" />
 
                 <TextView
-                    android:id="@+id/txtCountdown"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/txtCountdown"
                     android:text="Starts in 00:00:00"
                     android:textSize="11sp"
                     android:textColor="#D32F2F"
                     android:visibility="gone" />
 
-                <!-- 🏆 FIRST PRIZE -->
                 <TextView
-                    android:id="@+id/txtFirstPrize"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/txtFirstPrize"
                     android:layout_marginTop="4dp"
                     android:text="1st Prize 5000 🪙"
                     android:textSize="13sp"
                     android:textStyle="bold"
                     android:textColor="#2E7D32" />
-
             </LinearLayout>
         </LinearLayout>
 
-        <!-- 🔹 MAIN PRIZE TEXT -->
+        <!-- ================= MAIN CONTENT ================= -->
         <TextView
-            android:id="@+id/txtPrize"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:id="@+id/txtPrize"
+            android:layout_marginTop="10dp"
             android:text="Win 500 Coins"
-            android:textColor="#000"
+            android:textColor="@color/black"
             android:textSize="18sp"
             android:textStyle="bold" />
 
-        <!-- 🔹 SLOTS -->
         <TextView
-            android:id="@+id/txtSlots"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/txtSlots"
             android:layout_marginTop="4dp"
             android:text="Slots Left : 26/100"
             android:textColor="#555"
@@ -106,11 +97,12 @@
             android:max="100"
             android:progress="0" />
 
-        <!-- 🔹 GAME ID / PASSWORD -->
+        <!-- ================= GAME ID / PASSWORD ================= -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/gameid"
@@ -127,8 +119,8 @@
                 android:id="@+id/gamePassword"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="8dp"
                 android:layout_weight="1"
+                android:layout_marginStart="8dp"
                 android:background="@drawable/bg_outline_button"
                 android:gravity="center"
                 android:text="0000000000"
@@ -136,11 +128,12 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <!-- 🔹 BUTTONS -->
+        <!-- ================= ACTION BUTTONS ================= -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp">
+            android:layout_marginTop="10dp"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/btnWinners"
@@ -156,8 +149,8 @@
                 android:id="@+id/btnJoin"
                 android:layout_width="0dp"
                 android:layout_height="40dp"
-                android:layout_marginStart="8dp"
                 android:layout_weight="1"
+                android:layout_marginStart="8dp"
                 android:background="@drawable/bg_outline_button"
                 android:gravity="center"
                 android:text="Join (10 Tickets)"
