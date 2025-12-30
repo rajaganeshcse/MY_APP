@@ -43,22 +43,34 @@ public class TournamentActivity extends AppCompatActivity {
         txtTitle.setText(title);
 
         recyclerTournament = findViewById(R.id.recyclerTournament);
-        recyclerTournament.setLayoutManager(
-                new LinearLayoutManager(this)
-        );
+        recyclerTournament.setLayoutManager(new LinearLayoutManager(this));
 
         adapter = new FreeFireTournamentAdapter(
                 this,
                 list,
                 new FreeFireTournamentAdapter.Listener() {
+
+                    /* ================= JOIN ================= */
                     @Override
                     public void onJoin(FreeFireTournamentModel model) {
-                        // later join logic
+
+                        // 🔥 ADDITION START (NO LOGIC CHANGE)
+                        GameIdManager.getGameId(game, gameId -> {
+
+                            if (gameId == null) {
+                                // FIRST TIME → ASK GAME ID
+                                showGameIdBottomSheet(model);
+                            } else {
+                                // AUTO JOIN WITH SAVED GAME ID
+                                joinTournament(model, gameId);
+                            }
+                        });
+                        // 🔥 ADDITION END
                     }
 
                     @Override
                     public void onCheckWinners(FreeFireTournamentModel model) {
-                        // later winners logic
+                        // unchanged
                     }
                 });
 
@@ -75,11 +87,7 @@ public class TournamentActivity extends AppCompatActivity {
                 .whereEqualTo("game", game);
 
         if (showNew) {
-            // 🔥 NEW MATCHES FIRST
-            query = query.orderBy(
-                    "created_at",
-                    Query.Direction.DESCENDING
-            );
+            query = query.orderBy("created_at", Query.Direction.DESCENDING);
         }
 
         query.addSnapshotListener((snap, e) -> {
@@ -101,5 +109,34 @@ public class TournamentActivity extends AppCompatActivity {
 
             adapter.notifyDataSetChanged();
         });
+    }
+
+    /* ================= ASK GAME ID (FIRST TIME ONLY) ================= */
+    private void showGameIdBottomSheet(FreeFireTournamentModel model) {
+
+        JoinGameIdBottomSheet sheet =
+                new JoinGameIdBottomSheet(game, gameId -> {
+
+                    // SAVE GAME ID ONCE
+                    GameIdManager.saveGameId(game, gameId);
+
+                    // JOIN TOURNAMENT
+                    joinTournament(model, gameId);
+                });
+
+        sheet.show(getSupportFragmentManager(), "GAME_ID_SHEET");
+    }
+
+    /* ================= JOIN TOURNAMENT ================= */
+    private void joinTournament(
+            FreeFireTournamentModel model,
+            String gameId
+    ) {
+        // 👉 KEEP YOUR EXISTING JOIN LOGIC HERE
+        // 👉 Use gameId where required
+
+        // Example (do NOT auto-add if you already have logic):
+        // model.setPlayerGameId(gameId);
+        // proceedJoin(model);
     }
 }
