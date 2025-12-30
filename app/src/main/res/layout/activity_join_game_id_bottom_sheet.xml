@@ -11,32 +11,31 @@
         android:id="@+id/txtGame"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FREE FIRE"
+        android:text="GAME NAME"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="@color/black"/>
+        android:textColor="@color/black" />
 
-    <!-- GAME ID (AUTO FROM PROFILE) -->
+    <!-- GAME ID INPUT -->
     <EditText
         android:id="@+id/edtGameName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:hint="Game ID"
-        android:enabled="false"
-        android:focusable="false"
+        android:layout_marginTop="10dp"
+        android:hint="Enter Game ID"
+        android:inputType="text"
         android:textColor="@color/black"
-        android:textColorHint="#888"/>
+        android:textColorHint="#888" />
 
-    <!-- REMINDER / NOTE -->
+    <!-- NOTE -->
     <TextView
         android:id="@+id/txtNote"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="6dp"
-        android:text="⚠️ Game ID is automatically taken from your profile. Please verify before joining."
+        android:text="⚠️ Game ID will be saved and auto-used for future tournaments of this game."
         android:textSize="12sp"
-        android:textColor="#555"/>
+        android:textColor="#666" />
 
     <!-- CONFIRM BUTTON -->
     <TextView
@@ -48,5 +47,5 @@
         android:text="CONFIRM JOIN"
         android:textStyle="bold"
         android:textColor="@color/white"
-        android:background="@drawable/bg_btn_primary"/>
+        android:background="@drawable/bg_btn_primary" />
 </LinearLayout>

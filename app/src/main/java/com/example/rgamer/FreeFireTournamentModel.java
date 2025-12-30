@@ -5,6 +5,7 @@ import com.google.firebase.firestore.IgnoreExtraProperties;
 @IgnoreExtraProperties
 public class FreeFireTournamentModel {
 
+    /* ================= BASIC ================= */
     private String id;
     private String game;
     private long coin;
@@ -14,7 +15,12 @@ public class FreeFireTournamentModel {
     private long startTimeMillis;
     private long created_at;
 
-    // REQUIRED empty constructor
+    /* ================= JOINED INFO (NEW) ================= */
+    private boolean joined;              // true if current user joined
+    private String joinedUsername;       // username from users collection
+    private String joinedGameId;          // saved game ID
+
+    // REQUIRED empty constructor (Firestore)
     public FreeFireTournamentModel() {}
 
     /* ================= ID ================= */
@@ -85,5 +91,30 @@ public class FreeFireTournamentModel {
 
     public void setCreated_at(long created_at) {
         this.created_at = created_at;
+    }
+
+    /* ================= JOIN STATE ================= */
+    public boolean isJoined() {
+        return joined;
+    }
+
+    public void setJoined(boolean joined) {
+        this.joined = joined;
+    }
+
+    public String getJoinedUsername() {
+        return joinedUsername;
+    }
+
+    public void setJoinedUsername(String joinedUsername) {
+        this.joinedUsername = joinedUsername;
+    }
+
+    public String getJoinedGameId() {
+        return joinedGameId;
+    }
+
+    public void setJoinedGameId(String joinedGameId) {
+        this.joinedGameId = joinedGameId;
     }
 }

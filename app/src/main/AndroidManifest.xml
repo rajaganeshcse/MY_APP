@@ -15,11 +15,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RGamer">
-
+        <activity
+            android:name=".JoinGameIdBottomSheet"
+            android:exported="false" />
         <activity
             android:name=".activity_daily_spin"
-            android:exported="false"
-            />
+            android:exported="false" />
+        <activity
+            android:name=".activity_lucky_draw_winner"
+            android:exported="false" />
         <activity
             android:name=".activity_lucky_draw_winner"
             android:exported="false" />
@@ -44,11 +48,9 @@
         <activity
             android:name=".RedeemFragment"
             android:exported="false" />
-
         <activity
             android:name=".TransactionHistoryFragment"
             android:exported="false" />
-
         <activity
             android:name=".bottomsheet_withdraw_details"
             android:exported="false" />
@@ -60,9 +62,6 @@
             android:exported="false" />
         <activity
             android:name=".activity_lucky_draw"
-            android:exported="false" />
-        <activity
-            android:name=".activity_lucky_draw_winner"
             android:exported="false" />
 
         <meta-data

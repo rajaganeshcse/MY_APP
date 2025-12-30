@@ -3,16 +3,20 @@ package com.example.rgamer;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class TournamentActivity extends AppCompatActivity {
 
@@ -23,11 +27,15 @@ public class TournamentActivity extends AppCompatActivity {
     private FirebaseFirestore db;
     private String game;
     private boolean showNew;
+    private String uid;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tournament);
+
+        uid = FirebaseAuth.getInstance().getUid();
+        db = FirebaseFirestore.getInstance();
 
         /* ================= INTENT ================= */
         game = getIntent().getStringExtra("game");
@@ -54,18 +62,14 @@ public class TournamentActivity extends AppCompatActivity {
                     @Override
                     public void onJoin(FreeFireTournamentModel model) {
 
-                        // 🔥 ADDITION START (NO LOGIC CHANGE)
                         GameIdManager.getGameId(game, gameId -> {
 
                             if (gameId == null) {
-                                // FIRST TIME → ASK GAME ID
                                 showGameIdBottomSheet(model);
                             } else {
-                                // AUTO JOIN WITH SAVED GAME ID
                                 joinTournament(model, gameId);
                             }
                         });
-                        // 🔥 ADDITION END
                     }
 
                     @Override
@@ -76,7 +80,6 @@ public class TournamentActivity extends AppCompatActivity {
 
         recyclerTournament.setAdapter(adapter);
 
-        db = FirebaseFirestore.getInstance();
         loadMatches();
     }
 
@@ -103,6 +106,10 @@ public class TournamentActivity extends AppCompatActivity {
 
                 if (m != null) {
                     m.setId(d.getId());
+
+                    // 🔥 CHECK IF USER JOINED THIS MATCH
+                    checkIfJoined(m);
+
                     list.add(m);
                 }
             }
@@ -111,16 +118,36 @@ public class TournamentActivity extends AppCompatActivity {
         });
     }
 
-    /* ================= ASK GAME ID (FIRST TIME ONLY) ================= */
+    /* ================= CHECK JOINED ================= */
+    private void checkIfJoined(FreeFireTournamentModel model) {
+
+        if (uid == null) return;
+
+        db.collection("users")
+                .document(uid)
+                .collection("joined_tournaments")
+                .document(model.getId())
+                .get()
+                .addOnSuccessListener(doc -> {
+
+                    if (doc.exists()) {
+                        model.setJoined(true);
+                        model.setJoinedGameId(doc.getString("gameId"));
+                        model.setJoinedUsername(
+                                doc.getString("username")
+                        );
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
+    /* ================= ASK GAME ID ================= */
     private void showGameIdBottomSheet(FreeFireTournamentModel model) {
 
         JoinGameIdBottomSheet sheet =
                 new JoinGameIdBottomSheet(game, gameId -> {
 
-                    // SAVE GAME ID ONCE
                     GameIdManager.saveGameId(game, gameId);
-
-                    // JOIN TOURNAMENT
                     joinTournament(model, gameId);
                 });
 
@@ -132,11 +159,64 @@ public class TournamentActivity extends AppCompatActivity {
             FreeFireTournamentModel model,
             String gameId
     ) {
-        // 👉 KEEP YOUR EXISTING JOIN LOGIC HERE
-        // 👉 Use gameId where required
 
-        // Example (do NOT auto-add if you already have logic):
-        // model.setPlayerGameId(gameId);
-        // proceedJoin(model);
+        if (uid == null) return;
+
+        DocumentReference tournamentRef =
+                db.collection("tournaments")
+                        .document(model.getId());
+
+        DocumentReference userJoinRef =
+                db.collection("users")
+                        .document(uid)
+                        .collection("joined_tournaments")
+                        .document(model.getId());
+
+        db.runTransaction(transaction -> {
+
+            DocumentSnapshot snap =
+                    transaction.get(tournamentRef);
+
+            long joined =
+                    snap.getLong("joinedSlots") == null
+                            ? 0
+                            : snap.getLong("joinedSlots");
+
+            transaction.update(
+                    tournamentRef,
+                    "joinedSlots",
+                    joined + 1
+            );
+
+            Map<String, Object> joinData = new HashMap<>();
+            joinData.put("game", game);
+            joinData.put("gameId", gameId);
+            joinData.put("username", "USER"); // replace with real username
+            joinData.put("joinedAt",
+                    FieldValue.serverTimestamp());
+
+            transaction.set(userJoinRef, joinData);
+
+            return null;
+        }).addOnSuccessListener(unused -> {
+
+            // UPDATE UI
+            model.setJoined(true);
+            model.setJoinedGameId(gameId);
+            model.setJoinedUsername("USER"); // same username
+            adapter.notifyDataSetChanged();
+
+            Toast.makeText(
+                    this,
+                    "Joined Successfully",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+        }).addOnFailureListener(e ->
+                Toast.makeText(
+                        this,
+                        e.getMessage(),
+                        Toast.LENGTH_SHORT
+                ).show());
     }
 }

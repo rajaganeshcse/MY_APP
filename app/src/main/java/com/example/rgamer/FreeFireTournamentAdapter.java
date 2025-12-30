@@ -20,6 +20,7 @@ import java.util.Locale;
 public class FreeFireTournamentAdapter
         extends RecyclerView.Adapter<FreeFireTournamentAdapter.ViewHolder> {
 
+    /* ================= LISTENER ================= */
     public interface Listener {
         void onJoin(FreeFireTournamentModel model);
         void onCheckWinners(FreeFireTournamentModel model);
@@ -64,17 +65,13 @@ public class FreeFireTournamentAdapter
             Date d = new Date(m.getStartTimeMillis());
 
             h.txtTimeLabel.setText(
-                    new SimpleDateFormat(
-                            "hh:mm a",
-                            Locale.getDefault()
-                    ).format(d)
+                    new SimpleDateFormat("hh:mm a", Locale.getDefault())
+                            .format(d)
             );
 
             h.txtDateLabel.setText(
-                    new SimpleDateFormat(
-                            "dd MMM",
-                            Locale.getDefault()
-                    ).format(d)
+                    new SimpleDateFormat("dd MMM", Locale.getDefault())
+                            .format(d)
             );
         } else {
             h.txtTimeLabel.setText("-");
@@ -84,33 +81,60 @@ public class FreeFireTournamentAdapter
         /* ================= SLOTS ================= */
         int total = m.getTotalSlots();
         int joined = m.getJoinedSlots();
-        int left = Math.max(0, total - joined); // 🔥 FIX
+        int left = Math.max(0, total - joined);
 
-        h.txtSlots.setText(
-                "Slots Left : " + left + "/" + total
-        );
+        h.txtSlots.setText("Slots Left : " + left + "/" + total);
 
-        h.progressSlots.setMax(100); // 🔥 FIX
-        h.progressSlots.setProgress(
-                total > 0 ? (joined * 100) / total : 0
-        );
+        if (h.progressSlots != null) {
+            h.progressSlots.setMax(100);
+            h.progressSlots.setProgress(
+                    total > 0 ? (joined * 100) / total : 0
+            );
+        }
 
-        /* ================= HIDE UNUSED ================= */
+        /* ================= DEFAULT VISIBILITY ================= */
         h.txtCountdown.setVisibility(View.GONE);
         h.txtGameId.setVisibility(View.GONE);
         h.txtGamePassword.setVisibility(View.GONE);
 
-        /* ================= JOIN BUTTON ================= */
-        h.btnJoin.setOnClickListener(null); // 🔥 FIX recycling
-        h.btnJoin.setText(
-                "Join (" + m.getEntryTickets() + " Tickets)"
-        );
-        h.btnJoin.setEnabled(true);
-        h.btnJoin.setOnClickListener(v ->
-                listener.onJoin(m));
+        /* ================= JOIN STATE ================= */
+        h.btnJoin.setOnClickListener(null);
+
+        if (m.isJoined()) {
+            // ✅ ALREADY JOINED
+            h.btnJoin.setEnabled(false);
+            h.btnJoin.setText("Joined");
+
+            // SHOW USERNAME & GAME ID
+            if (m.getJoinedUsername() != null) {
+                h.txtGameId.setText("User : " + m.getJoinedUsername());
+                h.txtGameId.setVisibility(View.VISIBLE);
+            }
+
+            if (m.getJoinedGameId() != null) {
+                h.txtGamePassword.setText(
+                        "Game ID : " + m.getJoinedGameId()
+                );
+                h.txtGamePassword.setVisibility(View.VISIBLE);
+            }
+
+        } else if (left <= 0) {
+            // ❌ FULL
+            h.btnJoin.setEnabled(false);
+            h.btnJoin.setText("Full");
+
+        } else {
+            // 🟢 CAN JOIN
+            h.btnJoin.setEnabled(true);
+            h.btnJoin.setText(
+                    "Join (" + m.getEntryTickets() + " Tickets)"
+            );
+            h.btnJoin.setOnClickListener(v ->
+                    listener.onJoin(m));
+        }
 
         /* ================= WINNERS ================= */
-        h.btnWinners.setOnClickListener(null); // 🔥 FIX recycling
+        h.btnWinners.setOnClickListener(null);
         h.btnWinners.setOnClickListener(v ->
                 listener.onCheckWinners(m));
     }
@@ -126,9 +150,9 @@ public class FreeFireTournamentAdapter
         TextView txtPrize, txtSlots,
                 txtTimeLabel, txtDateLabel,
                 txtCountdown, txtGameId,
-                txtGamePassword ;
-        MaterialButton btnJoin, btnWinners;
+                txtGamePassword;
 
+        MaterialButton btnJoin, btnWinners;
         ProgressBar progressSlots;
 
         ViewHolder(View v) {

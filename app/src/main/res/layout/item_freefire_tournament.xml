@@ -111,7 +111,7 @@
             android:layout_height="6dp"
             android:layout_marginTop="6dp"
             android:max="100"
-            android:progress="62"
+            android:progress="0"
             android:progressTint="#009688"
             android:backgroundTint="#E0E0E0" />
 
