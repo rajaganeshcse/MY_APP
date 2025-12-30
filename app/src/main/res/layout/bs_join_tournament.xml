@@ -17,7 +17,7 @@
         android:id="@+id/edtGameName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Game Name"
+        android:hint="Game ID"
         android:enabled="false"
         android:layout_marginTop="8dp"/>
 
@@ -37,5 +37,7 @@
         android:text="CONFIRM JOIN"
         android:textStyle="bold"
         android:layout_marginTop="12dp"
+        android:textColor="@color/white"
+
         android:background="@drawable/bg_btn_primary"/>
 </LinearLayout>
