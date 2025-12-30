@@ -2,6 +2,9 @@ package com.example.rgamer;
 
 import com.google.firebase.firestore.IgnoreExtraProperties;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @IgnoreExtraProperties
 public class FreeFireTournamentModel {
 
@@ -9,16 +12,20 @@ public class FreeFireTournamentModel {
     private String id;
     private String game;
     private long coin;
-    private long entryTickets;   // 🔥 use long
-    private long totalSlots;     // 🔥 use long
-    private long joinedSlots;    // 🔥 use long
+    private long entryTickets;
+    private long totalSlots;
+    private long joinedSlots;
     private long startTimeMillis;
     private long created_at;
 
-    /* ================= JOINED INFO (NEW) ================= */
-    private boolean joined;              // true if current user joined
-    private String joinedUsername;       // username from users collection
-    private String joinedGameId;          // saved game ID
+    /* ================= JOIN STATE (CURRENT USER) ================= */
+    private boolean joined;              // current user joined?
+    private String joinedUsername;       // current user's username
+    private String joinedGameId;         // current user's game ID
+
+    /* ================= ALL JOINED USERS (NEW) ================= */
+    // key = uid
+    private Map<String, JoinedUser> joinedUsers;
 
     // REQUIRED empty constructor (Firestore)
     public FreeFireTournamentModel() {}
@@ -93,7 +100,7 @@ public class FreeFireTournamentModel {
         this.created_at = created_at;
     }
 
-    /* ================= JOIN STATE ================= */
+    /* ================= CURRENT USER JOIN ================= */
     public boolean isJoined() {
         return joined;
     }
@@ -116,5 +123,48 @@ public class FreeFireTournamentModel {
 
     public void setJoinedGameId(String joinedGameId) {
         this.joinedGameId = joinedGameId;
+    }
+
+    /* ================= ALL JOINED USERS ================= */
+    public Map<String, JoinedUser> getJoinedUsers() {
+        if (joinedUsers == null) {
+            joinedUsers = new HashMap<>();
+        }
+        return joinedUsers;
+    }
+
+    public void setJoinedUsers(Map<String, JoinedUser> joinedUsers) {
+        this.joinedUsers = joinedUsers;
+    }
+
+    /* ================= INNER MODEL ================= */
+    @IgnoreExtraProperties
+    public static class JoinedUser {
+
+        private String username;
+        private String gameId;
+
+        public JoinedUser() {}
+
+        public JoinedUser(String username, String gameId) {
+            this.username = username;
+            this.gameId = gameId;
+        }
+
+        public String getUsername() {
+            return username;
+        }
+
+        public void setUsername(String username) {
+            this.username = username;
+        }
+
+        public String getGameId() {
+            return gameId;
+        }
+
+        public void setGameId(String gameId) {
+            this.gameId = gameId;
+        }
     }
 }

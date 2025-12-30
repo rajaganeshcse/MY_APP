@@ -85,6 +85,7 @@ public class FreeFireTournamentAdapter
 
         h.txtSlots.setText("Slots Left : " + left + "/" + total);
 
+        // ProgressBar safe usage
         if (h.progressSlots != null) {
             h.progressSlots.setMax(100);
             h.progressSlots.setProgress(
@@ -105,12 +106,15 @@ public class FreeFireTournamentAdapter
             h.btnJoin.setEnabled(false);
             h.btnJoin.setText("Joined");
 
-            // SHOW USERNAME & GAME ID
+            // Show joined username
             if (m.getJoinedUsername() != null) {
-                h.txtGameId.setText("User : " + m.getJoinedUsername());
+                h.txtGameId.setText(
+                        "User : " + m.getJoinedUsername()
+                );
                 h.txtGameId.setVisibility(View.VISIBLE);
             }
 
+            // Show joined game ID
             if (m.getJoinedGameId() != null) {
                 h.txtGamePassword.setText(
                         "Game ID : " + m.getJoinedGameId()

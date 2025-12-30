@@ -58,12 +58,10 @@ public class TournamentActivity extends AppCompatActivity {
                 list,
                 new FreeFireTournamentAdapter.Listener() {
 
-                    /* ================= JOIN ================= */
                     @Override
                     public void onJoin(FreeFireTournamentModel model) {
 
                         GameIdManager.getGameId(game, gameId -> {
-
                             if (gameId == null) {
                                 showGameIdBottomSheet(model);
                             } else {
@@ -79,7 +77,6 @@ public class TournamentActivity extends AppCompatActivity {
                 });
 
         recyclerTournament.setAdapter(adapter);
-
         loadMatches();
     }
 
@@ -106,14 +103,10 @@ public class TournamentActivity extends AppCompatActivity {
 
                 if (m != null) {
                     m.setId(d.getId());
-
-                    // 🔥 CHECK IF USER JOINED THIS MATCH
                     checkIfJoined(m);
-
                     list.add(m);
                 }
             }
-
             adapter.notifyDataSetChanged();
         });
     }
@@ -133,9 +126,7 @@ public class TournamentActivity extends AppCompatActivity {
                     if (doc.exists()) {
                         model.setJoined(true);
                         model.setJoinedGameId(doc.getString("gameId"));
-                        model.setJoinedUsername(
-                                doc.getString("username")
-                        );
+                        model.setJoinedUsername(doc.getString("username"));
                         adapter.notifyDataSetChanged();
                     }
                 });
@@ -146,7 +137,6 @@ public class TournamentActivity extends AppCompatActivity {
 
         JoinGameIdBottomSheet sheet =
                 new JoinGameIdBottomSheet(game, gameId -> {
-
                     GameIdManager.saveGameId(game, gameId);
                     joinTournament(model, gameId);
                 });
@@ -166,16 +156,27 @@ public class TournamentActivity extends AppCompatActivity {
                 db.collection("tournaments")
                         .document(model.getId());
 
+        DocumentReference tournamentUserRef =
+                tournamentRef
+                        .collection("joined_users")
+                        .document(uid);
+
         DocumentReference userJoinRef =
                 db.collection("users")
                         .document(uid)
                         .collection("joined_tournaments")
                         .document(model.getId());
 
+        String username = "USER"; // 🔥 replace with real username
+
         db.runTransaction(transaction -> {
 
-            DocumentSnapshot snap =
-                    transaction.get(tournamentRef);
+            // ❌ Prevent duplicate join
+            if (transaction.get(tournamentUserRef).exists()) {
+                throw new RuntimeException("Already joined");
+            }
+
+            DocumentSnapshot snap = transaction.get(tournamentRef);
 
             long joined =
                     snap.getLong("joinedSlots") == null
@@ -188,22 +189,30 @@ public class TournamentActivity extends AppCompatActivity {
                     joined + 1
             );
 
-            Map<String, Object> joinData = new HashMap<>();
-            joinData.put("game", game);
-            joinData.put("gameId", gameId);
-            joinData.put("username", "USER"); // replace with real username
-            joinData.put("joinedAt",
+            Map<String, Object> tournamentUser = new HashMap<>();
+            tournamentUser.put("username", username);
+            tournamentUser.put("gameId", gameId);
+            tournamentUser.put("joinedAt",
                     FieldValue.serverTimestamp());
 
-            transaction.set(userJoinRef, joinData);
+            transaction.set(tournamentUserRef, tournamentUser);
+
+            Map<String, Object> userJoin = new HashMap<>();
+            userJoin.put("game", game);
+            userJoin.put("gameId", gameId);
+            userJoin.put("username", username);
+            userJoin.put("joinedAt",
+                    FieldValue.serverTimestamp());
+
+            transaction.set(userJoinRef, userJoin);
 
             return null;
+
         }).addOnSuccessListener(unused -> {
 
-            // UPDATE UI
             model.setJoined(true);
+            model.setJoinedUsername(username);
             model.setJoinedGameId(gameId);
-            model.setJoinedUsername("USER"); // same username
             adapter.notifyDataSetChanged();
 
             Toast.makeText(
