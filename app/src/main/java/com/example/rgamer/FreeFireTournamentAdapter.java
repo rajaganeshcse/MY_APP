@@ -23,7 +23,7 @@ public class FreeFireTournamentAdapter
     /* ================= LISTENER ================= */
     public interface Listener {
         void onJoin(FreeFireTournamentModel model);
-        void onCheckWinners(FreeFireTournamentModel model);
+        void onCheckWinners(FreeFireTournamentModel model); // 👈 history / participants
     }
 
     private final Context context;
@@ -85,7 +85,6 @@ public class FreeFireTournamentAdapter
 
         h.txtSlots.setText("Slots Left : " + left + "/" + total);
 
-        // ProgressBar safe usage
         if (h.progressSlots != null) {
             h.progressSlots.setMax(100);
             h.progressSlots.setProgress(
@@ -94,7 +93,6 @@ public class FreeFireTournamentAdapter
         }
 
         /* ================= DEFAULT VISIBILITY ================= */
-        h.txtCountdown.setVisibility(View.GONE);
         h.txtGameId.setVisibility(View.GONE);
         h.txtGamePassword.setVisibility(View.GONE);
 
@@ -102,33 +100,27 @@ public class FreeFireTournamentAdapter
         h.btnJoin.setOnClickListener(null);
 
         if (m.isJoined()) {
-            // ✅ ALREADY JOINED
+
             h.btnJoin.setEnabled(false);
             h.btnJoin.setText("Joined");
 
-            // Show joined username
             if (m.getJoinedUsername() != null) {
-                h.txtGameId.setText(
-                        "User : " + m.getJoinedUsername()
-                );
+                h.txtGameId.setText("User : " + m.getJoinedUsername());
                 h.txtGameId.setVisibility(View.VISIBLE);
             }
 
-            // Show joined game ID
             if (m.getJoinedGameId() != null) {
-                h.txtGamePassword.setText(
-                        "Game ID : " + m.getJoinedGameId()
-                );
+                h.txtGamePassword.setText("Game ID : " + m.getJoinedGameId());
                 h.txtGamePassword.setVisibility(View.VISIBLE);
             }
 
         } else if (left <= 0) {
-            // ❌ FULL
+
             h.btnJoin.setEnabled(false);
             h.btnJoin.setText("Full");
 
         } else {
-            // 🟢 CAN JOIN
+
             h.btnJoin.setEnabled(true);
             h.btnJoin.setText(
                     "Join (" + m.getEntryTickets() + " Tickets)"
@@ -137,8 +129,7 @@ public class FreeFireTournamentAdapter
                     listener.onJoin(m));
         }
 
-        /* ================= WINNERS ================= */
-        h.btnWinners.setOnClickListener(null);
+        /* ================= HISTORY / PARTICIPANTS ================= */
         h.btnWinners.setOnClickListener(v ->
                 listener.onCheckWinners(m));
     }
@@ -153,8 +144,7 @@ public class FreeFireTournamentAdapter
 
         TextView txtPrize, txtSlots,
                 txtTimeLabel, txtDateLabel,
-                txtCountdown, txtGameId,
-                txtGamePassword;
+                txtGameId, txtGamePassword;
 
         MaterialButton btnJoin, btnWinners;
         ProgressBar progressSlots;
@@ -166,7 +156,6 @@ public class FreeFireTournamentAdapter
             txtSlots = v.findViewById(R.id.txtSlots);
             txtTimeLabel = v.findViewById(R.id.txtTimeLabel);
             txtDateLabel = v.findViewById(R.id.txtDateLabel);
-            txtCountdown = v.findViewById(R.id.txtCountdown);
             txtGameId = v.findViewById(R.id.gameid);
             txtGamePassword = v.findViewById(R.id.gamePassword);
             btnJoin = v.findViewById(R.id.btnJoin);

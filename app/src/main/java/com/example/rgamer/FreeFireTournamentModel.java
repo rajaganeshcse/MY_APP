@@ -19,108 +19,64 @@ public class FreeFireTournamentModel {
     private long created_at;
 
     /* ================= JOIN STATE (CURRENT USER) ================= */
-    private boolean joined;              // current user joined?
-    private String joinedUsername;       // current user's username
-    private String joinedGameId;         // current user's game ID
+    private boolean joined;
+    private String joinedUsername;
+    private String joinedGameId;
 
-    /* ================= ALL JOINED USERS (NEW) ================= */
+    /* ================= ALL JOINED USERS ================= */
     // key = uid
     private Map<String, JoinedUser> joinedUsers;
 
-    // REQUIRED empty constructor (Firestore)
+    // REQUIRED empty constructor
     public FreeFireTournamentModel() {}
 
-    /* ================= ID ================= */
-    public String getId() {
-        return id;
-    }
+    /* ================= BASIC GETTERS ================= */
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public void setId(String id) {
-        this.id = id;
-    }
+    public String getGame() { return game; }
+    public void setGame(String game) { this.game = game; }
 
-    /* ================= GAME ================= */
-    public String getGame() {
-        return game;
-    }
+    public long getCoin() { return coin; }
+    public void setCoin(long coin) { this.coin = coin; }
 
-    public void setGame(String game) {
-        this.game = game;
-    }
-
-    /* ================= COINS ================= */
-    public long getCoin() {
-        return coin;
-    }
-
-    public void setCoin(long coin) {
-        this.coin = coin;
-    }
-
-    /* ================= ENTRY ================= */
-    public int getEntryTickets() {
-        return (int) entryTickets;
-    }
-
+    public int getEntryTickets() { return (int) entryTickets; }
     public void setEntryTickets(long entryTickets) {
         this.entryTickets = entryTickets;
     }
 
-    /* ================= SLOTS ================= */
-    public int getTotalSlots() {
-        return (int) totalSlots;
-    }
-
+    public int getTotalSlots() { return (int) totalSlots; }
     public void setTotalSlots(long totalSlots) {
         this.totalSlots = totalSlots;
     }
 
-    public int getJoinedSlots() {
-        return (int) joinedSlots;
-    }
-
+    public int getJoinedSlots() { return (int) joinedSlots; }
     public void setJoinedSlots(long joinedSlots) {
         this.joinedSlots = joinedSlots;
     }
 
-    /* ================= TIME ================= */
-    public long getStartTimeMillis() {
-        return startTimeMillis;
-    }
-
+    public long getStartTimeMillis() { return startTimeMillis; }
     public void setStartTimeMillis(long startTimeMillis) {
         this.startTimeMillis = startTimeMillis;
     }
 
-    public long getCreated_at() {
-        return created_at;
-    }
-
+    public long getCreated_at() { return created_at; }
     public void setCreated_at(long created_at) {
         this.created_at = created_at;
     }
 
     /* ================= CURRENT USER JOIN ================= */
-    public boolean isJoined() {
-        return joined;
-    }
-
+    public boolean isJoined() { return joined; }
     public void setJoined(boolean joined) {
         this.joined = joined;
     }
 
-    public String getJoinedUsername() {
-        return joinedUsername;
-    }
-
+    public String getJoinedUsername() { return joinedUsername; }
     public void setJoinedUsername(String joinedUsername) {
         this.joinedUsername = joinedUsername;
     }
 
-    public String getJoinedGameId() {
-        return joinedGameId;
-    }
-
+    public String getJoinedGameId() { return joinedGameId; }
     public void setJoinedGameId(String joinedGameId) {
         this.joinedGameId = joinedGameId;
     }
@@ -141,14 +97,34 @@ public class FreeFireTournamentModel {
     @IgnoreExtraProperties
     public static class JoinedUser {
 
+        private String uid;        // 👤 user id
         private String username;
         private String gameId;
+        private boolean winner;    // 🏆 winner flag
+        private long joinedAt;     // ⏱ optional (millis)
 
         public JoinedUser() {}
 
-        public JoinedUser(String username, String gameId) {
+        public JoinedUser(
+                String uid,
+                String username,
+                String gameId,
+                boolean winner,
+                long joinedAt
+        ) {
+            this.uid = uid;
             this.username = username;
             this.gameId = gameId;
+            this.winner = winner;
+            this.joinedAt = joinedAt;
+        }
+
+        public String getUid() {
+            return uid;
+        }
+
+        public void setUid(String uid) {
+            this.uid = uid;
         }
 
         public String getUsername() {
@@ -165,6 +141,22 @@ public class FreeFireTournamentModel {
 
         public void setGameId(String gameId) {
             this.gameId = gameId;
+        }
+
+        public boolean isWinner() {
+            return winner;
+        }
+
+        public void setWinner(boolean winner) {
+            this.winner = winner;
+        }
+
+        public long getJoinedAt() {
+            return joinedAt;
+        }
+
+        public void setJoinedAt(long joinedAt) {
+            this.joinedAt = joinedAt;
         }
     }
 }

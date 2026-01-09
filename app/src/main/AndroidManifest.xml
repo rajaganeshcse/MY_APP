@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RGamer">
         <activity
+            android:name=".JoinedPlayersActivity"
+            android:exported="false" />
+        <activity
             android:name=".JoinGameIdBottomSheet"
             android:exported="false" />
         <activity
