@@ -1,6 +1,10 @@
 package com.example.rgamer;
 
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,9 +33,14 @@ public class TournamentActivity extends AppCompatActivity {
     private boolean showNew;
     private String uid;
 
+    // ✅ USER GAME ID TEXT
+    private TextView txtGameName;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        makeFullScreen();
         setContentView(R.layout.activity_tournament);
 
         uid = FirebaseAuth.getInstance().getUid();
@@ -46,9 +55,13 @@ public class TournamentActivity extends AppCompatActivity {
         /* ================= UI ================= */
         ImageView imgBanner = findViewById(R.id.imgBanner);
         TextView txtTitle = findViewById(R.id.txtTitle);
+        txtGameName = findViewById(R.id.txtGameName);
 
         imgBanner.setImageResource(banner);
         txtTitle.setText(title);
+
+        // ✅ DEFAULT TEXT (BEFORE JOIN)
+        txtGameName.setText("ENTER GAME ID :");
 
         recyclerTournament = findViewById(R.id.recyclerTournament);
         recyclerTournament.setLayoutManager(new LinearLayoutManager(this));
@@ -60,7 +73,6 @@ public class TournamentActivity extends AppCompatActivity {
 
                     @Override
                     public void onJoin(FreeFireTournamentModel model) {
-
                         GameIdManager.getGameId(game, gameId -> {
                             if (gameId == null) {
                                 showGameIdBottomSheet(model);
@@ -80,6 +92,21 @@ public class TournamentActivity extends AppCompatActivity {
         loadMatches();
     }
 
+    /* ================= FULL SCREEN ================= */
+    private void makeFullScreen() {
+        Window window = getWindow();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+
+        window.getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                        | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
+    }
+
     /* ================= LOAD MATCHES ================= */
     private void loadMatches() {
 
@@ -91,13 +118,11 @@ public class TournamentActivity extends AppCompatActivity {
         }
 
         query.addSnapshotListener((snap, e) -> {
-
             if (e != null || snap == null) return;
 
             list.clear();
 
             for (DocumentSnapshot d : snap.getDocuments()) {
-
                 FreeFireTournamentModel m =
                         d.toObject(FreeFireTournamentModel.class);
 
@@ -127,6 +152,12 @@ public class TournamentActivity extends AppCompatActivity {
                         model.setJoined(true);
                         model.setJoinedGameId(doc.getString("gameId"));
                         model.setJoinedUsername(doc.getString("username"));
+
+                        // ✅ SHOW USER GAME ID HERE
+                        txtGameName.setText(
+                                "GAME ID : " + model.getJoinedGameId()
+                        );
+
                         adapter.notifyDataSetChanged();
                     }
                 });
@@ -167,11 +198,10 @@ public class TournamentActivity extends AppCompatActivity {
                         .collection("joined_tournaments")
                         .document(model.getId());
 
-        String username = "USER"; // 🔥 replace with real username
+        String username = "USER"; // replace later
 
         db.runTransaction(transaction -> {
 
-            // ❌ Prevent duplicate join
             if (transaction.get(tournamentUserRef).exists()) {
                 throw new RuntimeException("Already joined");
             }
@@ -192,8 +222,7 @@ public class TournamentActivity extends AppCompatActivity {
             Map<String, Object> tournamentUser = new HashMap<>();
             tournamentUser.put("username", username);
             tournamentUser.put("gameId", gameId);
-            tournamentUser.put("joinedAt",
-                    FieldValue.serverTimestamp());
+            tournamentUser.put("joinedAt", FieldValue.serverTimestamp());
 
             transaction.set(tournamentUserRef, tournamentUser);
 
@@ -201,8 +230,7 @@ public class TournamentActivity extends AppCompatActivity {
             userJoin.put("game", game);
             userJoin.put("gameId", gameId);
             userJoin.put("username", username);
-            userJoin.put("joinedAt",
-                    FieldValue.serverTimestamp());
+            userJoin.put("joinedAt", FieldValue.serverTimestamp());
 
             transaction.set(userJoinRef, userJoin);
 
@@ -211,8 +239,11 @@ public class TournamentActivity extends AppCompatActivity {
         }).addOnSuccessListener(unused -> {
 
             model.setJoined(true);
-            model.setJoinedUsername(username);
             model.setJoinedGameId(gameId);
+
+            // ✅ UPDATE UI IMMEDIATELY
+            txtGameName.setText("GAME ID : " + gameId);
+
             adapter.notifyDataSetChanged();
 
             Toast.makeText(
