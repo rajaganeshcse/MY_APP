@@ -25,8 +25,8 @@ public class SplashActivity extends AppCompatActivity {
         Window window = getWindow();
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        window.setStatusBarColor(Color.parseColor("#6A1BFF"));
-        window.setNavigationBarColor(Color.parseColor("#6A1BFF"));
+        window.setStatusBarColor(Color.parseColor("#5D6A73"));
+        window.setNavigationBarColor(Color.parseColor("#5D6A73"));
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);

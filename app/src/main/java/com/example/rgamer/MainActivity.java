@@ -31,6 +31,7 @@ public class MainActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             window.setStatusBarColor(Color.TRANSPARENT);
             window.setNavigationBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.parseColor("#ffffff"));
         }
 
         window.getDecorView().setSystemUiVisibility(

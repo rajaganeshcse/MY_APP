@@ -102,7 +102,9 @@ public class layout_invite extends Fragment {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.parseColor("#ffffff"));
             window.setNavigationBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.parseColor("#ffffff"));
         }
 
         window.getDecorView().setSystemUiVisibility(
