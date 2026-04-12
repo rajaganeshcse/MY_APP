@@ -1,12 +1,11 @@
 package com.example.rgamer;
 
 import com.google.firebase.firestore.IgnoreExtraProperties;
-
 import java.util.HashMap;
 import java.util.Map;
 
 @IgnoreExtraProperties
-public class FreeFireTournamentModel {
+public class FreeFireTournamentModel{
 
     /* ================= BASIC ================= */
     private String id;
@@ -28,15 +27,21 @@ public class FreeFireTournamentModel {
     private Map<String, JoinedUser> joinedUsers;
 
     // REQUIRED empty constructor
-    public FreeFireTournamentModel() {}
+    public FreeFireTournamentModel(){   }
 
     /* ================= BASIC GETTERS ================= */
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public String getId() {
+        return id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    public String getGame() { return game; }
+    public String getGame()
+    {
+        return game;
+    }
     public void setGame(String game) { this.game = game; }
-
     public long getCoin() { return coin; }
     public void setCoin(long coin) { this.coin = coin; }
 
@@ -111,22 +116,20 @@ public class FreeFireTournamentModel {
                 String gameId,
                 boolean winner,
                 long joinedAt
-        ) {
+        )
+        {
             this.uid = uid;
             this.username = username;
             this.gameId = gameId;
             this.winner = winner;
             this.joinedAt = joinedAt;
         }
-
         public String getUid() {
             return uid;
         }
-
-        public void setUid(String uid) {
+        public void setUid(String uid){
             this.uid = uid;
         }
-
         public String getUsername() {
             return username;
         }

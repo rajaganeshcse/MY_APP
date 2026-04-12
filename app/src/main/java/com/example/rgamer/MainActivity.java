@@ -17,10 +17,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         makeFullScreen();
         setContentView(R.layout.activity_main);
-
         initViews();
         setupNavigation();
 
@@ -28,11 +26,9 @@ public class MainActivity extends AppCompatActivity {
         selectNav(navHome);
         loadFragment(new HomeFragment());
     }
-
     private void makeFullScreen() {
         Window window = getWindow();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             window.setStatusBarColor(Color.TRANSPARENT);
             window.setNavigationBarColor(Color.TRANSPARENT);
         }
@@ -77,14 +73,12 @@ public class MainActivity extends AppCompatActivity {
         resetNav();
         selected.setBackgroundResource(R.drawable.bg_nav_selected);
     }
-
     private void resetNav() {
         LinearLayout[] navs = {navHome, navGame, navReward, navProfile};
         for (LinearLayout nav : navs) {
             nav.setBackgroundResource(R.drawable.bg_nav_unselected);
         }
     }
-
     private void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
