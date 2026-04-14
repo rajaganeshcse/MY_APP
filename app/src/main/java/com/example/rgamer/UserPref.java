@@ -18,7 +18,7 @@ public class UserPref {
     private static final String KEY_IS_LOGIN = "is_login";
 
     /* ================= WALLET ================= */
-    private static final String KEY_COINS = "coins";   // 🔥 long
+    private static final String KEY_COINS = "coins";
     private static final String KEY_TICKETS = "tickets";
     private static final String KEY_WALLET_TOKEN = "wallet_token";
 
@@ -40,7 +40,7 @@ public class UserPref {
     private static final String KEY_REF_TICKETS = "referral_tickets";
     private static final String KEY_REFERRAL_CODE = "referral_code";
 
-    /* ================= DAILY SPIN (ADDED ONLY) ================= */
+    /* ================= DAILY SPIN ================= */
     private static final String KEY_SPIN_DATE = "spin_date";
     private static final String KEY_SPIN_COUNT = "spin_count";
 
@@ -88,10 +88,15 @@ public class UserPref {
         return pref.getBoolean(KEY_IS_LOGIN, false);
     }
 
-     /* ==================================================
+    /* ================= LOGIN VALIDATION (ADDED) ================= */
+
+    public boolean isUserValid() {
+        return isLogin() && !getUid().isEmpty();
+    }
+
+    /* ==================================================
        DAILY BONUS
        ================================================== */
-
 
     public void setDailyClaimedDate(String date) {
         editor.putString(KEY_DAILY_DATE, date).apply();
@@ -99,6 +104,14 @@ public class UserPref {
 
     public String getDailyClaimedDate() {
         return pref.getString(KEY_DAILY_DATE, "");
+    }
+
+    public boolean canClaimDailyBonus() {
+        return !getTodayDate().equals(pref.getString(KEY_DAILY_DATE, ""));
+    }
+
+    public void setDailyBonusClaimed() {
+        editor.putString(KEY_DAILY_DATE, getTodayDate()).apply();
     }
 
     /* ==================================================
@@ -168,18 +181,6 @@ public class UserPref {
     }
 
     /* ==================================================
-       DAILY BONUS
-       ================================================== */
-
-    public boolean canClaimDailyBonus() {
-        return !getTodayDate().equals(pref.getString(KEY_DAILY_DATE, ""));
-    }
-
-    public void setDailyBonusClaimed() {
-        editor.putString(KEY_DAILY_DATE, getTodayDate()).apply();
-    }
-
-    /* ==================================================
        DAILY ADS
        ================================================== */
 
@@ -201,7 +202,7 @@ public class UserPref {
     }
 
     /* ==================================================
-       DAILY SPIN (ADDED ONLY)
+       DAILY SPIN
        ================================================== */
 
     public int getTodaySpinCount() {
@@ -220,9 +221,10 @@ public class UserPref {
     public void increaseSpinCount() {
         editor.putInt(KEY_SPIN_COUNT, getTodaySpinCount() + 1).apply();
     }
+
     /* ==================================================
-   REFERRAL CODE
-   ================================================== */
+       REFERRAL (ADDED)
+       ================================================== */
 
     public void setReferralCode(String referralCode) {
         editor.putString(KEY_REFERRAL_CODE, referralCode).apply();
@@ -232,6 +234,21 @@ public class UserPref {
         return pref.getString(KEY_REFERRAL_CODE, "");
     }
 
+    public void setReferralCoins(long coins) {
+        editor.putLong(KEY_REF_COINS, coins).apply();
+    }
+
+    public long getReferralCoins() {
+        return pref.getLong(KEY_REF_COINS, 0);
+    }
+
+    public void setReferralTickets(long tickets) {
+        editor.putLong(KEY_REF_TICKETS, tickets).apply();
+    }
+
+    public long getReferralTickets() {
+        return pref.getLong(KEY_REF_TICKETS, 0);
+    }
 
     /* ==================================================
        HELPERS
@@ -249,8 +266,8 @@ public class UserPref {
     public void logout() {
         boolean isDarkMode = pref.getBoolean("dark_mode", false);
 
-        editor.clear(); // clear all
-        editor.putBoolean("dark_mode", isDarkMode); // restore needed data
+        editor.clear();
+        editor.putBoolean("dark_mode", isDarkMode);
         editor.apply();
     }
 

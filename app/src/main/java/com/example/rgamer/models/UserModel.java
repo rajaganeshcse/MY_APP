@@ -15,7 +15,7 @@ public class UserModel {
     private String email;
 
     /* ================= WALLET ================= */
-    private long coins;          // ✅ long
+    private long coins;
     private int tickets;
     private int walletToken;
 
@@ -24,7 +24,7 @@ public class UserModel {
 
     /* ================= PROFILE ================= */
     private String profile_image;
-    private Timestamp created_at;   // ✅ FIXED (Timestamp)
+    private Timestamp created_at;
 
     /* ================= DAILY BONUS ================= */
     private String dailyBonusClaimedDate;
@@ -38,7 +38,6 @@ public class UserModel {
     private long totalReferralTickets;
 
     /* ================= EMPTY CONSTRUCTOR ================= */
-    // REQUIRED by Firestore
     public UserModel() {}
 
     /* ================= FULL CONSTRUCTOR ================= */
@@ -96,14 +95,10 @@ public class UserModel {
     public long getTotalReferralCoins() { return totalReferralCoins; }
     public long getTotalReferralTickets() { return totalReferralTickets; }
 
-    /** ✅ Timestamp → millis (safe for UI) */
     public long getCreatedAt() {
-        return created_at != null
-                ? created_at.toDate().getTime()
-                : 0;
+        return created_at != null ? created_at.toDate().getTime() : 0;
     }
 
-    /** ✅ Optional formatted date */
     public String getFormattedCreatedAt() {
         if (created_at == null) return "";
         return android.text.format.DateFormat
@@ -111,9 +106,55 @@ public class UserModel {
                 .toString();
     }
 
-    /* ================= SETTERS ================= */
-    public void setCoins(long coins) {
-        this.coins = coins;
+    /* ================= SETTERS (ADDED) ================= */
+    public void setUid(String uid) { this.uid = uid; }
+    public void setName(String name) { this.name = name; }
+    public void setEmail(String email) { this.email = email; }
+
+    public void setCoins(long coins) { this.coins = coins; }
+    public void setTickets(int tickets) { this.tickets = tickets; }
+    public void setWalletToken(int walletToken) { this.walletToken = walletToken; }
+
+    public void setFcmToken(String fcmToken) { this.fcmToken = fcmToken; }
+    public void setProfileImage(String profile_image) { this.profile_image = profile_image; }
+
+    public void setDailyBonusClaimedDate(String date) { this.dailyBonusClaimedDate = date; }
+
+    public void setReferralCode(String referralCode) { this.referralCode = referralCode; }
+    public void setReferredBy(String referredBy) { this.referredBy = referredBy; }
+    public void setReferralUsed(boolean referralUsed) { this.referralUsed = referralUsed; }
+
+    public void setTotalReferralCoins(long coins) { this.totalReferralCoins = coins; }
+    public void setTotalReferralTickets(long tickets) { this.totalReferralTickets = tickets; }
+
+    public void setCreatedAt(Timestamp created_at) { this.created_at = created_at; }
+
+    /* ================= EXTRA METHODS (ADDED) ================= */
+
+    public void safeInit() {
+        if (coins < 0) coins = 0;
+        if (tickets < 0) tickets = 0;
+        if (walletToken < 0) walletToken = 0;
+
+        if (referralCode == null) referralCode = "";
+        if (referredBy == null) referredBy = "";
+        if (profile_image == null) profile_image = "";
+    }
+
+    public boolean isNewUser() {
+        return coins == 0 && tickets == 0;
+    }
+
+    public Map<String, Object> toSafeMap() {
+        Map<String, Object> map = new HashMap<>();
+
+        if (name != null) map.put("name", name);
+        if (email != null) map.put("email", email);
+
+        map.put("coins", coins);
+        map.put("tickets", tickets);
+
+        return map;
     }
 
     /* ================= FIRESTORE MAP ================= */
@@ -140,7 +181,7 @@ public class UserModel {
         map.put("totalReferralCoins", totalReferralCoins);
         map.put("totalReferralTickets", totalReferralTickets);
 
-        map.put("created_at", created_at); // ✅ Timestamp
+        map.put("created_at", created_at);
 
         return map;
     }

@@ -109,7 +109,7 @@ public class LuckyDrawAdapter
 
         /* ================= WINNERS ================= */
 
-        h.btnWinners.setOnClickListener(v ->
+        h.btnticket.setOnClickListener(v ->
                 listener.onCheckWinners(model)
         );
     }
@@ -124,7 +124,7 @@ public class LuckyDrawAdapter
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtReward, txtSlots, txtPercent;
-        MaterialButton btnJoin, btnWinners;
+        MaterialButton btnJoin, btnticket;
         ProgressBar progressSlots;
 
         ViewHolder(@NonNull View itemView) {
@@ -136,7 +136,7 @@ public class LuckyDrawAdapter
             progressSlots = itemView.findViewById(R.id.progressSlots);
 
             btnJoin = itemView.findViewById(R.id.btnFreeEntry);
-            btnWinners = itemView.findViewById(R.id.btnCheckWinners);
+            btnticket = itemView.findViewById(R.id.btnticketEntry);
         }
     }
 }

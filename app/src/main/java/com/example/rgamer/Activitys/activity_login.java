@@ -2,6 +2,7 @@ package com.example.rgamer.Activitys;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
@@ -11,28 +12,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.rgamer.R;
 import com.example.rgamer.UserPref;
 import com.example.rgamer.models.UserModel;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.firebase.auth.AuthCredential;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.auth.GoogleAuthProvider;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
+import com.example.rgamer.network.*;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.android.gms.auth.api.signin.*;
+import com.google.android.gms.common.api.ApiException;
+import com.google.firebase.auth.*;
+
+import okhttp3.ResponseBody;
+import retrofit2.*;
 
 public class activity_login extends AppCompatActivity {
 
-    private static final int RC_SIGN_IN = 100;
-
     private GoogleSignInClient googleSignInClient;
     private FirebaseAuth auth;
-    private FirebaseFirestore db;
     private UserPref userPref;
 
     private LinearLayout btnGoogle;
@@ -43,7 +35,6 @@ public class activity_login extends AppCompatActivity {
         setContentView(R.layout.activity_login);
 
         auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
         userPref = new UserPref(this);
 
         btnGoogle = findViewById(R.id.btnGoogle);
@@ -59,200 +50,139 @@ public class activity_login extends AppCompatActivity {
         btnGoogle.setOnClickListener(v -> signIn());
     }
 
-    /* ================= GOOGLE SIGN IN ================= */
-
     private void signIn() {
-        startActivityForResult(
-                googleSignInClient.getSignInIntent(),
-                RC_SIGN_IN
-        );
+        startActivityForResult(googleSignInClient.getSignInIntent(), 100);
     }
 
     @Override
-    protected void onActivityResult(
-            int requestCode,
-            int resultCode,
-            @Nullable Intent data
-    ) {
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RC_SIGN_IN) {
+        if (requestCode == 100) {
             try {
                 GoogleSignInAccount account =
                         GoogleSignIn.getSignedInAccountFromIntent(data)
                                 .getResult(ApiException.class);
 
-                firebaseAuth(account);
+                if (account != null) {
+                    firebaseAuth(account);
+                } else {
+                    Log.e("LOGIN_DEBUG", "Google account is NULL");
+                }
 
             } catch (Exception e) {
-                Toast.makeText(
-                        this,
-                        "Google Login Failed",
-                        Toast.LENGTH_SHORT
-                ).show();
+                Log.e("LOGIN_DEBUG", "Google Sign-In failed: " + e.getMessage());
+                Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();
             }
         }
     }
 
-    /* ================= FIREBASE AUTH ================= */
-
     private void firebaseAuth(GoogleSignInAccount account) {
 
+        Log.d("LOGIN_DEBUG", "Firebase Auth started");
+
         AuthCredential credential =
-                GoogleAuthProvider.getCredential(
-                        account.getIdToken(),
-                        null
-                );
+                GoogleAuthProvider.getCredential(account.getIdToken(), null);
 
         auth.signInWithCredential(credential)
                 .addOnSuccessListener(authResult -> {
 
-                    FirebaseUser firebaseUser = auth.getCurrentUser();
-                    if (firebaseUser == null) return;
+                    Log.d("LOGIN_DEBUG", "Firebase Auth SUCCESS");
 
-                    String uid = firebaseUser.getUid();
-                    String name = account.getDisplayName();
-                    String email = account.getEmail();
-
-                    String profileImage = "";
-                    if (account.getPhotoUrl() != null) {
-                        profileImage = account.getPhotoUrl().toString();
+                    FirebaseUser user = auth.getCurrentUser();
+                    if (user == null) {
+                        Log.e("LOGIN_DEBUG", "Firebase user NULL");
+                        return;
                     }
 
-                    checkUserInFirestore(
-                            uid,
-                            name,
-                            email,
-                            profileImage
-                    );
+                    user.getIdToken(true).addOnSuccessListener(result -> {
+
+                        String token = result.getToken();
+                        Log.d("LOGIN_DEBUG", "Firebase Token: " + token);
+
+                        sendToBackend(token);
+                    });
                 })
-                .addOnFailureListener(e ->
-                        Toast.makeText(
-                                this,
-                                e.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show());
+                .addOnFailureListener(e -> {
+                    Log.e("LOGIN_DEBUG", "Firebase Auth FAILED: " + e.getMessage());
+                });
     }
 
-    /* ================= FIRESTORE USER CHECK ================= */
+    private void sendToBackend(String token) {
 
-    private void checkUserInFirestore(
-            String uid,
-            String name,
-            String email,
-            String profileImage
-    ) {
+        Log.d("API_DEBUG", "Sending token to backend: " + token);
 
-        db.collection("users")
-                .document(uid)
-                .get()
-                .addOnSuccessListener(doc -> {
+        ApiService api = ApiClient.getClient().create(ApiService.class);
 
-                    if (doc.exists()) {
-                        // ✅ EXISTING USER
-                        UserModel user = doc.toObject(UserModel.class);
-                        if (user != null) {
-                            saveUserToPref(user);
-                            openMain();
-                        }
+        api.auth(new LoginRequest(token)).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
 
-                    } else {
-                        // 🆕 NEW USER
-                        createNewUser(uid, name, email, profileImage);
-                    }
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(
-                                this,
-                                e.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show());
+                Log.d("API_DEBUG", "Auth Response Code: " + response.code());
+
+                if (response.isSuccessful()) {
+                    Log.d("API_DEBUG", "Auth SUCCESS");
+                    fetchUser(token);
+                } else {
+                    Log.e("API_DEBUG", "Auth FAILED: " + response.message());
+                    Toast.makeText(activity_login.this, "Auth Failed", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                Log.e("API_DEBUG", "Auth ERROR: " + t.getMessage());
+                Toast.makeText(activity_login.this, "Server Error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    /* ================= CREATE NEW USER ================= */
+    private void fetchUser(String token) {
 
-    private void createNewUser(
-            String uid,
-            String name,
-            String email,
-            String profileImage
-    ) {
+        Log.d("API_DEBUG", "Fetching user...");
 
-        Map<String, Object> user = new HashMap<>();
+        ApiService api = ApiClient.getClient().create(ApiService.class);
 
-        user.put("uid", uid);
-        user.put("name", name);
-        user.put("email", email);
+        api.getUser(token).enqueue(new Callback<UserModel>() {
+            @Override
+            public void onResponse(Call<UserModel> call, Response<UserModel> response) {
 
-        user.put("coins", 100L);          // ✅ long
-        user.put("tickets", 0);
-        user.put("walletToken", 10);
+                Log.d("API_DEBUG", "User Response Code: " + response.code());
 
-        user.put("fcmToken", "");
-        user.put("profile_image", profileImage);
+                if (response.isSuccessful() && response.body() != null) {
 
-        user.put("dailyBonusClaimedDate", "");
-        user.put("referralCode", generateReferralCode(uid));
-        user.put("referredBy", "");
-        user.put("referralUsed", false);
-        user.put("totalReferralCoins", 0L);
-        user.put("totalReferralTickets", 0L);
+                    Log.d("API_DEBUG", "User Data Received: " + response.body().getUid());
 
-        user.put("created_at", FieldValue.serverTimestamp()); // ✅ FIXED
+                    UserModel user = response.body();
 
-        db.collection("users")
-                .document(uid)
-                .set(user)
-                .addOnSuccessListener(aVoid -> {
+                    userPref.setUid(user.getUid());
+                    userPref.setName(user.getName());
+                    userPref.setEmail(user.getEmail());
+                    userPref.setProfileImage(user.getProfileImage());
 
-                    // Fetch again to get serverTimestamp populated
-                    db.collection("users")
-                            .document(uid)
-                            .get()
-                            .addOnSuccessListener(doc -> {
-                                UserModel newUser =
-                                        doc.toObject(UserModel.class);
-                                if (newUser != null) {
-                                    saveUserToPref(newUser);
-                                    openMain();
-                                }
-                            });
-                })
-                .addOnFailureListener(e ->
-                        Toast.makeText(
-                                this,
-                                e.getMessage(),
-                                Toast.LENGTH_LONG
-                        ).show());
+                    userPref.setCoins(user.getCoins());
+                    userPref.setTickets(user.getTickets());
+                    userPref.setWalletToken(user.getWalletToken());
+
+                    userPref.setLogin(true);
+
+                    openMain();
+
+                } else {
+                    Log.e("API_DEBUG", "User fetch failed");
+                }
+            }
+
+            @Override
+            public void onFailure(Call<UserModel> call, Throwable t) {
+                Log.e("API_DEBUG", "User API ERROR: " + t.getMessage());
+                Toast.makeText(activity_login.this, "Error", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
-
-    private String generateReferralCode(String uid) {
-        return uid.substring(0, 6).toUpperCase();
-    }
-
-    /* ================= SAVE USER PREF ================= */
-
-    private void saveUserToPref(UserModel user) {
-
-        userPref.setUid(user.getUid());
-        userPref.setName(user.getName());
-        userPref.setEmail(user.getEmail());
-        userPref.setProfileImage(user.getProfileImage());
-
-        userPref.setCoins(user.getCoins());
-        userPref.setTickets(user.getTickets());
-        userPref.setWalletToken(user.getWalletToken());
-
-        userPref.setDailyClaimedDate(
-                user.getDailyBonusClaimedDate()
-        );
-
-        userPref.setLogin(true);
-    }
-
-    /* ================= OPEN MAIN ================= */
 
     private void openMain() {
+        Log.d("LOGIN_DEBUG", "Opening MainActivity");
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
