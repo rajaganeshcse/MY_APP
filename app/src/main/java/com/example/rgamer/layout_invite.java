@@ -105,6 +105,7 @@ public class layout_invite extends Fragment {
             window.setNavigationBarColor(Color.parseColor("#ffffff"));
             window.setNavigationBarColor(Color.TRANSPARENT);
             window.setNavigationBarColor(Color.parseColor("#ffffff"));
+
         }
 
         window.getDecorView().setSystemUiVisibility(
@@ -150,7 +151,7 @@ public class layout_invite extends Fragment {
                         .getSystemService(Context.CLIPBOARD_SERVICE);
 
         cm.setPrimaryClip(
-                ClipData.newPlainText(
+     ClipData.newPlainText(
                         "referral",
                         txtCode.getText().toString()
                 )

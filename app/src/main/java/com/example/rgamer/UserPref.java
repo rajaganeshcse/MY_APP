@@ -247,16 +247,10 @@ public class UserPref {
        ================================================== */
 
     public void logout() {
-        editor.remove(KEY_UID);
-        editor.remove(KEY_NAME);
-        editor.remove(KEY_EMAIL);
-        editor.remove(KEY_COINS);
-        editor.remove(KEY_TICKETS);
-        editor.remove(KEY_WALLET_TOKEN);
-        editor.remove(KEY_PROFILE_IMAGE);
-        editor.remove(KEY_FCM_TOKEN);
-        editor.remove(KEY_REFERRAL_CODE);
-        editor.putBoolean(KEY_IS_LOGIN, false);
+        boolean isDarkMode = pref.getBoolean("dark_mode", false);
+
+        editor.clear(); // clear all
+        editor.putBoolean("dark_mode", isDarkMode); // restore needed data
         editor.apply();
     }
 
