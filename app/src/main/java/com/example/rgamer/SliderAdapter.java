@@ -1,4 +1,5 @@
 package com.example.rgamer;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +10,10 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.example.rgamer.models.SliderModel;
+
 import java.util.List;
-import com.example.rgamer.SliderModel;
-
-
-
 
 public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.ViewHolder> {
 
@@ -35,7 +35,12 @@ public class SliderAdapter extends RecyclerView.Adapter<SliderAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         SliderModel model = list.get(position);
-        holder.img.setImageResource(model.image);
+
+        Glide.with(context)
+                .load(model.image)
+                .placeholder(R.drawable.ic_placeholder)
+                .into(holder.img);
+
         holder.title.setText(model.title);
         holder.desc.setText(model.desc);
     }

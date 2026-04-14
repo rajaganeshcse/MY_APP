@@ -16,25 +16,25 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RGamer">
         <activity
-            android:name=".JoinedPlayersActivity"
+            android:name=".Game.JoinedPlayersActivity"
             android:exported="false" />
         <activity
-            android:name=".JoinGameIdBottomSheet"
+            android:name=".Game.JoinGameIdBottomSheet"
             android:exported="false" />
         <activity
-            android:name=".activity_daily_spin"
+            android:name=".lucky_draw.activity_daily_spin"
             android:exported="false" />
         <activity
-            android:name=".activity_lucky_draw_winner"
+            android:name=".lucky_draw.activity_lucky_draw_winner"
             android:exported="false" />
         <activity
-            android:name=".activity_lucky_draw_winner"
+            android:name=".lucky_draw.activity_lucky_draw_winner"
             android:exported="false" />
         <activity
-            android:name=".activity_winners"
+            android:name=".Game.activity_winners"
             android:exported="false" />
         <activity
-            android:name=".activity_winners"
+            android:name=".Game.activity_winners"
             android:exported="false" />
 
         <service
@@ -46,25 +46,25 @@
         </service>
 
         <activity
-            android:name=".activity_withdraw_success"
+            android:name=".withdraws.activity_withdraw_success"
             android:exported="false" />
         <activity
-            android:name=".RedeemFragment"
+            android:name=".Fragements.RedeemFragment"
             android:exported="false" />
         <activity
-            android:name=".TransactionHistoryFragment"
+            android:name=".withdraws.TransactionHistoryFragment"
             android:exported="false" />
         <activity
-            android:name=".bottomsheet_withdraw_details"
+            android:name=".withdraws.bottomsheet_withdraw_details"
             android:exported="false" />
         <activity
-            android:name=".layout_invite"
+            android:name=".invite.layout_invite"
             android:exported="false" />
         <activity
-            android:name=".activity_refer_earn"
+            android:name=".invite.activity_refer_earn"
             android:exported="false" />
         <activity
-            android:name=".activity_lucky_draw"
+            android:name=".lucky_draw.activity_lucky_draw"
             android:exported="false" />
 
         <meta-data
@@ -72,7 +72,7 @@
             android:value="ca-app-pub-3940256099942544~3347511713" />
 
         <activity
-            android:name=".TournamentActivity"
+            android:name=".Game.TournamentActivity"
             android:exported="false" />
 
         <provider
@@ -86,10 +86,10 @@
         </provider>
 
         <activity
-            android:name=".activity_login"
+            android:name=".Activitys.activity_login"
             android:exported="false" /> <!-- Splash must be launcher and exported true -->
         <activity
-            android:name=".SplashActivity"
+            android:name=".Activitys.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -98,10 +98,10 @@
             </intent-filter>
         </activity> <!-- OnBoarding Screen -->
         <activity
-            android:name=".OnBoardingActivity"
+            android:name=".Activitys.OnBoardingActivity"
             android:exported="false" /> <!-- Main Home Activity -->
         <activity
-            android:name=".MainActivity"
+            android:name=".Activitys.MainActivity"
             android:exported="false" />
     </application>
 
