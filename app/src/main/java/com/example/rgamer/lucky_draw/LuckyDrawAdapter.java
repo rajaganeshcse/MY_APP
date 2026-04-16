@@ -15,20 +15,23 @@ import com.example.rgamer.R;
 import com.example.rgamer.models.LuckyDrawModel;
 import com.google.android.material.button.MaterialButton;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class LuckyDrawAdapter
         extends RecyclerView.Adapter<LuckyDrawAdapter.ViewHolder> {
 
-    /* ================= CALLBACK ================= */
-
     public interface Listener {
-        void onJoin(LuckyDrawModel model);      // join draw
+        void onJoin(LuckyDrawModel model);
+        void onJoinWithTickets(LuckyDrawModel model);
         void onCheckWinners(LuckyDrawModel model);
     }
 
     private final List<LuckyDrawModel> list;
     private final Listener listener;
+
+    private final Set<String> loadingIds = new HashSet<>();
 
     public LuckyDrawAdapter(List<LuckyDrawModel> list, Listener listener) {
         this.list = list;
@@ -37,81 +40,78 @@ public class LuckyDrawAdapter
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(
-            @NonNull ViewGroup parent,
-            int viewType) {
-
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_lucky_draw, parent, false);
         return new ViewHolder(v);
     }
 
     @Override
-    public void onBindViewHolder(
-            @NonNull ViewHolder h,
-            int position) {
+    public void onBindViewHolder(@NonNull ViewHolder h, int position) {
 
         LuckyDrawModel model = list.get(position);
-
-        // reset
-        h.btnJoin.setOnClickListener(null);
-
-        /* ================= TEXT ================= */
-
-        h.txtReward.setText("Win " + model.getRewardCoins() + " Coins 🎉");
+        String id = model.getId();
 
         int total = Math.max(model.getTotalSlots(), 1);
         int filled = model.getFilledSlots();
-        int percent = (int) ((filled * 100f) / total);
 
-        h.txtSlots.setText("Left : " + filled + "/" + total);
-        h.txtPercent.setText(percent + "% Filled");
+        h.txtReward.setText("Win " + model.getRewardCoins() + " Coins 🎉");
+        h.txtSlots.setText("Filled : " + filled + "/" + total);
+        h.txtPercent.setText((filled * 100 / total) + "% Filled");
 
         h.progressSlots.setMax(total);
         h.progressSlots.setProgress(filled);
 
-        /* ================= BUTTON STATE ================= */
+        boolean loading = loadingIds.contains(id);
+
+        if (loading) {
+            h.btnJoin.setText("Joining...");
+            h.btnJoin.setEnabled(false);
+            h.btnticket.setEnabled(false);
+            return;
+        }
 
         if (model.isJoinedByMe()) {
 
-            // 🟢 JOINED
             h.btnJoin.setText("Joined");
             h.btnJoin.setEnabled(false);
+            h.btnticket.setEnabled(false);
+
             h.btnJoin.setBackgroundTintList(
-                    ColorStateList.valueOf(Color.parseColor("#2E7D32"))
-            );
-            h.btnJoin.setTextColor(Color.WHITE);
+                    ColorStateList.valueOf(Color.parseColor("#2E7D32")));
 
         } else if (model.isFull() || !"OPEN".equals(model.getStatus())) {
 
-            // 🔴 FULL / CLOSED
             h.btnJoin.setText("FULL");
             h.btnJoin.setEnabled(false);
+            h.btnticket.setEnabled(false);
+
             h.btnJoin.setBackgroundTintList(
-                    ColorStateList.valueOf(Color.parseColor("#D32F2F"))
-            );
-            h.btnJoin.setTextColor(Color.WHITE);
+                    ColorStateList.valueOf(Color.parseColor("#D32F2F")));
 
         } else {
 
-            // 🔵 FREE ENTRY
-            h.btnJoin.setText("Get Free Entry");
+            h.btnJoin.setText("Free Entry");
             h.btnJoin.setEnabled(true);
-            h.btnJoin.setBackgroundTintList(
-                    ColorStateList.valueOf(Color.parseColor("#6A1BFF"))
-            );
-            h.btnJoin.setTextColor(Color.WHITE);
+            h.btnticket.setEnabled(true);
 
-            h.btnJoin.setOnClickListener(v ->
-                    listener.onJoin(model)
-            );
+            h.btnJoin.setOnClickListener(v -> {
+                loadingIds.add(id);
+                notifyItemChanged(position);
+                listener.onJoin(model);
+            });
+
+            h.btnticket.setOnClickListener(v -> {
+                loadingIds.add(id);
+                notifyItemChanged(position);
+                listener.onJoinWithTickets(model);
+            });
         }
 
-        /* ================= WINNERS ================= */
-
-        h.btnticket.setOnClickListener(v ->
-                listener.onCheckWinners(model)
-        );
+        h.btnticket.setOnLongClickListener(v -> {
+            listener.onCheckWinners(model);
+            return true;
+        });
     }
 
     @Override
@@ -119,13 +119,16 @@ public class LuckyDrawAdapter
         return list.size();
     }
 
-    /* ================= VIEW HOLDER ================= */
+    public void clearLoading(String drawId) {
+        loadingIds.remove(drawId);
+        notifyDataSetChanged();
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtReward, txtSlots, txtPercent;
-        MaterialButton btnJoin, btnticket;
         ProgressBar progressSlots;
+        MaterialButton btnJoin, btnticket;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
