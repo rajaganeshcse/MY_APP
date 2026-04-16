@@ -2,23 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="300dp"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/bg_dialog_round"
     android:orientation="vertical"
     android:padding="20dp">
 
-    <!-- TITLE -->
     <TextView
         android:id="@+id/txtTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Congratulations 🎉"
+        android:textColor="#000000"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:textColor="@color/black"
         android:gravity="center"
         android:layout_marginBottom="12dp" />
 
-    <!-- WINNING AMOUNT -->
     <TextView
         android:id="@+id/txtWinAmount"
         android:layout_width="match_parent"
@@ -30,15 +29,17 @@
         android:gravity="center"
         android:layout_marginBottom="20dp" />
 
-    <!-- OK BUTTON -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnOk"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:text="OK"
-        android:textSize="16sp"
         android:layout_gravity="center"
+        android:background="@drawable/bg_button_ripple"
+        android:text="OK"
         android:textAllCaps="false"
-        android:backgroundTint="#FFC107" />
+        android:textColor="#000000"
+        app:backgroundTint="@color/color_yellow"
+        app:strokeColor="@color/white"
+        app:strokeWidth="2dp" />
 
 </LinearLayout>

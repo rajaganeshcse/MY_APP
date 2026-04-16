@@ -107,6 +107,7 @@
             android:text="Tournament History"
             android:textStyle="bold"
             android:textColor="#3F51B5"
+            app:strokeWidth="2dp"
             android:background="@drawable/bg_yellow_outline" />
 
         <!-- ================= TOURNAMENT LIST ================= -->

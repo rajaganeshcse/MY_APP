@@ -1,94 +1,87 @@
 package com.example.rgamer.lucky_draw;
 
-import android.animation.ObjectAnimator;
+import android.animation.*;
 import android.app.Dialog;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Vibrator;
+import android.content.Context;
 import android.view.View;
 import android.view.Window;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.view.animation.*;
+import android.widget.*;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.rgamer.R;
 import com.example.rgamer.UserPref;
-import com.google.android.gms.ads.AdRequest;
-import com.google.android.gms.ads.AdView;
-import com.google.android.gms.ads.MobileAds;
-import com.google.android.gms.ads.rewarded.RewardedAd;
-import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.google.android.gms.ads.FullScreenContentCallback;
+import com.example.rgamer.models.SpinResponse;
+import com.example.rgamer.network.ApiClient;
+import com.example.rgamer.network.ApiService;
 import com.google.android.material.button.MaterialButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.Random;
+// Ads
+import com.google.android.gms.ads.*;
+import com.google.android.gms.ads.rewarded.*;
+
+import retrofit2.*;
 
 public class activity_daily_spin extends AppCompatActivity {
 
     /* ================= UI ================= */
-    private ImageView btnBack, imgWheel;
-    private TextView txtCoins, txtSpinsLeft;
+    private ImageView imgWheel;
     private MaterialButton btnSpin;
+    private TextView txtCoins, txtSpinsLeft;
     private AdView adView;
 
-    /* ================= FIREBASE ================= */
-    private FirebaseFirestore db;
+    /* ================= STATE ================= */
+    private boolean isSpinning = false;
+    private ObjectAnimator infiniteAnimator;
+
+    private UserPref userPref;
     private String uid;
 
-    /* ================= PREF ================= */
-    private UserPref userPref;
+    private int remainingSpins = -1;
 
-    /* ================= SPIN ================= */
-    private static final int MAX_DAILY_SPINS = 10;
-    private boolean isSpinning = false;
-
-    /* ================= REWARDED AD ================= */
+    /* ================= ADS ================= */
     private RewardedAd rewardedAd;
-    private int pendingReward = 0;
+    private int spinCounterForAd = 0;
+
+    /* ================= SOUND ================= */
+    private MediaPlayer winSound;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_daily_spin);
-        makeFullScreen();
 
-        // 🔥 FULL SCREEN
-
-        userPref = new UserPref(this);
-        db = FirebaseFirestore.getInstance();
-        uid = FirebaseAuth.getInstance().getUid();
-
-        btnBack = findViewById(R.id.btnBack);
         imgWheel = findViewById(R.id.imgWheel);
+        btnSpin = findViewById(R.id.btnSpin);
         txtCoins = findViewById(R.id.txtCoins);
         txtSpinsLeft = findViewById(R.id.txtSpinsLeft);
-        btnSpin = findViewById(R.id.btnSpin);
         adView = findViewById(R.id.adView);
 
-        /* ================= ADS ================= */
+        userPref = new UserPref(this);
+        uid = userPref.getUid();
+
+        updateUI();
+        loadSpinStatus();
+        makeFullScreen();
+
+
+        // 🔥 Ads init
         MobileAds.initialize(this, status -> {});
         adView.loadAd(new AdRequest.Builder().build());
-
-        updateCoinsUI();
-        updateSpinUI();
-
-        loadRewardedAd();
-
-        btnBack.setOnClickListener(v -> finish());
+        loadAd();
 
         btnSpin.setOnClickListener(v -> {
             if (isSpinning) return;
 
-            if (!canSpinToday()) {
-                Toast.makeText(this,
-                        "Daily spin limit reached. Come back tomorrow!",
-                        Toast.LENGTH_SHORT).show();
+            if (remainingSpins <= 0) {
+                Toast.makeText(this, "Daily limit reached", Toast.LENGTH_SHORT).show();
                 return;
             }
 
@@ -96,10 +89,12 @@ public class activity_daily_spin extends AppCompatActivity {
         });
     }
 
+    /* ================= UI ================= */
+
+
     private void makeFullScreen() {
         Window window = getWindow();
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
             window.setStatusBarColor(Color.TRANSPARENT);
             window.setNavigationBarColor(Color.TRANSPARENT);
         }
@@ -110,166 +105,331 @@ public class activity_daily_spin extends AppCompatActivity {
         );
     }
 
-    /* ==================================================
-       FULL SCREEN MODE
-       ================================================== */
+    private void updateUI() {
 
+        txtCoins.setText(String.valueOf(userPref.getCoins()));
 
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
+        if (remainingSpins == -1) {
+            txtSpinsLeft.setText("Loading...");
+            btnSpin.setEnabled(false);
+        } else {
+            txtSpinsLeft.setText("Spins Left: " + remainingSpins);
+            btnSpin.setEnabled(remainingSpins > 0);
+        }
     }
 
-    /* ==================================================
-       SPIN LOGIC
-       ================================================== */
+    /* ================= LOAD STATUS ================= */
 
-    private void startSpin() {
-        isSpinning = true;
-        btnSpin.setEnabled(false);
+    private void loadSpinStatus() {
 
-        int rotation = (360 * 6) + new Random().nextInt(360);
+        ApiService api = ApiClient.getClient().create(ApiService.class);
 
-        ObjectAnimator animator = ObjectAnimator.ofFloat(
-                imgWheel,
-                "rotation",
-                imgWheel.getRotation(),
-                imgWheel.getRotation() + rotation
-        );
-
-        animator.setDuration(4000);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.start();
-
-        animator.addListener(new android.animation.AnimatorListenerAdapter() {
+        api.spinStatus(uid).enqueue(new Callback<SpinResponse>() {
             @Override
-            public void onAnimationEnd(android.animation.Animator animation) {
-                float angle = imgWheel.getRotation() % 360;
-                pendingReward = getRewardFromAngle(angle);
-                showResultDialog(pendingReward);
+            public void onResponse(Call<SpinResponse> call, Response<SpinResponse> response) {
+                if (response.isSuccessful() && response.body() != null) {
+                    remainingSpins = response.body().remainingSpins;
+                } else {
+                    remainingSpins = 0;
+                }
+                updateUI();
+            }
+
+            @Override
+            public void onFailure(Call<SpinResponse> call, Throwable t) {
+                remainingSpins = 0;
+                updateUI();
             }
         });
     }
 
-    private int getRewardFromAngle(float angle) {
-        if (angle < 51) return 0;
-        else if (angle < 103) return 2;
-        else if (angle < 154) return 4;
-        else if (angle < 206) return 6;
-        else if (angle < 257) return 7;
-        else if (angle < 309) return 8;
-        else if (angle < 335) return 10;
-        else return 0;
+    /* ================= SPIN ================= */
+
+    private void startSpin() {
+
+        isSpinning = true;
+        btnSpin.setEnabled(false);
+
+        infiniteAnimator = ObjectAnimator.ofFloat(imgWheel, "rotation", 0f, 360f);
+        infiniteAnimator.setDuration(500);
+        infiniteAnimator.setRepeatCount(ValueAnimator.INFINITE);
+        infiniteAnimator.setInterpolator(new LinearInterpolator());
+        infiniteAnimator.start();
+
+        callSpinApi();
     }
 
-    /* ==================================================
-       RESULT DIALOG + REWARDED AD
-       ================================================== */
+    private void callSpinApi() {
 
-    private void showResultDialog(int reward) {
-        Dialog dialog = new Dialog(this);
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.dialog_spin_result);
-        dialog.setCancelable(false);
+        String token = "Bearer " + uid;
 
-        TextView txtWinAmount = dialog.findViewById(R.id.txtWinAmount);
-        MaterialButton btnOk = dialog.findViewById(R.id.btnOk);
+        ApiService api = ApiClient.getClient().create(ApiService.class);
 
-        txtWinAmount.setText("+" + reward + " Coins");
+        api.spin(token, uid).enqueue(new Callback<SpinResponse>() {
 
-        btnOk.setOnClickListener(v -> {
-            dialog.dismiss();
-            showRewardedAd();
-        });
+            @Override
+            public void onResponse(Call<SpinResponse> call, Response<SpinResponse> response) {
 
-        dialog.show();
-    }
+                if (response.isSuccessful() && response.body() != null) {
 
-    private void showRewardedAd() {
-        if (rewardedAd == null) {
-            applyReward();
-            return;
-        }
+                    int reward = response.body().reward;
+                    remainingSpins = response.body().remainingSpins;
 
-        rewardedAd.setFullScreenContentCallback(
-                new FullScreenContentCallback() {
-                    @Override
-                    public void onAdDismissedFullScreenContent() {
-                        rewardedAd = null;
-                        loadRewardedAd();
-                        applyReward();
+                    stopSpin(reward);
+
+                } else {
+
+                    if (response.code() == 400) {
+
+                        if (infiniteAnimator != null) infiniteAnimator.cancel();
+
+                        isSpinning = false;
+                        remainingSpins = 0;
+                        updateUI();
+
+                        Toast.makeText(activity_daily_spin.this,
+                                "Daily limit reached",
+                                Toast.LENGTH_SHORT).show();
+
+                    } else {
+                        error();
                     }
                 }
-        );
+            }
 
-        rewardedAd.show(this, rewardItem -> {});
+            @Override
+            public void onFailure(Call<SpinResponse> call, Throwable t) {
+                error();
+            }
+        });
     }
 
-    /* ==================================================
-       APPLY REWARD
-       ================================================== */
+    private void stopSpin(int reward) {
 
-    private void applyReward() {
-        incrementDailySpin();
+        if (infiniteAnimator != null) infiniteAnimator.cancel();
 
-        userPref.addCoins(pendingReward);
-        updateCoinsUI();
-        updateSpinUI();
+        float target = getAngle(reward);
+        float current = imgWheel.getRotation();
 
-        if (uid != null) {
-            db.collection("users")
-                    .document(uid)
-                    .update("coins", userPref.getCoins());
+        ObjectAnimator finalSpin = ObjectAnimator.ofFloat(
+                imgWheel,
+                "rotation",
+                current,
+                current + 360 * 5 + target
+        );
+
+        finalSpin.setDuration(3000);
+        finalSpin.setInterpolator(new DecelerateInterpolator());
+
+        finalSpin.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+
+                playEffects();
+
+                new Handler().postDelayed(() -> {
+                    userPref.addCoins(reward);
+                    updateUI();
+                }, 400);
+
+                spinCounterForAd++;
+
+                if (spinCounterForAd >= 2) {
+                    spinCounterForAd = 0;
+                    showRewardDialogWithAd(reward);
+                } else {
+                    showRewardDialogOnly(reward);
+                }
+
+                isSpinning = false;
+            }
+        });
+
+        finalSpin.start();
+    }
+
+    private float getAngle(int reward) {
+        switch (reward) {
+            case 0: return 0;
+            case 5: return 60;
+            case 6: return 120;
+            case 7: return 180;
+            case 10: return 240;
+            default: return 300;
+        }
+    }
+
+    /* ================= EFFECTS ================= */
+
+    private void playEffects() {
+
+        FrameLayout root = findViewById(android.R.id.content);
+
+        // 💰 coins
+        for (int i = 0; i < 5; i++) {
+
+            ImageView coin = new ImageView(this);
+            coin.setImageResource(R.drawable.ic_coin);
+            root.addView(coin);
+
+            coin.setX(imgWheel.getX() + imgWheel.getWidth() / 2);
+            coin.setY(imgWheel.getY() + imgWheel.getHeight() / 2);
+
+            ObjectAnimator moveY = ObjectAnimator.ofFloat(coin, "translationY", 0, -600f);
+            ObjectAnimator fade = ObjectAnimator.ofFloat(coin, "alpha", 1f, 0f);
+
+            AnimatorSet set = new AnimatorSet();
+            set.setDuration(800);
+            set.setStartDelay(i * 100);
+            set.playTogether(moveY, fade);
+
+            set.addListener(new AnimatorListenerAdapter() {
+                @Override
+                public void onAnimationEnd(Animator animation) {
+                    root.removeView(coin);
+                }
+            });
+
+            set.start();
         }
 
-        isSpinning = false;
-        btnSpin.setEnabled(true);
+        // 🔊 SOUND (FIXED)
+        stopSound();
+        winSound = MediaPlayer.create(this, R.raw.win_sound);
+        winSound.start();
+
+        // 📳 vibration
+        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (vibrator != null) vibrator.vibrate(150);
+
+        // 🎆 fireworks
+        TextView fire = new TextView(this);
+        fire.setText("🎆✨🎉");
+        fire.setTextSize(30);
+        root.addView(fire);
+
+        ObjectAnimator fade = ObjectAnimator.ofFloat(fire, "alpha", 1f, 0f);
+        fade.setDuration(1000);
+
+        fade.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                root.removeView(fire);
+            }
+        });
+
+        fade.start();
     }
 
-    /* ==================================================
-       DAILY SPIN LIMIT
-       ================================================== */
+    /* ================= STOP SOUND ================= */
 
-    private boolean canSpinToday() {
-        return userPref.getTodaySpinCount() < MAX_DAILY_SPINS;
+    private void stopSound() {
+        if (winSound != null && winSound.isPlaying()) {
+            winSound.stop();
+            winSound.release();
+            winSound = null;
+        }
     }
 
-    private void incrementDailySpin() {
-        userPref.increaseSpinCount();
+    /* ================= DIALOG ================= */
+
+    private void showRewardDialogOnly(int reward) {
+
+        stopSound(); // 🔥 stop sound here
+
+        Dialog d = new Dialog(this);
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        d.setContentView(R.layout.dialog_spin_result);
+
+        TextView txt = d.findViewById(R.id.txtWinAmount);
+        MaterialButton ok = d.findViewById(R.id.btnOk);
+
+        txt.setText("+" + reward + " Coins");
+
+        ok.setOnClickListener(v -> d.dismiss());
+
+        d.show();
     }
 
-    private void updateSpinUI() {
-        txtSpinsLeft.setText(
-                "Spins Left: " +
-                        (MAX_DAILY_SPINS - userPref.getTodaySpinCount())
-        );
+    private void showRewardDialogWithAd(int reward) {
+
+        stopSound(); // 🔥 stop sound here
+
+        Dialog d = new Dialog(this);
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        d.setContentView(R.layout.dialog_spin_result);
+
+        TextView txt = d.findViewById(R.id.txtWinAmount);
+        MaterialButton ok = d.findViewById(R.id.btnOk);
+
+        txt.setText("+" + reward + " Coins");
+
+        ok.setOnClickListener(v -> {
+            d.dismiss();
+            showAd();
+        });
+
+        d.show();
     }
 
-    /* ==================================================
-       REWARDED AD LOAD
-       ================================================== */
+    /* ================= ADS ================= */
 
-    private void loadRewardedAd() {
-        RewardedAd.load(
-                this,
+    private void loadAd() {
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        RewardedAd.load(this,
                 "ca-app-pub-3940256099942544/5224354917",
-                new AdRequest.Builder().build(),
+                adRequest,
                 new RewardedAdLoadCallback() {
+
                     @Override
                     public void onAdLoaded(RewardedAd ad) {
                         rewardedAd = ad;
                     }
-                }
-        );
+
+                    @Override
+                    public void onAdFailedToLoad(LoadAdError error) {
+                        rewardedAd = null;
+                    }
+                });
     }
 
-    /* ==================================================
-       UI
-       ================================================== */
+    private void showAd() {
 
-    private void updateCoinsUI() {
-        txtCoins.setText(String.valueOf(userPref.getCoins()));
+        if (rewardedAd != null) {
+
+            rewardedAd.setFullScreenContentCallback(
+                    new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            rewardedAd = null;
+                            loadAd();
+                        }
+                    });
+
+            rewardedAd.show(this, rewardItem -> {});
+
+        } else {
+            loadAd();
+        }
+    }
+
+    /* ================= ERROR ================= */
+
+    private void error() {
+
+        if (infiniteAnimator != null) infiniteAnimator.cancel();
+
+        isSpinning = false;
+        btnSpin.setEnabled(true);
+
+        Toast.makeText(this, "Server error", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopSound();
     }
 }

@@ -16,46 +16,49 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="14dp"
-        android:backgroundTint="#B9E4E2"
+        android:backgroundTint="#C9DBDA"
         android:background="#E6D87D"
         android:orientation="vertical">
 
-        <!-- TITLE -->
+        <!-- REWARD BOX -->
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_coin_gradient"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:paddingStart="6dp"
+            android:paddingEnd="8dp">
 
+            <!-- COIN ICON -->
+            <ImageView
+                android:id="@+id/imgCoin"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_coin" />
+
+            <!-- REWARD TEXT -->
             <TextView
                 android:id="@+id/txtReward"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Win 100"
-                android:textSize="18sp"
-                android:textStyle="bold"
-                android:textColor="@color/black" />
-
-            <ImageView
-                android:id="@+id/imgCoin"
-                android:layout_width="18dp"
-                android:layout_height="18dp"
                 android:layout_marginStart="6dp"
-                android:src="@drawable/ic_coin" />
+                android:text="Win 100 🎉"
+                android:textColor="#8D6E00"
+                android:textSize="14sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"/>
-
+            <!-- OPTIONAL DRAW ID -->
             <TextView
                 android:id="@+id/txtDrawId"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
                 android:text="#1122734"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:textColor="#AAAAAA"
-                android:visibility="invisible"/>
+                android:visibility="gone"/>
         </LinearLayout>
 
         <!-- STATUS -->
@@ -70,8 +73,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Left : 56/150"
-                android:textSize="13sp"
-                android:textColor="#666666" />
+                android:textSize="15sp"
+                android:textFontWeight="5"
+                android:textColor="#000000" />
 
             <TextView
                 android:layout_width="0dp"
@@ -85,7 +89,7 @@
                 android:text="62% Filled"
                 android:textSize="13sp"
                 android:textStyle="bold"
-                android:textColor="#009688" />
+                android:textColor="#0D012C" />
         </LinearLayout>
 
         <!-- PROGRESS -->
@@ -97,7 +101,7 @@
             android:layout_marginTop="8dp"
             android:max="100"
             android:progress="62"
-            android:progressTint="#009688"
+            android:progressTint="#048508"
             android:backgroundTint="#E0E0E0"/>
 
         <!-- BUTTONS -->

@@ -4,36 +4,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#B4C7B8"
+    android:background="#DDEBDD"
     >
 
     <!-- HEADER -->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="79dp"
-        android:background="#B4C7B8"
+        android:layout_height="wrap_content"
+        android:minHeight="64dp"
+        android:background="#E4E9E4"
         android:elevation="6dp"
         android:gravity="center_vertical"
-        android:paddingHorizontal="12dp">
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="30dp"
+        android:paddingBottom="8dp"
+        android:orientation="horizontal">
 
+        <!-- BACK BUTTON -->
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="43dp"
+            android:layout_height="42dp"
+            android:layout_gravity="center_vertical"
+            android:contentDescription="Back"
             android:src="@drawable/back_arrow" />
 
+        <!-- TITLE BLOCK -->
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_marginStart="12dp"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center_vertical">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Lucky Draw"
                 android:textColor="@color/black"
-                android:textSize="22sp"
+                android:textSize="20sp"
                 android:textStyle="bold" />
 
             <TextView
@@ -41,8 +52,9 @@
                 android:layout_height="wrap_content"
                 android:text="Win Coins"
                 android:textColor="#777777"
-                android:textSize="18sp" />
+                android:textSize="14sp" />
         </LinearLayout>
+
     </LinearLayout>
 
     <!-- HISTORY CARD -->
@@ -54,9 +66,9 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="2dp"
         app:strokeColor="#6A1BFF"
-        app:strokeWidth="1dp"
-        app:cardBackgroundColor="@color/white"
-        android:background="@color/white">
+        app:strokeWidth="1.5dp"
+        app:cardBackgroundColor="#E2DEDE"
+        android:background="#777777">
 
         <TextView
             android:layout_width="match_parent"

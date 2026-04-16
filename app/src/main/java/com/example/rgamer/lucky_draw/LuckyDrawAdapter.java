@@ -58,7 +58,7 @@ public class LuckyDrawAdapter
 
         /* ================= TEXT ================= */
 
-        h.txtReward.setText("Win " + model.getRewardCoins() + " Coins");
+        h.txtReward.setText("Win " + model.getRewardCoins() + " Coins 🎉");
 
         int total = Math.max(model.getTotalSlots(), 1);
         int filled = model.getFilledSlots();
