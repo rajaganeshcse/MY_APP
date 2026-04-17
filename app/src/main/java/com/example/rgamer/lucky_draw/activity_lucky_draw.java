@@ -1,6 +1,5 @@
 package com.example.rgamer.lucky_draw;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
@@ -19,17 +18,18 @@ import com.google.firebase.firestore.*;
 
 import java.util.*;
 
-import okhttp3.ResponseBody;
 import retrofit2.*;
 
 public class activity_lucky_draw extends AppCompatActivity
         implements LuckyDrawAdapter.Listener {
 
-    FirebaseFirestore db;
-    ApiService api;
+    private FirebaseFirestore db;
+    private ApiService api;
 
-    List<LuckyDrawModel> list = new ArrayList<>();
-    LuckyDrawAdapter adapter;
+    private final List<LuckyDrawModel> list = new ArrayList<>();
+    private LuckyDrawAdapter adapter;
+
+    private String uid;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,8 @@ public class activity_lucky_draw extends AppCompatActivity
 
         db = FirebaseFirestore.getInstance();
         api = ApiClient.getClient().create(ApiService.class);
+
+        uid = FirebaseAuth.getInstance().getUid();
 
         RecyclerView rv = findViewById(R.id.luckyDrawRecycler);
         rv.setLayoutManager(new LinearLayoutManager(this));
@@ -49,6 +51,7 @@ public class activity_lucky_draw extends AppCompatActivity
     }
 
     private void loadDraws() {
+
         db.collection("lucky_draws")
                 .whereEqualTo("status", "OPEN")
                 .addSnapshotListener((snap, e) -> {
@@ -58,10 +61,15 @@ public class activity_lucky_draw extends AppCompatActivity
                     list.clear();
 
                     for (DocumentSnapshot d : snap.getDocuments()) {
+
                         LuckyDrawModel m = d.toObject(LuckyDrawModel.class);
                         if (m == null) continue;
 
                         m.setId(d.getId());
+
+                        // 🔥 detect if user used FREE entry
+                        checkIfJoined(m);
+
                         list.add(m);
                     }
 
@@ -69,22 +77,49 @@ public class activity_lucky_draw extends AppCompatActivity
                 });
     }
 
+    private void checkIfJoined(LuckyDrawModel model) {
+
+        db.collection("lucky_draw_tickets")
+                .document(model.getId())
+                .collection("tickets")
+                .whereEqualTo("uid", uid)
+                .whereEqualTo("type", "AD")
+                .limit(1)
+                .get()
+                .addOnSuccessListener(snap -> {
+
+                    if (!snap.isEmpty()) {
+                        model.setJoinedByMe(true);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
     @Override
     public void onJoin(LuckyDrawModel model) {
-        join(model.getId(), 1);
+        showAdAndJoin(model.getId());
     }
 
     @Override
     public void onJoinWithTickets(LuckyDrawModel model) {
-        join(model.getId(), 2);
+        join(model.getId(), "TICKET");
     }
 
-    private void join(String drawId, int tickets) {
+    private void showAdAndJoin(String drawId) {
+        // 👉 integrate rewarded ad here
+        join(drawId, "AD");
+    }
+
+    private void join(String drawId, String type) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Toast.makeText(this, "Login required", Toast.LENGTH_SHORT).show();
             return;
         }
+
+        adapter.setLoading(drawId, true);
+
+        Log.d("JOIN", "drawId=" + drawId + " type=" + type);
 
         FirebaseAuth.getInstance().getCurrentUser()
                 .getIdToken(true)
@@ -94,7 +129,8 @@ public class activity_lucky_draw extends AppCompatActivity
 
                     Map<String, Object> body = new HashMap<>();
                     body.put("drawId", drawId);
-                    body.put("ticketCount", tickets);
+                    body.put("type", type); // ✅ correct
+
                     api.joinDraw("Bearer " + token, body)
                             .enqueue(new Callback<JoinResponse>() {
 
@@ -116,19 +152,11 @@ public class activity_lucky_draw extends AppCompatActivity
 
                                     } else {
 
-                                        try {
-                                            String err = response.errorBody().string();
-                                            Log.e("API", err);
-
-                                            Toast.makeText(
-                                                    activity_lucky_draw.this,
-                                                    err,
-                                                    Toast.LENGTH_LONG
-                                            ).show();
-
-                                        } catch (Exception e) {
-                                            e.printStackTrace();
-                                        }
+                                        Toast.makeText(
+                                                activity_lucky_draw.this,
+                                                "Join failed",
+                                                Toast.LENGTH_SHORT
+                                        ).show();
                                     }
                                 }
 
@@ -137,11 +165,11 @@ public class activity_lucky_draw extends AppCompatActivity
 
                                     adapter.clearLoading(drawId);
 
-                                    Log.e("API", "Fail: " + t.getMessage());
+                                    Log.e("API", "Error: " + t.getMessage());
 
                                     Toast.makeText(
                                             activity_lucky_draw.this,
-                                            "Network: " + t.getMessage(),
+                                            t.getMessage(),
                                             Toast.LENGTH_LONG
                                     ).show();
                                 }
@@ -151,6 +179,6 @@ public class activity_lucky_draw extends AppCompatActivity
 
     @Override
     public void onCheckWinners(LuckyDrawModel model) {
-        startActivity(new Intent(this, activity_lucky_draw_winner.class));
+        Toast.makeText(this, "Winner screen coming soon", Toast.LENGTH_SHORT).show();
     }
 }

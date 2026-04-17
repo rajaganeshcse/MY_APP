@@ -1,5 +1,7 @@
 package com.example.rgamer.network;
 
+import android.util.Log;
+
 import com.example.rgamer.models.SpinResponse;
 import com.example.rgamer.models.UserModel;
 import com.example.rgamer.models.DrawResponse;
@@ -44,7 +46,7 @@ public interface ApiService {
 
     /* ================= LUCKY DRAW ================= */
 
-    @POST("api/draw/join")
+    @POST("/api/draw/join")
     Call<JoinResponse> joinDraw(
             @Header("Authorization") String token,
             @Body Map<String, Object> body

@@ -2,11 +2,8 @@ package com.example.rgamer.lucky_draw;
 
 import android.content.res.ColorStateList;
 import android.graphics.Color;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ProgressBar;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,9 +12,7 @@ import com.example.rgamer.R;
 import com.example.rgamer.models.LuckyDrawModel;
 import com.google.android.material.button.MaterialButton;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class LuckyDrawAdapter
         extends RecyclerView.Adapter<LuckyDrawAdapter.ViewHolder> {
@@ -41,9 +36,8 @@ public class LuckyDrawAdapter
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_lucky_draw, parent, false);
-        return new ViewHolder(v);
+        return new ViewHolder(LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_lucky_draw, parent, false));
     }
 
     @Override
@@ -64,8 +58,13 @@ public class LuckyDrawAdapter
 
         boolean loading = loadingIds.contains(id);
 
+        // reset text
+        h.btnJoin.setText("Free Entry");
+        h.btnticket.setText("Ticket Entry");
+
         if (loading) {
             h.btnJoin.setText("Joining...");
+            h.btnticket.setText("Please wait...");
             h.btnJoin.setEnabled(false);
             h.btnticket.setEnabled(false);
             return;
@@ -75,12 +74,13 @@ public class LuckyDrawAdapter
 
             h.btnJoin.setText("Joined");
             h.btnJoin.setEnabled(false);
-            h.btnticket.setEnabled(false);
+            h.btnticket.setEnabled(true);
 
             h.btnJoin.setBackgroundTintList(
                     ColorStateList.valueOf(Color.parseColor("#2E7D32")));
+        }
 
-        } else if (model.isFull() || !"OPEN".equals(model.getStatus())) {
+        else if (model.isFull() || !"OPEN".equals(model.getStatus())) {
 
             h.btnJoin.setText("FULL");
             h.btnJoin.setEnabled(false);
@@ -88,22 +88,27 @@ public class LuckyDrawAdapter
 
             h.btnJoin.setBackgroundTintList(
                     ColorStateList.valueOf(Color.parseColor("#D32F2F")));
+        }
 
-        } else {
-
-            h.btnJoin.setText("Free Entry");
-            h.btnJoin.setEnabled(true);
-            h.btnticket.setEnabled(true);
+        else {
 
             h.btnJoin.setOnClickListener(v -> {
+
+                if (loadingIds.contains(id)) return;
+
                 loadingIds.add(id);
                 notifyItemChanged(position);
+
                 listener.onJoin(model);
             });
 
             h.btnticket.setOnClickListener(v -> {
+
+                if (loadingIds.contains(id)) return;
+
                 loadingIds.add(id);
                 notifyItemChanged(position);
+
                 listener.onJoinWithTickets(model);
             });
         }
@@ -119,9 +124,21 @@ public class LuckyDrawAdapter
         return list.size();
     }
 
+    public void setLoading(String id, boolean value) {
+        if (value) loadingIds.add(id);
+        else loadingIds.remove(id);
+        notifyDataSetChanged();
+    }
+
     public void clearLoading(String drawId) {
         loadingIds.remove(drawId);
-        notifyDataSetChanged();
+
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i).getId().equals(drawId)) {
+                notifyItemChanged(i);
+                return;
+            }
+        }
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

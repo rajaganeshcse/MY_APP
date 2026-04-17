@@ -18,6 +18,7 @@ public class LuckyDrawWinnerAdapter
 
     private final List<LuckyDrawModel> list;
 
+
     public LuckyDrawWinnerAdapter(List<LuckyDrawModel> list) {
         this.list = list;
     }
