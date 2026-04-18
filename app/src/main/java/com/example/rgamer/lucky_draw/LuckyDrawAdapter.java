@@ -28,9 +28,15 @@ public class LuckyDrawAdapter
 
     private final Set<String> loadingIds = new HashSet<>();
 
-    public LuckyDrawAdapter(List<LuckyDrawModel> list, Listener listener) {
+    // 🔥 USER TICKETS
+    private int userTickets;
+
+    public LuckyDrawAdapter(List<LuckyDrawModel> list,
+                            Listener listener,
+                            int userTickets) {
         this.list = list;
         this.listener = listener;
+        this.userTickets = userTickets;
     }
 
     @NonNull
@@ -62,6 +68,7 @@ public class LuckyDrawAdapter
         h.btnJoin.setText("Free Entry");
         h.btnticket.setText("Ticket Entry");
 
+        /* ================= LOADING ================= */
         if (loading) {
             h.btnJoin.setText("Joining...");
             h.btnticket.setText("Please wait...");
@@ -70,16 +77,20 @@ public class LuckyDrawAdapter
             return;
         }
 
+        /* ================= JOINED ================= */
         if (model.isJoinedByMe()) {
 
             h.btnJoin.setText("Joined");
             h.btnJoin.setEnabled(false);
-            h.btnticket.setEnabled(true);
+
+            // ticket still allowed
+            h.btnticket.setEnabled(userTickets > 0);
 
             h.btnJoin.setBackgroundTintList(
                     ColorStateList.valueOf(Color.parseColor("#2E7D32")));
         }
 
+        /* ================= FULL ================= */
         else if (model.isFull() || !"OPEN".equals(model.getStatus())) {
 
             h.btnJoin.setText("FULL");
@@ -90,21 +101,30 @@ public class LuckyDrawAdapter
                     ColorStateList.valueOf(Color.parseColor("#D32F2F")));
         }
 
+        /* ================= ACTIVE ================= */
         else {
 
+            // 🔥 FREE ENTRY (NO LOADING HERE)
             h.btnJoin.setOnClickListener(v -> {
 
                 if (loadingIds.contains(id)) return;
 
-                loadingIds.add(id);
-                notifyItemChanged(position);
-
                 listener.onJoin(model);
             });
+
+            // 🔥 TICKET ENTRY (CHECK LOCAL)
+            h.btnticket.setEnabled(userTickets > 0);
 
             h.btnticket.setOnClickListener(v -> {
 
                 if (loadingIds.contains(id)) return;
+
+                if (userTickets <= 0) {
+                    Toast.makeText(v.getContext(),
+                            "No tickets available",
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
 
                 loadingIds.add(id);
                 notifyItemChanged(position);
@@ -113,6 +133,7 @@ public class LuckyDrawAdapter
             });
         }
 
+        /* ================= LONG PRESS ================= */
         h.btnticket.setOnLongClickListener(v -> {
             listener.onCheckWinners(model);
             return true;
@@ -123,6 +144,8 @@ public class LuckyDrawAdapter
     public int getItemCount() {
         return list.size();
     }
+
+    /* ================= LOADING CONTROL ================= */
 
     public void setLoading(String id, boolean value) {
         if (value) loadingIds.add(id);
@@ -140,6 +163,15 @@ public class LuckyDrawAdapter
             }
         }
     }
+
+    /* ================= UPDATE USER TICKETS ================= */
+
+    public void updateUserTickets(int tickets) {
+        this.userTickets = tickets;
+        notifyDataSetChanged();
+    }
+
+    /* ================= VIEW HOLDER ================= */
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -13,6 +14,9 @@ import com.example.rgamer.models.JoinResponse;
 import com.example.rgamer.models.LuckyDrawModel;
 import com.example.rgamer.network.ApiClient;
 import com.example.rgamer.network.ApiService;
+import com.google.android.gms.ads.*;
+import com.google.android.gms.ads.rewarded.*;
+import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
 
@@ -23,18 +27,33 @@ import retrofit2.*;
 public class activity_lucky_draw extends AppCompatActivity
         implements LuckyDrawAdapter.Listener {
 
-    private FirebaseFirestore db;
-    private ApiService api;
+    FirebaseFirestore db;
+    ApiService api;
+    MaterialCardView cardLuckyDrawHistory;
 
-    private final List<LuckyDrawModel> list = new ArrayList<>();
-    private LuckyDrawAdapter adapter;
 
-    private String uid;
+    List<LuckyDrawModel> list = new ArrayList<>();
+    LuckyDrawAdapter adapter;
+
+    String uid;
+
+    // 🔥 USER TICKETS (LOCAL)
+    int userTickets = 0;
+
+    // 🔥 REWARDED AD
+    private RewardedAd rewardedAd;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lucky_draw);
+
+        cardLuckyDrawHistory = findViewById(R.id.cardLuckyDrawHistory);
+        cardLuckyDrawHistory.setOnClickListener(v -> {
+            Toast.makeText(this, "Lucky Draw History coming soon", Toast.LENGTH_SHORT).show();
+        });
+        // 🔥 INIT
+
 
         db = FirebaseFirestore.getInstance();
         api = ApiClient.getClient().create(ApiService.class);
@@ -44,11 +63,36 @@ public class activity_lucky_draw extends AppCompatActivity
         RecyclerView rv = findViewById(R.id.luckyDrawRecycler);
         rv.setLayoutManager(new LinearLayoutManager(this));
 
-        adapter = new LuckyDrawAdapter(list, this);
+        adapter = new LuckyDrawAdapter(list, this, userTickets);
         rv.setAdapter(adapter);
 
+        // 🔥 INIT ADS
+        MobileAds.initialize(this);
+        loadAd();
+
+        loadUserTickets();
         loadDraws();
     }
+
+    /* ================= LOAD USER TICKETS ================= */
+
+    private void loadUserTickets() {
+
+        db.collection("users")
+                .document(uid)
+                .addSnapshotListener((snap, e) -> {
+
+                    if (snap != null && snap.exists()) {
+
+                        Long t = snap.getLong("tickets");
+                        userTickets = t == null ? 0 : t.intValue();
+
+                        adapter.updateUserTickets(userTickets);
+                    }
+                });
+    }
+
+    /* ================= LOAD DRAWS ================= */
 
     private void loadDraws() {
 
@@ -67,7 +111,6 @@ public class activity_lucky_draw extends AppCompatActivity
 
                         m.setId(d.getId());
 
-                        // 🔥 detect if user used FREE entry
                         checkIfJoined(m);
 
                         list.add(m);
@@ -76,6 +119,8 @@ public class activity_lucky_draw extends AppCompatActivity
                     adapter.notifyDataSetChanged();
                 });
     }
+
+    /* ================= CHECK FREE ENTRY USED ================= */
 
     private void checkIfJoined(LuckyDrawModel model) {
 
@@ -95,9 +140,36 @@ public class activity_lucky_draw extends AppCompatActivity
                 });
     }
 
+    /* ================= LOAD AD ================= */
+
+    private void loadAd() {
+
+        AdRequest adRequest = new AdRequest.Builder().build();
+
+        RewardedAd.load(this,
+                "ca-app-pub-3940256099942544/5224354917", // test ID
+                adRequest,
+                new RewardedAdLoadCallback() {
+
+                    @Override
+                    public void onAdLoaded(@NonNull RewardedAd ad) {
+                        rewardedAd = ad;
+                        Log.d("AD", "Loaded");
+                    }
+
+                    @Override
+                    public void onAdFailedToLoad(@NonNull LoadAdError error) {
+                        rewardedAd = null;
+                        Log.e("AD", "Failed: " + error.getMessage());
+                    }
+                });
+    }
+
+    /* ================= CLICK EVENTS ================= */
+
     @Override
     public void onJoin(LuckyDrawModel model) {
-        showAdAndJoin(model.getId());
+        showAdThenJoin(model);
     }
 
     @Override
@@ -105,10 +177,39 @@ public class activity_lucky_draw extends AppCompatActivity
         join(model.getId(), "TICKET");
     }
 
-    private void showAdAndJoin(String drawId) {
-        // 👉 integrate rewarded ad here
-        join(drawId, "AD");
+    @Override
+    public void onCheckWinners(LuckyDrawModel model) {
+        Toast.makeText(this, "Winner screen coming soon", Toast.LENGTH_SHORT).show();
     }
+
+    /* ================= AD FLOW ================= */
+
+    private void showAdThenJoin(LuckyDrawModel model) {
+
+        if (rewardedAd != null) {
+
+            // 🔥 only now set loading
+            adapter.setLoading(model.getId(), true);
+
+            rewardedAd.show(this, rewardItem -> {
+
+                Toast.makeText(this, "Ad watched 🎉", Toast.LENGTH_SHORT).show();
+
+                join(model.getId(), "AD");
+
+                loadAd(); // preload next ad
+            });
+
+        } else {
+
+            Toast.makeText(this, "Ad not ready, try again", Toast.LENGTH_SHORT).show();
+
+            // ❌ no loading
+            loadAd();
+        }
+    }
+
+    /* ================= JOIN API ================= */
 
     private void join(String drawId, String type) {
 
@@ -117,9 +218,10 @@ public class activity_lucky_draw extends AppCompatActivity
             return;
         }
 
-        adapter.setLoading(drawId, true);
-
-        Log.d("JOIN", "drawId=" + drawId + " type=" + type);
+        // only ticket sets loading earlier (adapter)
+        if ("AD".equals(type)) {
+            adapter.setLoading(drawId, true);
+        }
 
         FirebaseAuth.getInstance().getCurrentUser()
                 .getIdToken(true)
@@ -129,7 +231,7 @@ public class activity_lucky_draw extends AppCompatActivity
 
                     Map<String, Object> body = new HashMap<>();
                     body.put("drawId", drawId);
-                    body.put("type", type); // ✅ correct
+                    body.put("type", type);
 
                     api.joinDraw("Bearer " + token, body)
                             .enqueue(new Callback<JoinResponse>() {
@@ -140,8 +242,6 @@ public class activity_lucky_draw extends AppCompatActivity
 
                                     adapter.clearLoading(drawId);
 
-                                    Log.d("API", "Code: " + response.code());
-
                                     if (response.isSuccessful() && response.body() != null) {
 
                                         Toast.makeText(
@@ -150,8 +250,13 @@ public class activity_lucky_draw extends AppCompatActivity
                                                 Toast.LENGTH_SHORT
                                         ).show();
 
-                                    } else {
+                                        // 🔥 update tickets locally
+                                        if ("TICKET".equals(type)) {
+                                            userTickets--;
+                                            adapter.updateUserTickets(userTickets);
+                                        }
 
+                                    } else {
                                         Toast.makeText(
                                                 activity_lucky_draw.this,
                                                 "Join failed",
@@ -165,8 +270,6 @@ public class activity_lucky_draw extends AppCompatActivity
 
                                     adapter.clearLoading(drawId);
 
-                                    Log.e("API", "Error: " + t.getMessage());
-
                                     Toast.makeText(
                                             activity_lucky_draw.this,
                                             t.getMessage(),
@@ -175,10 +278,5 @@ public class activity_lucky_draw extends AppCompatActivity
                                 }
                             });
                 });
-    }
-
-    @Override
-    public void onCheckWinners(LuckyDrawModel model) {
-        Toast.makeText(this, "Winner screen coming soon", Toast.LENGTH_SHORT).show();
     }
 }
