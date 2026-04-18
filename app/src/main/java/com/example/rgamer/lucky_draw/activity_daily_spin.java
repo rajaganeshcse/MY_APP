@@ -2,6 +2,7 @@ package com.example.rgamer.lucky_draw;
 
 import android.animation.*;
 import android.app.Dialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Build;
@@ -14,8 +15,10 @@ import android.view.Window;
 import android.view.animation.*;
 import android.widget.*;
 
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.rgamer.Activitys.MainActivity;
 import com.example.rgamer.R;
 import com.example.rgamer.UserPref;
 import com.example.rgamer.models.SpinResponse;
@@ -66,6 +69,7 @@ public class activity_daily_spin extends AppCompatActivity {
 
         userPref = new UserPref(this);
         uid = userPref.getUid();
+        findViewById(com.example.rgamer.R.id.btnBack).setOnClickListener(v -> finish());
 
         updateUI();
         loadSpinStatus();

@@ -1,7 +1,13 @@
 package com.example.rgamer.lucky_draw;
 
+import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.view.Window;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -9,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.rgamer.Activitys.MainActivity;
 import com.example.rgamer.R;
 import com.example.rgamer.models.JoinResponse;
 import com.example.rgamer.models.LuckyDrawModel;
@@ -29,7 +36,9 @@ public class activity_lucky_draw extends AppCompatActivity
 
     FirebaseFirestore db;
     ApiService api;
+    ImageView btnBack;
     MaterialCardView cardLuckyDrawHistory;
+
 
 
     List<LuckyDrawModel> list = new ArrayList<>();
@@ -50,8 +59,11 @@ public class activity_lucky_draw extends AppCompatActivity
 
         cardLuckyDrawHistory = findViewById(R.id.cardLuckyDrawHistory);
         cardLuckyDrawHistory.setOnClickListener(v -> {
-            Toast.makeText(this, "Lucky Draw History coming soon", Toast.LENGTH_SHORT).show();
-        });
+            startActivity(new Intent(this, activity_lucky_draw_winner.class));
+
+
+               });
+        findViewById(com.example.rgamer.R.id.btnBack).setOnClickListener(v -> finish());
         // 🔥 INIT
 
 
@@ -72,6 +84,22 @@ public class activity_lucky_draw extends AppCompatActivity
 
         loadUserTickets();
         loadDraws();
+        makeFullScreen();
+    }
+
+
+    private void makeFullScreen() {
+        Window window = getWindow();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setStatusBarColor(Color.TRANSPARENT);
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+
+        window.getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                        View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        );
     }
 
     /* ================= LOAD USER TICKETS ================= */

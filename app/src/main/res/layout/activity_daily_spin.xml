@@ -11,6 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="89dp"
         android:background="#AFEBE4"
+        android:clickable="true"
+        android:contextClickable="true"
         android:paddingTop="30dp"
         android:elevation="6dp"
         android:paddingHorizontal="16dp">
@@ -18,12 +20,15 @@
         <!-- Back Button -->
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="66dp"
-            android:layout_height="56dp"
+            android:layout_width="51dp"
+            android:layout_height="53dp"
+            android:clickable="true"
+            android:contextClickable="true"
+
             android:src="@drawable/back_arrow"
-            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- Coins -->
         <LinearLayout
