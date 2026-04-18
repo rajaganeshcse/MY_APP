@@ -55,6 +55,32 @@
                 android:textSize="14sp" />
         </LinearLayout>
 
+        <LinearLayout
+            android:layout_width="111dp"
+            android:layout_height="37dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/bg_token_gradient"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:padding="1dp">
+
+            <ImageView
+                android:layout_width="37dp"
+                android:layout_height="58dp"
+                android:paddingStart="12dp"
+                android:src="@drawable/ic_ticket" />
+
+            <TextView
+                android:id="@+id/txtToken"
+                android:layout_width="45dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="6dp"
+                android:text="0"
+                android:textColor="#8D6E00"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
     </LinearLayout>
 
     <!-- HISTORY CARD -->
