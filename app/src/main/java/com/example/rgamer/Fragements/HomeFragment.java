@@ -1,5 +1,6 @@
 package com.example.rgamer.Fragements;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.*;
@@ -7,6 +8,7 @@ import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
@@ -18,6 +20,7 @@ import com.example.rgamer.network.ApiService;
 import com.google.android.gms.ads.*;
 import com.google.android.gms.ads.nativead.*;
 import com.google.android.gms.ads.rewarded.*;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
@@ -31,10 +34,12 @@ public class HomeFragment extends Fragment {
 
     /* ================= UI ================= */
 
-    private TextView txtCoins, txtToken, txtAdCount, txtLuckyDraw;
+    CardView card_spinner,card_lucky_draw,card_tasks,card_surveys,cardInvite;
+
+    private TextView txtCoins, txtToken, txtAdCount;
     private ImageView imgProfile, imgRewardCoin;
-    private MaterialButton btnWatchNow, btnSpinNow;
-    private View cardInvite;
+    private MaterialButton btnWatchNow;
+
 
     /* ================= ADS ================= */
 
@@ -59,6 +64,7 @@ public class HomeFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+
         init(view);
 
         loadUserData();
@@ -68,6 +74,7 @@ public class HomeFragment extends Fragment {
         loadNativeAd(view);
 
         setupClickListeners();
+
 
         return view;
     }
@@ -83,15 +90,40 @@ public class HomeFragment extends Fragment {
         txtCoins = view.findViewById(R.id.txtCoins);
         txtToken = view.findViewById(R.id.txtToken);
         txtAdCount = view.findViewById(R.id.txtAdCount);
-        txtLuckyDraw = view.findViewById(R.id.txtLuckyDraw);
+        card_lucky_draw = view.findViewById(R.id.card_lucky_draw);
 
         imgProfile = view.findViewById(R.id.imgProfile);
         imgRewardCoin = view.findViewById(R.id.imgRewardCoin);
 
         btnWatchNow = view.findViewById(R.id.btnWatchNow);
-        btnSpinNow = view.findViewById(R.id.btnSpinNow);
+        card_spinner = view.findViewById(R.id.card_spinner);
 
-        cardInvite = view.findViewById(R.id.btnInviteNow);
+        cardInvite = view.findViewById(R.id.card_invite);
+        card_tasks=view.findViewById(R.id.card_tasks);
+        card_surveys=view.findViewById(R.id.card_surveys);
+        card_surveys.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Comming Soon", Toast.LENGTH_SHORT).show();
+        });
+
+        card_tasks.setOnClickListener(v -> {
+            Toast.makeText(getContext(), "Comming Soon", Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    /// ads dailog
+    private void showRewardDialogOnly(int reward) {
+        Dialog d = new Dialog(requireContext());
+        d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        d.setContentView(R.layout.dialog_spin_result);
+
+        TextView txt = d.findViewById(R.id.txtWinAmount);
+        MaterialButton ok = d.findViewById(R.id.btnOk);
+
+        txt.setText("+" + reward + " Coins");
+
+        ok.setOnClickListener(v -> d.dismiss());
+
+        d.show();
     }
 
     /* ================= USER ================= */
@@ -164,8 +196,8 @@ public class HomeFragment extends Fragment {
     private void setupClickListeners() {
 
         // 🎡 Spin
-        if (btnSpinNow != null) {
-            btnSpinNow.setOnClickListener(v ->
+        if (card_spinner != null) {
+            card_spinner.setOnClickListener(v ->
                     startActivity(new Intent(
                             requireContext(),
                             com.example.rgamer.lucky_draw.activity_daily_spin.class
@@ -174,8 +206,8 @@ public class HomeFragment extends Fragment {
         }
 
         // 🎯 Lucky draw
-        if (txtLuckyDraw != null) {
-            txtLuckyDraw.setOnClickListener(v ->
+        if (card_lucky_draw != null) {
+            card_lucky_draw.setOnClickListener(v ->
                     startActivity(new Intent(
                             requireContext(),
                             com.example.rgamer.lucky_draw.activity_lucky_draw.class
@@ -260,6 +292,7 @@ public class HomeFragment extends Fragment {
                                 try {
                                     String res = response.body().string();
                                     Toast.makeText(getContext(), res, Toast.LENGTH_SHORT).show();
+                                    showRewardDialogOnly(10);
                                 } catch (Exception e) {
                                     Toast.makeText(getContext(), "Reward added", Toast.LENGTH_SHORT).show();
                                 }

@@ -44,6 +44,7 @@
                 android:text="Start Task"
                 android:layout_gravity="center"
                 android:textColor="#000000"
+                android:clickable="false"
                 android:textStyle="bold"
                 android:textSize="14sp"
                 android:background="@drawable/bg_button_ripple"
