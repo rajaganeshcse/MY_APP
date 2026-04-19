@@ -1,5 +1,6 @@
 package com.example.rgamer.Fragements;
 
+import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
@@ -41,6 +42,7 @@ public class HomeFragment extends Fragment {
     private MaterialButton btnWatchNow;
 
 
+    private AlertDialog loadingDialog;
     /* ================= ADS ================= */
 
     private RewardedAd rewardedAd;
@@ -77,6 +79,24 @@ public class HomeFragment extends Fragment {
 
 
         return view;
+    }
+
+
+    //progreess waitind daolod
+    private void showLoading() {
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_loading, null);
+
+        loadingDialog = new AlertDialog.Builder(requireContext())
+                .setView(view)
+                .setCancelable(false) // user can't cancel
+                .create();
+
+        loadingDialog.show();
+    }
+    private void hideLoading() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
     }
 
     /* ================= INIT ================= */
@@ -253,6 +273,7 @@ public class HomeFragment extends Fragment {
         btnWatchNow.setEnabled(false);
 
         rewardedAd.show(requireActivity(), rewardItem -> {
+
             callRewardAPI();
             playRewardAnimation();
         });
@@ -261,6 +282,7 @@ public class HomeFragment extends Fragment {
     /* ================= API ================= */
 
     private void callRewardAPI() {
+        showLoading();
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) return;
@@ -290,19 +312,23 @@ public class HomeFragment extends Fragment {
                             if (response.isSuccessful()) {
 
                                 try {
+                                    hideLoading();
                                     String res = response.body().string();
                                     Toast.makeText(getContext(), res, Toast.LENGTH_SHORT).show();
                                     showRewardDialogOnly(10);
                                 } catch (Exception e) {
+                                    hideLoading();
                                     Toast.makeText(getContext(), "Reward added", Toast.LENGTH_SHORT).show();
                                 }
 
                             } else {
 
                                 try {
+                                    hideLoading();
                                     String err = response.errorBody().string();
                                     Toast.makeText(getContext(), err, Toast.LENGTH_LONG).show();
                                 } catch (Exception e) {
+                                    hideLoading();
                                     Toast.makeText(getContext(), "Error", Toast.LENGTH_SHORT).show();
                                 }
                             }
@@ -312,6 +338,7 @@ public class HomeFragment extends Fragment {
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
 
                             btnWatchNow.setEnabled(true);
+                            hideLoading();
 
                             Toast.makeText(getContext(),
                                     "Server error: " + t.getMessage(),
