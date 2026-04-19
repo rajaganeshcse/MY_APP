@@ -71,7 +71,7 @@
                 android:src="@drawable/ic_ticket" />
 
             <TextView
-                android:id="@+id/txtToken"
+                android:id="@+id/tickets"
                 android:layout_width="45dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
