@@ -26,6 +26,7 @@ public class LuckyDrawAdapter
     private final List<LuckyDrawModel> list;
     private final Listener listener;
 
+    // 🔥 LOADING STATE
     private final Set<String> loadingIds = new HashSet<>();
 
     // 🔥 USER TICKETS
@@ -64,9 +65,15 @@ public class LuckyDrawAdapter
 
         boolean loading = loadingIds.contains(id);
 
-        // reset text
+        /* ================= RESET UI ================= */
         h.btnJoin.setText("Free Entry");
         h.btnticket.setText("Ticket Entry");
+
+        h.btnJoin.setEnabled(true);
+        h.btnticket.setEnabled(true);
+
+        h.btnJoin.setBackgroundTintList(null);
+        h.btnticket.setBackgroundTintList(null);
 
         /* ================= LOADING ================= */
         if (loading) {
@@ -83,15 +90,15 @@ public class LuckyDrawAdapter
             h.btnJoin.setText("Joined");
             h.btnJoin.setEnabled(false);
 
-            // ticket still allowed
             h.btnticket.setEnabled(userTickets > 0);
 
             h.btnJoin.setBackgroundTintList(
                     ColorStateList.valueOf(Color.parseColor("#2E7D32")));
+            return;
         }
 
         /* ================= FULL ================= */
-        else if (model.isFull() || !"OPEN".equals(model.getStatus())) {
+        if (model.isFull() || !"OPEN".equals(model.getStatus())) {
 
             h.btnJoin.setText("FULL");
             h.btnJoin.setEnabled(false);
@@ -99,39 +106,40 @@ public class LuckyDrawAdapter
 
             h.btnJoin.setBackgroundTintList(
                     ColorStateList.valueOf(Color.parseColor("#D32F2F")));
+            return;
         }
 
         /* ================= ACTIVE ================= */
-        else {
 
-            // 🔥 FREE ENTRY (NO LOADING HERE)
-            h.btnJoin.setOnClickListener(v -> {
+        // 🔥 FREE ENTRY
+        h.btnJoin.setOnClickListener(v -> {
 
-                if (loadingIds.contains(id)) return;
+            if (loadingIds.contains(id)) return;
 
-                listener.onJoin(model);
-            });
+            // set loading immediately
+            loadingIds.add(id);
+            notifyItemChanged(position);
 
-            // 🔥 TICKET ENTRY (CHECK LOCAL)
-            h.btnticket.setEnabled(userTickets > 0);
+            listener.onJoin(model);
+        });
 
-            h.btnticket.setOnClickListener(v -> {
+        // 🔥 TICKET ENTRY
+        h.btnticket.setEnabled(userTickets > 0);
 
-                if (loadingIds.contains(id)) return;
+        h.btnticket.setOnClickListener(v -> {
 
-                if (userTickets <= 0) {
-                    Toast.makeText(v.getContext(),
-                            "No tickets available",
-                            Toast.LENGTH_SHORT).show();
-                    return;
-                }
+            if (loadingIds.contains(id)) return;
 
-                loadingIds.add(id);
-                notifyItemChanged(position);
+            if (userTickets <= 0) {
+                Toast.makeText(v.getContext(),
+                        "No tickets available",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
 
-                listener.onJoinWithTickets(model);
-            });
-        }
+            // DO NOT set loading here (handled in Activity)
+            listener.onJoinWithTickets(model);
+        });
 
         /* ================= LONG PRESS ================= */
         h.btnticket.setOnLongClickListener(v -> {
@@ -150,7 +158,8 @@ public class LuckyDrawAdapter
     public void setLoading(String id, boolean value) {
         if (value) loadingIds.add(id);
         else loadingIds.remove(id);
-        notifyDataSetChanged();
+
+        notifyDataSetChanged(); // can optimize later
     }
 
     public void clearLoading(String drawId) {

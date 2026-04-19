@@ -5,12 +5,12 @@ import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.view.Window;
+import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,6 +22,7 @@ import com.example.rgamer.network.ApiClient;
 import com.example.rgamer.network.ApiService;
 import com.google.android.gms.ads.*;
 import com.google.android.gms.ads.rewarded.*;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
@@ -42,10 +43,10 @@ public class activity_lucky_draw extends AppCompatActivity
     LuckyDrawAdapter adapter;
 
     String uid;
-
     int userTickets = 0;
 
     private RewardedAd rewardedAd;
+    private AlertDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,25 +78,19 @@ public class activity_lucky_draw extends AppCompatActivity
         loadDraws();
         makeFullScreen();
 
-        // ✅ SINGLE Firestore listener (lifecycle aware)
         db.collection("users")
                 .document(uid)
                 .addSnapshotListener(this, (snap, e) -> {
-
-                    if (e != null) {
-                        Log.e("FIRESTORE", "Listen failed", e);
-                        return;
-                    }
-
                     if (snap != null && snap.exists()) {
                         Long t = snap.getLong("tickets");
                         userTickets = t == null ? 0 : t.intValue();
-
                         adapter.updateUserTickets(userTickets);
                         tickets.setText(String.valueOf(userTickets));
                     }
                 });
     }
+
+    /* ================= FULL SCREEN ================= */
 
     private void makeFullScreen() {
         Window window = getWindow();
@@ -114,7 +109,6 @@ public class activity_lucky_draw extends AppCompatActivity
     /* ================= LOAD DRAWS ================= */
 
     private void loadDraws() {
-
         db.collection("lucky_draws")
                 .whereEqualTo("status", "OPEN")
                 .addSnapshotListener((snap, e) -> {
@@ -124,12 +118,10 @@ public class activity_lucky_draw extends AppCompatActivity
                     list.clear();
 
                     for (DocumentSnapshot d : snap.getDocuments()) {
-
                         LuckyDrawModel m = d.toObject(LuckyDrawModel.class);
                         if (m == null) continue;
 
                         m.setId(d.getId());
-
                         checkIfJoined(m);
                         list.add(m);
                     }
@@ -138,10 +130,7 @@ public class activity_lucky_draw extends AppCompatActivity
                 });
     }
 
-    /* ================= CHECK FREE ENTRY USED ================= */
-
     private void checkIfJoined(LuckyDrawModel model) {
-
         db.collection("lucky_draw_tickets")
                 .document(model.getId())
                 .collection("tickets")
@@ -150,7 +139,6 @@ public class activity_lucky_draw extends AppCompatActivity
                 .limit(1)
                 .get()
                 .addOnSuccessListener(snap -> {
-
                     if (!snap.isEmpty()) {
                         model.setJoinedByMe(true);
                         adapter.notifyDataSetChanged();
@@ -158,10 +146,9 @@ public class activity_lucky_draw extends AppCompatActivity
                 });
     }
 
-    /* ================= LOAD AD ================= */
+    /* ================= AD ================= */
 
     private void loadAd() {
-
         AdRequest adRequest = new AdRequest.Builder().build();
 
         RewardedAd.load(this,
@@ -172,32 +159,80 @@ public class activity_lucky_draw extends AppCompatActivity
                     @Override
                     public void onAdLoaded(@NonNull RewardedAd ad) {
                         rewardedAd = ad;
-                        Log.d("AD", "Loaded");
                     }
 
                     @Override
                     public void onAdFailedToLoad(@NonNull LoadAdError error) {
                         rewardedAd = null;
-                        Log.e("AD", "Failed: " + error.getMessage());
                     }
                 });
     }
 
-    /* ================= CLICK EVENTS ================= */
+    /* ================= CLICK ================= */
 
     @Override
     public void onJoin(LuckyDrawModel model) {
-        showAdThenJoin(model);
+        showConfirmDialog(model, "AD");
     }
 
     @Override
     public void onJoinWithTickets(LuckyDrawModel model) {
-        join(model.getId(), "TICKET");
+        showConfirmDialog(model, "TICKET");
     }
 
     @Override
     public void onCheckWinners(LuckyDrawModel model) {
-        Toast.makeText(this, "Winner screen coming soon", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show();
+    }
+
+    /* ================= CONFIRM ================= */
+
+    private void showConfirmDialog(LuckyDrawModel model, String type) {
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirmation, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .create();
+
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.show();
+
+        MaterialButton btnConfirm = view.findViewById(R.id.btnConfirm);
+        MaterialButton btnCancel = view.findViewById(R.id.btnCancel);
+
+        btnCancel.setOnClickListener(v -> dialog.dismiss());
+
+        btnConfirm.setOnClickListener(v -> {
+            dialog.dismiss();
+
+            if ("AD".equals(type)) {
+                showAdThenJoin(model);
+            } else {
+                showLoading();
+                join(model.getId(), type);
+            }
+        });
+    }
+
+    /* ================= LOADING ================= */
+
+    private void showLoading() {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null);
+
+        loadingDialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        loadingDialog.show();
+    }
+
+    private void hideLoading() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
     }
 
     /* ================= AD FLOW ================= */
@@ -212,28 +247,25 @@ public class activity_lucky_draw extends AppCompatActivity
 
                 Toast.makeText(this, "Ad watched 🎉", Toast.LENGTH_SHORT).show();
 
+                showLoading(); // 🔥 added
                 join(model.getId(), "AD");
+
                 loadAd();
             });
 
         } else {
-
-            Toast.makeText(this, "Ad not ready, try again", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Ad not ready", Toast.LENGTH_SHORT).show();
             loadAd();
         }
     }
 
-    /* ================= JOIN API ================= */
+    /* ================= API ================= */
 
     private void join(String drawId, String type) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
             Toast.makeText(this, "Login required", Toast.LENGTH_SHORT).show();
             return;
-        }
-
-        if ("AD".equals(type)) {
-            adapter.setLoading(drawId, true);
         }
 
         FirebaseAuth.getInstance().getCurrentUser()
@@ -253,15 +285,12 @@ public class activity_lucky_draw extends AppCompatActivity
                                 public void onResponse(Call<JoinResponse> call,
                                                        Response<JoinResponse> response) {
 
+                                    hideLoading();
                                     adapter.clearLoading(drawId);
 
                                     if (response.isSuccessful() && response.body() != null) {
 
-                                        Toast.makeText(
-                                                activity_lucky_draw.this,
-                                                response.body().message,
-                                                Toast.LENGTH_SHORT
-                                        ).show();
+                                        showSuccessDialog(response.body().message);
 
                                         if ("TICKET".equals(type)) {
                                             userTickets--;
@@ -270,26 +299,42 @@ public class activity_lucky_draw extends AppCompatActivity
                                         }
 
                                     } else {
-                                        Toast.makeText(
-                                                activity_lucky_draw.this,
-                                                "Join failed",
-                                                Toast.LENGTH_SHORT
-                                        ).show();
+                                        Toast.makeText(activity_lucky_draw.this,
+                                                "Join failed", Toast.LENGTH_SHORT).show();
                                     }
                                 }
 
                                 @Override
                                 public void onFailure(Call<JoinResponse> call, Throwable t) {
 
+                                    hideLoading();
                                     adapter.clearLoading(drawId);
 
-                                    Toast.makeText(
-                                            activity_lucky_draw.this,
-                                            t.getMessage(),
-                                            Toast.LENGTH_LONG
-                                    ).show();
+                                    Toast.makeText(activity_lucky_draw.this,
+                                            t.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             });
                 });
+    }
+
+    /* ================= SUCCESS ================= */
+
+    private void showSuccessDialog(String msg) {
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_spin_result, null);
+
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .create();
+
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.show();
+
+        TextView txt = view.findViewById(R.id.txtWinAmount);
+        MaterialButton btnOk = view.findViewById(R.id.btnOk);
+
+        txt.setText(msg);
+
+        btnOk.setOnClickListener(v -> dialog.dismiss());
     }
 }

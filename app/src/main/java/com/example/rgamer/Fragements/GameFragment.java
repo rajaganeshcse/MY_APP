@@ -1,5 +1,6 @@
 package com.example.rgamer.Fragements;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -226,6 +227,7 @@ public class GameFragment extends Fragment {
 
         dialog.show();
     }
+
 
     /* ================= ADS ================= */
     private void loadRewardAd() {
