@@ -4,14 +4,13 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.*;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,6 +22,7 @@ import com.example.rgamer.network.ApiService;
 import com.google.android.gms.ads.*;
 import com.google.android.gms.ads.rewarded.*;
 import com.google.android.material.button.MaterialButton;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.card.MaterialCardView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.*;
@@ -191,12 +191,15 @@ public class activity_lucky_draw extends AppCompatActivity
 
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirmation, null);
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
                 .setView(view)
+                .setCancelable(true)
                 .create();
 
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setCanceledOnTouchOutside(true);
         dialog.show();
+
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         MaterialButton btnConfirm = view.findViewById(R.id.btnConfirm);
         MaterialButton btnCancel = view.findViewById(R.id.btnCancel);
@@ -243,18 +246,30 @@ public class activity_lucky_draw extends AppCompatActivity
 
             adapter.setLoading(model.getId(), true);
 
+            rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+
+                @Override
+                public void onAdDismissedFullScreenContent() {
+                    adapter.clearLoading(model.getId());
+                    rewardedAd = null;
+                    loadAd();
+                }
+
+                @Override
+                public void onAdFailedToShowFullScreenContent(AdError adError) {
+                    adapter.clearLoading(model.getId());
+                }
+            });
+
             rewardedAd.show(this, rewardItem -> {
-
                 Toast.makeText(this, "Ad watched 🎉", Toast.LENGTH_SHORT).show();
-
-                showLoading(); // 🔥 added
+                showLoading();
                 join(model.getId(), "AD");
-
-                loadAd();
             });
 
         } else {
             Toast.makeText(this, "Ad not ready", Toast.LENGTH_SHORT).show();
+            adapter.clearLoading(model.getId());
             loadAd();
         }
     }
@@ -264,6 +279,8 @@ public class activity_lucky_draw extends AppCompatActivity
     private void join(String drawId, String type) {
 
         if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            hideLoading();
+            adapter.clearLoading(drawId);
             Toast.makeText(this, "Login required", Toast.LENGTH_SHORT).show();
             return;
         }

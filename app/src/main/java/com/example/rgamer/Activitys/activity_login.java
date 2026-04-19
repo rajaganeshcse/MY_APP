@@ -159,7 +159,7 @@ public class activity_login extends AppCompatActivity {
                     userPref.setName(user.getName());
                     userPref.setEmail(user.getEmail());
                     userPref.setProfileImage(user.getProfileImage());
-
+                    userPref.setProfileImage(user.getReferralCode());
                     userPref.setCoins(user.getCoins());
                     userPref.setTickets(user.getTickets());
                     userPref.setWalletToken(user.getWalletToken());

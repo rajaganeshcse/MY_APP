@@ -18,12 +18,14 @@ import androidx.fragment.app.Fragment;
 import com.bumptech.glide.Glide;
 import com.example.rgamer.Activitys.activity_login;
 import com.example.rgamer.R;
+import com.example.rgamer.invite.activity_refer_earn;
 import com.example.rgamer.withdraws.TransactionHistoryFragment;
 import com.example.rgamer.UserPref;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileFragment extends Fragment {
 
@@ -31,7 +33,7 @@ public class ProfileFragment extends Fragment {
     private ImageView imgProfile;
     private TextView txtName, txtUid, txtCoins, txtTickets;
 
-    private LinearLayout btnAccountHistory, btnMyRewards, btnHelp,
+    private LinearLayout btnAccountHistory, btnMyRewards, btnHelp,invite,
             btnPrivacy, btnTerms, btnLogout;
 
     private TextView btnFacebook, btnInstagram, btnTelegram, btnYoutube;
@@ -71,6 +73,8 @@ public class ProfileFragment extends Fragment {
         btnPrivacy = view.findViewById(R.id.btnPrivacy);
         btnTerms = view.findViewById(R.id.btnTerms);
         btnLogout = view.findViewById(R.id.btnLogout);
+        invite=view.findViewById(R.id.invite);
+
 
         btnFacebook = view.findViewById(R.id.btnFacebook);
         btnInstagram = view.findViewById(R.id.btnInstagram);
@@ -89,17 +93,16 @@ public class ProfileFragment extends Fragment {
         txtUid.setText("Referral Code: " + userPref.getReferralCode());
 
         txtCoins.setText(userPref.getCoins() + " Coins");
-        txtTickets.setText(userPref.getTickets() + " Tickets");
+        txtTickets.setText(userPref.getWalletToken() + " Tickets");
 
-        String profileUrl = userPref.getProfileImage();
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        Glide.with(this)
-                .load(profileUrl == null || profileUrl.isEmpty()
-                        ? R.drawable.ic_profile
-                        : profileUrl)
-                .circleCrop()
-                .placeholder(R.drawable.ic_profile)
-                .into(imgProfile);
+        if (user != null && user.getPhotoUrl() != null) {
+            Glide.with(this)
+                    .load(user.getPhotoUrl())
+                    .circleCrop()
+                    .into(imgProfile);
+        }
     }
 
     /**
@@ -123,6 +126,12 @@ public class ProfileFragment extends Fragment {
             );
             startActivity(intent);
         });
+        invite.setOnClickListener(v ->{
+            Intent intent = new Intent(
+                    requireContext(),
+                    activity_refer_earn.class
+            );
+            startActivity(intent);});
 
         btnHelp.setOnClickListener(v ->
                 openUrl("https://yourdomain.com/help")

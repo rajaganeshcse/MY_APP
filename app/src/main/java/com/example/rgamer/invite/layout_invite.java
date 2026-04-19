@@ -274,7 +274,7 @@ public class layout_invite extends Fragment {
     // ================= SHARE =================
 
     private String getShareMessage() {
-        return "🎮 Join RGamer & earn FREE coins!\n\n"
+        return "🎮 Join Gamex play & earn FREE coins!\n\n"
                 + "Use my referral code: " + txtCode.getText().toString()
                 + "\n\nDownload now 👇\n"
                 + "https://play.google.com/store/apps/details?id="

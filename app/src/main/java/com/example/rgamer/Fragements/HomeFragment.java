@@ -176,6 +176,8 @@ public class HomeFragment extends Fragment {
                     Long coins = value.getLong("coins");
                     Long tickets = value.getLong("tickets");
                     Long ads = value.getLong("daily_ads_count");
+                    String referalcode=value.getString("referralCode");
+                    userPref.setReferralCode(referalcode);
 
                     if (coins != null) {
                         txtCoins.setText(String.valueOf(coins));
