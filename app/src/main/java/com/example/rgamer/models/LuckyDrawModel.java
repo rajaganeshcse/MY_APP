@@ -9,7 +9,8 @@ import java.util.Locale;
 
 @IgnoreExtraProperties
 public class LuckyDrawModel {
-
+    private boolean adJoined;
+    private int myTicketsCount;
     /* ================= FIRESTORE FIELDS ================= */
 
     private String id;
@@ -124,4 +125,12 @@ public class LuckyDrawModel {
 
         return sdf.format(date);
     }
+
+    // ✅ AD JOIN
+    public boolean isAdJoined() { return adJoined; }
+    public void setAdJoined(boolean adJoined) { this.adJoined = adJoined; }
+
+    // ✅ TICKET COUNT
+    public int getMyTicketsCount() { return myTicketsCount; }
+    public void setMyTicketsCount(int count) { this.myTicketsCount = count; }
 }

@@ -24,7 +24,7 @@ import com.google.android.gms.ads.rewarded.*;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.card.MaterialCardView;
-import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.*;
 import com.google.firebase.firestore.*;
 
 import java.util.*;
@@ -64,7 +64,9 @@ public class activity_lucky_draw extends AppCompatActivity
 
         db = FirebaseFirestore.getInstance();
         api = ApiClient.getClient().create(ApiService.class);
-        uid = FirebaseAuth.getInstance().getUid();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        uid = user != null ? user.getUid() : "";
 
         RecyclerView rv = findViewById(R.id.luckyDrawRecycler);
         rv.setLayoutManager(new LinearLayoutManager(this));
@@ -78,16 +80,19 @@ public class activity_lucky_draw extends AppCompatActivity
         loadDraws();
         makeFullScreen();
 
-        db.collection("users")
-                .document(uid)
-                .addSnapshotListener(this, (snap, e) -> {
-                    if (snap != null && snap.exists()) {
-                        Long t = snap.getLong("tickets");
-                        userTickets = t == null ? 0 : t.intValue();
-                        adapter.updateUserTickets(userTickets);
-                        tickets.setText(String.valueOf(userTickets));
-                    }
-                });
+        // user tickets listener
+        if (!uid.isEmpty()) {
+            db.collection("users")
+                    .document(uid)
+                    .addSnapshotListener(this, (snap, e) -> {
+                        if (snap != null && snap.exists()) {
+                            Long t = snap.getLong("tickets");
+                            userTickets = t == null ? 0 : t.intValue();
+                            adapter.updateUserTickets(userTickets);
+                            tickets.setText(String.valueOf(userTickets));
+                        }
+                    });
+        }
     }
 
     /* ================= FULL SCREEN ================= */
@@ -111,7 +116,7 @@ public class activity_lucky_draw extends AppCompatActivity
     private void loadDraws() {
         db.collection("lucky_draws")
                 .whereEqualTo("status", "OPEN")
-                .addSnapshotListener((snap, e) -> {
+                .addSnapshotListener(this, (snap, e) -> {
 
                     if (snap == null) return;
 
@@ -122,7 +127,7 @@ public class activity_lucky_draw extends AppCompatActivity
                         if (m == null) continue;
 
                         m.setId(d.getId());
-                        checkIfJoined(m);
+                        checkUserEntries(m);
                         list.add(m);
                     }
 
@@ -130,19 +135,34 @@ public class activity_lucky_draw extends AppCompatActivity
                 });
     }
 
-    private void checkIfJoined(LuckyDrawModel model) {
+    /* ================= CHECK USER ENTRIES ================= */
+
+    private void checkUserEntries(LuckyDrawModel model) {
+
+        if (uid.isEmpty()) return;
+
         db.collection("lucky_draw_tickets")
                 .document(model.getId())
                 .collection("tickets")
                 .whereEqualTo("uid", uid)
-                .whereEqualTo("type", "AD")
-                .limit(1)
                 .get()
                 .addOnSuccessListener(snap -> {
-                    if (!snap.isEmpty()) {
-                        model.setJoinedByMe(true);
-                        adapter.notifyDataSetChanged();
+
+                    int ticketCount = 0;
+                    boolean adUsed = false;
+
+                    for (DocumentSnapshot d : snap.getDocuments()) {
+                        String type = d.getString("type");
+
+                        if ("AD".equals(type)) adUsed = true;
+                        else if ("TICKET".equals(type)) ticketCount++;
                     }
+
+                    model.setAdJoined(adUsed);
+                    model.setMyTicketsCount(ticketCount);
+
+                    adapter.clearLoading(model.getId());
+                    adapter.notifyDataSetChanged();
                 });
     }
 
@@ -185,7 +205,7 @@ public class activity_lucky_draw extends AppCompatActivity
         Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show();
     }
 
-    /* ================= CONFIRM ================= */
+    /* ================= CONFIRM DIALOG ================= */
 
     private void showConfirmDialog(LuckyDrawModel model, String type) {
 
@@ -196,9 +216,7 @@ public class activity_lucky_draw extends AppCompatActivity
                 .setCancelable(true)
                 .create();
 
-        dialog.setCanceledOnTouchOutside(true);
         dialog.show();
-
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         MaterialButton btnConfirm = view.findViewById(R.id.btnConfirm);
@@ -206,16 +224,12 @@ public class activity_lucky_draw extends AppCompatActivity
 
         btnCancel.setOnClickListener(v -> {
             dialog.dismiss();
-
-            // ✅ release the specific item's loading state
-            if (model != null && model.getId() != null) {
-                adapter.clearLoading(model.getId());
-            }
+            adapter.clearLoading(model.getId());
         });
 
         btnConfirm.setOnClickListener(v -> {
+            btnConfirm.setEnabled(false);
             dialog.dismiss();
-            adapter.clearLoading(model.getId());
 
             if ("AD".equals(type)) {
                 showAdThenJoin(model);
@@ -270,7 +284,6 @@ public class activity_lucky_draw extends AppCompatActivity
             });
 
             rewardedAd.show(this, rewardItem -> {
-                Toast.makeText(this, "Ad watched 🎉", Toast.LENGTH_SHORT).show();
                 showLoading();
                 join(model.getId(), "AD");
             });
@@ -286,60 +299,73 @@ public class activity_lucky_draw extends AppCompatActivity
 
     private void join(String drawId, String type) {
 
-        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
             hideLoading();
             adapter.clearLoading(drawId);
             Toast.makeText(this, "Login required", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        FirebaseAuth.getInstance().getCurrentUser()
-                .getIdToken(true)
-                .addOnSuccessListener(result -> {
+        user.getIdToken(false).addOnSuccessListener(result -> {
 
-                    String token = result.getToken();
+            String token = result.getToken();
 
-                    Map<String, Object> body = new HashMap<>();
-                    body.put("drawId", drawId);
-                    body.put("type", type);
+            Map<String, Object> body = new HashMap<>();
+            body.put("drawId", drawId);
+            body.put("type", type);
 
-                    api.joinDraw("Bearer " + token, body)
-                            .enqueue(new Callback<JoinResponse>() {
+            api.joinDraw("Bearer " + token, body)
+                    .enqueue(new Callback<JoinResponse>() {
 
-                                @Override
-                                public void onResponse(Call<JoinResponse> call,
-                                                       Response<JoinResponse> response) {
+                        @Override
+                        public void onResponse(Call<JoinResponse> call,
+                                               Response<JoinResponse> response) {
 
-                                    hideLoading();
-                                    adapter.clearLoading(drawId);
+                            hideLoading();
+                            adapter.clearLoading(drawId);
 
-                                    if (response.isSuccessful() && response.body() != null) {
+                            if (response.isSuccessful() && response.body() != null) {
 
-                                        showSuccessDialog(response.body().message);
+                                showSuccessDialog(response.body().message);
 
-                                        if ("TICKET".equals(type)) {
-                                            userTickets--;
-                                            adapter.updateUserTickets(userTickets);
-                                            tickets.setText(String.valueOf(userTickets));
+                                for (LuckyDrawModel m : list) {
+                                    if (m.getId().equals(drawId)) {
+
+                                        if ("AD".equals(type)) {
+                                            m.setAdJoined(true);
+                                        } else {
+                                            m.setMyTicketsCount(
+                                                    m.getMyTicketsCount() + 1
+                                            );
                                         }
-
-                                    } else {
-                                        Toast.makeText(activity_lucky_draw.this,
-                                                "Join failed", Toast.LENGTH_SHORT).show();
+                                        break;
                                     }
                                 }
 
-                                @Override
-                                public void onFailure(Call<JoinResponse> call, Throwable t) {
+                                adapter.notifyDataSetChanged();
 
-                                    hideLoading();
-                                    adapter.clearLoading(drawId);
-
-                                    Toast.makeText(activity_lucky_draw.this,
-                                            t.getMessage(), Toast.LENGTH_LONG).show();
+                                if ("TICKET".equals(type)) {
+                                    userTickets--;
+                                    adapter.updateUserTickets(userTickets);
+                                    tickets.setText(String.valueOf(userTickets));
                                 }
-                            });
-                });
+
+                            } else {
+                                Toast.makeText(activity_lucky_draw.this,
+                                        "Join failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<JoinResponse> call, Throwable t) {
+                            hideLoading();
+                            adapter.clearLoading(drawId);
+                            Toast.makeText(activity_lucky_draw.this,
+                                    t.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    });
+        });
     }
 
     /* ================= SUCCESS ================= */
@@ -359,7 +385,6 @@ public class activity_lucky_draw extends AppCompatActivity
         MaterialButton btnOk = view.findViewById(R.id.btnOk);
 
         txt.setText(msg);
-
         btnOk.setOnClickListener(v -> dialog.dismiss());
     }
 }

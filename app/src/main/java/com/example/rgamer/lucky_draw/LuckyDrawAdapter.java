@@ -25,10 +25,7 @@ public class LuckyDrawAdapter
 
     private final List<LuckyDrawModel> list;
     private final Listener listener;
-
-    // 🔥 Internal click protection (no UI disable)
     private final Set<String> loadingIds = new HashSet<>();
-
     private int userTickets;
 
     public LuckyDrawAdapter(List<LuckyDrawModel> list,
@@ -62,46 +59,58 @@ public class LuckyDrawAdapter
         h.progressSlots.setMax(total);
         h.progressSlots.setProgress(filled);
 
-        /* ================= RESET UI ================= */
-        h.btnJoin.setText("Free Entry");
-        h.btnticket.setText("Ticket Entry");
+        /* RESET */
+        h.btnJoin.setEnabled(true);
+        h.btnticket.setEnabled(true);
 
-        h.btnJoin.setBackgroundTintList(null);
-        h.btnticket.setBackgroundTintList(null);
-
-        /* ================= JOINED ================= */
-        if (model.isJoinedByMe()) {
-
-            h.btnJoin.setText("Joined");
-
-            h.btnJoin.setBackgroundTintList(
-                    ColorStateList.valueOf(Color.parseColor("#2E7D32")));
+        /* AD STATE */
+        if (model.isAdJoined()) {
+            h.btnJoin.setText("Used");
+            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2196F3")));
+            h.btnJoin.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#2196F3")));
+            h.btnJoin.setEnabled(false);
+        } else {
+            h.btnJoin.setText("Free Entry");
         }
 
-        /* ================= FULL ================= */
+        /* FULL */
         if (model.isFull() || !"OPEN".equals(model.getStatus())) {
-
             h.btnJoin.setText("FULL");
-
-            h.btnJoin.setBackgroundTintList(
-                    ColorStateList.valueOf(Color.parseColor("#D32F2F")));
+            h.btnJoin.setEnabled(false);
+            h.btnticket.setEnabled(false);
+            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
+            h.btnticket.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
+            h.btnticket.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#F44336")));
         }
 
-        /* ================= CLICK HANDLING ================= */
+        /* TICKET COUNT UI */
+        h.btnticket.setText("Tickets (" + model.getMyTicketsCount() + ")");
 
-        // 🔥 FREE ENTRY
+        /* FREE ENTRY (ONLY ONCE) */
         h.btnJoin.setOnClickListener(v -> {
 
-            // prevent multiple clicks
+            if (model.isAdJoined() || model.isFull()) {
+                Toast.makeText(v.getContext(),
+                        "Already used free entry",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
             if (loadingIds.contains(id)) return;
 
             loadingIds.add(id);
-
             listener.onJoin(model);
         });
 
-        // 🔥 TICKET ENTRY
+        /* TICKET ENTRY (MULTIPLE) */
         h.btnticket.setOnClickListener(v -> {
+
+            if (model.isFull()) {
+                Toast.makeText(v.getContext(),
+                        "Draw full",
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
 
             if (loadingIds.contains(id)) return;
 
@@ -113,11 +122,10 @@ public class LuckyDrawAdapter
             }
 
             loadingIds.add(id);
-
             listener.onJoinWithTickets(model);
         });
 
-        /* ================= LONG PRESS ================= */
+        /* LONG PRESS */
         h.btnticket.setOnLongClickListener(v -> {
             listener.onCheckWinners(model);
             return true;
@@ -129,23 +137,19 @@ public class LuckyDrawAdapter
         return list.size();
     }
 
-    /* ================= CONTROL ================= */
-
     public void setLoading(String id, boolean value) {
         if (value) loadingIds.add(id);
         else loadingIds.remove(id);
     }
 
-    public void clearLoading(String drawId) {
-        loadingIds.remove(drawId);
+    public void clearLoading(String id) {
+        loadingIds.remove(id);
     }
 
     public void updateUserTickets(int tickets) {
         this.userTickets = tickets;
         notifyDataSetChanged();
     }
-
-    /* ================= VIEW HOLDER ================= */
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
