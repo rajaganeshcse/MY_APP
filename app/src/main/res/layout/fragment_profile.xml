@@ -5,7 +5,7 @@
     android:background="#FFFFFF">
 
     <LinearLayout
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="30dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
@@ -18,7 +18,7 @@
 
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:background="@drawable/bg_social_card"
+            android:background="@drawable/bg_profile_row"
             android:paddingStart="16dp"
             android:paddingEnd="16dp">
 
@@ -41,7 +41,7 @@
                         android:id="@+id/txtName"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="10dp"
+
                         android:text="User Name"
                         android:textColor="@color/black"
                         android:textSize="18sp"
@@ -49,10 +49,12 @@
 
                     <ImageView
                         android:id="@+id/verified"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="start"
-                        android:layout_marginStart="0dp"
+                        android:layout_width="43dp"
+                        android:layout_height="29dp"
+
+                        android:layout_marginStart="3dp"
+
+                        android:paddingTop="0dp"
                         android:src="@drawable/verified_icon" />
                 </LinearLayout>
 
@@ -67,13 +69,17 @@
                         android:id="@+id/txtUid"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:paddingBottom="4dp"
                         android:text="Code :"
                         android:textColor="@color/Primary"
-                        android:textSize="15sp" />
+
+                        android:textSize="15sp"
+                        android:textStyle="bold"
+                        />
 
                     <ImageView
                         android:id="@+id/btnCopy"
-                        android:layout_width="32dp"
+                        android:layout_width="26dp"
                         android:layout_height="match_parent"
                         android:layout_marginStart="6dp"
                         android:src="@drawable/ic_copy" />

@@ -204,10 +204,18 @@ public class activity_lucky_draw extends AppCompatActivity
         MaterialButton btnConfirm = view.findViewById(R.id.btnConfirm);
         MaterialButton btnCancel = view.findViewById(R.id.btnCancel);
 
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        btnCancel.setOnClickListener(v -> {
+            dialog.dismiss();
+
+            // ✅ release the specific item's loading state
+            if (model != null && model.getId() != null) {
+                adapter.clearLoading(model.getId());
+            }
+        });
 
         btnConfirm.setOnClickListener(v -> {
             dialog.dismiss();
+            adapter.clearLoading(model.getId());
 
             if ("AD".equals(type)) {
                 showAdThenJoin(model);

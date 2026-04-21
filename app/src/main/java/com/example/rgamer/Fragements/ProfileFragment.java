@@ -1,5 +1,8 @@
 package com.example.rgamer.Fragements;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -30,8 +33,8 @@ import com.google.firebase.auth.FirebaseUser;
 public class ProfileFragment extends Fragment {
 
     // ================= UI =================
-    private ImageView imgProfile;
-    private TextView txtName, txtUid, txtCoins, txtTickets;
+    private ImageView imgProfile,btnCopy;
+    private TextView txtName, txtUid, txtCoins, txtTickets,getTxtUid;
 
     private LinearLayout btnAccountHistory, btnMyRewards, btnHelp,invite,
             btnPrivacy, btnTerms, btnLogout;
@@ -74,6 +77,8 @@ public class ProfileFragment extends Fragment {
         btnTerms = view.findViewById(R.id.btnTerms);
         btnLogout = view.findViewById(R.id.btnLogout);
         invite=view.findViewById(R.id.invite);
+        getTxtUid=view.findViewById(R.id.txtUid);
+        btnCopy=view.findViewById(R.id.btnCopy);
 
 
         btnFacebook = view.findViewById(R.id.btnFacebook);
@@ -105,10 +110,30 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    private void copyCode() {
+        ClipboardManager cm =
+                (ClipboardManager) requireContext()
+                        .getSystemService(Context.CLIPBOARD_SERVICE);
+
+        cm.setPrimaryClip(
+                ClipData.newPlainText(
+                        "referral",
+                        txtUid.getText().toString().substring(15)
+                )
+        );
+
+        Toast.makeText(getContext(), "Code copied", Toast.LENGTH_SHORT).show();
+
+    }
+
     /**
      * ================= CLICK HANDLERS =================
      */
     private void setClicks() {
+        btnCopy.setOnClickListener(v -> copyCode());
+
+        btnAccountHistory.setOnClickListener(v ->{copyCode();}
+        );
 
         btnAccountHistory.setOnClickListener(v ->{
                     Intent intent = new Intent(
