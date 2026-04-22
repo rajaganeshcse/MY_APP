@@ -59,6 +59,9 @@ public class LuckyDrawAdapter
         h.progressSlots.setMax(total);
         h.progressSlots.setProgress(filled);
 
+        int totalJoined = model.getMyTicketsCount() + (model.isAdJoined() ? 1 : 0);
+        h.token.setText(totalJoined + " Tickets Joined");
+
         /* RESET */
         h.btnJoin.setEnabled(true);
         h.btnticket.setEnabled(true);
@@ -84,7 +87,7 @@ public class LuckyDrawAdapter
         }
 
         /* TICKET COUNT UI */
-        h.btnticket.setText("Tickets (" + model.getMyTicketsCount() + ")");
+        h.btnticket.setText("2 Tickets");
 
         /* FREE ENTRY (ONLY ONCE) */
         h.btnJoin.setOnClickListener(v -> {
@@ -153,8 +156,9 @@ public class LuckyDrawAdapter
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtReward, txtSlots, txtPercent;
+        TextView txtReward, txtSlots, txtPercent,token;
         ProgressBar progressSlots;
+        LinearLayout joined;
         MaterialButton btnJoin, btnticket;
 
         ViewHolder(@NonNull View itemView) {
@@ -164,8 +168,9 @@ public class LuckyDrawAdapter
             txtSlots = itemView.findViewById(R.id.txtSlots);
             txtPercent = itemView.findViewById(R.id.txtPercent);
             progressSlots = itemView.findViewById(R.id.progressSlots);
-
+            joined=itemView.findViewById(R.id.joined);
             btnJoin = itemView.findViewById(R.id.btnFreeEntry);
+            token=itemView.findViewById(R.id.token);
             btnticket = itemView.findViewById(R.id.btnticketEntry);
         }
     }

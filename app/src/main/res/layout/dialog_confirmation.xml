@@ -57,10 +57,10 @@
             android:textStyle="bold"
             android:textAllCaps="false"
 
-            android:textColor="#040404"
+            android:textColor="#FFFFFF"
             android:layout_marginEnd="8dp"
-            app:backgroundTint="#FF5722"
-            app:strokeColor="#FF5722"
+            app:backgroundTint="#FF2100"
+            app:strokeColor="#FF3F00"
             app:strokeWidth="2dp" />
 
         <!-- Confirm Button -->
@@ -68,12 +68,12 @@
             android:id="@+id/btnConfirm"
             android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:text="Conform"
+            android:text="Confirm"
             android:textAllCaps="false"
             android:textStyle="bold"
-            android:textColor="#040404"
-            app:backgroundTint="#30BC36"
-            app:strokeColor="#30BC36"
+            android:textColor="#000000"
+            app:backgroundTint="#00FF06"
+            app:strokeColor="#00FF03"
             app:strokeWidth="2dp" />
 
     </LinearLayout>

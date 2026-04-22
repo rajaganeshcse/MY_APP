@@ -8,76 +8,94 @@
     android:layout_marginBottom="12dp"
     app:cardCornerRadius="14dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="@color/color_yellow"
-    android:backgroundTint="@color/color_yellow"
-    android:background="#C8BC62">
+    app:cardBackgroundColor="#CCE2E7">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="14dp"
-        android:backgroundTint="#C9DBDA"
-        android:background="#E6D87D"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="14dp">
 
-        <!-- REWARD BOX -->
+        <!-- TOP ROW -->
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:layout_marginEnd="6dp"
-            android:background="@drawable/bg_coin_gradient"
-            android:gravity="center_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:paddingStart="6dp"
-            android:paddingEnd="8dp">
+            android:gravity="center_vertical">
 
-            <!-- COIN ICON -->
-            <ImageView
-                android:id="@+id/imgCoin"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:src="@drawable/ic_coin" />
-
-            <!-- REWARD TEXT -->
-            <TextView
-                android:id="@+id/txtReward"
+            <!-- LEFT: REWARD -->
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:text="Win 100 🎉"
-                android:textColor="#8D6E00"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:layout_height="40dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/bg_coin_gradient"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="6dp"
+                android:paddingEnd="8dp">
 
-            <!-- OPTIONAL DRAW ID -->
-            <TextView
-                android:id="@+id/txtDrawId"
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_coin" />
+
+                <TextView
+                    android:id="@+id/txtReward"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Win 100 🎉"
+                    android:textColor="#8D6E00"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
+            <!-- SPACER -->
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <!-- RIGHT: TICKET COUNT -->
+            <LinearLayout
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:text="#1122734"
-                android:textSize="11sp"
-                android:textColor="#AAAAAA"
-                android:visibility="gone"/>
+                android:layout_height="40dp"
+                android:id="@+id/joined"
+                android:background="@drawable/bg_coin_gradient"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="6dp"
+                android:paddingEnd="8dp">
+
+                <TextView
+                    android:id="@+id/token"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="2 Tickets"
+                    android:textColor="#000000"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+            </LinearLayout>
+
         </LinearLayout>
 
         <!-- STATUS -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/txtSlots"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Left : 56/150"
+                android:text="Filled : 56/150"
                 android:textSize="15sp"
-                android:textFontWeight="5"
                 android:textColor="#000000" />
 
-            <TextView
+            <View
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"/>
@@ -116,23 +134,19 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="2 Tickects"
-                android:clickable="true"
+                android:text="Tickets (2)"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
                 app:backgroundTint="#000000"
-                app:cornerRadius="10dp"
-                app:strokeColor="#000000"
-                app:strokeWidth="1dp" />
+                app:cornerRadius="10dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnFreeEntry"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
-                android:clickable="true"
                 android:layout_weight="1"
-                android:text="Get Free Entry"
+                android:text="Free Entry"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
                 app:backgroundTint="#4CAF50"
@@ -140,4 +154,5 @@
         </LinearLayout>
 
     </LinearLayout>
+
 </com.google.android.material.card.MaterialCardView>

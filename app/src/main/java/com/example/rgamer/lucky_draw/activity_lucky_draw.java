@@ -36,6 +36,7 @@ public class activity_lucky_draw extends AppCompatActivity
 
     FirebaseFirestore db;
     ApiService api;
+
     TextView tickets;
     MaterialCardView cardLuckyDrawHistory;
 
