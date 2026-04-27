@@ -18,6 +18,8 @@ import com.example.rgamer.Fragements.RewardFragment;
 import com.example.rgamer.Fragements.ProfileFragment;
 import com.example.rgamer.R;
 import com.example.rgamer.UserPref;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -91,12 +93,15 @@ public class MainActivity extends AppCompatActivity {
     private void loadProfileImage() {
         String profileUrl = userPref.getProfileImage();
 
-        Glide.with(this)
-                .load(profileUrl == null || profileUrl.isEmpty()
-                        ? R.drawable.ic_profile
-                        : profileUrl)
-                .circleCrop()
-                .into(imgNavProfile);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+        if (user != null && user.getPhotoUrl() != null) {
+            Glide.with(this)
+                    .load(user.getPhotoUrl())
+                    .circleCrop()
+                    .into(imgNavProfile);
+
+        }
     }
 
     private void selectNav(View selected) {

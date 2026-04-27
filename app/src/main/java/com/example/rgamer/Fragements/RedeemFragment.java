@@ -59,14 +59,14 @@ public class RedeemFragment extends Fragment {
         f.setArguments(b);
         return f;
     }
-
     @Nullable
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState
-    ) {
+    )
+    {
 
         View view = inflater.inflate(R.layout.fragment_redeem_options, container, false);
 

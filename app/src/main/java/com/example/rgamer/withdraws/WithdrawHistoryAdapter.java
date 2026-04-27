@@ -1,5 +1,6 @@
 package com.example.rgamer.withdraws;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -90,6 +91,11 @@ public class WithdrawHistoryAdapter
 
         /* ================= CLICK ================= */
         holder.itemView.setOnClickListener(v -> {
+
+            Log.d("CLICK", "Type: " + model.getType());
+            Log.d("CLICK", "Amount: " + model.getAmount());
+            Log.d("CLICK", "RequestId: " + model.getRequest_id());
+
             if (listener != null) {
                 listener.onItemClick(model);
             }

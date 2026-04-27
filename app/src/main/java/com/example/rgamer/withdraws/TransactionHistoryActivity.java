@@ -57,6 +57,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
         recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
 
+
         // Adapter
         adapter = new WithdrawHistoryAdapter(list, model -> {
             Intent intent = new Intent(
@@ -64,8 +65,12 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                     activity_withdraw_success.class
             );
             intent.putExtra(activity_withdraw_success.EXTRA_TYPE, model.getType());
-            intent.putExtra(activity_withdraw_success.EXTRA_AMOUNT, model.getAmount());
-            intent.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, model.getRequest_id());
+
+            intent.putExtra(
+                    activity_withdraw_success.EXTRA_AMOUNT,
+                    "₹ " + model.getAmount()
+            );
+            intent.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID,model.getRequest_id());
             startActivity(intent);
         });
 

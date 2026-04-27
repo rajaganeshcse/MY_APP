@@ -160,6 +160,7 @@ public class HomeFragment extends Fragment {
                     .load(user.getPhotoUrl())
                     .circleCrop()
                     .into(imgProfile);
+
         }
     }
 

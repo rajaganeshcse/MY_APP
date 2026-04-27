@@ -71,7 +71,7 @@ public class activity_withdraw_success extends AppCompatActivity {
         btnDone.setOnClickListener(v -> finish());
 
         /* GET DATA */
-        type = getIntent().getStringExtra(EXTRA_TYPE);
+        type = getIntent().getStringExtra(EXTRA_TYPE).toLowerCase();
         String amount = getIntent().getStringExtra(EXTRA_AMOUNT);
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
 
@@ -224,7 +224,6 @@ public class activity_withdraw_success extends AppCompatActivity {
             Toast.makeText(this, "Voucher copied", Toast.LENGTH_SHORT).show();
         });
     }
-
     /* ================= CLEANUP ================= */
     @Override
     protected void onDestroy() {
