@@ -86,7 +86,7 @@ public class activity_withdraw_success extends AppCompatActivity {
 
         if (type == null) return;
 
-        switch (type) {
+        switch (type.toLowerCase()) {
 
             case RedeemFragment.GOOGLE:
                 imgMethod.setImageResource(R.drawable.ic_google_play);

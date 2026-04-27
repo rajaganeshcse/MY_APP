@@ -22,7 +22,7 @@ import com.bumptech.glide.Glide;
 import com.example.rgamer.Activitys.activity_login;
 import com.example.rgamer.R;
 import com.example.rgamer.invite.activity_refer_earn;
-import com.example.rgamer.withdraws.TransactionHistoryFragment;
+import com.example.rgamer.withdraws.TransactionHistoryActivity;
 import com.example.rgamer.UserPref;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -138,7 +138,7 @@ public class ProfileFragment extends Fragment {
         btnAccountHistory.setOnClickListener(v ->{
                     Intent intent = new Intent(
                             requireContext(),
-                            TransactionHistoryFragment.class
+                            TransactionHistoryActivity.class
                     );
                     startActivity(intent);
                 }
@@ -147,7 +147,7 @@ public class ProfileFragment extends Fragment {
         btnMyRewards.setOnClickListener(v ->{
             Intent intent = new Intent(
                     requireContext(),
-                    TransactionHistoryFragment.class
+                    TransactionHistoryActivity.class
             );
             startActivity(intent);
         });

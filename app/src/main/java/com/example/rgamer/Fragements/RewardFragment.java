@@ -14,7 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.example.rgamer.R;
-import com.example.rgamer.withdraws.TransactionHistoryFragment;
+import com.example.rgamer.withdraws.TransactionHistoryActivity;
 import com.example.rgamer.UserPref;
 
 public class RewardFragment extends Fragment {
@@ -94,7 +94,7 @@ public class RewardFragment extends Fragment {
         btnHistory.setOnClickListener(v -> {
             Intent intent = new Intent(
                     requireContext(),
-                    TransactionHistoryFragment.class // ✅ ACTIVITY
+                    TransactionHistoryActivity.class // ✅ ACTIVITY
             );
             startActivity(intent);
         });

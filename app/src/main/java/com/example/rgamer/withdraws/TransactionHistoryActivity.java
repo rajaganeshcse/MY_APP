@@ -16,12 +16,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.rgamer.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TransactionHistoryFragment extends AppCompatActivity {
+public class TransactionHistoryActivity extends AppCompatActivity {
 
     private static final String TAG = "HISTORY";
 
@@ -31,6 +32,7 @@ public class TransactionHistoryFragment extends AppCompatActivity {
 
     private FirebaseFirestore db;
     private String uid;
+    private ListenerRegistration historyListener;
 
     private ImageView btnBack;
 
@@ -58,21 +60,12 @@ public class TransactionHistoryFragment extends AppCompatActivity {
         // Adapter
         adapter = new WithdrawHistoryAdapter(list, model -> {
             Intent intent = new Intent(
-                    TransactionHistoryFragment.this,
+                    TransactionHistoryActivity.this,
                     activity_withdraw_success.class
             );
-            intent.putExtra(
-                    activity_withdraw_success.EXTRA_TYPE,
-                    model.getType()
-            );
-            intent.putExtra(
-                    activity_withdraw_success.EXTRA_AMOUNT,
-                    model.getAmount()
-            );
-            intent.putExtra(
-                    activity_withdraw_success.EXTRA_REQUEST_ID,
-                    model.getRequest_id()
-            );
+            intent.putExtra(activity_withdraw_success.EXTRA_TYPE, model.getType());
+            intent.putExtra(activity_withdraw_success.EXTRA_AMOUNT, model.getAmount());
+            intent.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, model.getRequest_id());
             startActivity(intent);
         });
 
@@ -82,7 +75,9 @@ public class TransactionHistoryFragment extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
 
-        btnBack.setOnClickListener(v -> onBackPressed());
+        btnBack.setOnClickListener(v ->
+                getOnBackPressedDispatcher().onBackPressed()
+        );
 
         loadWithdrawHistory();
     }
@@ -95,7 +90,7 @@ public class TransactionHistoryFragment extends AppCompatActivity {
             return;
         }
 
-        db.collection("redeem_requests")
+        historyListener = db.collection("redeem_requests")
                 .whereEqualTo("uid", uid)
                 .orderBy("created_at", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
@@ -110,6 +105,7 @@ public class TransactionHistoryFragment extends AppCompatActivity {
                     list.clear();
 
                     for (var doc : value.getDocuments()) {
+
                         WithdrawHistoryModel model =
                                 doc.toObject(WithdrawHistoryModel.class);
 
@@ -121,5 +117,13 @@ public class TransactionHistoryFragment extends AppCompatActivity {
 
                     adapter.notifyDataSetChanged();
                 });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (historyListener != null) {
+            historyListener.remove();
+        }
     }
 }

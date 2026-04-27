@@ -2,6 +2,7 @@ package com.example.rgamer.network;
 
 import android.util.Log;
 
+import com.example.rgamer.RedeemResponse;
 import com.example.rgamer.models.SpinResponse;
 import com.example.rgamer.models.UserModel;
 import com.example.rgamer.models.DrawResponse;
@@ -62,5 +63,13 @@ public interface ApiService {
     Call<DrawResponse> getWinner(
             @Header("Authorization") String token,
             @Query("drawId") String drawId
+    );
+    //withdraw
+
+    //reedem
+    @POST("/api/withdraw/request")
+    Call<RedeemResponse> redeemRequest(
+            @Header("Authorization") String token,
+            @Body Map<String, Object> body
     );
 }

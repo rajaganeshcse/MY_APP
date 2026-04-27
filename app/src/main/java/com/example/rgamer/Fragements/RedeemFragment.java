@@ -5,10 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.GridLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
+import android.widget.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,19 +13,23 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
 import com.example.rgamer.R;
+import com.example.rgamer.RedeemResponse;
 import com.example.rgamer.UserPref;
+import com.example.rgamer.network.ApiClient;
+import com.example.rgamer.network.ApiService;
 import com.example.rgamer.withdraws.activity_withdraw_success;
 import com.example.rgamer.withdraws.bottomsheet_withdraw_details;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.FieldValue;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.HashMap;
 import java.util.Map;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class RedeemFragment extends Fragment {
 
-    /* ================= TYPES ================= */
     public static final String TYPE = "type";
     public static final String GOOGLE = "google";
     public static final String AMAZON = "amazon";
@@ -38,15 +39,9 @@ public class RedeemFragment extends Fragment {
 
     private String redeemType = GOOGLE;
 
-    /* ================= UI ================= */
     private TextView txtTitle, txtCoins;
     private GridLayout gridLayout;
 
-    /* ================= FIREBASE ================= */
-    private FirebaseAuth auth;
-    private FirebaseFirestore db;
-
-    /* ================= LOCAL ================= */
     private UserPref userPref;
     private long userCoins = 0;
 
@@ -55,8 +50,8 @@ public class RedeemFragment extends Fragment {
     private String withdrawDetails = "";
 
     private boolean isSubmitting = false;
+    private AlertDialog loadingDialog;
 
-    /* ================= FACTORY ================= */
     public static RedeemFragment newInstance(String type) {
         RedeemFragment f = new RedeemFragment();
         Bundle b = new Bundle();
@@ -73,18 +68,12 @@ public class RedeemFragment extends Fragment {
             @Nullable Bundle savedInstanceState
     ) {
 
-        View view = inflater.inflate(
-                R.layout.fragment_redeem_options,
-                container,
-                false
-        );
+        View view = inflater.inflate(R.layout.fragment_redeem_options, container, false);
 
         txtTitle = view.findViewById(R.id.txtTitle);
         txtCoins = view.findViewById(R.id.txtCoins);
         gridLayout = view.findViewById(R.id.gridLayout);
 
-        auth = FirebaseAuth.getInstance();
-        db = FirebaseFirestore.getInstance();
         userPref = new UserPref(requireContext());
 
         if (getArguments() != null) {
@@ -99,44 +88,34 @@ public class RedeemFragment extends Fragment {
         return view;
     }
 
-    /* ================= HEADER ================= */
     private void setupHeader() {
         switch (redeemType) {
-            case GOOGLE:
-                txtTitle.setText("Google Play Voucher");
-                break;
-            case AMAZON:
-                txtTitle.setText("Amazon Gift Voucher");
-                break;
-            case PHONEPE:
-                txtTitle.setText("PhonePe Gift Voucher");
-                break;
-            case UPI:
-                txtTitle.setText("UPI Withdraw");
-                break;
-            case BANK:
-                txtTitle.setText("Bank Withdraw");
-                break;
+            case GOOGLE: txtTitle.setText("Google Play Voucher"); break;
+            case AMAZON: txtTitle.setText("Amazon Gift Voucher"); break;
+            case PHONEPE: txtTitle.setText("PhonePe Gift Voucher"); break;
+            case UPI: txtTitle.setText("UPI Withdraw"); break;
+            case BANK: txtTitle.setText("Bank Withdraw"); break;
         }
     }
 
-    /* ================= COINS ================= */
     private void loadCoins() {
         userCoins = userPref.getCoins();
         txtCoins.setText(String.valueOf(userCoins));
     }
 
-    /* ================= CARDS ================= */
     private void setupCards() {
 
         gridLayout.removeAllViews();
 
         if (UPI.equals(redeemType)) {
+            addCard(R.drawable.ic_upi, 200, 2);
+            addCard(R.drawable.ic_upi, 500, 5);
             addCard(R.drawable.ic_upi, 1174, 10);
             addCard(R.drawable.ic_upi, 2674, 25);
             addCard(R.drawable.ic_upi, 10000, 100);
 
         } else if (BANK.equals(redeemType)) {
+            addCard(R.drawable.ic_bank, 5000, 50);
             addCard(R.drawable.ic_bank, 10000, 100);
             addCard(R.drawable.ic_bank, 20000, 200);
 
@@ -193,7 +172,6 @@ public class RedeemFragment extends Fragment {
         gridLayout.addView(card);
     }
 
-    /* ================= BOTTOM SHEET RESULT ================= */
     private void setupBottomSheetResult() {
 
         getParentFragmentManager()
@@ -210,7 +188,6 @@ public class RedeemFragment extends Fragment {
                         });
     }
 
-    /* ================= XML CONFIRMATION DIALOG ================= */
     private void showConfirmDialog(long coins, long amount) {
 
         View view = LayoutInflater.from(requireContext())
@@ -228,12 +205,10 @@ public class RedeemFragment extends Fragment {
         if (UPI.equals(redeemType)) {
             txtDetails.setVisibility(View.VISIBLE);
             txtDetails.setText("UPI ID:\n" + withdrawDetails);
-        }
-        else if (BANK.equals(redeemType)) {
+        } else if (BANK.equals(redeemType)) {
             txtDetails.setVisibility(View.VISIBLE);
             txtDetails.setText("Bank Details:\n" + withdrawDetails);
-        }
-        else {
+        } else {
             txtDetails.setVisibility(View.GONE);
         }
 
@@ -245,6 +220,7 @@ public class RedeemFragment extends Fragment {
         btnCancel.setOnClickListener(v -> dialog.dismiss());
 
         btnConfirm.setOnClickListener(v -> {
+            btnConfirm.setEnabled(false);
             dialog.dismiss();
             submitRedeem(coins, amount);
         });
@@ -252,85 +228,116 @@ public class RedeemFragment extends Fragment {
         dialog.show();
     }
 
-    /* ================= SUBMIT ================= */
+    /* ================= UPDATED TOKEN LOGIC ================= */
     private void submitRedeem(long coinsUsed, long amount) {
+        showLoading();
 
-        if (isSubmitting) return;
-        isSubmitting = true;
-
-        if (auth.getCurrentUser() == null) {
-            isSubmitting = false;
-            toast("Session expired");
+        if (isSubmitting) {
+            toast("Please wait...");
             return;
         }
 
-        String uid = auth.getCurrentUser().getUid();
-        String email = auth.getCurrentUser().getEmail();
-        String username = userPref.getName();
-        if (username == null || username.isEmpty()) {
-            username = email != null ? email : "Unknown";
+        if (FirebaseAuth.getInstance().getCurrentUser() == null) {
+            toast("Session expired");
+            hideLoading();
+            return;
         }
 
-        final String finalUsername = username;
+        isSubmitting = true;
+        toast("Processing...");
 
-        db.runTransaction(transaction -> {
 
-            var userRef = db.collection("users").document(uid);
-            var snap = transaction.get(userRef);
+        FirebaseAuth.getInstance().getCurrentUser()
+                .getIdToken(true)
+                .addOnCompleteListener(task -> {
 
-            Long current = snap.getLong("coins");
-            if (current == null || current < coinsUsed) {
-                throw new RuntimeException("Insufficient coins");
+                    if (!task.isSuccessful()) {
+                        isSubmitting = false;
+                        toast("Token error");
+                        hideLoading();
+                        return;
+                    }
+
+                    String idToken = task.getResult().getToken();
+                    String token = "Bearer " + idToken;
+
+                    callRedeemApi(token, coinsUsed, amount);
+                });
+    }
+
+    //
+    private void showLoading() {
+        View view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_loading, null);
+
+        loadingDialog = new AlertDialog.Builder(requireContext())
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        loadingDialog.show();
+    }
+
+    private void hideLoading() {
+        if (loadingDialog != null && loadingDialog.isShowing()) {
+            loadingDialog.dismiss();
+        }
+    }
+
+    private void callRedeemApi(String token, long coinsUsed, long amount) {
+
+        ApiService api = ApiClient.getClient().create(ApiService.class);
+
+        Map<String, Object> body = new HashMap<>();
+        body.put("amount", amount);
+        body.put("coins", coinsUsed);
+        body.put("type", redeemType);
+        body.put("details", withdrawDetails);
+
+        api.redeemRequest(token, body).enqueue(new Callback<RedeemResponse>() {
+
+            @Override
+            public void onResponse(Call<RedeemResponse> call, Response<RedeemResponse> response) {
+
+                isSubmitting = false;
+
+                if (!isAdded()) return;
+
+                if (response.isSuccessful() && response.body() != null) {
+
+                    RedeemResponse res = response.body();
+
+                    if (res.status) {
+
+                        userPref.setCoins(res.updatedCoins);
+                        txtCoins.setText(String.valueOf(res.updatedCoins));
+                        hideLoading();
+                        toast("Success ✅");
+
+                        Intent i = new Intent(requireActivity(), activity_withdraw_success.class);
+                        i.putExtra(activity_withdraw_success.EXTRA_TYPE, redeemType);
+                        i.putExtra(activity_withdraw_success.EXTRA_AMOUNT, "₹" + amount);
+                        i.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, res.requestId);
+
+                        startActivity(i);
+
+                    } else {
+                        hideLoading();
+                        toast(res.message);
+                    }
+
+                } else {
+                    hideLoading();
+                    toast("Server error ❌");
+                }
             }
 
-            long updated = current - coinsUsed;
-            transaction.update(userRef, "coins", updated);
-
-            var reqRef = db.collection("redeem_requests").document();
-            String requestId = reqRef.getId();
-
-            Map<String, Object> req = new HashMap<>();
-            req.put("uid", uid);
-            req.put("username", finalUsername);
-            req.put("email", email);
-            req.put("type", redeemType);
-            req.put("amount", amount);
-            req.put("coins", coinsUsed);
-            req.put("withdraw_details", withdrawDetails);
-            req.put("status", "pending");
-            req.put("created_at", FieldValue.serverTimestamp());
-
-            transaction.set(reqRef, req);
-
-            Map<String, Object> result = new HashMap<>();
-            result.put("coins", updated);
-            result.put("requestId", requestId);
-            return result;
-
-        }).addOnSuccessListener(result -> {
-
-            isSubmitting = false;
-            if (!isAdded()) return;
-
-            long updated = (long) result.get("coins");
-            String requestId = (String) result.get("requestId");
-
-            userPref.setCoins(updated);
-            txtCoins.setText(String.valueOf(updated));
-
-            Intent i = new Intent(
-                    requireActivity(),
-                    activity_withdraw_success.class
-            );
-            i.putExtra(activity_withdraw_success.EXTRA_TYPE, redeemType);
-            i.putExtra(activity_withdraw_success.EXTRA_AMOUNT, "₹" + amount);
-            i.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, requestId);
-
-            startActivity(i);
-
-        }).addOnFailureListener(e -> {
-            isSubmitting = false;
-            toast(e.getMessage());
+            @Override
+            public void onFailure(Call<RedeemResponse> call, Throwable t) {
+                isSubmitting = false;
+                hideLoading();
+                toast("API Failed: " + t.getMessage());
+            }
         });
     }
 

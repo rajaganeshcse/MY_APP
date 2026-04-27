@@ -53,7 +53,7 @@
             android:name=".Fragements.RedeemFragment"
             android:exported="false" />
         <activity
-            android:name=".withdraws.TransactionHistoryFragment"
+            android:name=".withdraws.TransactionHistoryActivity"
             android:exported="false" />
         <activity
             android:name=".withdraws.bottomsheet_withdraw_details"
