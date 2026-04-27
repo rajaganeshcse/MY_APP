@@ -38,7 +38,7 @@ public class HomeFragment extends Fragment {
     CardView card_spinner,card_lucky_draw,card_tasks,card_surveys,cardInvite;
 
     private TextView txtCoins, txtToken, txtAdCount;
-    private ImageView imgProfile, imgRewardCoin;
+    private ImageView  imgRewardCoin;
     private MaterialButton btnWatchNow;
 
 
@@ -112,7 +112,7 @@ public class HomeFragment extends Fragment {
         txtAdCount = view.findViewById(R.id.txtAdCount);
         card_lucky_draw = view.findViewById(R.id.card_lucky_draw);
 
-        imgProfile = view.findViewById(R.id.imgProfile);
+
         imgRewardCoin = view.findViewById(R.id.imgRewardCoin);
 
         btnWatchNow = view.findViewById(R.id.btnWatchNow);
@@ -153,15 +153,7 @@ public class HomeFragment extends Fragment {
         txtCoins.setText(String.valueOf(userPref.getCoins()));
         txtToken.setText(String.valueOf(userPref.getWalletToken()));
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-        if (user != null && user.getPhotoUrl() != null) {
-            Glide.with(this)
-                    .load(user.getPhotoUrl())
-                    .circleCrop()
-                    .into(imgProfile);
-
-        }
     }
 
     private void listenUserRealtime() {
