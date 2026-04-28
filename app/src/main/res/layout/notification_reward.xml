@@ -1,0 +1,48 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:padding="12dp"
+    android:background="@android:color/white" android:layout_height="match_parent"
+    android:layout_width="match_parent">
+
+    <!-- Left App Icon -->
+    <ImageView
+        android:id="@+id/imgIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/app_icon"
+        android:scaleType="centerCrop" />
+
+    <!-- Text Section -->
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginStart="10dp"
+        android:layout_weight="1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/txtTitle"
+            android:text="Task Completed 🎯"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:textColor="@android:color/black" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:id="@+id/txtMessage"
+            android:text="₹2 added to your wallet 💰"
+            android:textSize="12sp"
+            android:textColor="@android:color/darker_gray" />
+    </LinearLayout>
+
+    <!-- Right Image / App Banner -->
+    <ImageView
+        android:id="@+id/imgRight"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/app_icon"
+        android:scaleType="centerCrop" />
+</LinearLayout>
