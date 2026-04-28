@@ -238,6 +238,14 @@ public class activity_lucky_draw extends AppCompatActivity
 
         dialog.show();
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if(type.equals("AD")) {
+            TextView txt = view.findViewById(R.id.txtMessage);
+            TextView txtTitle = view.findViewById(R.id.txtTitle);
+            TextView txt2 = view.findViewById(R.id.Message);
+            txt2.setText("Watch Ad 📺");
+            txt.setText("Are you Watch Ads 📽️");
+            txtTitle.setText("Confirmation");
+        }
 
         MaterialButton btnConfirm = view.findViewById(R.id.btnConfirm);
         MaterialButton btnCancel = view.findViewById(R.id.btnCancel);

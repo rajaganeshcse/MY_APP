@@ -9,9 +9,9 @@ import java.util.Locale;
 
 @IgnoreExtraProperties
 public class LuckyDrawModel {
+
     private boolean adJoined;
     private int myTicketsCount;
-    /* ================= FIRESTORE FIELDS ================= */
 
     private String id;
     private String status;
@@ -19,33 +19,18 @@ public class LuckyDrawModel {
     private Long filledSlots;
     private Long totalSlots;
 
-    // winner fields (for COMPLETED draws)
     private String winnerUid;
     private Timestamp createdAt;
     private Timestamp completedAt;
 
-    /* ================= LOCAL ONLY ================= */
-
-    // UI only (not stored in Firestore)
     private boolean joinedByMe;
-
-    /* ================= CONSTRUCTOR ================= */
 
     public LuckyDrawModel() {}
 
-    /* ================= BASIC GETTERS ================= */
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getStatus() {
-        return status == null ? "" : status;
-    }
+    public String getStatus() { return status == null ? "" : status; }
 
     public int getRewardCoins() {
         return rewardCoins == null ? 0 : rewardCoins.intValue();
@@ -59,78 +44,57 @@ public class LuckyDrawModel {
         return totalSlots == null ? 0 : totalSlots.intValue();
     }
 
-    /* ================= JOIN STATE ================= */
-
-    public boolean isJoinedByMe() {
-        return joinedByMe;
-    }
-
+    public boolean isJoinedByMe() { return joinedByMe; }
     public void setJoinedByMe(boolean joinedByMe) {
         this.joinedByMe = joinedByMe;
     }
-
-    /* ================= WINNER INFO ================= */
 
     public String getWinnerUid() {
         return winnerUid == null ? "" : winnerUid;
     }
 
-    public Timestamp getCreatedAt() {
-        return createdAt;
-    }
-
-    public Timestamp getCompletedAt() {
-        return completedAt;
-    }
-
-    /* ================= HELPERS ================= */
+    public Timestamp getCreatedAt() { return createdAt; }
+    public Timestamp getCompletedAt() { return completedAt; }
 
     public boolean isFull() {
-        return getTotalSlots() > 0
-                && getFilledSlots() >= getTotalSlots();
+        return getTotalSlots() > 0 &&
+                getFilledSlots() >= getTotalSlots();
     }
 
     public boolean isCompleted() {
         return "COMPLETED".equalsIgnoreCase(getStatus());
     }
 
-    /* ================= DATE FORMATTERS ================= */
-
-    // Example output:
-    // 26 December 2025 at 00:55:30
     public String getCompletedAtFormatted() {
+        Timestamp time = (completedAt != null) ? completedAt : createdAt;
+        if (time == null) return "N/A";
 
-        if (completedAt == null) return "N/A";
+        Date date = time.toDate();
 
-        Date date = completedAt.toDate();
-
-        SimpleDateFormat sdf = new SimpleDateFormat(
-                "dd MMMM yyyy 'at' HH:mm:ss",
+        return new SimpleDateFormat(
+                "dd MMM yyyy hh:mm a",
                 Locale.getDefault()
-        );
-
-        return sdf.format(date);
+        ).format(date);
     }
 
     public String getCreatedAtFormatted() {
-
         if (createdAt == null) return "N/A";
 
         Date date = createdAt.toDate();
 
-        SimpleDateFormat sdf = new SimpleDateFormat(
-                "dd MMMM yyyy 'at' HH:mm:ss",
+        return new SimpleDateFormat(
+                "dd MMM yyyy hh:mm a",
                 Locale.getDefault()
-        );
-
-        return sdf.format(date);
+        ).format(date);
     }
 
-    // ✅ AD JOIN
     public boolean isAdJoined() { return adJoined; }
-    public void setAdJoined(boolean adJoined) { this.adJoined = adJoined; }
+    public void setAdJoined(boolean adJoined) {
+        this.adJoined = adJoined;
+    }
 
-    // ✅ TICKET COUNT
     public int getMyTicketsCount() { return myTicketsCount; }
-    public void setMyTicketsCount(int count) { this.myTicketsCount = count; }
+    public void setMyTicketsCount(int count) {
+        this.myTicketsCount = count;
+    }
 }

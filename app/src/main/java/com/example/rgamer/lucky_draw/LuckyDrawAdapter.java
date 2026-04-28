@@ -60,7 +60,12 @@ public class LuckyDrawAdapter
         h.progressSlots.setProgress(filled);
 
         int totalJoined = model.getMyTicketsCount() + (model.isAdJoined() ? 1 : 0);
-        h.token.setText(totalJoined + " Tickets Joined");
+        h.token.setText(totalJoined + " Joined 👍");
+        if(totalJoined>0){
+            h.joined.setVisibility(View.VISIBLE);
+        }else{
+            h.joined.setVisibility(View.GONE);
+        }
 
         /* RESET */
         h.btnJoin.setEnabled(true);

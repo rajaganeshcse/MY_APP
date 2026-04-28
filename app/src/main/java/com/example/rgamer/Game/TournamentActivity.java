@@ -41,9 +41,8 @@ public class TournamentActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        makeFullScreen();
         setContentView(com.example.rgamer.R.layout.activity_tournament);
+        makeFullScreen();
 
         uid = FirebaseAuth.getInstance().getUid();
         db = FirebaseFirestore.getInstance();
@@ -93,8 +92,6 @@ public class TournamentActivity extends AppCompatActivity {
         recyclerTournament.setAdapter(adapter);
         loadMatches();
     }
-
-    /* ================= FULL SCREEN ================= */
     private void makeFullScreen() {
         Window window = getWindow();
 
@@ -127,6 +124,10 @@ public class TournamentActivity extends AppCompatActivity {
             window.setNavigationBarColor(Color.TRANSPARENT);
         }
     }
+
+
+    /* ================= FULL SCREEN ================= */
+
 
     /* ================= LOAD MATCHES ================= */
     private void loadMatches() {

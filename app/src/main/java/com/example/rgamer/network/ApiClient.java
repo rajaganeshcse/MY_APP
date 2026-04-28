@@ -9,7 +9,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class ApiClient {
 
     // ✅ FIXED (remove baseUrl())
-    private static final String BASE_URL = "https://backend-3c8g.onrender.com/";
+    private static final String BASE_URL = "https://app-backend-lutn.onrender.com/";
 
     public static Retrofit getClient() {
         OkHttpClient client = new OkHttpClient.Builder()

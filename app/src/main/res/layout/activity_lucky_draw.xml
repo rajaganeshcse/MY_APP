@@ -40,7 +40,7 @@
             android:gravity="center_vertical">
 
             <TextView
-                android:layout_width="wrap_content"
+                android:layout_width="127dp"
                 android:layout_height="wrap_content"
                 android:text="Lucky Draw"
                 android:textColor="@color/black"
@@ -56,8 +56,8 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="111dp"
-            android:layout_height="37dp"
+            android:layout_width="112dp"
+            android:layout_height="45dp"
             android:layout_marginEnd="6dp"
             android:background="@drawable/bg_token_gradient"
             android:gravity="center_vertical"
