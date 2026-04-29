@@ -13,6 +13,6 @@
 
     <!-- Dark yellow border -->
     <stroke
-        android:width="2dp"
+        android:width="3dp"
         android:color="#C9A400"/>
 </shape>

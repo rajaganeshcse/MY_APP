@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="16dp"
-        android:background="@drawable/bg_card_gradient"
+        android:background="@drawable/bg_card_gradient_1"
         android:orientation="horizontal"
         android:gravity="center_vertical">
 

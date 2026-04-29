@@ -9,7 +9,7 @@
     android:layout_marginRight="12dp"
     android:background="@color/white"
     android:layout_marginBottom="12dp"
-    app:cardCornerRadius="14dp"
+    app:cardCornerRadius="20dp"
 
     android:focusable="true"
     app:cardElevation="6dp">
@@ -17,7 +17,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_card_gradient"
+        android:background="@drawable/bg_card_gradient_1"
         android:padding="16dp"
 
         android:focusable="true"

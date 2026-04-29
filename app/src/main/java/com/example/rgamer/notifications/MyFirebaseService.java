@@ -73,7 +73,7 @@ public class MyFirebaseService extends FirebaseMessagingService {
 
         // Custom Layout
         @SuppressLint("RemoteViewLayout") RemoteViews remoteViews =
-                new RemoteViews(getPackageName(), R.layout.notification_reward);
+                new RemoteViews(getPackageName(), R.layout.notification_ui);
 
         remoteViews.setTextViewText(R.id.txtTitle, title);
         remoteViews.setTextViewText(R.id.txtMessage, message);

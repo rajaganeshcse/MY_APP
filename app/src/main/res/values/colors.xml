@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="black">#FF000000</color>
-    <color name="Primary">#6A1BFF</color>
+    <color name="Primary">#a106f4</color>
+    <color name="Primary_1">#affcaf</color>
     <color name="white">#FFFFFFFF</color>
     <color name="color_red">#FF0000</color>
     <color name="color_orange">#FF6A00</color>
@@ -14,5 +15,9 @@
     <color name="color_pink">#E91E63</color>
     <color name="color_purple">#673AB7</color>
     <color name="luck">#B4C7B8</color>
+    <color name="base_color">#F3EEFF</color>
+    <color name="light_purple">#d9ccee</color>
 
+    <color name="brown">#8c1105</color>
+    <color name="light_black">#25221e</color>
 </resources>

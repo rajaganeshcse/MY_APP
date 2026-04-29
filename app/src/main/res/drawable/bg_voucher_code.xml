@@ -10,7 +10,7 @@
 
     <!-- Dashed border -->
     <stroke
-        android:width="2dp"
+        android:width="3dp"
         android:color="#6A1BFF"
         android:dashWidth="8dp"
 

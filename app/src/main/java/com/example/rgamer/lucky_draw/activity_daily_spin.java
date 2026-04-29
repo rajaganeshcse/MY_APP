@@ -274,14 +274,32 @@ public class activity_daily_spin extends AppCompatActivity {
     }
 
     private float getAngle(int reward) {
+
+        int index;
+
         switch (reward) {
-            case 0: return 0;
-            case 5: return 60;
-            case 6: return 120;
-            case 7: return 180;
-            case 10: return 240;
-            default: return 300;
+            case 0:  index = 0; break;
+            case 2:  index = 1; break;
+            case 4:  index = 2; break;
+            case 6:  index = 3; break;
+            case 7:  index = 4; break;
+            case 8:  index = 5; break;
+            case 10: index = 6; break;
+            default: index = 0;
         }
+
+        float section = 360f / 7f;
+
+        // 🎯 center of slice
+        float angle = index * section + (section / 2f);
+
+        // 🔥 pointer is at TOP → invert
+        float finalAngle = 360f - angle;
+
+        // 🎲 small randomness (optional but recommended)
+        float random = (float)(Math.random() * 6f - 3f);
+
+        return finalAngle + random;
     }
 
     /* ================= EFFECTS ================= */
