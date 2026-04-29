@@ -51,6 +51,7 @@
                 android:background="@drawable/bg_button_ripple"
                 app:backgroundTint="@null"
                 app:rippleColor="@null"
+                android:textStyle="bold"
                 android:paddingHorizontal="22dp"
                 android:paddingVertical="10dp"/>
 

@@ -64,7 +64,7 @@
                     android:layout_marginStart="6dp"
                     android:text="0"
                     android:textColor="#8D6E00"
-                    android:textSize="14sp"
+                    android:textSize="17sp"
                     android:layout_marginEnd="20dp"
                     android:layout_marginRight="5dp"
                     android:textStyle="bold" />
@@ -93,7 +93,7 @@
                     android:layout_marginStart="6dp"
                     android:text="0"
                     android:textColor="#8D6E00"
-                    android:textSize="14sp"
+                    android:textSize="17sp"
                     android:layout_marginEnd="20dp"
                     android:textStyle="bold" />
             </LinearLayout>
