@@ -69,5 +69,7 @@ dependencies {
 
     implementation("com.google.android.material:material:1.11.0")
 
+    implementation("com.google.firebase:firebase-messaging:23.4.1")
+
 
 }

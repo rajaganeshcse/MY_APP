@@ -19,6 +19,7 @@
         android:theme="@style/Theme.RGamer">
 
 
+        <!-- FCM Service -->
         <service
             android:name=".notifications.MyFirebaseMessagingService"
             android:exported="false">

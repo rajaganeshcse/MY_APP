@@ -22,6 +22,7 @@ import com.example.rgamer.network.*;
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.ApiException;
 import com.google.firebase.auth.*;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import okhttp3.ResponseBody;
 import retrofit2.*;
@@ -39,6 +40,7 @@ public class activity_login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         makeFullScreen();
+
 
         auth = FirebaseAuth.getInstance();
         userPref = new UserPref(this);

@@ -1,12 +1,14 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="12dp"
-    android:background="@android:color/white" android:layout_height="match_parent"
-    android:layout_width="match_parent">
+    android:background="@android:color/white"
+    android:gravity="center_vertical">
 
-    <!-- Left App Icon -->
+    <!-- Left Icon (optional but recommended) -->
     <ImageView
-        android:id="@+id/imgIcon"
+        android:id="@+id/imgLeft"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/app_icon"
@@ -14,35 +16,40 @@
 
     <!-- Text Section -->
     <LinearLayout
-        android:orientation="vertical"
-        android:layout_marginStart="10dp"
-        android:layout_weight="1"
         android:layout_width="0dp"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp">
 
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
             android:id="@+id/txtTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Task Completed 🎯"
             android:textStyle="bold"
             android:textSize="14sp"
-            android:textColor="@android:color/black" />
+            android:textColor="@android:color/black"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
         <TextView
-            android:layout_height="wrap_content"
-            android:layout_width="wrap_content"
             android:id="@+id/txtMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="₹2 added to your wallet 💰"
             android:textSize="12sp"
-            android:textColor="@android:color/darker_gray" />
+            android:textColor="@android:color/darker_gray"
+            android:maxLines="2"
+            android:ellipsize="end" />
     </LinearLayout>
 
-    <!-- Right Image / App Banner -->
+    <!-- Right Icon -->
     <ImageView
-        android:id="@+id/imgRight"
+        android:id="@+id/appIcon"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/app_icon"
         android:scaleType="centerCrop" />
+
 </LinearLayout>

@@ -24,6 +24,8 @@ import com.example.rgamer.UserPref;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
@@ -40,6 +42,24 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
         setupNavigation();
+        userPref = new UserPref(this); // ✅ FIRST
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(task -> {
+                    if (!task.isSuccessful()) return;
+
+                    String token = task.getResult();
+                    Log.d("FCM_TOKEN", token);
+
+                    String uid = userPref.getUid();
+
+                    if (uid != null && !uid.isEmpty()) {
+                        FirebaseFirestore.getInstance()
+                                .collection("users")
+                                .document(uid)
+                                .update("fcmToken", token);
+                    }
+                });
 
         // Load profile image
         userPref = new UserPref(this);
