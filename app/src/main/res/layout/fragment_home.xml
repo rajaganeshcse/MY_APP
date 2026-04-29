@@ -29,8 +29,8 @@
             <!-- App Title -->
             <TextView
                 android:id="@+id/appTitle"
-                android:layout_width="211dp"
-                android:layout_height="32dp"
+                android:layout_width="238dp"
+                android:layout_height="43dp"
                 android:layout_weight="1"
                 android:paddingLeft="10dp"
                 android:text="@string/app_name"

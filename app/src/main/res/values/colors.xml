@@ -20,4 +20,9 @@
 
     <color name="brown">#8c1105</color>
     <color name="light_black">#25221e</color>
+    
+    <color name="game_card">#d3f3f1</color>
+    <color name="game_card_text">#40c9ff</color>
+
+
 </resources>
