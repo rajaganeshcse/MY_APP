@@ -74,11 +74,14 @@ public class LuckyDrawAdapter
         /* AD STATE */
         if (model.isAdJoined()) {
             h.btnJoin.setText("Used");
-            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2196F3")));
-            h.btnJoin.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#2196F3")));
+            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0974f1")));
+            h.btnJoin.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#0974f1")));
             h.btnJoin.setEnabled(false);
         } else {
-            h.btnJoin.setText("Free Entry");
+            h.btnJoin.setText("Free");
+            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2a8d08")));
+            h.btnJoin.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#2a8d08")));
+
         }
 
         /* FULL */
@@ -86,13 +89,13 @@ public class LuckyDrawAdapter
             h.btnJoin.setText("FULL");
             h.btnJoin.setEnabled(false);
             h.btnticket.setEnabled(false);
-            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
-            h.btnticket.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#F44336")));
-            h.btnticket.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#F44336")));
+            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#e01f2d")));
+            h.btnticket.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#e01f2d")));
+            h.btnticket.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#e01f2d")));
         }
 
         /* TICKET COUNT UI */
-        h.btnticket.setText("2 Tickets");
+        h.btnticket.setText("1 Tickets");
 
         /* FREE ENTRY (ONLY ONCE) */
         h.btnJoin.setOnClickListener(v -> {

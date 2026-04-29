@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="300dp"
+    android:layout_width="50dp"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_round"
     android:orientation="vertical"
@@ -34,7 +34,7 @@
         android:id="@+id/Message"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="2 Tickets 🎟️"
+        android:text="1 Tickets 🎟️"
         android:textSize="20sp"
         android:textStyle="bold"
         android:textColor="#000000"
@@ -56,12 +56,13 @@
             android:text="Cancel"
             android:textStyle="bold"
             android:textAllCaps="false"
+            android:textSize="18sp"
 
-            android:textColor="#FFFFFF"
+            android:textColor="#ffffff"
             android:layout_marginEnd="8dp"
-            app:backgroundTint="#FF2100"
-            app:strokeColor="#FF3F00"
-            app:strokeWidth="2dp" />
+            app:backgroundTint="#e01f2d"
+            app:strokeColor="#e01f2d"
+            app:strokeWidth="5dp" />
 
         <!-- Confirm Button -->
         <com.google.android.material.button.MaterialButton
@@ -69,12 +70,13 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:text="Confirm"
+            android:textSize="17sp"
             android:textAllCaps="false"
             android:textStyle="bold"
-            android:textColor="#000000"
-            app:backgroundTint="#00FF06"
-            app:strokeColor="#00FF03"
-            app:strokeWidth="2dp" />
+            android:textColor="#ffffff"
+            app:backgroundTint="#2a8d08"
+            app:strokeColor="#2a8d08"
+            app:strokeWidth="5dp" />
 
     </LinearLayout>
 

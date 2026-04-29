@@ -5,10 +5,10 @@
     android:id="@+id/cardLuckyDrawRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="12dp"
-    app:cardCornerRadius="14dp"
+    android:layout_marginBottom="14dp"
+    app:cardCornerRadius="20dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="#CCE2E7">
+    app:cardBackgroundColor="#8de9d5">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -149,7 +149,7 @@
                 android:text="Free Entry"
                 android:textAllCaps="false"
                 android:textColor="@android:color/white"
-                app:backgroundTint="#4CAF50"
+                app:backgroundTint="#46b83d"
                 app:cornerRadius="10dp" />
         </LinearLayout>
 
