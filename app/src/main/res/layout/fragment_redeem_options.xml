@@ -2,59 +2,70 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/base_color"
     android:padding="16dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:paddingTop="20dp"
         android:orientation="vertical">
 
-        <!-- Header -->
-        <RelativeLayout
+        <!-- Header using LinearLayout -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingBottom="16dp">
+            android:layout_height="56dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
 
+            <!-- Back Button (LEFT) -->
             <ImageView
                 android:id="@+id/btnBack"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
-                android:src="@drawable/back_arrow"
-                android:layout_alignParentStart="true" />
+                android:src="@drawable/back_arrow" />
 
+            <!-- Title (CENTER AREA) -->
             <TextView
                 android:id="@+id/txtTitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textAlignment="textStart"
+                android:paddingLeft="10dp"
                 android:text="Redeem"
-                android:textSize="20sp"
-                android:textStyle="bold"
                 android:textColor="#000"
-                android:layout_centerHorizontal="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
+            <!-- Coins (RIGHT) -->
             <LinearLayout
-                android:layout_alignParentEnd="true"
+                android:id="@+id/coinLayout"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:background="@drawable/bg_coin_gradient"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp">
 
                 <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
                     android:src="@drawable/ic_coin" />
 
                 <TextView
                     android:id="@+id/txtCoins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="4dp"
                     android:text="0"
                     android:textColor="#F9A825"
-                    android:textStyle="bold"
-                    android:paddingStart="4dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
+                    android:textStyle="bold" />
             </LinearLayout>
-        </RelativeLayout>
+
+        </LinearLayout>
 
         <!-- Grid -->
         <GridLayout

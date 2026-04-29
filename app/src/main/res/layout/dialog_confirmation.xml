@@ -1,23 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="50dp"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_dialog_round"
     android:orientation="vertical"
     android:padding="20dp">
 
-    <!-- Title -->
-    <TextView
-        android:id="@+id/txtTitle"
+    <!-- Header (Title + Close Icon) -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Confirmation"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        android:layout_marginBottom="12dp" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <!-- Title LEFT -->
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Confirmation"
+            android:textColor="#000000"
+            android:textAlignment="center"
+            android:textSize="25sp"
+            android:textStyle="bold" />
+
+        <!-- Close Icon RIGHT -->
+        <ImageView
+            android:id="@+id/btnClose"
+            android:layout_width="37dp"
+            android:layout_height="38dp"
+            android:contentDescription="Close"
+            android:padding="4dp"
+            android:src="@drawable/close" />
+    </LinearLayout>
 
     <!-- Message -->
     <TextView
@@ -28,8 +45,10 @@
         android:textSize="16sp"
         android:textColor="#121212"
         android:gravity="center"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="20dp" />
 
+    <!-- Extra Message -->
     <TextView
         android:id="@+id/Message"
         android:layout_width="match_parent"
@@ -48,7 +67,6 @@
         android:orientation="horizontal"
         android:gravity="center">
 
-        <!-- Cancel Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnCancel"
             android:layout_width="120dp"
@@ -57,14 +75,12 @@
             android:textStyle="bold"
             android:textAllCaps="false"
             android:textSize="18sp"
-
             android:textColor="#ffffff"
             android:layout_marginEnd="8dp"
             app:backgroundTint="#e01f2d"
             app:strokeColor="#e01f2d"
             app:strokeWidth="5dp" />
 
-        <!-- Confirm Button -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnConfirm"
             android:layout_width="120dp"
