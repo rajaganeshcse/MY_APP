@@ -16,37 +16,40 @@
         <LinearLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="86dp"
+            android:layout_height="80dp"
             android:background="@color/base_color"
             android:elevation="8dp"
             android:gravity="center_vertical"
+            android:paddingLeft="5dp"
 
             android:orientation="horizontal"
-            android:padding="12dp"
-            android:paddingBottom="2dp">
+            android:paddingTop="12dp"
+            >
 
             <!-- App Title -->
             <TextView
                 android:id="@+id/appTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_width="211dp"
+                android:layout_height="32dp"
                 android:layout_weight="1"
+                android:paddingLeft="10dp"
                 android:text="@string/app_name"
                 android:textColor="#6A1BFF"
-                android:textSize="18sp"
+                android:textSize="25sp"
                 android:textStyle="bold" />
 
             <!-- Token -->
 
             <!-- Coins -->
             <LinearLayout
-                android:layout_width="82dp"
+                android:layout_width="wrap_content"
                 android:layout_height="40dp"
                 android:layout_marginEnd="6dp"
                 android:background="@drawable/bg_token_gradient"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:padding="1dp">
+                android:padding="1dp"
+            >
 
                 <ImageView
                     android:layout_width="33dp"
@@ -62,12 +65,14 @@
                     android:text="0"
                     android:textColor="#8D6E00"
                     android:textSize="14sp"
+                    android:layout_marginEnd="20dp"
+                    android:layout_marginRight="5dp"
                     android:textStyle="bold" />
             </LinearLayout>
 
             <!-- Profile -->
             <LinearLayout
-                android:layout_width="99dp"
+                android:layout_width="wrap_content"
                 android:layout_height="43dp"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/bg_coin_gradient"
@@ -89,6 +94,7 @@
                     android:text="0"
                     android:textColor="#8D6E00"
                     android:textSize="14sp"
+                    android:layout_marginEnd="20dp"
                     android:textStyle="bold" />
             </LinearLayout>
 

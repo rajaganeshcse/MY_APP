@@ -16,11 +16,11 @@
         android:id="@+id/bottomNav"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:paddingBottom="15dp"
+        android:layout_height="80dp"
+        android:paddingBottom="25dp"
         android:orientation="horizontal"
         android:background="@android:color/white"
-        android:elevation="10dp">
+        android:elevation="15dp">
 
         <LinearLayout
             android:id="@+id/navHome"
