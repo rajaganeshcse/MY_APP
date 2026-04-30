@@ -40,17 +40,17 @@
                 android:textColor="#000000" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="32dp"
-                android:minWidth="60dp"
-                android:background="@drawable/bg_token"
+                android:layout_width="53dp"
+                android:layout_height="41dp"
+                android:background="@drawable/bg_token_gradient"
                 android:gravity="center"
+                android:minWidth="60dp"
                 android:orientation="horizontal"
                 android:paddingHorizontal="8dp">
 
                 <ImageView
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
+                    android:layout_width="21dp"
+                    android:layout_height="25dp"
                     android:src="@drawable/ic_ticket" />
 
                 <TextView
@@ -59,6 +59,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:text="0"
+                    android:textSize="17sp"
                     android:textColor="#3F51B5"
                     android:textStyle="bold" />
             </LinearLayout>
@@ -87,13 +88,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ENTER GAME NAME :"
+                android:textColor="#000000"
                 android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#000000" />
+                android:textStyle="bold" />
 
             <ImageView
-                android:layout_width="32dp"
-                android:layout_height="25dp"
+                android:layout_width="30dp"
+                android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:src="@drawable/ic_edit" />
         </LinearLayout>

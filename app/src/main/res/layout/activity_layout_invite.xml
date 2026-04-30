@@ -40,9 +40,10 @@
                 android:layout_height="34dp"
                 android:layout_weight="1"
                 android:text="AABBCCDDEEFF"
+                android:gravity="center_vertical"
                 android:background="@color/white"
                 android:textColor="#6A1BFF"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
             <ImageView
@@ -78,14 +79,13 @@
             android:layout_height="wrap_content"
             android:text="Have a referral code?"
             android:textStyle="bold"
+            android:textSize="18sp"
             android:textColor="@color/black"
-            android:background="@color/white"
             android:layout_marginTop="24dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:background="@color/white"
             android:layout_marginTop="8dp">
 
             <EditText
@@ -94,9 +94,10 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:hint="Enter Code"
+                android:textStyle="italic"
                 android:textColor="@color/black"
                 android:textColorHint="@color/black"
-                android:background="@drawable/bg_edit"
+                android:background="@drawable/bg_dashed"
                 android:padding="12dp" />
 
             <Button
@@ -105,6 +106,8 @@
                 android:layout_width="120dp"
                 android:layout_height="match_parent"
                 android:textColor="@color/black"
+                android:textStyle="bold"
+                android:textSize="17sp"
                 android:textColorHint="@color/black"
                 android:text="Validate"
                 android:backgroundTint="#FFB300"/>

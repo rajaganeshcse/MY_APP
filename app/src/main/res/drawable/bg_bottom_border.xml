@@ -7,8 +7,8 @@
 
     <!-- Full border -->
     <stroke
-        android:width="0.5dp"
-        android:color="@color/black" />
+        android:width="1dp"
+        android:color="@color/white" />
 
     <!-- Curve radius -->
     <corners android:radius="12dp" />

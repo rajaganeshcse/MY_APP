@@ -146,7 +146,7 @@
             android:layout_width="219dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:background="@drawable/bg_button_ripple"
+            android:background="@drawable/bg_btn_primary"
             android:paddingHorizontal="22dp"
             android:paddingVertical="10dp"
             android:text="SPIN"

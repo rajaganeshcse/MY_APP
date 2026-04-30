@@ -1,10 +1,12 @@
 package com.example.rgamer.lucky_draw;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.*;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -230,14 +232,22 @@ public class activity_lucky_draw extends AppCompatActivity
 
     private void showConfirmDialog(LuckyDrawModel model, String type) {
 
+
+
+
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirmation, null);
 
         AlertDialog dialog = new MaterialAlertDialogBuilder(this)
                 .setView(view)
                 .setCancelable(true)
                 .create();
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         dialog.show();
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         if(type.equals("AD")) {
             TextView txt = view.findViewById(R.id.txtMessage);
@@ -250,6 +260,10 @@ public class activity_lucky_draw extends AppCompatActivity
 
         MaterialButton btnConfirm = view.findViewById(R.id.btnConfirm);
         MaterialButton btnCancel = view.findViewById(R.id.btnCancel);
+        ImageView closebtn=view.findViewById(R.id.btnClose);
+        closebtn.setOnClickListener(v ->{
+            adapter.clearLoading(model.getId());
+            dialog.dismiss();} );
 
         btnCancel.setOnClickListener(v -> {
             dialog.dismiss();
@@ -409,6 +423,8 @@ public class activity_lucky_draw extends AppCompatActivity
 
         dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.setCancelable(true);
 
         TextView txt = view.findViewById(R.id.txtWinAmount);
         MaterialButton btnOk = view.findViewById(R.id.btnOk);

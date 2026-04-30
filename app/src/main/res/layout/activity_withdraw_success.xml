@@ -7,27 +7,27 @@
 
     <!-- 🔹 TOP BAR -->
     <LinearLayout
+        android:paddingTop="20sp"
         android:layout_width="match_parent"
         android:layout_height="90dp"
-        android:gravity="center_vertical"
         android:paddingHorizontal="16dp">
 
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_width="64dp"
+            android:layout_height="wrap_content"
             android:src="@drawable/back_arrow" />
 
         <TextView
             android:id="@+id/txtHeader"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_width="282dp"
+            android:layout_height="46dp"
             android:layout_weight="1"
             android:gravity="center"
             android:text="Status"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="@color/black" />
+            android:textColor="@color/black"
+            android:textSize="30sp"
+            android:textStyle="bold" />
 
         <View
             android:layout_width="40dp"
@@ -52,32 +52,34 @@
 
         <TextView
             android:id="@+id/txtTitle"
-            android:text="Processing"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            android:textColor="@color/color_green"
-            android:layout_marginTop="12dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="47dp"
+            android:layout_marginTop="12dp"
+            android:text="Processing"
+            android:gravity="center_horizontal"
+            android:textColor="@color/color_green"
+            android:textSize="28sp"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/txtMessage"
-            android:text="Please wait while we process your request"
-            android:textSize="15sp"
-            android:textColor="@color/black"
-            android:layout_marginBottom="10dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="32dp"
+            android:layout_marginBottom="10dp"
+            android:text="Please wait while we process your request"
+            android:textColor="@color/black"
+            android:gravity="center_horizontal"
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/txtRewardType"
-            android:text="Reward"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_marginBottom="8dp"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="34dp"
+            android:layout_marginBottom="8dp"
+            android:text="Reward"
+            android:textColor="@color/black"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
         <!-- METHOD + AMOUNT -->
         <LinearLayout
@@ -97,7 +99,7 @@
             <TextView
                 android:id="@+id/txtAmount"
                 android:text="₹0"
-                android:textSize="20sp"
+                android:textSize="25sp"
                 android:textStyle="bold"
                 android:textColor="#6A1BFF"
                 android:layout_width="wrap_content"
@@ -110,7 +112,7 @@
             android:layout_width="wrap_content"
             android:layout_height="48dp"
             android:gravity="center"
-            android:paddingHorizontal="16dp"
+            android:paddingHorizontal="25dp"
             android:background="@drawable/bg_voucher_code"
             android:text="CODE: XXXX-XXXX-XXXX"
             android:textColor="@color/black"
@@ -125,10 +127,10 @@
             android:layout_height="wrap_content"
             android:padding="12dp"
             android:textColor="@color/black"
-            android:textSize="14sp"
+            android:textSize="20sp"
             android:background="@drawable/bg_light_border"
             android:gravity="center"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="30dp"
             android:visibility="gone" />
 
         <!-- DONE -->
@@ -138,7 +140,9 @@
             android:layout_height="wrap_content"
             android:background="@drawable/bg_button_ripple"
             android:gravity="center"
-            android:padding="14dp"
+            android:padding="15dp"
+            android:layout_marginTop="20sp"
+            android:textSize="20sp"
             android:text="DONE"
             android:textStyle="bold"
             android:textColor="@color/black" />

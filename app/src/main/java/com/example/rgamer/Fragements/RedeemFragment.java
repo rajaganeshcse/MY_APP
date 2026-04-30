@@ -1,5 +1,6 @@
 package com.example.rgamer.Fragements;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -199,6 +200,7 @@ public class RedeemFragment extends Fragment {
         TextView btnCancel = view.findViewById(R.id.btnCancel);
         TextView btnConfirm = view.findViewById(R.id.btnConfirm);
 
+
         txtAmount.setText("Amount: ₹" + amount);
         txtCoins.setText("Coins: " + coins);
 
@@ -226,6 +228,14 @@ public class RedeemFragment extends Fragment {
         });
 
         dialog.show();
+
+        // ✅ ADD THIS
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+
+        dialog.setCanceledOnTouchOutside(false);
+        dialog.setCancelable(false);
     }
 
     /* ================= UPDATED TOKEN LOGIC ================= */

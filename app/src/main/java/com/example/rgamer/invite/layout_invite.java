@@ -274,10 +274,13 @@ public class layout_invite extends Fragment {
     // ================= SHARE =================
 
     private String getShareMessage() {
-        return "🎮 Join Gamex play & earn FREE coins!\n\n"
+        return "🎮 Join Gamex play & earn FREE coins!\n\n"+
+                "🎁 Get ₹20 bonus instantly when you sign up with my link\n\n"+
+                "⚡ Play games, complete simple tasks & earn real cash\n\n"+
+                "✅ Withdraw easily once your wallet hits just ₹60.0\n\n"
                 + "Use my referral code: " + txtCode.getText().toString()
                 + "\n\nDownload now 👇\n"
-                + "https://play.google.com/store/apps/details?id="
+                + "🔗 "+"https://play.google.com/store/apps/details?id="
                 + requireContext().getPackageName();
     }
 

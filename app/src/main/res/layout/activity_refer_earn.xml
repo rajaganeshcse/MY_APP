@@ -16,7 +16,7 @@
         android:background="#6A1BFF"
         android:gravity="center"
         app:title="Refer and Earn"
-        app:titleTextColor="#FFFFFF" />
+        app:titleTextColor="@color/white" />
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
@@ -24,19 +24,19 @@
         android:layout_height="wrap_content"
         app:tabIndicatorColor="#6A1BFF"
         app:tabSelectedTextColor="#6A1BFF"
-        android:backgroundTint="@color/white"
-        android:background="@color/white"
+        android:backgroundTint="@color/base_color"
+        android:background="@color/base_color"
         app:tabTextColor="@color/black">
 
         <com.google.android.material.tabs.TabItem
             android:text="INVITE"
-            android:background="@color/white"
+            android:background="@color/base_color"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"/>
 
         <com.google.android.material.tabs.TabItem
             android:text="MY EARNINGS"
-            android:background="@color/white"
+            android:background="@color/base_color"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"/>
     </com.google.android.material.tabs.TabLayout>

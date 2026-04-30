@@ -8,6 +8,7 @@
     android:orientation="horizontal"
     android:gravity="center_vertical"
     android:clickable="true"
+    android:contextClickable="true"
     android:focusable="true"
     android:padding="8dp">
 

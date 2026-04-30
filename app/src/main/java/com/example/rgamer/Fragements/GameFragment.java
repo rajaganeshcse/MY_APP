@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment;
 import com.example.rgamer.R;
 import com.example.rgamer.Game.TournamentActivity;
 import com.example.rgamer.UserPref;
+import com.example.rgamer.ads.AdsManager;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.rewarded.RewardedAd;
@@ -80,7 +81,7 @@ public class GameFragment extends Fragment {
         dailyTitle.setText("Daily Bonus");
 
         checkDailyBonus(dailyBtn);
-        daily.setOnClickListener(v -> claimDailyBonus(dailyBtn));
+        dailyBtn.setOnClickListener(v -> claimDailyBonus(dailyBtn));
 
         /* ================= VIDEO TASK ================= */
         View video = view.findViewById(R.id.taskVideo);
@@ -93,7 +94,7 @@ public class GameFragment extends Fragment {
         videoTitle.setText("Watch Video & Earn");
         videoBtn.setText("Watch");
 
-        video.setOnClickListener(v -> {
+        videoBtn.setOnClickListener(v -> {
             if (rewardedAd != null) {
                 rewardedAd.show(requireActivity(), rewardItem -> {
                     addCoins(25);
@@ -232,8 +233,8 @@ public class GameFragment extends Fragment {
     /* ================= ADS ================= */
     private void loadRewardAd() {
         RewardedAd.load(
-                requireContext(),
-                "ca-app-pub-3940256099942544/5224354917",
+                requireContext(), AdsManager.REWARDED_AD_ID
+                ,
                 new AdRequest.Builder().build(),
                 new RewardedAdLoadCallback() {
                     @Override
