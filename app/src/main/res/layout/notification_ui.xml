@@ -6,13 +6,15 @@
     android:background="@android:color/white"
     android:gravity="center_vertical">
 
-    <!-- Left Icon (optional but recommended) -->
+    <!-- Left App Icon -->
     <ImageView
         android:id="@+id/imgLeft"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:src="@drawable/app_icon"
-        android:scaleType="centerCrop" />
+        android:scaleType="centerCrop"
+        android:background="@drawable/bg_circle_light"
+        android:padding="6dp" />
 
     <!-- Text Section -->
     <LinearLayout
@@ -22,34 +24,46 @@
         android:orientation="vertical"
         android:layout_marginStart="10dp">
 
+        <!-- Title -->
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Task Completed 🎯"
+            android:text="Reward Added 🎯"
             android:textStyle="bold"
-            android:textSize="14sp"
-            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            android:textColor="#000000"
             android:maxLines="1"
             android:ellipsize="end" />
 
+        <!-- Message -->
         <TextView
             android:id="@+id/txtMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="₹2 added to your wallet 💰"
-            android:textSize="12sp"
-            android:textColor="@android:color/darker_gray"
+            android:text="₹200 credited to your wallet 💰"
+            android:textSize="13sp"
+            android:textColor="#2E7D32"
+            android:layout_marginTop="2dp"
             android:maxLines="2"
             android:ellipsize="end" />
+
     </LinearLayout>
 
-    <!-- Right Icon -->
-    <ImageView
-        android:id="@+id/appIcon"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/app_icon"
-        android:scaleType="centerCrop" />
+    <!-- Right Badge / Amount -->
+    <TextView
+        android:id="@+id/txtAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="₹200"
+        android:textStyle="bold"
+        android:textSize="14sp"
+        android:textColor="#2E7D32"
+        android:background="@drawable/bg_amount_chip"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:layout_marginStart="6dp" />
 
 </LinearLayout>

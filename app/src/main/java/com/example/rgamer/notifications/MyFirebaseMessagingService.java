@@ -23,9 +23,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onMessageReceived(RemoteMessage message) {
 
-
-            Log.d("FCM_TEST", "Message received: " + message.getData());
-
+        Log.d("FCM_TEST", "Message received: " + message.getData());
 
         Map<String, String> data = message.getData();
         if (data == null || data.isEmpty()) return;
@@ -36,27 +34,35 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String type = get(data, "type", "general");
         String requestId = get(data, "requestId", "");
 
-        showNotification(title, body, amount, type, requestId);
+
+        try {
+            showNotification(title, body, amount, type, requestId);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
-    private String get(Map<String,String> d, String k, String def){
+    private String get(Map<String, String> d, String k, String def) {
         return d.get(k) == null ? def : d.get(k);
     }
 
     private void showNotification(String title, String body,
-                                  String amount, String type, String requestId) {
+                                  String amount, String type, String requestId) throws ClassNotFoundException {
 
         NotificationManager manager =
                 (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
 
         createChannel(manager);
 
+        /* -------- Custom Layout -------- */
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification_ui);
         views.setTextViewText(R.id.txtTitle, title);
         views.setTextViewText(R.id.txtMessage, body);
-        views.setImageViewResource(R.id.appIcon, R.drawable.app_icon);
+        views.setTextViewText(R.id.txtAmount, amount);
 
-        Intent intent = new Intent(this, activity_withdraw_success.class);
+        /* -------- Click Action -------- */
+        Intent intent = new Intent(this,activity_withdraw_success.class);
         intent.putExtra("amount", "₹" + amount);
         intent.putExtra("type", type);
         intent.putExtra("requestId", requestId);
@@ -71,25 +77,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                 ? PendingIntent.FLAG_IMMUTABLE : 0)
         );
 
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this, CHANNEL_ID)
-                        .setSmallIcon(R.drawable.app_icon)
-                        .setCustomContentView(views)
-                        .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
-                        .setAutoCancel(true)
-                        .setPriority(NotificationCompat.PRIORITY_HIGH)
-                        .setContentIntent(pi);
+        /* -------- Notification -------- */
+        NotificationCompat.Builder builder
+                = new NotificationCompat.Builder(this, CHANNEL_ID);
+        builder.setSmallIcon(R.drawable.app_icon);
+        builder.setContentTitle(title);
+        builder.setContentText(body);
+        builder.setCustomContentView(views);
+        builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle());
+        builder.setAutoCancel(true);
+        builder.setPriority(NotificationCompat.PRIORITY_HIGH);
+        builder.setContentIntent(pi);// ✅ FIXED ICON (IMPORTANT)
+// fallback
+// fallback
 
         manager.notify(new Random().nextInt(), builder.build());
     }
 
     private void createChannel(NotificationManager manager) {
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
             NotificationChannel channel = new NotificationChannel(
                     CHANNEL_ID,
                     "Rewards",
                     NotificationManager.IMPORTANCE_HIGH
             );
+
+            channel.setDescription("Reward notifications");
+            channel.enableVibration(true);
+
             manager.createNotificationChannel(channel);
         }
     }

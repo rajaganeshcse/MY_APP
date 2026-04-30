@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.rgamer.Activitys.MainActivity;
 import com.example.rgamer.R;
 import com.example.rgamer.UserPref;
+import com.example.rgamer.ads.AdsManager;
 import com.example.rgamer.models.SpinResponse;
 import com.example.rgamer.network.ApiClient;
 import com.example.rgamer.network.ApiService;
@@ -422,7 +423,7 @@ public class activity_daily_spin extends AppCompatActivity {
         AdRequest adRequest = new AdRequest.Builder().build();
 
         RewardedAd.load(this,
-                "ca-app-pub-3940256099942544/5224354917",
+                AdsManager.REWARDED_AD_ID,
                 adRequest,
                 new RewardedAdLoadCallback() {
 

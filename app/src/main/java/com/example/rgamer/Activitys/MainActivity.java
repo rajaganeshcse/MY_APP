@@ -42,7 +42,16 @@ public class MainActivity extends AppCompatActivity {
 
         initViews();
         setupNavigation();
-        userPref = new UserPref(this); // ✅ FIRST
+        userPref = new UserPref(this);
+
+        if (Build.VERSION.SDK_INT >= 33) {
+            requestPermissions(new String[]{
+                    android.Manifest.permission.POST_NOTIFICATIONS
+
+
+            }, 1);
+        }
+        // ✅ FIRST
 
         FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
