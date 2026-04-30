@@ -3,8 +3,56 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:padding="1dp"
-
     android:gravity="center_vertical">
+
+
+
+    <!-- Text Section -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:layout_marginStart="10dp"
+        android:paddingEnd="6dp">
+
+        <!-- Title -->
+        <TextView
+            android:id="@+id/txtTitle"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:text="Reward Added 🎯"
+            android:textColor="@color/white"
+            android:textSize="15sp"
+            android:textStyle="bold" />
+
+        <!-- Message -->
+        <TextView
+            android:id="@+id/txtMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:maxLines="5"
+            android:ellipsize="end"
+            android:text="₹200 credited to your wallet 💰"
+            android:textColor="@color/white"
+            android:textSize="13sp" />
+
+        <!-- Message 2 -->
+        <TextView
+            android:id="@+id/txtMessage1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:maxLines="5"
+            android:ellipsize="end"
+            android:text=""
+            android:textColor="@color/white"
+            android:textSize="13sp" />
+
+    </LinearLayout>
 
     <!-- Left Icon -->
     <ImageView
@@ -13,60 +61,8 @@
         android:layout_height="35dp"
         android:background="@drawable/bg_circle_light"
         android:padding="1dp"
-        android:layout_gravity="top"
         android:layout_marginTop="4dp"
-        android:gravity="center"
         android:scaleType="centerCrop"
         android:src="@drawable/app_icon" />
-
-    <!-- Text Section -->
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:paddingRight="6dp"
-        android:orientation="vertical"
-        android:layout_marginStart="10dp">
-
-        <!-- Title -->
-        <TextView
-            android:id="@+id/txtTitle"
-            android:layout_width="326dp"
-            android:layout_height="wrap_content"
-
-            android:maxLines="1"
-            android:text="Reward Added 🎯"
-            android:textColor="@color/white"
-            android:textSize="15sp"
-            android:textStyle="bold" />
-
-        <!-- Message (Body Text) -->
-        <TextView
-            android:id="@+id/txtMessage"
-            android:layout_width="327dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_weight="1"
-
-            android:maxLines="5"
-            android:text="₹200 credited to your wallet 💰"
-            android:textColor="@color/white"
-            android:textSize="13sp" />
-        <!-- Message (Body Text) -->
-        <TextView
-            android:id="@+id/txtMessage1"
-            android:layout_width="327dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:layout_weight="1"
-            android:maxLines="5"
-            android:paddingRight="6dp"
-            android:text="₹200 credited to your wallet 💰edtrfyguh ucytkgc  yvjuyygj ti iv  giu i gygy"
-            android:textColor="@color/white"
-            android:textSize="13sp" />
-
-
-    </LinearLayout>
-
 
 </LinearLayout>

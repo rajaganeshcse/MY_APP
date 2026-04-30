@@ -30,13 +30,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         String title = get(data, "title", "Reward Update 🎯");
         String body = get(data, "body", "Something updated 💰");
+        String body1 = get(data, "body1", "");
         String amount = get(data, "amount", "0");
         String type = get(data, "type", "general");
         String requestId = get(data, "requestId", "");
 
 
         try {
-            showNotification(title, body, amount, type, requestId);
+            showNotification(title, body,body1, amount, type, requestId);
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -47,7 +48,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         return d.get(k) == null ? def : d.get(k);
     }
 
-    private void showNotification(String title, String body,
+    private void showNotification(String title, String body,String body1,
                                   String amount, String type, String requestId) throws ClassNotFoundException {
 
         NotificationManager manager =
@@ -59,7 +60,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification_ui);
         views.setTextViewText(R.id.txtTitle, title);
         views.setTextViewText(R.id.txtMessage, body);
-        views.setTextViewText(R.id.txtAmount, amount);
+        views.setTextViewText(R.id.txtMessage1,body1);
 
         /* -------- Click Action -------- */
         Intent intent = new Intent(this,activity_withdraw_success.class);
