@@ -103,7 +103,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     "Rewards",
                     NotificationManager.IMPORTANCE_HIGH
             );
-
             channel.setDescription("Reward notifications");
             channel.enableVibration(true);
 
