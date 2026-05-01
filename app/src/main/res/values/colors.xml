@@ -23,6 +23,8 @@
     
     <color name="game_card">#d3f3f1</color>
     <color name="game_card_text">#40c9ff</color>
+    <color name="card_header">#f7ba2c</color>
+    <color name="card_body">#ffefc1</color>
 
 
 </resources>

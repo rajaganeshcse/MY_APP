@@ -226,13 +226,9 @@ public class RedeemFragment extends Fragment {
             dialog.dismiss();
             submitRedeem(coins, amount);
         });
-
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
 
-        // ✅ ADD THIS
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
 
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);

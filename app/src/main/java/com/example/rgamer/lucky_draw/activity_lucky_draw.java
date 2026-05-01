@@ -244,11 +244,11 @@ public class activity_lucky_draw extends AppCompatActivity
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
-
+        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
         if(type.equals("AD")) {
             TextView txt = view.findViewById(R.id.txtMessage);
             TextView txtTitle = view.findViewById(R.id.txtTitle);
@@ -264,6 +264,7 @@ public class activity_lucky_draw extends AppCompatActivity
         closebtn.setOnClickListener(v ->{
             adapter.clearLoading(model.getId());
             dialog.dismiss();} );
+
 
         btnCancel.setOnClickListener(v -> {
             dialog.dismiss();

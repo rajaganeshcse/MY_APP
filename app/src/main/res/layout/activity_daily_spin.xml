@@ -116,8 +116,9 @@
             <!-- Wheel -->
             <ImageView
                 android:id="@+id/imgWheel"
-                android:layout_width="352dp"
-                android:layout_height="340dp"
+                android:layout_width="375dp"
+                android:padding="5dp"
+                android:layout_height="match_parent"
                 android:layout_gravity="bottom|center_horizontal"
                 android:src="@drawable/spin_wheel" />
 

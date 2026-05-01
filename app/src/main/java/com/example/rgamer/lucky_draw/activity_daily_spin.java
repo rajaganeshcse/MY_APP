@@ -391,6 +391,7 @@ public class activity_daily_spin extends AppCompatActivity {
         txt.setText("+" + reward + " Coins");
 
         ok.setOnClickListener(v -> d.dismiss());
+        d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         d.show();
     }

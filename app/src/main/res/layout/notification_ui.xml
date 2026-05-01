@@ -24,7 +24,7 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:text="Reward Added 🎯"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold" />
 
@@ -37,7 +37,7 @@
             android:maxLines="5"
             android:ellipsize="end"
             android:text="₹200 credited to your wallet 💰"
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="13sp" />
 
         <!-- Message 2 -->
@@ -49,7 +49,7 @@
             android:maxLines="5"
             android:ellipsize="end"
             android:text=""
-            android:textColor="@color/white"
+            android:textColor="@color/black"
             android:textSize="13sp" />
 
     </LinearLayout>

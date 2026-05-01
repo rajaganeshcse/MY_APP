@@ -142,6 +142,7 @@ public class HomeFragment extends Fragment {
         txt.setText("+" + reward + " Coins");
 
         ok.setOnClickListener(v -> d.dismiss());
+        d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         d.show();
     }
