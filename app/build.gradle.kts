@@ -6,12 +6,12 @@ plugins {
 android {
     namespace = "com.example.rgamer"
     compileSdk {
-        version = release(34)
+        version = release(36)
     }
 
     defaultConfig {
         applicationId = "com.example.rgamer"
-        minSdk = 21
+        minSdk = 23
         targetSdk= 34
         versionCode = 1
         versionName = "1.0"
@@ -44,9 +44,6 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-
-    implementation("androidx.activity:activity:1.8.2")
-
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
@@ -63,12 +60,12 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging:24.0.0")
 
 
-        implementation ("com.google.firebase:firebase-auth:22.3.1")
+    implementation ("com.google.firebase:firebase-auth:22.3.1")
 
 
 
-        implementation ("com.squareup.retrofit2:retrofit:2.9.0")
-        implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation ("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation ("com.squareup.retrofit2:converter-gson:2.9.0")
 
     implementation("com.google.android.material:material:1.11.0")
 

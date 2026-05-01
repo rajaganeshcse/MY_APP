@@ -35,13 +35,13 @@ public class TournamentActivity extends AppCompatActivity {
     private boolean showNew;
     private String uid;
 
-    // ✅ USER GAME ID TEXT
     private TextView txtGameName;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(com.example.rgamer.R.layout.activity_tournament);
+        setContentView(R.layout.activity_tournament);
+
         makeFullScreen();
 
         uid = FirebaseAuth.getInstance().getUid();
@@ -54,14 +54,14 @@ public class TournamentActivity extends AppCompatActivity {
         showNew = getIntent().getBooleanExtra("showNew", false);
 
         /* ================= UI ================= */
-        ImageView imgBanner = findViewById(com.example.rgamer.R.id.imgBanner);
-        TextView txtTitle = findViewById(com.example.rgamer.R.id.txtTitle);
-        txtGameName = findViewById(com.example.rgamer.R.id.txtGameName);
+        ImageView imgBanner = findViewById(R.id.imgBanner);
+        TextView txtTitle = findViewById(R.id.txtTitle);
+        txtGameName = findViewById(R.id.txtGameName);
 
         imgBanner.setImageResource(banner);
         txtTitle.setText(title);
 
-        // ✅ DEFAULT TEXT (BEFORE JOIN)
+        // Default text
         txtGameName.setText("ENTER GAME ID :");
 
         recyclerTournament = findViewById(R.id.recyclerTournament);
@@ -85,17 +85,19 @@ public class TournamentActivity extends AppCompatActivity {
 
                     @Override
                     public void onCheckWinners(FreeFireTournamentModel model) {
-                        // unchanged
+                        // TODO
                     }
                 });
 
         recyclerTournament.setAdapter(adapter);
+
         loadMatches();
     }
+
+    /* ================= FULL SCREEN ================= */
     private void makeFullScreen() {
         Window window = getWindow();
 
-        // 🔥 Make content go behind system bars
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false);
 
@@ -104,11 +106,7 @@ public class TournamentActivity extends AppCompatActivity {
                 controller.setSystemBarsBehavior(
                         WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                 );
-
-                // Optional: hide bars (remove if you only want transparent top)
-                // controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
             }
-
         } else {
             window.getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
@@ -116,18 +114,12 @@ public class TournamentActivity extends AppCompatActivity {
             );
         }
 
-        // 🔥 Make status bar transparent (TOP FIX)
         window.setStatusBarColor(Color.TRANSPARENT);
 
-        // 🔥 Optional: make navigation bar transparent
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setNavigationBarColor(Color.TRANSPARENT);
         }
     }
-
-
-    /* ================= FULL SCREEN ================= */
-
 
     /* ================= LOAD MATCHES ================= */
     private void loadMatches() {
@@ -150,10 +142,13 @@ public class TournamentActivity extends AppCompatActivity {
 
                 if (m != null) {
                     m.setId(d.getId());
-                    checkIfJoined(m);
                     list.add(m);
+
+                    // check join status
+                    checkIfJoined(m);
                 }
             }
+
             adapter.notifyDataSetChanged();
         });
     }
@@ -172,13 +167,17 @@ public class TournamentActivity extends AppCompatActivity {
 
                     if (doc.exists()) {
                         model.setJoined(true);
-                        model.setJoinedGameId(doc.getString("gameId"));
-                        model.setJoinedUsername(doc.getString("username"));
 
-                        // ✅ SHOW USER GAME ID HERE
-                        txtGameName.setText(
-                                "GAME ID : " + model.getJoinedGameId()
-                        );
+                        String gameId = doc.getString("gameId");
+                        String username = doc.getString("username");
+
+                        model.setJoinedGameId(gameId);
+                        model.setJoinedUsername(username);
+
+                        // ✅ Update only when joined
+                        if (gameId != null) {
+                            txtGameName.setText("GAME ID : " + gameId);
+                        }
 
                         adapter.notifyDataSetChanged();
                     }
@@ -198,10 +197,7 @@ public class TournamentActivity extends AppCompatActivity {
     }
 
     /* ================= JOIN TOURNAMENT ================= */
-    private void joinTournament(
-            FreeFireTournamentModel model,
-            String gameId
-    ) {
+    private void joinTournament(FreeFireTournamentModel model, String gameId) {
 
         if (uid == null) return;
 
@@ -220,7 +216,7 @@ public class TournamentActivity extends AppCompatActivity {
                         .collection("joined_tournaments")
                         .document(model.getId());
 
-        String username = "USER"; // replace later
+        String username = "USER";
 
         db.runTransaction(transaction -> {
 
@@ -230,16 +226,20 @@ public class TournamentActivity extends AppCompatActivity {
 
             DocumentSnapshot snap = transaction.get(tournamentRef);
 
-            long joined =
-                    snap.getLong("joinedSlots") == null
-                            ? 0
-                            : snap.getLong("joinedSlots");
+            long joined = snap.getLong("joinedSlots") == null
+                    ? 0
+                    : snap.getLong("joinedSlots");
 
-            transaction.update(
-                    tournamentRef,
-                    "joinedSlots",
-                    joined + 1
-            );
+            long totalSlots = snap.getLong("totalSlots") == null
+                    ? 0
+                    : snap.getLong("totalSlots");
+
+            // ✅ prevent over join
+            if (joined >= totalSlots) {
+                throw new RuntimeException("Slots Full");
+            }
+
+            transaction.update(tournamentRef, "joinedSlots", joined + 1);
 
             Map<String, Object> tournamentUser = new HashMap<>();
             tournamentUser.put("username", username);
@@ -263,22 +263,13 @@ public class TournamentActivity extends AppCompatActivity {
             model.setJoined(true);
             model.setJoinedGameId(gameId);
 
-            // ✅ UPDATE UI IMMEDIATELY
             txtGameName.setText("GAME ID : " + gameId);
 
             adapter.notifyDataSetChanged();
 
-            Toast.makeText(
-                    this,
-                    "Joined Successfully",
-                    Toast.LENGTH_SHORT
-            ).show();
+            Toast.makeText(this, "Joined Successfully", Toast.LENGTH_SHORT).show();
 
         }).addOnFailureListener(e ->
-                Toast.makeText(
-                        this,
-                        e.getMessage(),
-                        Toast.LENGTH_SHORT
-                ).show());
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show());
     }
 }

@@ -1,6 +1,7 @@
 package com.example.rgamer.Game;
 
 import android.content.Context;
+import android.os.CountDownTimer;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,10 +22,9 @@ import java.util.Locale;
 public class FreeFireTournamentAdapter
         extends RecyclerView.Adapter<FreeFireTournamentAdapter.ViewHolder> {
 
-    /* ================= LISTENER ================= */
     public interface Listener {
         void onJoin(FreeFireTournamentModel model);
-        void onCheckWinners(FreeFireTournamentModel model); // 👈 history / participants
+        void onCheckWinners(FreeFireTournamentModel model);
     }
 
     private final Context context;
@@ -66,18 +66,19 @@ public class FreeFireTournamentAdapter
             Date d = new Date(m.getStartTimeMillis());
 
             h.txtTimeLabel.setText(
-                    new SimpleDateFormat("hh:mm a", Locale.getDefault())
-                            .format(d)
+                    new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(d)
             );
 
             h.txtDateLabel.setText(
-                    new SimpleDateFormat("dd MMM", Locale.getDefault())
-                            .format(d)
+                    new SimpleDateFormat("dd MMM", Locale.getDefault()).format(d)
             );
         } else {
             h.txtTimeLabel.setText("-");
             h.txtDateLabel.setText("-");
         }
+
+        /* ================= COUNTDOWN ================= */
+        startCountdown(h, m.getStartTimeMillis());
 
         /* ================= SLOTS ================= */
         int total = m.getTotalSlots();
@@ -97,9 +98,9 @@ public class FreeFireTournamentAdapter
         h.txtGameId.setVisibility(View.GONE);
         h.txtGamePassword.setVisibility(View.GONE);
 
-        /* ================= JOIN STATE ================= */
         h.btnJoin.setOnClickListener(null);
 
+        /* ================= JOIN STATE ================= */
         if (m.isJoined()) {
 
             h.btnJoin.setEnabled(false);
@@ -123,14 +124,11 @@ public class FreeFireTournamentAdapter
         } else {
 
             h.btnJoin.setEnabled(true);
-            h.btnJoin.setText(
-                    "Join (" + m.getEntryTickets() + " Tickets)"
-            );
-            h.btnJoin.setOnClickListener(v ->
-                    listener.onJoin(m));
+            h.btnJoin.setText("Join (" + m.getEntryTickets() + " Tickets)");
+            h.btnJoin.setOnClickListener(v -> listener.onJoin(m));
         }
 
-        /* ================= HISTORY / PARTICIPANTS ================= */
+        /* ================= WINNERS ================= */
         h.btnWinners.setOnClickListener(v ->
                 listener.onCheckWinners(m));
     }
@@ -140,15 +138,68 @@ public class FreeFireTournamentAdapter
         return list == null ? 0 : list.size();
     }
 
+    /* ================= COUNTDOWN FUNCTION ================= */
+    private void startCountdown(ViewHolder holder, long startTimeMillis) {
+
+        // cancel old timer (IMPORTANT)
+        if (holder.timer != null) {
+            holder.timer.cancel();
+        }
+
+        if (startTimeMillis <= System.currentTimeMillis()) {
+            holder.txtCountdown.setText("Match Started");
+            holder.txtCountdown.setVisibility(View.VISIBLE);
+
+            // 🔥 show room details when started
+            holder.txtGameId.setVisibility(View.VISIBLE);
+            holder.txtGamePassword.setVisibility(View.VISIBLE);
+            return;
+        }
+
+        holder.txtCountdown.setVisibility(View.VISIBLE);
+
+        holder.timer = new CountDownTimer(
+                startTimeMillis - System.currentTimeMillis(),
+                1000
+        ) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+
+                long seconds = millisUntilFinished / 1000;
+
+                long hrs = seconds / 3600;
+                long mins = (seconds % 3600) / 60;
+                long secs = seconds % 60;
+
+                holder.txtCountdown.setText(
+                        "Starts in " +
+                                String.format("%02d:%02d:%02d", hrs, mins, secs)
+                );
+            }
+
+            @Override
+            public void onFinish() {
+                holder.txtCountdown.setText("Match Started");
+
+                // 🔥 reveal room details
+                holder.txtGameId.setVisibility(View.VISIBLE);
+                holder.txtGamePassword.setVisibility(View.VISIBLE);
+            }
+        }.start();
+    }
+
     /* ================= VIEW HOLDER ================= */
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtPrize, txtSlots,
                 txtTimeLabel, txtDateLabel,
-                txtGameId, txtGamePassword;
+                txtGameId, txtGamePassword,
+                txtCountdown;
 
         MaterialButton btnJoin, btnWinners;
         ProgressBar progressSlots;
+
+        CountDownTimer timer; // 🔥 important
 
         ViewHolder(View v) {
             super(v);
@@ -157,11 +208,13 @@ public class FreeFireTournamentAdapter
             txtSlots = v.findViewById(R.id.txtSlots);
             txtTimeLabel = v.findViewById(R.id.txtTimeLabel);
             txtDateLabel = v.findViewById(R.id.txtDateLabel);
-            txtGameId = v.findViewById(R.id.gameid);
-            txtGamePassword = v.findViewById(R.id.gamePassword);
+            txtGameId = v.findViewById(R.id.roomid);
+            txtGamePassword = v.findViewById(R.id.roomPassword);
+            txtCountdown = v.findViewById(R.id.txtCountdown);
+
             btnJoin = v.findViewById(R.id.btnJoin);
             btnWinners = v.findViewById(R.id.btnWinners);
-            progressSlots = v.findViewById(R.id.progressSlots);
+            progressSlots = v.findViewById(R.id.progSlots);
         }
     }
 }
