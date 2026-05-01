@@ -6,13 +6,13 @@ plugins {
 android {
     namespace = "com.example.rgamer"
     compileSdk {
-        version = release(36)
+        version = release(34)
     }
 
     defaultConfig {
         applicationId = "com.example.rgamer"
-        minSdk = 23
-        targetSdk= 36
+        minSdk = 21
+        targetSdk= 34
         versionCode = 1
         versionName = "1.0"
 
@@ -44,6 +44,9 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
+
+    implementation("androidx.activity:activity:1.8.2")
+
     implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.android.gms:play-services-auth:20.7.0")
