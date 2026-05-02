@@ -83,7 +83,12 @@ public class RewardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 vh.icon.setImageResource(R.drawable.ic_share);
             } else if ("Daily spin".equalsIgnoreCase(m.getType())) {
                 vh.icon.setImageResource(R.drawable.ic_spinner);
-            } else {
+            } else if ("Lucky Draw".equalsIgnoreCase(m.getType())) {
+                vh.icon.setImageResource(R.drawable.ic_lucky);
+            }
+            else if ("Withdrawal".equalsIgnoreCase(m.getType())) {
+                vh.icon.setImageResource(R.drawable.img_redeem);
+            }else {
                 vh.icon.setImageResource(R.drawable.ic_reward);
             }
 

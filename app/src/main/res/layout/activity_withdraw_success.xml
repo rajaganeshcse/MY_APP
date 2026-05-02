@@ -105,6 +105,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
         </LinearLayout>
+        <!-- DATE & TIME -->
+        <TextView
+            android:id="@+id/txtDateTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="01 May 2026, 10:09 AM"
+            android:textSize="14sp"
+            android:textColor="#777"
+            android:layout_marginBottom="12dp"
+            android:gravity="center"/>
 
         <!-- VOUCHER CODE -->
         <TextView

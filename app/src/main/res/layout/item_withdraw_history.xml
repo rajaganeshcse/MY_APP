@@ -19,16 +19,32 @@
         android:src="@drawable/wallet_icon"
         android:contentDescription="Withdraw Method"/>
 
-    <!-- 🔹 TYPE -->
-    <TextView
-        android:id="@+id/txtType"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_weight="1"
-        android:text="Reward Type"
-        android:textColor="#000000"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:layout_width="0dp"
+        android:layout_height="wrap_content">
+
+        <!-- TYPE -->
+        <TextView
+            android:id="@+id/txtType"
+            android:text="Reward Type"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="#000"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+        <!-- 🔥 DATE (NEW) -->
+        <TextView
+            android:id="@+id/txtDate"
+            android:text="Today, 10:45 AM"
+            android:textSize="13sp"
+            android:textColor="#777"
+            android:layout_marginTop="3dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
 
     <!-- 🔹 AMOUNT -->
     <TextView
