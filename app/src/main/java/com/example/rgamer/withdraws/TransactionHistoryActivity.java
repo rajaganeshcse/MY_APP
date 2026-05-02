@@ -76,7 +76,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         btnBack.setOnClickListener(v ->
                 getOnBackPressedDispatcher().onBackPressed()
         );
-makeFullScreen();
+        makeFullScreen();
         loadWithdrawHistory();
     }
 

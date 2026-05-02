@@ -17,6 +17,15 @@ public class FreeFireTournamentModel{
     private long startTimeMillis;
     private long created_at;
 
+
+    // 🔥 FROM TOURNAMENT DB
+    private String roomId;
+    private String roomPassword;
+
+    // 🔥 USER STATE
+    private boolean isJoined = false;
+
+
     /* ================= JOIN STATE (CURRENT USER) ================= */
     private boolean joined;
     private String joinedUsername;
@@ -27,6 +36,12 @@ public class FreeFireTournamentModel{
     private Map<String, JoinedUser> joinedUsers;
 
     // REQUIRED empty constructor
+
+
+
+    public String getRoomId() { return roomId; }
+    public String getRoomPassword() { return roomPassword; }
+
     public FreeFireTournamentModel(){   }
 
     /* ================= BASIC GETTERS ================= */

@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
     <!-- Permissions -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
-    <uses-permission android:name="android.permission.VIBRATE"/>
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <application
         android:allowBackup="true"
@@ -17,49 +16,75 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.RGamer">
-
+        <activity
+            android:name=".withdraws.RewardHistory"
+            android:exported="false"
+            android:theme="@style/Theme.RGamer" />
         <!-- ✅ KEEP ONLY ONE AdMob ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6379296195597918~1290788138"/>
-
-        <!-- ✅ Firebase Messaging Service (ONLY ONE) -->
+            android:value="ca-app-pub-6379296195597918~1290788138" /> <!-- ✅ Firebase Messaging Service (ONLY ONE) -->
         <service
             android:name=".notifications.MyFirebaseMessagingService"
             android:exported="false">
             <intent-filter>
-                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
-        </service>
-
-        <!-- Activities -->
-        <activity android:name=".Game.JoinedPlayersActivity" android:exported="false" />
-        <activity android:name=".Game.JoinGameIdBottomSheet" android:exported="false" />
-        <activity android:name=".lucky_draw.activity_daily_spin" android:exported="false" />
-        <activity android:name=".lucky_draw.activity_lucky_draw_winner" android:exported="false" />
-        <activity android:name=".Game.activity_winners" android:exported="false" />
-        <activity android:name=".withdraws.activity_withdraw_success" android:exported="false" />
-        <activity android:name=".withdraws.TransactionHistoryActivity" android:exported="false" />
-        <activity android:name=".withdraws.bottomsheet_withdraw_details" android:exported="false" />
-        <activity android:name=".invite.layout_invite" android:exported="false" />
-        <activity android:name=".invite.activity_refer_earn" android:exported="false" />
-        <activity android:name=".lucky_draw.activity_lucky_draw" android:exported="false" />
-        <activity android:name=".Game.TournamentActivity" android:exported="false" />
-        <activity android:name=".Activitys.activity_login" android:exported="false" />
-        <activity android:name=".Activitys.OnBoardingActivity" android:exported="false" />
-        <activity android:name=".Activitys.MainActivity" android:exported="false" />
-
-        <!-- Launcher Activity -->
+        </service> <!-- Activities -->
+        <activity
+            android:name=".Game.JoinedPlayersActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Game.JoinGameIdBottomSheet"
+            android:exported="false" />
+        <activity
+            android:name=".lucky_draw.activity_daily_spin"
+            android:exported="false" />
+        <activity
+            android:name=".lucky_draw.activity_lucky_draw_winner"
+            android:exported="false" />
+        <activity
+            android:name=".Game.activity_winners"
+            android:exported="false" />
+        <activity
+            android:name=".withdraws.activity_withdraw_success"
+            android:exported="false" />
+        <activity
+            android:name=".withdraws.TransactionHistoryActivity"
+            android:exported="false" />
+        <activity
+            android:name=".withdraws.bottomsheet_withdraw_details"
+            android:exported="false" />
+        <activity
+            android:name=".invite.layout_invite"
+            android:exported="false" />
+        <activity
+            android:name=".invite.activity_refer_earn"
+            android:exported="false" />
+        <activity
+            android:name=".lucky_draw.activity_lucky_draw"
+            android:exported="false" />
+        <activity
+            android:name=".Game.TournamentActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activitys.activity_login"
+            android:exported="false" />
+        <activity
+            android:name=".Activitys.OnBoardingActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activitys.MainActivity"
+            android:exported="false" /> <!-- Launcher Activity -->
         <activity
             android:name=".Activitys.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <!-- File Provider -->
+        </activity> <!-- File Provider -->
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -69,7 +94,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>

@@ -31,10 +31,9 @@ public class FreeFireTournamentAdapter
     private final List<FreeFireTournamentModel> list;
     private final Listener listener;
 
-    public FreeFireTournamentAdapter(
-            Context context,
-            List<FreeFireTournamentModel> list,
-            Listener listener) {
+    public FreeFireTournamentAdapter(Context context,
+                                     List<FreeFireTournamentModel> list,
+                                     Listener listener) {
         this.context = context;
         this.list = list;
         this.listener = listener;
@@ -42,79 +41,66 @@ public class FreeFireTournamentAdapter
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(
-            @NonNull ViewGroup parent,
-            int viewType) {
-
-        View v = LayoutInflater.from(context)
-                .inflate(R.layout.item_freefire_tournament, parent, false);
-        return new ViewHolder(v);
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new ViewHolder(LayoutInflater.from(context)
+                .inflate(R.layout.item_freefire_tournament, parent, false));
     }
 
     @Override
-    public void onBindViewHolder(
-            @NonNull ViewHolder h,
-            int position) {
+    public void onBindViewHolder(@NonNull ViewHolder h, int position) {
 
         FreeFireTournamentModel m = list.get(position);
 
-        /* ================= PRIZE ================= */
         h.txtPrize.setText("Win " + m.getCoin() + " Coins");
 
-        /* ================= TIME & DATE ================= */
+        // TIME
         if (m.getStartTimeMillis() > 0) {
             Date d = new Date(m.getStartTimeMillis());
 
             h.txtTimeLabel.setText(
-                    new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(d)
-            );
+                    new SimpleDateFormat("hh:mm a", Locale.getDefault()).format(d));
 
             h.txtDateLabel.setText(
-                    new SimpleDateFormat("dd MMM", Locale.getDefault()).format(d)
-            );
-        } else {
-            h.txtTimeLabel.setText("-");
-            h.txtDateLabel.setText("-");
+                    new SimpleDateFormat("dd MMM", Locale.getDefault()).format(d));
         }
 
-        /* ================= COUNTDOWN ================= */
+        // COUNTDOWN
         startCountdown(h, m.getStartTimeMillis());
 
-        /* ================= SLOTS ================= */
+        // SLOTS
         int total = m.getTotalSlots();
         int joined = m.getJoinedSlots();
         int left = Math.max(0, total - joined);
 
         h.txtSlots.setText("Slots Left : " + left + "/" + total);
 
-        if (h.progressSlots != null) {
-            h.progressSlots.setMax(100);
-            h.progressSlots.setProgress(
-                    total > 0 ? (joined * 100) / total : 0
-            );
-        }
+        h.progressSlots.setProgress(
+                total > 0 ? (joined * 100) / total : 0);
 
-        /* ================= DEFAULT VISIBILITY ================= */
+        // RESET VISIBILITY
         h.txtGameId.setVisibility(View.GONE);
         h.txtGamePassword.setVisibility(View.GONE);
 
-        h.btnJoin.setOnClickListener(null);
-
-        /* ================= JOIN STATE ================= */
+        // JOIN STATE
         if (m.isJoined()) {
 
             h.btnJoin.setEnabled(false);
             h.btnJoin.setText("Joined");
 
-            if (m.getJoinedUsername() != null) {
-                h.txtGameId.setText("User : " + m.getJoinedUsername());
+            // 🔥 SHOW ROOM ID
+            if (m.getRoomId() != null) {
+                h.txtGameId.setText("Room ID : " + m.getRoomId());
                 h.txtGameId.setVisibility(View.VISIBLE);
             }
 
-            if (m.getJoinedGameId() != null) {
-                h.txtGamePassword.setText("Game ID : " + m.getJoinedGameId());
-                h.txtGamePassword.setVisibility(View.VISIBLE);
+            // 🔥 SHOW PASSWORD
+            if (m.getRoomPassword() != null) {
+                h.txtGamePassword.setText("Password : " + m.getRoomPassword());
+            } else {
+                h.txtGamePassword.setText("Password : Not Available");
             }
+
+            h.txtGamePassword.setVisibility(View.VISIBLE);
 
         } else if (left <= 0) {
 
@@ -123,83 +109,59 @@ public class FreeFireTournamentAdapter
 
         } else {
 
-            h.btnJoin.setEnabled(true);
             h.btnJoin.setText("Join (" + m.getEntryTickets() + " Tickets)");
             h.btnJoin.setOnClickListener(v -> listener.onJoin(m));
         }
 
-        /* ================= WINNERS ================= */
-        h.btnWinners.setOnClickListener(v ->
-                listener.onCheckWinners(m));
+        h.btnWinners.setOnClickListener(v -> listener.onCheckWinners(m));
     }
 
     @Override
     public int getItemCount() {
-        return list == null ? 0 : list.size();
+        return list.size();
     }
 
-    /* ================= COUNTDOWN FUNCTION ================= */
-    private void startCountdown(ViewHolder holder, long startTimeMillis) {
+    // ================= COUNTDOWN =================
+    private void startCountdown(ViewHolder h, long startTime) {
 
-        // cancel old timer (IMPORTANT)
-        if (holder.timer != null) {
-            holder.timer.cancel();
-        }
+        if (h.timer != null) h.timer.cancel();
 
-        if (startTimeMillis <= System.currentTimeMillis()) {
-            holder.txtCountdown.setText("Match Started");
-            holder.txtCountdown.setVisibility(View.VISIBLE);
-
-            // 🔥 show room details when started
-            holder.txtGameId.setVisibility(View.VISIBLE);
-            holder.txtGamePassword.setVisibility(View.VISIBLE);
+        if (startTime <= System.currentTimeMillis()) {
+            h.txtCountdown.setText("Match Started");
+            h.txtCountdown.setVisibility(View.VISIBLE);
             return;
         }
 
-        holder.txtCountdown.setVisibility(View.VISIBLE);
+        h.txtCountdown.setVisibility(View.VISIBLE);
 
-        holder.timer = new CountDownTimer(
-                startTimeMillis - System.currentTimeMillis(),
-                1000
-        ) {
-            @Override
-            public void onTick(long millisUntilFinished) {
+        h.timer = new CountDownTimer(
+                startTime - System.currentTimeMillis(), 1000) {
 
-                long seconds = millisUntilFinished / 1000;
+            public void onTick(long ms) {
+                long s = ms / 1000;
+                long h1 = s / 3600;
+                long m = (s % 3600) / 60;
+                long s1 = s % 60;
 
-                long hrs = seconds / 3600;
-                long mins = (seconds % 3600) / 60;
-                long secs = seconds % 60;
-
-                holder.txtCountdown.setText(
-                        "Starts in " +
-                                String.format("%02d:%02d:%02d", hrs, mins, secs)
-                );
+                h.txtCountdown.setText(
+                        "Starts in " + String.format("%02d:%02d:%02d", h1, m, s1));
             }
 
-            @Override
             public void onFinish() {
-                holder.txtCountdown.setText("Match Started");
-
-                // 🔥 reveal room details
-                holder.txtGameId.setVisibility(View.VISIBLE);
-                holder.txtGamePassword.setVisibility(View.VISIBLE);
+                h.txtCountdown.setText("Match Started");
             }
         }.start();
     }
 
-    /* ================= VIEW HOLDER ================= */
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtPrize, txtSlots,
-                txtTimeLabel, txtDateLabel,
-                txtGameId, txtGamePassword,
-                txtCountdown;
+        TextView txtPrize, txtSlots, txtTimeLabel,
+                txtDateLabel, txtGameId, txtGamePassword, txtCountdown;
 
         MaterialButton btnJoin, btnWinners;
         ProgressBar progressSlots;
 
-        CountDownTimer timer; // 🔥 important
+        CountDownTimer timer;
 
         ViewHolder(View v) {
             super(v);

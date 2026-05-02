@@ -35,7 +35,7 @@ public class TournamentActivity extends AppCompatActivity {
     private boolean showNew;
     private String uid;
 
-    private TextView txtGameName;
+    private TextView txtGameName,txtTickets;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -57,6 +57,20 @@ public class TournamentActivity extends AppCompatActivity {
         ImageView imgBanner = findViewById(R.id.imgBanner);
         TextView txtTitle = findViewById(R.id.txtTitle);
         txtGameName = findViewById(R.id.txtGameName);
+        txtTickets=findViewById(R.id.txtTickets);
+
+
+
+        db.collection("users")
+                .document(uid).get().addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot.exists()) {
+                        long tickets = documentSnapshot.getLong("tickets");
+                        txtTickets.setText(""+tickets);
+                    }
+                });
+
+        // Set banner and title
+
 
         imgBanner.setImageResource(banner);
         txtTitle.setText(title);
@@ -123,9 +137,9 @@ public class TournamentActivity extends AppCompatActivity {
 
     /* ================= LOAD MATCHES ================= */
     private void loadMatches() {
-
         Query query = db.collection("tournaments")
-                .whereEqualTo("game", game);
+                .whereEqualTo("game", game)
+        .whereEqualTo("status", "scheduled");
 
         if (showNew) {
             query = query.orderBy("created_at", Query.Direction.DESCENDING);
@@ -168,16 +182,7 @@ public class TournamentActivity extends AppCompatActivity {
                     if (doc.exists()) {
                         model.setJoined(true);
 
-                        String gameId = doc.getString("gameId");
-                        String username = doc.getString("username");
-
-                        model.setJoinedGameId(gameId);
-                        model.setJoinedUsername(username);
-
-                        // ✅ Update only when joined
-                        if (gameId != null) {
-                            txtGameName.setText("GAME ID : " + gameId);
-                        }
+                        txtGameName.setText("Joined Tournament");
 
                         adapter.notifyDataSetChanged();
                     }
