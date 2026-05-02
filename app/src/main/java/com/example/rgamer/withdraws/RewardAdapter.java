@@ -56,7 +56,6 @@ public class RewardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         if (holder instanceof HeaderVH) {
             ((HeaderVH) holder).headerText.setText(item.header);
         } else {
-
             CoinModel m = item.coin;
             ItemVH vh = (ItemVH) holder;
 
@@ -66,6 +65,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     .format(new Date(m.getTimeMillis()));
             vh.date.setText(date);
 
+// ✅ Amount color
             if ("Credit".equalsIgnoreCase(m.getStatus())) {
                 vh.coins.setText("+" + m.getAmount());
                 vh.coins.setTextColor(Color.parseColor("#4CAF50"));
@@ -74,17 +74,24 @@ public class RewardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 vh.coins.setTextColor(Color.RED);
             }
 
+// ✅ LEFT ICON (activity type)
             if ("ads".equalsIgnoreCase(m.getType())) {
                 vh.icon.setImageResource(R.drawable.ic_watch);
             } else if ("offer".equalsIgnoreCase(m.getType())) {
                 vh.icon.setImageResource(R.drawable.ic_money);
             } else if ("referral".equalsIgnoreCase(m.getType())) {
                 vh.icon.setImageResource(R.drawable.ic_share);
-            }
-            else if ("Daily spin".equalsIgnoreCase(m.getType())) {
+            } else if ("Daily spin".equalsIgnoreCase(m.getType())) {
                 vh.icon.setImageResource(R.drawable.ic_spinner);
-            }else {
+            } else {
                 vh.icon.setImageResource(R.drawable.ic_reward);
+            }
+
+// ✅ RIGHT ICON (coin / token)
+            if ("token".equalsIgnoreCase(m.getIstype())) {
+                vh.coinimg.setImageResource(R.drawable.ic_ticket);
+            } else {
+                vh.coinimg.setImageResource(R.drawable.ic_coin);
             }
         }
     }
@@ -100,7 +107,7 @@ public class RewardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     static class ItemVH extends RecyclerView.ViewHolder {
         TextView title, date, coins;
-        ImageView icon;
+        ImageView icon,coinimg;
 
         ItemVH(View v) {
             super(v);
@@ -108,6 +115,8 @@ public class RewardAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             date = v.findViewById(R.id.date);
             coins = v.findViewById(R.id.coins);
             icon = v.findViewById(R.id.icon);
+            coinimg = v.findViewById(R.id.coin);
+
         }
     }
 }

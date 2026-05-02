@@ -177,6 +177,8 @@
             android:id="@+id/btnAccountHistory"
             style="@style/ProfileRow"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="20sp"
+            android:background="@drawable/bg_circle_light1"
             android:layout_marginTop="16dp">
 
             <ImageView
@@ -194,12 +196,21 @@
                 android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"/>
+
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
         <!-- My Rewards -->
         <LinearLayout
             android:id="@+id/btnMyRewards"
+            android:layout_marginTop="12dp"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="20sp"
+            android:background="@drawable/bg_circle_light1"
             style="@style/ProfileRow">
 
             <ImageView
@@ -217,10 +228,17 @@
                 android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"/>
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
         <LinearLayout
             android:id="@+id/invite"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="20sp"
+            android:background="@drawable/bg_circle_light1"
             style="@style/ProfileRow">
 
             <ImageView
@@ -238,12 +256,19 @@
                 android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"/>
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
         <!-- Help / FAQ -->
         <LinearLayout
             android:id="@+id/btnHelp"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="20sp"
+            android:background="@drawable/bg_circle_light1"
             style="@style/ProfileRow">
 
             <ImageView
@@ -261,12 +286,19 @@
                 android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"/>
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
         <!-- Privacy Policy -->
         <LinearLayout
             android:id="@+id/btnPrivacy"
             android:layout_marginLeft="20dp"
+            android:layout_marginTop="12dp"
+            android:layout_marginRight="20sp"
+            android:background="@drawable/bg_circle_light1"
             style="@style/ProfileRow">
 
             <ImageView
@@ -284,12 +316,19 @@
                 android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"/>
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
         <!-- Terms & Conditions -->
         <LinearLayout
             android:id="@+id/btnTerms"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="20sp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_circle_light1"
             style="@style/ProfileRow">
 
             <ImageView
@@ -307,12 +346,19 @@
                 android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"/>
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
 
         <!-- Logout -->
         <LinearLayout
             android:id="@+id/btnLogout"
             android:layout_marginLeft="20dp"
+            android:layout_marginRight="20sp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_circle_light1"
             style="@style/ProfileRow">
 
             <ImageView
@@ -330,6 +376,10 @@
                 android:textSize="16sp"
                 android:gravity="center_vertical"
                 android:textColor="@color/black"/>
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_arrow_right" />
         </LinearLayout>
         <!-- ================= SOCIAL MEDIA SECTION ================= -->
         <androidx.cardview.widget.CardView
@@ -353,6 +403,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_circle_light1"
                     android:gravity="center_vertical"
                     android:paddingVertical="12dp">
 
@@ -387,6 +440,9 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_circle_light1"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
                     android:paddingVertical="12dp">
@@ -423,6 +479,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_circle_light1"
                     android:gravity="center_vertical"
                     android:paddingVertical="12dp">
 
@@ -458,6 +517,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
+                    android:padding="12dp"
+                    android:layout_marginBottom="8dp"
+                    android:background="@drawable/bg_circle_light1"
                     android:gravity="center_vertical"
                     android:paddingVertical="12dp">
 

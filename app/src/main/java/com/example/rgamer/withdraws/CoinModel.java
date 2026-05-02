@@ -5,6 +5,7 @@ import com.google.firebase.Timestamp;
 public class CoinModel {
 
     private int amount;
+    private String istype;
     private Timestamp created_at;
     private String status;
     private String type;
@@ -27,6 +28,10 @@ public class CoinModel {
 
     public String getType() {
         return type;
+    }
+
+    public String getIstype(){
+        return istype;
     }
 
     // 🔥 Safe time conversion (IMPORTANT)

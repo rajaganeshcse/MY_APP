@@ -24,9 +24,10 @@
             android:maxLines="2"
             android:ellipsize="end"
             android:text="Reward Added 🎯"
-            android:textColor="@color/black"
             android:textSize="15sp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:textColor="@color/black"
+             />
 
         <!-- Message -->
         <TextView
@@ -34,10 +35,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
+            android:textColor="@color/black"
             android:maxLines="5"
             android:ellipsize="end"
             android:text="₹200 credited to your wallet 💰"
-            android:textColor="@color/black"
             android:textSize="13sp" />
 
         <!-- Message 2 -->
@@ -49,7 +50,6 @@
             android:maxLines="5"
             android:ellipsize="end"
             android:text=""
-            android:textColor="@color/black"
             android:textSize="13sp" />
 
     </LinearLayout>
