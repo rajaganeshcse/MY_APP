@@ -25,6 +25,7 @@
         <ImageView
             android:id="@+id/icon"
             android:layout_width="44dp"
+            android:layout_gravity="center_vertical"
             android:layout_height="44dp"
             android:src="@drawable/ic_money"
             android:background="@drawable/bg_circle_light"
@@ -57,18 +58,53 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/tickets1"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="+0"
+            android:textColor="#4CAF50"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <!-- Icon -->
+        <ImageView
+            android:id="@+id/tickethistory"
+            android:visibility="gone"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginLeft="3dp"
+            android:src="@drawable/ic_ticket"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/bg_circle_light"
+            android:layout_marginRight="9dp"
+            android:padding="0dp"/>
+
         <!-- Coins -->
         <TextView
             android:id="@+id/coins"
-            android:text="+60"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:paddingRight="10dp"
-            android:textColor="#4CAF50"
-            android:layout_gravity="center_vertical"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="+60"
+            android:textColor="#4CAF50"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+        <!-- Icon -->
+
+        <!-- ticket -->
+        <ImageView
+            android:id="@+id/coin"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
             android:layout_marginRight="9dp"
-            android:layout_height="wrap_content"/>
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/bg_circle_light"
+            android:padding="0dp"
+            android:src="@drawable/ic_coin" />
+
+
     </LinearLayout>
 
 </com.google.android.material.card.MaterialCardView>
