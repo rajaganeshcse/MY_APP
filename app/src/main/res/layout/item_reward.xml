@@ -28,7 +28,7 @@
             android:layout_height="44dp"
             android:src="@drawable/ic_money"
             android:background="@drawable/bg_circle_light"
-            android:padding="10dp"/>
+            android:padding="0dp"/>
 
         <!-- Text -->
         <LinearLayout

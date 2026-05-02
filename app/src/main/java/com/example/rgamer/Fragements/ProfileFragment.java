@@ -38,7 +38,7 @@ public class ProfileFragment extends Fragment {
     private TextView txtName, txtUid, txtCoins, txtTickets,getTxtUid;
 
     private LinearLayout btnAccountHistory, btnMyRewards, btnHelp,invite,
-            btnPrivacy, btnTerms, btnLogout;
+            btnPrivacy, btnTerms, btnLogout,tickethistory,coinhistory;
 
     private TextView btnFacebook, btnInstagram, btnTelegram, btnYoutube;
 
@@ -77,20 +77,33 @@ public class ProfileFragment extends Fragment {
         btnPrivacy = view.findViewById(R.id.btnPrivacy);
         btnTerms = view.findViewById(R.id.btnTerms);
         btnLogout = view.findViewById(R.id.btnLogout);
-        invite=view.findViewById(R.id.invite);
-        getTxtUid=view.findViewById(R.id.txtUid);
-        btnCopy=view.findViewById(R.id.btnCopy);
+        invite = view.findViewById(R.id.invite);
+        getTxtUid = view.findViewById(R.id.txtUid);
+        btnCopy = view.findViewById(R.id.btnCopy);
+        tickethistory = view.findViewById(R.id.tickethistory);
+        coinhistory = view.findViewById(R.id.coinhistory);
 
 
         btnFacebook = view.findViewById(R.id.btnFacebook);
         btnInstagram = view.findViewById(R.id.btnInstagram);
         btnTelegram = view.findViewById(R.id.btnTelegram);
         btnYoutube = view.findViewById(R.id.btnYoutube);
-    }
 
-    /**
-     * ================= LOAD DATA FROM USER PREF =================
-     */
+        tickethistory.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    requireContext(),
+                    RewardHistory.class
+            );
+            startActivity(intent);
+        });
+        coinhistory.setOnClickListener(v -> {
+            Intent intent = new Intent(
+                    requireContext(),
+                    RewardHistory.class
+            );
+            startActivity(intent);
+        });
+    }
     private void loadUserFromPref() {
 
         txtName.setText(userPref.getName());
