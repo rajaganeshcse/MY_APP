@@ -58,6 +58,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                     activity_withdraw_success.class
             );
             intent.putExtra(activity_withdraw_success.EXTRA_TYPE, model.getType());
+            intent.putExtra(activity_withdraw_success.EXTRA_DATE, model.getFormattedDate());
 
             intent.putExtra(
                     activity_withdraw_success.EXTRA_AMOUNT,
@@ -143,6 +144,9 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                                 doc.toObject(WithdrawHistoryModel.class);
 
                         if (model == null) continue;
+
+// 🔥 FORCE SET TIMESTAMP
+                        model.setCreated_at(doc.getTimestamp("created_at"));
 
                         model.setRequest_id(doc.getId());
                         list.add(model);

@@ -57,6 +57,10 @@ public class WithdrawHistoryAdapter
         String type = model.getType();
         holder.txtType.setText(type.toUpperCase());
 
+        String  date = model.getFormattedDate();
+        holder.txtDate.setText(date);
+
+
         /* ================= AMOUNT ================= */
         NumberFormat format =
                 NumberFormat.getInstance(new Locale("en", "IN"));
@@ -145,7 +149,7 @@ public class WithdrawHistoryAdapter
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imgMethod;
-        TextView txtType, txtAmount, txtStatus;
+        TextView txtType, txtAmount, txtStatus,txtDate;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -153,6 +157,7 @@ public class WithdrawHistoryAdapter
             txtType = itemView.findViewById(R.id.txtType);
             txtAmount = itemView.findViewById(R.id.txtAmount);
             txtStatus = itemView.findViewById(R.id.txtStatus);
+            txtDate = itemView.findViewById(R.id.txtDate);
         }
     }
 }

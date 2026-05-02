@@ -17,9 +17,7 @@ public class WithdrawHistoryModel {
     private Object amount;        // String OR Long
     private String status;
     private String voucher_code;
-
-    @Nullable
-    private Timestamp created_at; // ✅ FIXED (Firestore Timestamp)
+    private Timestamp created_at;
 
     /* ================= LOCAL ONLY ================= */
     private String request_id;
@@ -59,7 +57,9 @@ public class WithdrawHistoryModel {
         }
         return 0;
     }
-
+    public void setCreated_at(Timestamp created_at) {
+        this.created_at = created_at;
+    }
     public String getStatus() {
         return status != null ? status : "pending";
     }
@@ -78,10 +78,15 @@ public class WithdrawHistoryModel {
     /** ✅ FORMATTED DATE (OPTIONAL UI) */
     public String getFormattedDate() {
         if (created_at == null) return "";
-        return android.text.format.DateFormat
-                .format("dd MMM yyyy, hh:mm a",
-                        created_at.toDate())
-                .toString();
+
+        try {
+            return new java.text.SimpleDateFormat(
+                    "dd MMM yyyy, hh:mm a",
+                    java.util.Locale.ENGLISH
+            ).format(created_at.toDate());
+        } catch (Exception e) {
+            return "";
+        }
     }
 
     public String getRequest_id() {

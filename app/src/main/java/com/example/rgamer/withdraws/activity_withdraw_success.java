@@ -25,11 +25,12 @@ public class activity_withdraw_success extends AppCompatActivity {
     /* ================= EXTRAS ================= */
     public static final String EXTRA_TYPE = "type";
     public static final String EXTRA_AMOUNT = "amount";
+    public static final String EXTRA_DATE = "created_at";
     public static final String EXTRA_REQUEST_ID = "request_id";
 
     /* ================= UI ================= */
     private ImageView btnBack, imgSuccess, imgMethod;
-    private TextView txtTitle, txtMessage;
+    private TextView txtTitle, txtMessage,txtDateTime;
     private TextView txtRewardType, txtAmount;
     private TextView txtVoucherCode, txtWithdrawDetails, btnDone;
 
@@ -59,6 +60,7 @@ public class activity_withdraw_success extends AppCompatActivity {
         txtAmount = findViewById(R.id.txtAmount);
         txtVoucherCode = findViewById(R.id.txtVoucherCode);
         txtWithdrawDetails = findViewById(R.id.txtdetail);
+        txtDateTime=findViewById(R.id.txtDateTime);
         btnDone = findViewById(R.id.btnDone);
 
         btnBack.setOnClickListener(v -> finish());
@@ -68,8 +70,9 @@ public class activity_withdraw_success extends AppCompatActivity {
         type = getIntent().getStringExtra(EXTRA_TYPE).toLowerCase();
         String amount = getIntent().getStringExtra(EXTRA_AMOUNT);
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
-
+        String date=getIntent().getStringExtra(EXTRA_DATE);
         txtAmount.setText(amount);
+        txtDateTime.setText(date);
 
         setMethodUI(type);
         observeRequestStatus(requestId);
