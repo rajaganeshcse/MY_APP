@@ -77,4 +77,7 @@ dependencies {
     implementation("com.google.firebase:firebase-messaging:23.4.1")
 
 
+    implementation("com.facebook.shimmer:shimmer:0.5.0")
+
+
 }

@@ -1,5 +1,4 @@
 package com.example.rgamer.Activitys;
-
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -30,7 +29,10 @@ import com.google.firebase.messaging.FirebaseMessaging;
 
 public class MainActivity extends AppCompatActivity {
 
-    LinearLayout navHome, navGame, navReward, navProfile;
+    public LinearLayout navHome;
+    LinearLayout navGame;
+    public LinearLayout navReward;
+    LinearLayout navProfile;
     ImageView imgNavProfile;
     UserPref userPref;
 
@@ -118,7 +120,10 @@ public class MainActivity extends AppCompatActivity {
         navReward = findViewById(R.id.navReward);
         navProfile = findViewById(R.id.navProfile);
 
-        imgNavProfile = findViewById(R.id.imgNavProfile); // ✅ important
+        imgNavProfile = findViewById(R.id.imgNavProfile);
+
+
+        // ✅ important
     }
 
     private void setupNavigation() {
@@ -158,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void selectNav(View selected) {
+    public void selectNav(View selected) {
         resetNav();
         selected.setBackgroundResource(R.drawable.bg_nav_selected);
     }
@@ -170,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void loadFragment(Fragment fragment) {
+    public void loadFragment(Fragment fragment) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragmentContainer, fragment)

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -36,6 +37,7 @@ public class ProfileFragment extends Fragment {
     // ================= UI =================
     private ImageView imgProfile,btnCopy;
     private TextView txtName, txtUid, txtCoins, txtTickets,getTxtUid;
+
 
     private LinearLayout btnAccountHistory, btnMyRewards, btnHelp,invite,
             btnPrivacy, btnTerms, btnLogout,tickethistory,coinhistory;

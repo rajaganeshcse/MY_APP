@@ -16,6 +16,15 @@ import retrofit2.http.*;
 
 public interface ApiService {
 
+    @POST("api/claim-streak")
+    Call<ResponseBody> claimStreak(
+            @Header("Authorization") String token
+    );
+
+    @GET("api/streak-status")
+    Call<ResponseBody> getStreakStatus(
+            @Header("Authorization") String token
+    );
     /* ================= AUTH ================= */
 
     @POST("api/auth")

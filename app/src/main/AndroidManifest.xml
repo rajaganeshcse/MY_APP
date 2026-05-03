@@ -17,10 +17,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.RGamer">
         <activity
+            android:name=".Fragements.fragment_streak"
+            android:exported="false" />
+        <activity
             android:name=".withdraws.RewardHistory"
             android:exported="false"
-            android:theme="@style/Theme.RGamer" />
-        <!-- ✅ KEEP ONLY ONE AdMob ID -->
+            android:theme="@style/Theme.RGamer" /> <!-- ✅ KEEP ONLY ONE AdMob ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-6379296195597918~1290788138" /> <!-- ✅ Firebase Messaging Service (ONLY ONE) -->

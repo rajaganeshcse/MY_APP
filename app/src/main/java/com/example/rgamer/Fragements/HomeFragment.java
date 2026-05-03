@@ -13,6 +13,7 @@ import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.bumptech.glide.Glide;
+import com.example.rgamer.Activitys.MainActivity;
 import com.example.rgamer.R;
 import com.example.rgamer.UserPref;
 import com.example.rgamer.ads.AdsManager;
@@ -38,8 +39,9 @@ public class HomeFragment extends Fragment {
     CardView card_spinner,card_lucky_draw,card_tasks,card_surveys,cardInvite;
 
     private TextView txtCoins, txtToken, txtAdCount;
-    private ImageView  imgRewardCoin;
+    private ImageView  imgRewardCoin,strikeIcon;
     private MaterialButton btnWatchNow;
+    Button btnWithdraw;
 
 
     private AlertDialog loadingDialog;
@@ -117,10 +119,25 @@ public class HomeFragment extends Fragment {
 
         btnWatchNow = view.findViewById(R.id.btnWatchNow);
         card_spinner = view.findViewById(R.id.card_spinner);
+        btnWithdraw=view.findViewById(R.id.btnWithdraw);
 
         cardInvite = view.findViewById(R.id.card_invite);
         card_tasks=view.findViewById(R.id.card_tasks);
         card_surveys=view.findViewById(R.id.card_surveys);
+        strikeIcon = view.findViewById(R.id.strikeIcon);
+        strikeIcon.setOnClickListener(v -> {
+
+            MainActivity activity = (MainActivity) requireActivity();
+            activity.selectNav(activity.navHome);
+            activity.loadFragment(new StreakFragment());
+        });
+
+        btnWithdraw.setOnClickListener(v -> {
+            MainActivity activity = (MainActivity) requireActivity();
+            activity.selectNav(activity.navReward);
+            activity.loadFragment(new RewardFragment());
+        });
+
         card_surveys.setOnClickListener(v -> {
             Toast.makeText(getContext(), "Comming Soon", Toast.LENGTH_SHORT).show();
         });
