@@ -12,6 +12,8 @@ import androidx.fragment.app.Fragment;
 import com.example.rgamer.R;
 import com.example.rgamer.network.ApiClient;
 import com.example.rgamer.network.ApiService;
+import com.facebook.shimmer.Shimmer;
+import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -23,7 +25,9 @@ import retrofit2.*;
 
 public class StreakFragment extends Fragment {
 
-    private GridLayout streakContainer;
+    private ShimmerFrameLayout shimmerContainer;
+    private LinearLayout contentLayout;
+    private GridLayout shimmerGrid, streakContainer;
     private MaterialButton btnClaim;
     private ImageView btnBack;
 
@@ -40,6 +44,10 @@ public class StreakFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.activity_fragment_streak, container, false);
 
+        shimmerContainer = view.findViewById(R.id.shimmerContainer);
+        contentLayout = view.findViewById(R.id.contentLayout);
+        shimmerGrid = view.findViewById(R.id.shimmerGrid);
+
         streakContainer = view.findViewById(R.id.streakContainer);
         btnClaim = view.findViewById(R.id.btnClaim);
         btnBack = view.findViewById(R.id.btnBack);
@@ -48,10 +56,10 @@ public class StreakFragment extends Fragment {
 
         btnBack.setOnClickListener(v -> requireActivity().onBackPressed());
 
-        // 🔥 SHOW SHIMMER FIRST
-        showShimmer();
+        setupShimmerGrid();
+        applyGreyShimmer();
+        shimmerContainer.startShimmer();
 
-        // 🔥 LOAD DATA
         loadStreakStatus();
 
         btnClaim.setOnClickListener(v -> claimStreak());
@@ -59,28 +67,37 @@ public class StreakFragment extends Fragment {
         return view;
     }
 
-    // 🔥 SHIMMER UI
-    private void showShimmer() {
-
-        streakContainer.removeAllViews();
-
-        for(int i = 0; i < 6; i++) {
-
-            View shimmerItem = LayoutInflater.from(getContext())
-                    .inflate(R.layout.item_shimmer_streak, streakContainer, false);
+    // 🔥 create shimmer cells
+    private void setupShimmerGrid() {
+        for(int i=0; i<6; i++){
+            View item = LayoutInflater.from(getContext())
+                    .inflate(R.layout.item_shimmer_streak, shimmerGrid, false);
 
             GridLayout.LayoutParams params = new GridLayout.LayoutParams();
             params.width = 0;
             params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
             params.setMargins(8,8,8,8);
 
-            shimmerItem.setLayoutParams(params);
-
-            streakContainer.addView(shimmerItem);
+            item.setLayoutParams(params);
+            shimmerGrid.addView(item);
         }
     }
 
-    // 🔥 LOAD STATUS
+    // 🔥 GOLD SHIMMER
+    private void applyGreyShimmer() {
+
+        Shimmer shimmer = new Shimmer.ColorHighlightBuilder()
+                .setBaseColor(Color.parseColor("#858e96"))     // base grey
+                .setHighlightColor(Color.parseColor("#e3e3e3")) // light grey shine
+                .setDuration(3000)
+                .setDirection(Shimmer.Direction.TOP_TO_BOTTOM)
+                .setAutoStart(true)
+                .build();
+
+        shimmerContainer.setShimmer(shimmer);
+    }
+
+    // 🔥 LOAD DATA
     private void loadStreakStatus() {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
@@ -103,8 +120,7 @@ public class StreakFragment extends Fragment {
                                     currentStreak = json.getInt("streak");
                                     isClaimedToday = json.getBoolean("claimedToday");
 
-                                    streakContainer.removeAllViews();
-                                    setupStreakUI();
+                                    showContent();
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -114,18 +130,28 @@ public class StreakFragment extends Fragment {
 
                         @Override
                         public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(getContext(),"Error loading",Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(),"Error",Toast.LENGTH_SHORT).show();
                         }
                     });
         });
     }
 
-    // 🔥 REAL UI
+    // 🔥 SWITCH UI
+    private void showContent() {
+        shimmerContainer.stopShimmer();
+        shimmerContainer.setVisibility(View.GONE);
+
+        contentLayout.setVisibility(View.VISIBLE);
+
+        setupStreakUI();
+    }
+
+    // 🔥 REAL GRID
     private void setupStreakUI() {
 
         int[] rewards = {10,20,30,40,50,75,100};
 
-        for(int i=0; i<7; i++){
+        for(int i=0;i<7;i++){
 
             View item = LayoutInflater.from(getContext())
                     .inflate(R.layout.item_streak, streakContainer, false);
@@ -139,18 +165,10 @@ public class StreakFragment extends Fragment {
 
             if(i < currentStreak - 1){
                 fire.setColorFilter(Color.parseColor("#FF6F00"));
-            }
-            else if(i == currentStreak - 1){
-
-                item.setBackgroundResource(R.drawable.bg_streak_active);
-
-                if(isClaimedToday){
-                    fire.setColorFilter(Color.parseColor("#FF6F00"));
-                } else {
-                    fire.setColorFilter(Color.parseColor("#FFA000"));
-                }
-            }
-            else {
+            } else if(i == currentStreak - 1){
+                fire.setColorFilter(isClaimedToday ? Color.parseColor("#FF6F00")
+                        : Color.parseColor("#FFA000"));
+            } else {
                 fire.setColorFilter(Color.GRAY);
                 item.setAlpha(0.5f);
             }
@@ -161,7 +179,6 @@ public class StreakFragment extends Fragment {
             params.setMargins(8,8,8,8);
 
             item.setLayoutParams(params);
-
             streakContainer.addView(item);
         }
 
@@ -185,8 +202,7 @@ public class StreakFragment extends Fragment {
 
                             if(response.isSuccessful()){
                                 try {
-                                    String res = response.body().string();
-                                    JSONObject json = new JSONObject(res);
+                                    JSONObject json = new JSONObject(response.body().string());
 
                                     currentStreak = json.getInt("streak");
                                     isClaimedToday = true;
@@ -194,20 +210,14 @@ public class StreakFragment extends Fragment {
                                     streakContainer.removeAllViews();
                                     setupStreakUI();
 
-                                    Toast.makeText(getContext(),"🔥 Reward Claimed!",Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(getContext(),"Reward Claimed",Toast.LENGTH_SHORT).show();
 
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            } else {
-                                Toast.makeText(getContext(),"Already claimed",Toast.LENGTH_SHORT).show();
+                                } catch (Exception e) {}
                             }
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(getContext(),"Server error",Toast.LENGTH_SHORT).show();
-                        }
+                        public void onFailure(Call<ResponseBody> call, Throwable t) {}
                     });
         });
     }

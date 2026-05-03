@@ -2,68 +2,98 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/base_color">
+    android:orientation="vertical">
 
-    <!-- HEADER -->
+    <!-- ✅ HEADER ALWAYS VISIBLE -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="103dp"
-        android:background="@color/base_color"
-        android:elevation="6dp"
         android:gravity="center_vertical"
         android:orientation="horizontal"
         android:paddingHorizontal="12dp"
-        android:paddingTop="30dp">
+        android:paddingTop="30dp"
+        android:background="@color/base_color">
 
-        <!-- Back Button -->
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="52dp"
-            android:layout_height="48dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="4dp"
-            android:src="@drawable/back_arrow" />
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/back_arrow"
+            android:background="?attr/selectableItemBackgroundBorderless" />
 
-        <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
             android:text="Daily Streak"
-            android:textColor="@android:color/black"
             android:textSize="20sp"
-            android:textStyle="bold" />
-
-    </LinearLayout>
-
-    <!-- CONTENT -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:padding="16dp">
-
-        <!-- GRID -->
-        <GridLayout
-            android:id="@+id/streakContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:columnCount="3"
-            android:layout_marginTop="10dp"/>
-
-        <!-- CLAIM BUTTON -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnClaim"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Claim Reward"
-            android:textColor="#000"
-            android:textSize="18sp"
+            android:textColor="@color/black"
             android:textStyle="bold"
-            android:layout_marginTop="30dp"
-            android:backgroundTint="#FFC107"/>
-
+            android:layout_marginStart="16dp" />
     </LinearLayout>
+
+    <!-- 💎 CONTENT AREA -->
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <!-- 🔥 SHIMMER -->
+        <com.facebook.shimmer.ShimmerFrameLayout
+            android:id="@+id/shimmerContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:shimmer_auto_start="true"
+            app:shimmer_duration="1200">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <GridLayout
+                    android:id="@+id/shimmerGrid"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:columnCount="3" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:layout_marginTop="80dp"
+                    android:background="@drawable/bg_shimmer_button" />
+            </LinearLayout>
+
+        </com.facebook.shimmer.ShimmerFrameLayout>
+
+        <!-- 🔥 REAL CONTENT -->
+        <LinearLayout
+            android:id="@+id/contentLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <GridLayout
+                android:id="@+id/streakContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:layout_marginTop="10dp"
+                android:padding="16dp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClaim"
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:text="Claim Reward"
+                android:textStyle="bold"
+                android:textSize="18sp"
+                android:textColor="@color/black"
+                android:layout_margin="16dp"
+                android:backgroundTint="#FFC107" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </LinearLayout>
