@@ -81,4 +81,10 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body Map<String, Object> body
     );
+    @GET("api/reedem1")
+        Call<ResponseBody> getreedem1(
+                @Header("Authorization") String token,
+        @Body Map<String, Object> body
+                );
+
 }

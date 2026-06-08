@@ -81,7 +81,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         /* -------- Notification -------- */
         NotificationCompat.Builder builder
                 = new NotificationCompat.Builder(this, CHANNEL_ID);
-        builder.setSmallIcon(R.drawable.app_icon);
+        builder.setSmallIcon(R.drawable.app_logo);
         builder.setContentTitle(title);
         builder.setContentText(body);
         builder.setCustomContentView(views);
