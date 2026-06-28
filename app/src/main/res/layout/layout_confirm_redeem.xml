@@ -39,7 +39,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/card_body"
+            android:background="@color/luck"
             android:padding="20dp">
 
             <!-- AMOUNT -->
@@ -48,9 +48,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Amount: ₹0"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 android:textStyle="bold"
-                android:textColor="@color/color_green"
+                android:textColor="#06BD0D"
                 android:layout_marginBottom="6dp"/>
 
             <!-- COINS -->
@@ -100,8 +100,8 @@
                     android:layout_height="wrap_content"
                     android:text="CONFIRM"
                     android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:background="@drawable/bg_button_ripple"
+                    android:textColor="@color/white"
+                    android:background="@drawable/bg_btn_primary"
                     android:padding="10dp"/>
             </LinearLayout>
 

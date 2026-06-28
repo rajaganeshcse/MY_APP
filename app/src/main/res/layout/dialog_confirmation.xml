@@ -47,7 +47,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:background="@color/card_body"
+            android:background="@color/game_card"
             android:padding="20dp">
 
             <!-- Message -->
@@ -83,24 +83,28 @@
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnCancel"
                     android:layout_width="0dp"
+                    android:paddingVertical="3dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Cancel"
                     android:textAllCaps="false"
                     android:textStyle="bold"
+                    android:textSize="18dp"
                     android:textColor="#ffffff"
                     android:layout_marginEnd="8dp"
                     app:backgroundTint="#e01f2d" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnConfirm"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_width="10dp"
+                    android:layout_height="match_parent"
                     android:layout_weight="1"
+                    android:paddingVertical="3dp"
                     android:text="Confirm"
                     android:textAllCaps="false"
-                    android:textStyle="bold"
+                    android:textSize="18dp"
                     android:textColor="#ffffff"
+                    android:textStyle="bold"
                     app:backgroundTint="#2a8d08" />
             </LinearLayout>
 

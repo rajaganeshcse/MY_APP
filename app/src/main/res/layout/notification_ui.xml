@@ -63,6 +63,6 @@
         android:padding="1dp"
         android:layout_marginTop="4dp"
         android:scaleType="centerCrop"
-        android:src="@drawable/app_logo" />
+        android:src="@drawable/logo" />
 
 </LinearLayout>
