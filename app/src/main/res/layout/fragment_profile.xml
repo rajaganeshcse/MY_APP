@@ -1,571 +1,567 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/game_card">
-
-
+    android:background="#F5F7FB"
+    android:fillViewport="true">
 
     <LinearLayout
-        android:layout_marginTop="25dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="18dp">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Profile"
-            android:textColor="@color/black"
             android:textAlignment="center"
+            android:textColor="#202124"
+            android:textSize="30sp"
             android:textStyle="bold"
-            android:textSize="30dp"
-            />
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="18dp"/>
 
-        <!-- CARDVIEW FULL WIDTH -->
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="6dp"
-            app:cardUseCompatPadding="true">
+            app:cardCornerRadius="24dp"
+            app:cardElevation="8dp"
+            app:cardBackgroundColor="#FFFFFF">
 
-            <!-- MOVED PADDING INSIDE -->
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#009688"
+                android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:background="@drawable/bg_profile_gradient"
+                android:padding="20dp">
 
-                <!-- PROFILE HEADER -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="101dp"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
-                    android:gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp">
+                    android:gravity="center_vertical">
 
-                    <!-- LEFT -->
                     <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:gravity="center_vertical"
                         android:orientation="vertical">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
 
                             <TextView
                                 android:id="@+id/txtName"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="User Name"
-                                android:textColor="@color/black"
-                                android:textSize="22sp"
-                                android:textStyle="bold" />
+                                android:textColor="#FFFFFF"
+                                android:textStyle="bold"
+                                android:textSize="24sp"/>
 
                             <ImageView
                                 android:id="@+id/verified"
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_marginStart="4dp"
-                                android:src="@drawable/verified_icon" />
+                                android:layout_width="22dp"
+                                android:layout_height="22dp"
+                                android:layout_marginStart="6dp"
+                                android:src="@drawable/verified_icon"/>
                         </LinearLayout>
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="6dp"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
+                            android:layout_marginTop="10dp"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
 
                             <TextView
                                 android:id="@+id/txtUid"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:text="Code :"
-                                android:textColor="@color/black"
-                                android:textSize="15sp"
-                                android:textStyle="bold" />
+                                android:textColor="#EAF6FF"
+                                android:textStyle="bold"
+                                android:textSize="15sp"/>
 
                             <ImageView
                                 android:id="@+id/btnCopy"
-                                android:layout_width="20dp"
-                                android:layout_height="20dp"
-                                android:layout_marginStart="6dp"
-                                android:src="@drawable/ic_copy" />
+                                android:layout_width="18dp"
+                                android:layout_height="18dp"
+                                android:layout_marginStart="8dp"
+                                android:src="@drawable/ic_copy"/>
                         </LinearLayout>
+
                     </LinearLayout>
 
                     <ImageView
                         android:id="@+id/imgProfile"
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
-                        android:background="@drawable/circle_bg"
-                        android:padding="2dp"
+                        android:layout_width="88dp"
+                        android:layout_height="88dp"
+                        android:background="@drawable/profile_ring"
+                        android:padding="3dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/ic_profile" />
+                        android:src="@drawable/ic_profile"/>
+
                 </LinearLayout>
 
-                <!-- WALLET -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
+                    android:layout_marginTop="22dp"
                     android:orientation="horizontal"
                     android:weightSum="2">
 
-                    <!-- COINS -->
                     <LinearLayout
                         android:id="@+id/coinhistory"
                         android:layout_width="0dp"
-                        android:layout_height="79dp"
+                        android:layout_height="90dp"
                         android:layout_weight="1"
-                        android:background="@drawable/bg_reward_card"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_dashboard_item"
                         android:gravity="center"
-                        android:orientation="horizontal"
-                        android:padding="12dp">
+                        android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="37dp"
-                            android:layout_height="42dp"
-                            android:layout_marginEnd="8dp"
-                            android:src="@drawable/ic_coin" />
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:layout_marginEnd="10dp"
+                            android:src="@drawable/ic_coin"/>
 
                         <TextView
                             android:id="@+id/txtCoins"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0 Coins"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            android:textColor="#202124"
+                            android:textSize="18sp"/>
+
                     </LinearLayout>
 
-                    <!-- TICKETS -->
                     <LinearLayout
                         android:id="@+id/tickethistory"
                         android:layout_width="0dp"
-                        android:layout_height="79dp"
-                        android:layout_marginStart="8dp"
+                        android:layout_height="90dp"
                         android:layout_weight="1"
-                        android:background="@drawable/bg_history"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_dashboard_item"
                         android:gravity="center"
-                        android:orientation="horizontal"
-                        android:padding="12dp">
+                        android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="39dp"
-                            android:layout_height="39dp"
-                            android:layout_marginEnd="8dp"
-                            android:src="@drawable/ic_ticket" />
+                            android:layout_width="38dp"
+                            android:layout_height="38dp"
+                            android:layout_marginEnd="10dp"
+                            android:src="@drawable/ic_ticket"/>
 
                         <TextView
                             android:id="@+id/txtTickets"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="0 Tickets"
-                            android:textColor="@color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold"/>
+                            android:textStyle="bold"
+                            android:textColor="#202124"
+                            android:textSize="18sp"/>
+
                     </LinearLayout>
 
                 </LinearLayout>
 
             </LinearLayout>
-        </androidx.cardview.widget.CardView>
 
-        <!-- MENU -->
-        <!-- Account History -->
+        </androidx.cardview.widget.CardView>
+        <!-- ================= MENU ================= -->
+
         <LinearLayout
             android:id="@+id/btnAccountHistory"
             style="@style/ProfileRow"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20sp"
-            android:background="@drawable/bg_circle_light1"
-            android:layout_marginTop="16dp">
-
-            <ImageView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:src="@drawable/ic_history" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="Account History"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"/>
-
-
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right" />
-        </LinearLayout>
-
-        <!-- My Rewards -->
-        <LinearLayout
-            android:id="@+id/btnMyRewards"
-            android:layout_marginTop="12dp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20sp"
-            android:background="@drawable/bg_circle_light1"
-            style="@style/ProfileRow">
-
-            <ImageView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:src="@drawable/ic_reward" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="My Rewards"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"/>
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right" />
-        </LinearLayout>
-        <LinearLayout
-            android:id="@+id/invite"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="20sp"
-            android:background="@drawable/bg_circle_light1"
-            style="@style/ProfileRow">
-
-            <ImageView
-                android:layout_width="44dp"
-                android:layout_height="44dp"
-                android:src="@drawable/ic_invite" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="Refferal Activity"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"/>
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right" />
-        </LinearLayout>
-
-        <!-- Help / FAQ -->
-        <LinearLayout
-            android:id="@+id/btnHelp"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="20sp"
-            android:background="@drawable/bg_circle_light1"
-            style="@style/ProfileRow">
-
-            <ImageView
-                android:layout_width="46dp"
-                android:layout_height="49dp"
-                android:src="@drawable/ic_help" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="Help | FAQ"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"/>
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right" />
-        </LinearLayout>
-
-        <!-- Privacy Policy -->
-        <LinearLayout
-            android:id="@+id/btnPrivacy"
-            android:layout_marginLeft="20dp"
-            android:layout_marginTop="12dp"
-            android:layout_marginRight="20sp"
-            android:background="@drawable/bg_circle_light1"
-            style="@style/ProfileRow">
-
-            <ImageView
-                android:layout_width="41dp"
-                android:layout_height="41dp"
-                android:src="@drawable/ic_privacy" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="Privacy Policy"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"/>
-            <ImageView
-                android:layout_width="28dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right" />
-        </LinearLayout>
-
-        <!-- Terms & Conditions -->
-        <LinearLayout
-            android:id="@+id/btnTerms"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20sp"
-            android:layout_marginTop="12dp"
-            android:background="@drawable/bg_circle_light1"
-            style="@style/ProfileRow">
+            android:layout_marginTop="18dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/bg_menu_item"
+            android:elevation="3dp">
 
             <ImageView
                 android:layout_width="42dp"
-                android:layout_height="41dp"
-                android:src="@drawable/ic_terms" />
+                android:layout_height="42dp"
+                android:src="@drawable/ic_history"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="12dp"
-                android:text="Terms | Conditions"
+                android:layout_marginStart="14dp"
+                android:text="Account History"
+                android:textSize="17sp"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"/>
+                android:textColor="#222222"/>
+
             <ImageView
-                android:layout_width="28dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right" />
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"/>
         </LinearLayout>
 
-        <!-- Logout -->
+        <LinearLayout
+            android:id="@+id/btnMyRewards"
+            style="@style/ProfileRow"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/bg_menu_item"
+            android:elevation="3dp">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_reward"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="14dp"
+                android:text="My Rewards"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#222222"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/invite"
+            style="@style/ProfileRow"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/bg_menu_item"
+            android:elevation="3dp">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_invite"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="14dp"
+                android:text="Referral Activity"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#222222"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnHelp"
+            style="@style/ProfileRow"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/bg_menu_item"
+            android:elevation="3dp">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_help"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="14dp"
+                android:text="Help || FAQ"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#222222"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnPrivacy"
+            style="@style/ProfileRow"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/bg_menu_item"
+            android:elevation="3dp">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_privacy"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="14dp"
+                android:text="Privacy Policy"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#222222"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/btnTerms"
+            style="@style/ProfileRow"
+            android:layout_marginTop="12dp"
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/bg_menu_item"
+            android:elevation="3dp">
+
+            <ImageView
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_terms"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="14dp"
+                android:text="Terms || Conditions"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:textColor="#222222"/>
+
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"/>
+        </LinearLayout>
+
         <LinearLayout
             android:id="@+id/btnLogout"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20sp"
+            style="@style/ProfileRow"
             android:layout_marginTop="12dp"
-            android:background="@drawable/bg_circle_light1"
-            style="@style/ProfileRow">
+            android:layout_marginStart="18dp"
+            android:layout_marginEnd="18dp"
+            android:background="@drawable/bg_menu_item"
+            android:elevation="3dp">
 
             <ImageView
-                android:layout_width="43dp"
-                android:layout_height="40dp"
-                android:src="@drawable/ic_logout" />
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:src="@drawable/ic_logout"/>
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:layout_marginStart="12dp"
+                android:layout_marginStart="14dp"
                 android:text="Logout"
+                android:textSize="17sp"
                 android:textStyle="bold"
-                android:textSize="16sp"
-                android:gravity="center_vertical"
-                android:textColor="@color/black"/>
+                android:textColor="#E53935"/>
+
             <ImageView
-                android:layout_width="28dp"
-                android:layout_height="wrap_content"
-                android:src="@drawable/ic_arrow_right" />
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"/>
         </LinearLayout>
-        <!-- ================= SOCIAL MEDIA SECTION ================= -->
+        <!-- ================= SOCIAL MEDIA ================= -->
+
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="50dp"
-            app:cardCornerRadius="16dp"
+            android:layout_margin="18dp"
+            android:layout_marginBottom="60dp"
+            app:cardCornerRadius="22dp"
             app:cardElevation="6dp"
-            app:cardUseCompatPadding="true">
+            app:cardBackgroundColor="#FFFFFF">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:background="@drawable/bg_social_card"
-                android:padding="16dp">
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Follow Us"
+                    android:textStyle="bold"
+                    android:textSize="20sp"
+                    android:textColor="#202124"
+                    android:layout_marginBottom="16dp"/>
 
                 <!-- Facebook -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_menu_item"
                     android:orientation="horizontal"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/bg_circle_light1"
                     android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginBottom="12dp">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_facebook"
-                        android:layout_marginEnd="12dp"/>
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:src="@drawable/ic_facebook"/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginStart="14dp"
                         android:text="Facebook"
-                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/black"/>
+                        android:textColor="#202124"
+                        android:textSize="16sp"/>
 
                     <TextView
                         android:id="@+id/btnFacebook"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="8dp"
-                        android:text="Like Us"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:background="@drawable/bg_social_button"/>
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_gradient_button"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
+                        android:text="Like"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
                 <!-- Instagram -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/bg_circle_light1"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_menu_item"
                     android:orientation="horizontal"
                     android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginBottom="12dp">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_instagram"
-                        android:layout_marginEnd="12dp"/>
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:src="@drawable/ic_instagram"/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginStart="14dp"
                         android:text="Instagram"
-                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/black"/>
+                        android:textColor="#202124"
+                        android:textSize="16sp"/>
 
                     <TextView
                         android:id="@+id/btnInstagram"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="8dp"
-                        android:text="Follow Us"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:background="@drawable/bg_social_button"/>
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_gradient_button"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
+                        android:text="Follow"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
                 <!-- Telegram -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_menu_item"
                     android:orientation="horizontal"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/bg_circle_light1"
                     android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
+                    android:paddingHorizontal="16dp"
+                    android:layout_marginBottom="12dp">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_telegram"
-                        android:layout_marginEnd="12dp"/>
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:src="@drawable/ic_telegram"/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginStart="14dp"
                         android:text="Telegram"
-                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/black"/>
+                        android:textColor="#202124"
+                        android:textSize="16sp"/>
 
                     <TextView
                         android:id="@+id/btnTelegram"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="8dp"
-                        android:text="Join Us"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:background="@drawable/bg_social_button"/>
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_gradient_button"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
+                        android:text="Join"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
                 <!-- YouTube -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="64dp"
+                    android:background="@drawable/bg_menu_item"
                     android:orientation="horizontal"
-                    android:padding="12dp"
-                    android:layout_marginBottom="8dp"
-                    android:background="@drawable/bg_circle_light1"
                     android:gravity="center_vertical"
-                    android:paddingVertical="12dp">
+                    android:paddingHorizontal="16dp">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
-                        android:src="@drawable/ic_youtube"
-                        android:layout_marginEnd="12dp"/>
+                        android:layout_width="34dp"
+                        android:layout_height="34dp"
+                        android:src="@drawable/ic_youtube"/>
 
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
+                        android:layout_marginStart="14dp"
                         android:text="YouTube"
-                        android:textSize="16sp"
                         android:textStyle="bold"
-                        android:textColor="@color/black"/>
+                        android:textColor="#202124"
+                        android:textSize="16sp"/>
 
                     <TextView
                         android:id="@+id/btnYoutube"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingHorizontal="18dp"
-                        android:paddingVertical="8dp"
+                        android:layout_height="36dp"
+                        android:background="@drawable/bg_gradient_button"
+                        android:gravity="center"
+                        android:paddingHorizontal="16dp"
                         android:text="Subscribe"
-                        android:textColor="@color/white"
-                        android:textSize="14sp"
-                        android:background="@drawable/bg_social_button"/>
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold"/>
                 </LinearLayout>
 
             </LinearLayout>
 
         </androidx.cardview.widget.CardView>
-        </LinearLayout>
 
-
-
+    </LinearLayout>
 </ScrollView>
