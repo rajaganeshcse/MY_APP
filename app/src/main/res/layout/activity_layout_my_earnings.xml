@@ -1,96 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/base_color"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:background="@drawable/bg_gradient">
 
     <LinearLayout
-        android:layout_width="210dp"
-        android:layout_height="90dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/bg_reward_info"
-        android:gravity="center_horizontal"
-        android:padding="16dp"
-        android:paddingBottom="25dp">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp"
+        app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+        <!-- Claim Header -->
+
+        <LinearLayout
+            android:layout_width="220dp"
+            android:layout_height="90dp"
             android:layout_gravity="center"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="Claim  🎉"
-            android:textColor="@color/black"
-            android:textSize="25sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+            android:background="@drawable/bg_reward_info"
+            android:gravity="center">
 
-    <!-- Referral Coins -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:layout_marginTop="16dp"
-        android:gravity="center_horizontal"
-        android:background="@drawable/bg_reward_card"
-        android:padding="16dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Claim 🎉"
+                android:textStyle="bold"
+                android:textSize="28sp"
+                android:textColor="#111"/>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/txtCoins"
-            android:layout_width="53dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center_vertical"
-            android:text="0"
-            android:textColor="@color/black"
+        <!-- Referral Coins -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="24dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#FFF6DD">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_centerVertical="true">
+
+                    <ImageView
+                        android:layout_width="94dp"
+                        android:layout_height="80dp"
+                        android:background="@drawable/circle_yellow"
+                        android:padding="14dp"
+                        android:src="@drawable/ic_coin" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Referral Coins"
+                        android:textSize="26sp"
+                        android:textStyle="bold"
+                        android:textColor="#FF8A00"
+                        android:layout_marginStart="18dp"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtCoins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:textColor="#FF8A00"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Referral Tickets -->
+
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="18dp"
+            app:cardCornerRadius="24dp"
+            app:cardElevation="6dp"
+            app:cardBackgroundColor="#EAF4FF">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="20dp">
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_centerVertical="true">
+
+                    <ImageView
+                        android:layout_width="91dp"
+                        android:layout_height="79dp"
+                        android:background="@drawable/circle_blue"
+                        android:padding="14dp"
+                        android:src="@drawable/ic_ticket" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Referral Tickets"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        android:textColor="#1565C0"
+                        android:layout_marginStart="18dp"
+                        android:layout_gravity="center"/>
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtTickets"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="0"
+                    android:textSize="30sp"
+                    android:textStyle="bold"
+                    android:textColor="#1565C0"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Claim Button -->
+
+        <Button
+            android:id="@+id/btnClaim"
+            android:layout_width="305dp"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:layout_height="80dp"
+            android:layout_marginTop="35dp"
+            android:background="@drawable/bg_button"
+            android:text="Claim Reward"
+            android:textColor="#FFFFFF"
             android:textSize="24sp"
             android:textStyle="bold" />
 
-        <TextView
-            android:layout_width="163dp"
-            android:layout_height="35dp"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:text="Referral Coins" />
     </LinearLayout>
 
-    <!-- Referral Tickets -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:gravity="center_horizontal"
-        android:layout_marginTop="12dp"
-        android:background="@drawable/bg_history"
-        android:padding="16dp">
-
-        <TextView
-            android:id="@+id/txtTickets"
-            android:layout_width="56dp"
-            android:layout_height="51dp"
-            android:layout_gravity="center_vertical"
-            android:text="0"
-            android:textColor="@color/black"
-            android:textSize="24sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:layout_width="188dp"
-            android:layout_height="57dp"
-            android:textSize="24sp"
-            android:textColor="@color/black"
-            android:layout_marginTop="8dp"
-            android:text="Referral Tickets" />
-    </LinearLayout>
-
-    <Button
-        android:id="@+id/btnClaim"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:text="Claim Reward"
-        android:textSize="20sp"
-        android:textColor="#FFFFFF"
-        android:backgroundTint="#6A1BFF"
-        android:layout_marginTop="20dp" />
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
