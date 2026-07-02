@@ -5,7 +5,7 @@
     android:gravity="center"
     android:orientation="vertical"
     android:padding="30dp"
-    android:background="@color/Primary">
+    android:background="@color/Primary2">
 
     <!-- Slide Image -->
     <ImageView

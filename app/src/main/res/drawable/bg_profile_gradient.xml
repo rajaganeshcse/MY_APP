@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <gradient
-        android:startColor="#4F8EF7"
-        android:endColor="#6A5AF9"
+        android:startColor="#D969B2"
+        android:endColor="#C29DE7"
         android:angle="45"/>
-    <corners android:radius="24dp"/>
+    <corners android:radius="24dp" />
+    <stroke android:width="2dp" android:color="@color/black" android:dashWidth="@dimen/cardview_compat_inset_shadow"/>
 </shape>

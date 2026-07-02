@@ -15,8 +15,10 @@
     <color name="color_pink">#E91E63</color>
     <color name="color_purple">#673AB7</color>
     <color name="luck">#B4C7B8</color>
-    <color name="base_color">#F3EEFF</color>
+    <color name="base_color">#F5F7FB</color>
     <color name="light_purple">#d9ccee</color>
+    <color name="Primary2">#FF6200EE</color>
+    
 
     <color name="brown">#8c1105</color>
     <color name="light_black">#25221e</color>
@@ -26,6 +28,9 @@
     <color name="card_header">#f7ba2c</color>
     <color name="card_body">#ffefc1</color>
     <color name="gold">#FFD700</color>
+    
+    
+    <color name="lightgrey">#878787</color>
 
 
 </resources>

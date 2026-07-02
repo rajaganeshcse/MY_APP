@@ -9,20 +9,19 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="5dp"
         android:paddingBottom="1dp"
         android:orientation="vertical">
 
         <LinearLayout
             android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
-            android:background="@color/base_color"
+            android:layout_height="100dp"
+            android:background="@color/Primary2"
             android:elevation="8dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="8dp"
-            android:paddingTop="12dp"
+            android:paddingTop="22dp"
             android:paddingEnd="8dp">
 
             <!-- App Title -->
@@ -32,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/app_name"
-                android:textColor="#6A1BFF"
+                android:textColor="@color/white"
                 android:textSize="25sp"
                 android:textStyle="bold" />
 
@@ -43,6 +42,14 @@
                 android:layout_height="47dp"
                 android:contentDescription="Strike Icon"
                 android:src="@drawable/ic_strike" />
+            <ImageView
+                android:id="@+id/notification"
+                android:layout_width="37dp"
+                android:layout_height="47dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="10dp"
+                android:contentDescription="Strike Icon"
+                android:src="@drawable/notification" />
 
         </LinearLayout>
 
@@ -68,21 +75,21 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_margin="4dp"
-                    app:cardCornerRadius="12dp"
-                    app:cardBackgroundColor="#32174D"
-                    app:cardElevation="6dp">
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="12dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
                         android:padding="16dp"
+                        android:background="@drawable/bg_card_gradient_2"
                         android:gravity="center_vertical">
 
                         <!-- LEFT CONTENT (Coins + Tickets) -->
                         <LinearLayout
                             android:layout_width="233dp"
-                            android:layout_height="48dp"
+                            android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:gravity="center_vertical"
                             android:orientation="horizontal">
@@ -103,11 +110,11 @@
                                 <TextView
                                     android:id="@+id/txtCoins"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="48dp"
+                                    android:layout_height="wrap_content"
                                     android:layout_marginStart="6dp"
                                     android:text="500"
                                     android:gravity="center_vertical"
-                                    android:textColor="#FFFFFF"
+                                    android:textColor="@color/black"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -137,7 +144,7 @@
                                     android:layout_marginStart="6dp"
                                     android:text="12"
                                     android:gravity="center_vertical"
-                                    android:textColor="#FFFFFF"
+                                    android:textColor="@color/black"
                                     android:textSize="20sp"
                                     android:textStyle="bold" />
                             </LinearLayout>
@@ -164,9 +171,7 @@
                 <include layout="@layout/card_spinner"/>
                 <include layout="@layout/card_lucky_draw"/>
                 <include layout="@layout/card_watch_earn"/>
-                <!-- 🔥 NATIVE AD -->
-                <include
-                    layout="@layout/native_ad_layout"/>
+
                 <include layout="@layout/card_tasks"/>
                 <include layout="@layout/card_surveys"/>
                 <include layout="@layout/card_invite"/>
