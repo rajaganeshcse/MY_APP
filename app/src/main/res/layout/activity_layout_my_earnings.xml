@@ -4,12 +4,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient">
+    android:background="@color/gray_light">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
+        android:padding="2dp"
         android:orientation="vertical"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -17,7 +18,9 @@
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
-            android:layout_height="110dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="50dp"
             app:cardCornerRadius="30dp"
             app:cardElevation="8dp"
             app:cardBackgroundColor="#FFFFFFFF">
@@ -25,6 +28,7 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:paddingVertical="10dp"
                 android:gravity="center"
                 android:orientation="vertical">
 
@@ -32,16 +36,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="🎁 Claim Rewards"
+                    android:textColor="#222222"
                     android:textSize="30sp"
-                    android:textStyle="bold"
-                    android:textColor="#222222"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Collect your referral rewards"
-                    android:textSize="15sp"
-                    android:textColor="#888888"/>
+                    android:textColor="#888888"
+                    android:textSize="15sp" />
 
             </LinearLayout>
 
@@ -68,42 +72,53 @@
                 <ImageView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:background="@drawable/circle_yellow"
-                    android:padding="18dp"
                     android:src="@drawable/ic_coin"/>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="220dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:layout_marginStart="18dp"
+                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Referral Coins"
-                        android:textStyle="bold"
+                        android:textColor="#FF9800"
                         android:textSize="23sp"
-                        android:textColor="#FF9800"/>
+                        android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Available Balance"
+                        android:gravity="center_vertical"
+                        android:layout_marginRight="20dp"
+                        android:fontFamily="sans-serif"
+                        android:layout_gravity="center_vertical"
                         android:textColor="#777777"
-                        android:textSize="14sp"/>
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/txtCoins"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#F57C00"
+                        android:textStyle="bold"
+                        android:textSize="34sp"/>
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtCoins"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="#F57C00"
-                    android:textStyle="bold"
-                    android:textSize="34sp"/>
+
 
             </LinearLayout>
 
@@ -130,12 +145,11 @@
                 <ImageView
                     android:layout_width="80dp"
                     android:layout_height="80dp"
-                    android:background="@drawable/circle_blue"
-                    android:padding="18dp"
+
                     android:src="@drawable/ic_ticket"/>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="18dp"
@@ -149,23 +163,33 @@
                         android:textSize="23sp"
                         android:textColor="#1976D2"/>
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Available Balance"
+                        android:layout_marginRight="20dp"
                         android:textColor="#777777"
-                        android:textSize="14sp"/>
+                        android:textSize="18sp"/>
+
+                        <TextView
+                            android:id="@+id/txtTickets"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0"
+                            android:textColor="#1565C0"
+                            android:textStyle="bold"
+                            android:textSize="34sp"/>
+                    </LinearLayout>
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/txtTickets"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="#1565C0"
-                    android:textStyle="bold"
-                    android:textSize="34sp"/>
+
 
             </LinearLayout>
 
@@ -175,18 +199,20 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnClaim"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="65dp"
-            android:layout_marginTop="35dp"
+            android:layout_marginTop="100dp"
             android:text="🎉 CLAIM REWARD"
             android:textAllCaps="false"
             android:textSize="20sp"
+            android:gravity="center"
+            android:layout_gravity="center_horizontal"
             android:textStyle="bold"
             android:textColor="#FFFFFF"
-            app:rippleColor="@color/Primary"
+            app:rippleColor="@color/color_blue"
             android:background="@drawable/bg_btn_primary"
             app:cornerRadius="32dp"
-            app:elevation="8dp"/>
+            app:elevation="5dp"/>
 
     </LinearLayout>
 

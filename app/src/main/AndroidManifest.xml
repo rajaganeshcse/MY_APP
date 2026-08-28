@@ -24,7 +24,7 @@
             android:theme="@style/Theme.RGamer" /> <!-- ✅ KEEP ONLY ONE AdMob ID -->
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-6379296195597918~1290788138" /> <!-- ✅ Firebase Messaging Service (ONLY ONE) -->
+            android:value="ca-app-pub-3940256099942544~3347511713"/>
         <service
             android:name=".notifications.MyFirebaseMessagingService"
             android:exported="false">

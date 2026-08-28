@@ -79,10 +79,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:columnCount="2"
+            android:paddingVertical="20dp"
+            android:paddingHorizontal="20dp"
             android:alignmentMode="alignMargins"
             android:useDefaultMargins="true"
             android:gravity="center"
-            android:padding="12dp">
+           >
 
             <include layout="@layout/item_redeem_card" />
             <include layout="@layout/item_redeem_card" />

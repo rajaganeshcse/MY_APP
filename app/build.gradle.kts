@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.rgamer"
+    namespace = "com.app.rewardsplanet"
     compileSdk = 36
 
     defaultConfig {

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="640"
+    android:viewportHeight="640">
+
+    <!-- Main flame -->
+    <path
+        android:fillColor="#FF9500"
+        android:strokeColor="#0B347F"
+        android:strokeWidth="20"
+        android:strokeLineCap="round"
+        android:strokeLineJoin="round"
+        android:pathData="
+        M225,86
+        C235,125 230,180 215,220
+        C201,260 170,278 151,315
+        C126,363 132,425 158,466
+        C190,518 244,548 310,552
+        C386,557 452,525 484,470
+        C514,418 508,352 490,302
+        C478,267 458,229 430,195
+        C416,228 407,260 383,285
+        C369,300 355,309 350,308
+        C351,252 331,201 299,159
+        C276,129 249,105 225,86 Z" />
+
+    <!-- Red lower flame -->
+    <path
+        android:fillColor="#FF5B50"
+        android:pathData="
+        M183,278
+        C166,310 151,342 151,381
+        C151,444 187,493 236,522
+        C269,541 304,550 337,550
+        C303,520 277,485 271,448
+        C264,407 281,371 258,340
+        C227,319 201,299 183,278 Z" />
+
+    <!-- Red right/lower section -->
+    <path
+        android:fillColor="#FF5B50"
+        android:pathData="
+        M407,465
+        C438,458 467,445 492,426
+        C486,460 468,493 443,515
+        C415,539 380,550 337,552
+        C382,530 407,500 407,465 Z" />
+
+    <!-- Inner yellow flame -->
+    <path
+        android:fillColor="#FFD044"
+        android:pathData="
+        M271,321
+        C292,335 316,353 328,377
+        C339,398 338,420 337,433
+        C356,425 368,409 373,382
+        C394,407 407,436 406,464
+        C373,471 340,468 311,458
+        C278,446 249,427 236,402
+        C253,386 266,366 271,342
+        C273,333 272,327 271,321 Z" />
+
+</vector>

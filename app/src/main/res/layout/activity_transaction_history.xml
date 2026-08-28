@@ -2,7 +2,7 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
-    android:background="#BCD1D1"
+    android:background="#d8e1ff"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -10,14 +10,14 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="56dp"
-        android:paddingStart="12dp"
+        android:paddingStart="15dp"
         android:paddingEnd="12dp"
         android:layout_marginTop="30dp">
 
         <ImageView
             android:id="@+id/btnBack"
             android:layout_width="40dp"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:src="@drawable/back_arrow" />
 
@@ -32,6 +32,12 @@
     </RelativeLayout>
 
     <!-- 🔥 FILTER TABS -->
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fillViewport="true"
+        android:scrollbars="none">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -40,7 +46,7 @@
 
         <TextView
             android:id="@+id/tabAll"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:text="All"
@@ -51,7 +57,7 @@
 
         <TextView
             android:id="@+id/tabAds"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:text="Ads"
@@ -62,7 +68,7 @@
 
         <TextView
             android:id="@+id/tabOffer"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:text="Offers"
@@ -73,7 +79,7 @@
 
         <TextView
             android:id="@+id/tabReferral"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_weight="1"
             android:text="Referral"
@@ -81,12 +87,26 @@
             android:layout_marginStart="6dp"
             android:textColor="#000"
             android:background="@drawable/bg_tab_unselected"/>
+        <TextView
+            android:id="@+id/tanspin"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="Spin"
+            android:gravity="center"
+            android:layout_marginStart="6dp"
+            android:textColor="#000"
+            android:background="@drawable/bg_tab_unselected"/>
+
     </LinearLayout>
+
+</HorizontalScrollView>
 
     <!-- 📜 RECYCLER VIEW -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
+        android:background="@drawable/rounded_top_white"
         android:layout_height="match_parent"
         android:paddingBottom="8dp"
         android:clipToPadding="false"/>
