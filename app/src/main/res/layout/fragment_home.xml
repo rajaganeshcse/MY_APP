@@ -1,251 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/base_color">
 
-    <!-- ================= MAIN CONTENT ================= -->
-    <LinearLayout
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- ================================================= -->
+    <!-- MAIN HOME SCREEN -->
+    <!-- ================================================= -->
+
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:paddingBottom="1dp">
+        android:background="@color/base_color">
 
-        <!-- ================= HEADER ================= -->
         <LinearLayout
-            android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:background="@color/white"
-            android:elevation="8dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingStart="8dp"
-            android:paddingTop="22dp"
-            android:paddingEnd="8dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:paddingBottom="1dp">
 
-            <!-- MENU SVG / VECTOR ICON -->
-            <ImageView
-                android:id="@+id/menuIcon"
-                android:layout_width="36dp"
-                android:layout_marginLeft="10dp"
-                android:layout_height="38dp"
-                android:contentDescription="Menu"
-                android:scaleType="fitCenter"
-                android:src="@drawable/menu_bar_icon" />
-
-            <!-- APP TITLE -->
-            <TextView
-                android:id="@+id/appTitle"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="20dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:text="@string/app_name"
-                android:textColor="@color/Primary2"
-                android:textSize="25sp"
-                android:textStyle="bold" />
-
-            <!-- STRIKE ICON -->
-            <ImageView
-                android:id="@+id/strikeIcon"
-                android:layout_width="43dp"
-                android:layout_height="54dp"
-                android:contentDescription="Strike"
-                android:scaleType="fitCenter"
-                android:src="@drawable/flame" />
-
-            <!-- NOTIFICATION ICON -->
-            <ImageView
-                android:id="@+id/notification"
-                android:layout_width="44dp"
-                android:layout_height="53dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="10dp"
-                android:contentDescription="Notifications"
-                android:scaleType="fitCenter"
-                android:src="@drawable/notification_icon" />
-
-        </LinearLayout>
-
-
-        <!-- ================= CONTENT ================= -->
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:fillViewport="true"
-            android:overScrollMode="never"
-            android:scrollbars="none">
+            <!-- ================= HEADER ================= -->
 
             <LinearLayout
+                android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingTop="20dp"
-                android:paddingBottom="20dp">
+                android:layout_height="100dp"
+                android:background="@color/white"
+                android:elevation="8dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingTop="22dp"
+                android:paddingEnd="8dp">
 
-
-                <!-- ================= REWARD SECTION ================= -->
-                <androidx.cardview.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                <!-- MENU -->
+                <ImageView
+                    android:id="@+id/menuIcon"
+                    android:layout_width="36dp"
+                    android:layout_height="38dp"
                     android:layout_marginStart="10dp"
-                    android:layout_marginTop="10dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:contentDescription="Menu"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/menu_bar_icon" />
+
+                <!-- TITLE -->
+                <TextView
+                    android:id="@+id/appTitle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="20dp"
+                    android:ellipsize="end"
+                    android:maxLines="1"
+                    android:text="@string/app_name"
+                    android:textColor="@color/Primary2"
+                    android:textSize="25sp"
+                    android:textStyle="bold" />
+
+                <!-- FLAME -->
+                <ImageView
+                    android:id="@+id/strikeIcon"
+                    android:layout_width="43dp"
+                    android:layout_height="54dp"
+                    android:contentDescription="Strike"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/flame" />
+
+                <!-- NOTIFICATION -->
+                <ImageView
+                    android:id="@+id/notification"
+                    android:layout_width="44dp"
+                    android:layout_height="53dp"
+                    android:layout_marginStart="20dp"
                     android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="12dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:background="@drawable/bg_card_gradient_2"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:padding="13dp">
-
-                        <!-- ================= LEFT CONTENT ================= -->
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:gravity="center_vertical"
-                            android:orientation="horizontal">
-
-                            <!-- ================= COIN ================= -->
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="5dp"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:layout_width="44dp"
-                                    android:layout_height="48dp"
-                                    android:contentDescription="Coins"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/ic_coin" />
-
-                                <TextView
-                                    android:id="@+id/txtCoins"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginStart="6dp"
-                                    android:gravity="center_vertical"
-                                    android:text="500"
-                                    android:textColor="@color/black"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold" />
-
-                            </LinearLayout>
-
-
-                            <!-- SPACE -->
-                            <View
-                                android:layout_width="10dp"
-                                android:layout_height="1dp" />
-
-
-                            <!-- ================= TICKET ================= -->
-                            <LinearLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_marginStart="10dp"
-                                android:gravity="center_vertical"
-                                android:orientation="horizontal">
-
-                                <ImageView
-                                    android:layout_width="40dp"
-                                    android:layout_height="48dp"
-                                    android:contentDescription="Tickets"
-                                    android:scaleType="fitCenter"
-                                    android:src="@drawable/ic_ticket" />
-
-                                <TextView
-                                    android:id="@+id/txtToken"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="48dp"
-                                    android:layout_marginStart="6dp"
-                                    android:gravity="center_vertical"
-                                    android:text="12"
-                                    android:textColor="@color/black"
-                                    android:textSize="20sp"
-                                    android:textStyle="bold" />
-
-                            </LinearLayout>
-
-                        </LinearLayout>
-
-
-                        <!-- ================= WITHDRAW BUTTON ================= -->
-                        <Button
-                            android:id="@+id/btnWithdraw"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:backgroundTint="#FFC107"
-                            android:paddingStart="16dp"
-                            android:paddingEnd="16dp"
-                            android:text="Withdraw"
-                            android:textAllCaps="false"
-                            android:textColor="#000000"
-                            android:textStyle="bold" />
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-
-                <!-- ================= SPINNER CARD ================= -->
-                <include
-                    layout="@layout/card_spinner" />
-
-
-                <!-- ================= LUCKY DRAW ================= -->
-                <include
-                    layout="@layout/card_lucky_draw" />
-
-
-                <!-- ================= WATCH & EARN ================= -->
-                <include
-                    layout="@layout/card_watch_earn" />
-
-
-                <!-- ================= TASKS ================= -->
-                <include
-                    layout="@layout/card_tasks" />
-
-
-                <!-- ================= SURVEYS ================= -->
-                <include
-                    layout="@layout/card_surveys" />
-
-
-                <!-- ================= INVITE ================= -->
-                <include
-                    layout="@layout/card_invite" />
+                    android:contentDescription="Notifications"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/notification_icon" />
 
             </LinearLayout>
 
-        </ScrollView>
 
-    </LinearLayout>
+            <!-- ================= EXISTING HOME CONTENT ================= -->
+
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:fillViewport="true"
+                android:overScrollMode="never"
+                android:scrollbars="none">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="20dp"
+                    android:paddingBottom="20dp">
+
+                    <!-- YOUR EXISTING CARDS -->
+
+                    <include
+                        layout="@layout/card_spinner" />
+
+                    <include
+                        layout="@layout/card_lucky_draw" />
+
+                    <include
+                        layout="@layout/card_watch_earn" />
+
+                    <include
+                        layout="@layout/card_tasks" />
+
+                    <include
+                        layout="@layout/card_surveys" />
+
+                    <include
+                        layout="@layout/card_invite" />
+
+                </LinearLayout>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 
-    <!-- ================= REWARD COIN ANIMATION ================= -->
-    <ImageView
-        android:id="@+id/imgRewardCoin"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_gravity="center"
-        android:elevation="12dp"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_coin"
-        android:visibility="gone"
-        android:contentDescription="Reward Coin" />
+    <!-- ================================================= -->
+    <!-- NAVIGATION DRAWER -->
+    <!-- ================================================= -->
 
-</FrameLayout>
+    <FrameLayout
+        android:id="@+id/navigationDrawer"
+        android:layout_width="260dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@android:color/white">
+
+        <include
+            layout="@layout/drawer_menu"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+</androidx.drawerlayout.widget.DrawerLayout>
