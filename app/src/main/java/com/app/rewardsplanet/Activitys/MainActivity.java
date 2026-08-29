@@ -1,5 +1,12 @@
 package com.app.rewardsplanet.Activitys;
+
+import android.Manifest;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,174 +15,932 @@ import android.view.Window;
 import android.view.WindowInsetsController;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.bumptech.glide.Glide;
 import com.app.rewardsplanet.Fragements.GameFragment;
 import com.app.rewardsplanet.Fragements.HomeFragment;
 import com.app.rewardsplanet.Fragements.RewardFragment;
-import com.app.rewardsplanet.Fragements.ProfileFragment;
+import com.app.rewardsplanet.LeaderboardFragment;
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.UserPref;
+
+import com.app.rewardsplanet.invite.activity_refer_earn;
+import com.app.rewardsplanet.withdraws.TransactionHistoryActivity;
+
+import com.bumptech.glide.Glide;
+
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
 
+
 public class MainActivity extends AppCompatActivity {
 
+    // =========================================================
+    // BOTTOM NAVIGATION
+    // =========================================================
+
     public LinearLayout navHome;
-    LinearLayout navGame;
+    private LinearLayout navGame;
     public LinearLayout navReward;
-    LinearLayout navProfile;
-    ImageView imgNavProfile;
-    UserPref userPref;
+    private LinearLayout navLeaderboard;
+
+
+    // =========================================================
+    // USER PREFERENCE
+    // =========================================================
+
+    private UserPref userPref;
+
+
+    // =========================================================
+    // DRAWER
+    // =========================================================
+
+    private DrawerLayout drawerLayout;
+
+
+    // =========================================================
+    // DRAWER USER DETAILS
+    // =========================================================
+
+    private TextView txtName;
+    private TextView txtUid;
+    private TextView txtCoins;
+    private TextView txtTickets;
+
+    private ImageView imgProfile;
+
+
+    // =========================================================
+    // DRAWER MENU ITEMS
+    // =========================================================
+
+    private LinearLayout menuWallet;
+    private LinearLayout menuActivity;
+    private LinearLayout menuRefer;
+
+    private ImageView btnCopy;
+
+    private LinearLayout menuRate;
+    private LinearLayout menuFeedback;
+    private LinearLayout menuContact;
+    private LinearLayout menuFaq;
+    private LinearLayout menuPrivacy;
+
+    private LinearLayout btnLogout1;
+
+
+    // =========================================================
+    // ON CREATE
+    // =========================================================
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
+
         makeFullScreen();
 
-        initViews();
-        setupNavigation();
         userPref = new UserPref(this);
 
+        initViews();
+
+        initDrawer();
+
+        setupNavigation();
+
+
+        // =====================================================
+        // NOTIFICATION PERMISSION
+        // =====================================================
+
         if (Build.VERSION.SDK_INT >= 33) {
-            requestPermissions(new String[]{
-                    android.Manifest.permission.POST_NOTIFICATIONS
 
-
-            }, 1);
+            requestPermissions(
+                    new String[]{
+                            Manifest.permission.POST_NOTIFICATIONS
+                    },
+                    1
+            );
         }
-        // ✅ FIRST
 
-        FirebaseMessaging.getInstance().getToken()
+
+        // =====================================================
+        // FIREBASE FCM TOKEN
+        // =====================================================
+
+        FirebaseMessaging
+                .getInstance()
+                .getToken()
                 .addOnCompleteListener(task -> {
-                    if (!task.isSuccessful()) return;
+
+                    if (!task.isSuccessful()) {
+
+                        Log.e(
+                                "FCM_TOKEN",
+                                "Failed to get FCM token"
+                        );
+
+                        return;
+                    }
 
                     String token = task.getResult();
-                    Log.d("FCM_TOKEN", token);
+
+                    Log.d(
+                            "FCM_TOKEN",
+                            token
+                    );
 
                     String uid = userPref.getUid();
 
                     if (uid != null && !uid.isEmpty()) {
-                        FirebaseFirestore.getInstance()
+
+                        FirebaseFirestore
+                                .getInstance()
                                 .collection("users")
                                 .document(uid)
-                                .update("fcmToken", token);
+                                .update(
+                                        "fcmToken",
+                                        token
+                                )
+                                .addOnFailureListener(e ->
+                                        Log.e(
+                                                "FCM_TOKEN",
+                                                "Failed to update token",
+                                                e
+                                        )
+                                );
                     }
                 });
 
-        // Load profile image
-        userPref = new UserPref(this);
-        loadProfileImage();
 
-        // Default fragment
+        // =====================================================
+        // USER DATA
+        // =====================================================
+
+        loadUserFromPref();
+
+
+        // =====================================================
+        // DEFAULT FRAGMENT
+        // =====================================================
+
         selectNav(navHome);
+
         loadFragment(new HomeFragment());
     }
 
-    private void makeFullScreen() {
-        Window window = getWindow();
 
-        // 🔥 Make content go behind system bars
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false);
+    // =========================================================
+    // INITIALIZE MAIN VIEWS
+    // =========================================================
 
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                controller.setSystemBarsBehavior(
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                );
+    private void initViews() {
 
-                // Optional: hide bars (remove if you only want transparent top)
-                // controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
-            }
+        navHome = findViewById(R.id.navHome);
 
-        } else {
-            window.getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+        navGame = findViewById(R.id.navGame);
+
+        navReward = findViewById(R.id.navReward);
+
+        navLeaderboard = findViewById(R.id.navLeaderboard);
+    }
+
+
+    // =========================================================
+    // INITIALIZE DRAWER
+    // =========================================================
+
+    private void initDrawer() {
+
+        drawerLayout = findViewById(R.id.drawerLayout);
+
+
+        // =====================================================
+        // DRAWER USER DETAILS
+        // =====================================================
+
+        txtName = findViewById(R.id.txtDrawerName);
+
+        txtUid = findViewById(R.id.txtDrawerPhone);
+
+        txtCoins = findViewById(R.id.txtCoins);
+
+        txtTickets = findViewById(R.id.txtTickets);
+
+        imgProfile = findViewById(R.id.profileImage);
+
+
+        // =====================================================
+        // DRAWER MENU
+        // =====================================================
+
+        menuWallet = findViewById(R.id.menuWallet);
+
+        menuActivity = findViewById(R.id.menuActivity);
+
+        menuRefer = findViewById(R.id.menuRefer);
+
+        btnCopy = findViewById(R.id.btnCopy);
+
+        menuRate = findViewById(R.id.menuRate);
+
+        menuFeedback = findViewById(R.id.menuFeedback);
+
+        menuContact = findViewById(R.id.menuContact);
+
+        menuFaq = findViewById(R.id.menuFaq);
+
+        menuPrivacy = findViewById(R.id.menuPrivacy);
+
+        btnLogout1 = findViewById(R.id.btnLogout1);
+
+
+        // =====================================================
+        // WALLET
+        // =====================================================
+
+        if (menuWallet != null) {
+
+            menuWallet.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                selectNav(navReward);
+
+                loadFragment(new RewardFragment());
+            });
+        }
+
+
+        // =====================================================
+        // COPY REFERRAL CODE
+        // =====================================================
+
+        if (btnCopy != null) {
+
+            btnCopy.setOnClickListener(v ->
+                    copyReferralCode()
             );
         }
 
-        // 🔥 Make status bar transparent (TOP FIX)
-        window.setStatusBarColor(Color.TRANSPARENT);
 
-        // 🔥 Optional: make navigation bar transparent
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setNavigationBarColor(Color.TRANSPARENT);
+        // =====================================================
+        // MY ACTIVITY
+        // =====================================================
+
+        if (menuActivity != null) {
+
+            menuActivity.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                Intent intent = new Intent(
+                        MainActivity.this,
+                        TransactionHistoryActivity.class
+                );
+
+                startActivity(intent);
+            });
+        }
+
+
+        // =====================================================
+        // REFER AND EARN
+        // =====================================================
+
+        if (menuRefer != null) {
+
+            menuRefer.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                Intent intent = new Intent(
+                        MainActivity.this,
+                        activity_refer_earn.class
+                );
+
+                startActivity(intent);
+            });
+        }
+
+
+        // =====================================================
+        // RATE US
+        // =====================================================
+
+        if (menuRate != null) {
+
+            menuRate.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                openUrl(
+                        "https://yourwebsite.com/rate-us"
+                );
+            });
+        }
+
+
+        // =====================================================
+        // FEEDBACK
+        // =====================================================
+
+        if (menuFeedback != null) {
+
+            menuFeedback.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                openUrl(
+                        "https://yourwebsite.com/feedback"
+                );
+            });
+        }
+
+
+        // =====================================================
+        // CONTACT US
+        // =====================================================
+
+        if (menuContact != null) {
+
+            menuContact.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                openUrl(
+                        "https://yourwebsite.com/contact"
+                );
+            });
+        }
+
+
+        // =====================================================
+        // FAQ
+        // =====================================================
+
+        if (menuFaq != null) {
+
+            menuFaq.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                openUrl(
+                        "https://yourwebsite.com/faq"
+                );
+            });
+        }
+
+
+        // =====================================================
+        // PRIVACY POLICY
+        // =====================================================
+
+        if (menuPrivacy != null) {
+
+            menuPrivacy.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                openUrl(
+                        "https://yourwebsite.com/privacy-policy"
+                );
+            });
+        }
+
+
+        // =====================================================
+        // LOGOUT
+        // =====================================================
+
+        if (btnLogout1 != null) {
+
+            btnLogout1.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                logoutUser();
+            });
         }
     }
 
-    private void initViews() {
-        navHome = findViewById(R.id.navHome);
-        navGame = findViewById(R.id.navGame);
-        navReward = findViewById(R.id.navReward);
-        navProfile = findViewById(R.id.navProfile);
 
-        imgNavProfile = findViewById(R.id.imgNavProfile);
+    // =========================================================
+    // COPY REFERRAL CODE
+    // =========================================================
 
+    private void copyReferralCode() {
 
-        // ✅ important
+        if (userPref == null) {
+
+            Toast.makeText(
+                    MainActivity.this,
+                    "User data unavailable",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        String referralCode =
+                userPref.getReferralCode();
+
+        if (referralCode == null ||
+                referralCode.trim().isEmpty()) {
+
+            Toast.makeText(
+                    MainActivity.this,
+                    "Referral code not available",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        referralCode = referralCode.trim();
+
+        ClipboardManager clipboard =
+                (ClipboardManager)
+                        getSystemService(
+                                Context.CLIPBOARD_SERVICE
+                        );
+
+        if (clipboard == null) {
+
+            Toast.makeText(
+                    MainActivity.this,
+                    "Unable to copy code",
+                    Toast.LENGTH_SHORT
+            ).show();
+
+            return;
+        }
+
+        ClipData clip =
+                ClipData.newPlainText(
+                        "Referral Code",
+                        referralCode
+                );
+
+        clipboard.setPrimaryClip(clip);
+
+        Toast.makeText(
+                MainActivity.this,
+                "Referral code copied",
+                Toast.LENGTH_SHORT
+        ).show();
     }
 
-    private void setupNavigation() {
 
-        navHome.setOnClickListener(v -> {
-            selectNav(navHome);
-            loadFragment(new HomeFragment());
-        });
+    // =========================================================
+    // LOAD USER FROM PREF
+    // =========================================================
 
-        navGame.setOnClickListener(v -> {
-            selectNav(navGame);
-            loadFragment(new GameFragment());
-        });
+    private void loadUserFromPref() {
 
-        navReward.setOnClickListener(v -> {
-            selectNav(navReward);
-            loadFragment(new RewardFragment());
-        });
+        // =====================================================
+        // NAME
+        // =====================================================
 
-        navProfile.setOnClickListener(v -> {
-            selectNav(navProfile);
-            loadFragment(new ProfileFragment());
-        });
-    }
+        if (txtName != null) {
 
-    private void loadProfileImage() {
-        String profileUrl = userPref.getProfileImage();
+            String name =
+                    userPref.getName();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+            if (name != null &&
+                    !name.isEmpty()) {
 
-        if (user != null && user.getPhotoUrl() != null) {
+                txtName.setText(name);
+
+            } else {
+
+                txtName.setText("Hi, User");
+            }
+        }
+
+
+        // =====================================================
+        // REFERRAL CODE
+        // =====================================================
+
+        if (txtUid != null) {
+
+            String referralCode =
+                    userPref.getReferralCode();
+
+            if (referralCode != null &&
+                    !referralCode.isEmpty()) {
+
+                txtUid.setText(referralCode);
+
+            } else {
+
+                txtUid.setText("Referral Code: -");
+            }
+        }
+
+
+        // =====================================================
+        // COINS
+        // =====================================================
+
+        if (txtCoins != null) {
+
+            txtCoins.setText(
+                    String.valueOf(
+                            userPref.getCoins()
+                    )
+            );
+        }
+
+
+        // =====================================================
+        // TICKETS
+        // =====================================================
+
+        if (txtTickets != null) {
+
+            txtTickets.setText(
+                    String.valueOf(
+                            userPref.getTickets()
+                    )
+            );
+        }   // <-- THIS WAS MISSING
+
+
+        // =====================================================
+        // FIREBASE USER PROFILE
+        // =====================================================
+
+        FirebaseUser user =
+                FirebaseAuth
+                        .getInstance()
+                        .getCurrentUser();
+
+        if (user != null &&
+                user.getPhotoUrl() != null &&
+                imgProfile != null) {
+
             Glide.with(this)
                     .load(user.getPhotoUrl())
                     .circleCrop()
-                    .into(imgNavProfile);
-
+                    .into(imgProfile);
         }
     }
+
+
+    // =========================================================
+    // OPEN DRAWER
+    // =========================================================
+
+    public void openDrawer() {
+
+        if (drawerLayout != null &&
+                !drawerLayout.isDrawerOpen(
+                        GravityCompat.START
+                )) {
+
+            drawerLayout.openDrawer(
+                    GravityCompat.START
+            );
+        }
+    }
+
+
+    // =========================================================
+    // CLOSE DRAWER
+    // =========================================================
+
+    public void closeDrawer() {
+
+        if (drawerLayout != null &&
+                drawerLayout.isDrawerOpen(
+                        GravityCompat.START
+                )) {
+
+            drawerLayout.closeDrawer(
+                    GravityCompat.START
+            );
+        }
+    }
+
+
+    // =========================================================
+    // BOTTOM NAVIGATION
+    // =========================================================
+
+    private void setupNavigation() {
+
+
+        // =====================================================
+        // HOME
+        // =====================================================
+
+        if (navHome != null) {
+
+            navHome.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                selectNav(navHome);
+
+                loadFragment(
+                        new HomeFragment()
+                );
+            });
+        }
+
+
+        // =====================================================
+        // GAME
+        // =====================================================
+
+        if (navGame != null) {
+
+            navGame.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                selectNav(navGame);
+
+                loadFragment(
+                        new GameFragment()
+                );
+            });
+        }
+
+
+        // =====================================================
+        // REWARD
+        // =====================================================
+
+        if (navReward != null) {
+
+            navReward.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                selectNav(navReward);
+
+                loadFragment(
+                        new RewardFragment()
+                );
+            });
+        }
+
+
+        // =====================================================
+        // LEADERBOARD
+        // =====================================================
+
+        if (navLeaderboard != null) {
+
+            navLeaderboard.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                selectNav(navLeaderboard);
+
+                loadFragment(
+                        new LeaderboardFragment()
+                );
+            });
+        }
+    }
+
+
+    // =========================================================
+    // SELECT NAVIGATION
+    // =========================================================
 
     public void selectNav(View selected) {
-        resetNav();
-        selected.setBackgroundResource(R.drawable.bg_nav_selected);
-    }
 
-    private void resetNav() {
-        View[] navs = {navHome, navGame, navReward, navProfile};
-        for (View nav : navs) {
-            nav.setBackgroundResource(R.drawable.bg_nav_unselected);
+        resetNav();
+
+        if (selected != null) {
+
+            selected.setBackgroundResource(
+                    R.drawable.bg_nav_selected
+            );
         }
     }
 
+
+    // =========================================================
+    // RESET NAVIGATION
+    // =========================================================
+
+    private void resetNav() {
+
+        View[] navs = {
+
+                navHome,
+                navGame,
+                navReward,
+                navLeaderboard
+        };
+
+        for (View nav : navs) {
+
+            if (nav != null) {
+
+                nav.setBackgroundResource(
+                        R.drawable.bg_nav_unselected
+                );
+            }
+        }
+    }
+
+
+    // =========================================================
+    // LOAD FRAGMENT
+    // =========================================================
+
     public void loadFragment(Fragment fragment) {
+
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragmentContainer, fragment)
+                .replace(
+                        R.id.fragmentContainer,
+                        fragment
+                )
                 .commit();
+    }
+
+
+    // =========================================================
+    // LOGOUT
+    // =========================================================
+
+    private void logoutUser() {
+
+        if (userPref != null) {
+
+            userPref.logout();
+        }
+
+
+        FirebaseAuth
+                .getInstance()
+                .signOut();
+
+
+        GoogleSignInOptions gso =
+                new GoogleSignInOptions.Builder(
+                        GoogleSignInOptions.DEFAULT_SIGN_IN
+                )
+                        .build();
+
+
+        GoogleSignInClient googleSignInClient =
+                GoogleSignIn.getClient(
+                        MainActivity.this,
+                        gso
+                );
+
+
+        googleSignInClient
+                .signOut()
+                .addOnCompleteListener(task -> {
+
+                    Toast.makeText(
+                            MainActivity.this,
+                            "Logged out",
+                            Toast.LENGTH_SHORT
+                    ).show();
+
+
+                    Intent intent =
+                            new Intent(
+                                    MainActivity.this,
+                                    activity_login.class
+                            );
+
+
+                    intent.setFlags(
+                            Intent.FLAG_ACTIVITY_NEW_TASK |
+                                    Intent.FLAG_ACTIVITY_CLEAR_TASK
+                    );
+
+
+                    startActivity(intent);
+
+                    finish();
+                });
+    }
+
+
+    // =========================================================
+    // FULL SCREEN
+    // =========================================================
+
+    private void makeFullScreen() {
+
+        Window window = getWindow();
+
+
+        if (Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.R) {
+
+            window.setDecorFitsSystemWindows(false);
+
+            WindowInsetsController controller =
+                    window.getInsetsController();
+
+
+            if (controller != null) {
+
+                controller.setSystemBarsBehavior(
+                        WindowInsetsController
+                                .BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                );
+            }
+
+        } else {
+
+            window.getDecorView()
+                    .setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    );
+        }
+
+
+        window.setStatusBarColor(
+                Color.TRANSPARENT
+        );
+
+
+        if (Build.VERSION.SDK_INT >=
+                Build.VERSION_CODES.LOLLIPOP) {
+
+            window.setNavigationBarColor(
+                    Color.TRANSPARENT
+            );
+        }
+    }
+
+
+    // =========================================================
+    // BACK BUTTON
+    // =========================================================
+
+    @Override
+    public void onBackPressed() {
+
+        if (drawerLayout != null &&
+                drawerLayout.isDrawerOpen(
+                        GravityCompat.START
+                )) {
+
+            closeDrawer();
+
+        } else {
+
+            super.onBackPressed();
+        }
+    }
+
+
+    // =========================================================
+    // OPEN URL
+    // =========================================================
+
+    private void openUrl(String url) {
+
+        try {
+
+            Intent intent =
+                    new Intent(
+                            Intent.ACTION_VIEW,
+                            Uri.parse(url)
+                    );
+
+            startActivity(intent);
+
+        } catch (Exception e) {
+
+            Toast.makeText(
+                    MainActivity.this,
+                    "Unable to open link",
+                    Toast.LENGTH_SHORT
+            ).show();
+        }
     }
 }

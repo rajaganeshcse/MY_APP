@@ -1,94 +1,136 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/base_color">
 
-    <!-- ================= Fragment Container ================= -->
-    <FrameLayout
-        android:id="@+id/fragmentContainer"
+<androidx.drawerlayout.widget.DrawerLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/drawerLayout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!-- ================================================= -->
+    <!-- MAIN ACTIVITY -->
+    <!-- ================================================= -->
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@id/bottomNav" />
+        android:background="@color/base_color">
 
-    <!-- ================= Bottom Navigation ================= -->
-    <LinearLayout
-        android:id="@+id/bottomNav"
-        android:layout_alignParentBottom="true"
-        android:layout_width="match_parent"
-        android:layout_height="80dp"
-        android:paddingBottom="25dp"
-        android:orientation="horizontal"
-        android:background="@android:color/white"
-        android:elevation="15dp">
+        <!-- ================================================= -->
+        <!-- FRAGMENT CONTAINER -->
+        <!-- ================================================= -->
+
+        <FrameLayout
+            android:id="@+id/fragmentContainer"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/bottomNav" />
+
+
+        <!-- ================================================= -->
+        <!-- BOTTOM NAVIGATION -->
+        <!-- ================================================= -->
 
         <LinearLayout
-            android:id="@+id/navHome"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
+            android:id="@+id/bottomNav"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
+            android:paddingBottom="25dp"
+            android:background="@android:color/white"
+            android:elevation="15dp">
 
-            <ImageView
-                android:layout_width="42dp"
-                android:layout_height="39dp"
-                android:src="@drawable/ic_home" />
+            <!-- HOME -->
+            <LinearLayout
+                android:id="@+id/navHome"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true">
 
+                <ImageView
+                    android:layout_width="42dp"
+                    android:layout_height="39dp"
+                    android:src="@drawable/ic_home" />
+
+            </LinearLayout>
+
+
+            <!-- GAME -->
+            <LinearLayout
+                android:id="@+id/navGame"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="52dp"
+                    android:layout_height="41dp"
+                    android:src="@drawable/ic_game" />
+
+            </LinearLayout>
+
+
+            <!-- REWARD -->
+            <LinearLayout
+                android:id="@+id/navReward"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="47dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_gift" />
+
+            </LinearLayout>
+
+
+            <!-- LEADERBOARD -->
+            <LinearLayout
+                android:id="@+id/navLeaderboard"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:orientation="vertical"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:id="@+id/imgNavLeaderboard"
+                    android:layout_width="39dp"
+                    android:layout_height="40dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_leaderboard" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/navGame"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="52dp"
-                android:layout_height="41dp"
-                android:src="@drawable/ic_game" />
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/navReward"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
-
-            <ImageView
-                android:layout_width="47dp"
-                android:layout_height="50dp"
-                android:src="@drawable/ic_gift" />
+    </RelativeLayout>
 
 
-        </LinearLayout>
+    <!-- ================================================= -->
+    <!-- DRAWER MENU -->
+    <!-- ================================================= -->
 
-        <LinearLayout
-            android:id="@+id/navProfile"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:clickable="true">
+    <include
+        android:id="@+id/drawerMenu"
+        layout="@layout/drawer_menu"
+        android:layout_width="280dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start" />
 
-            <ImageView
-                android:id="@+id/imgNavProfile"
-                android:layout_width="39dp"
-                android:layout_height="40dp"
-                android:scaleType="centerCrop"
-                android:src="@drawable/ic_profile" />
-
-        </LinearLayout>
-
-    </LinearLayout>
-</RelativeLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

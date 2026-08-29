@@ -37,13 +37,9 @@ android:src="@drawable/back_arrow"/>
         android:padding="10dp">
 
         <!-- 2ND -->
-        <include layout="@layout/item_top2"/>
-
-        <!-- 1ST -->
         <include layout="@layout/item_top1"/>
 
-        <!-- 3RD -->
-        <include layout="@layout/item_top3"/>
+
 
     </LinearLayout>
 

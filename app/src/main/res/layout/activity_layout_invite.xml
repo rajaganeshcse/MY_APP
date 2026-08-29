@@ -110,7 +110,7 @@
                 android:textSize="17sp"
                 android:textColorHint="@color/black"
                 android:text="Validate"
-                android:backgroundTint="@drawable/bg_btn_primary"
+
                 />
         </LinearLayout>
 

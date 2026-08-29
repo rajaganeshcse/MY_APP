@@ -48,7 +48,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:padding="8dp">
 
                 <GridLayout
                     android:id="@+id/shimmerGrid"
@@ -57,9 +57,13 @@
                     android:columnCount="3" />
 
                 <View
-                    android:layout_width="132dp"
-                    android:layout_height="141dp"
-                    android:layout_marginTop="80dp"
+                    android:layout_width="297dp"
+                    android:layout_height="60dp"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="80dp"
+                    android:layout_marginTop="75dp"
+                    android:layout_marginEnd="80dp"
+
                     android:background="@drawable/bg_shimmer_button" />
             </LinearLayout>
 
@@ -78,18 +82,20 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:columnCount="3"
-                android:layout_marginTop="10dp"
-                android:padding="16dp" />
+                android:layout_marginTop="5dp"
+                android:padding="3dp" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnClaim"
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="60dp"
                 android:text="Claim Reward"
+                android:layout_gravity="center"
+                android:layout_marginLeft="25dp"
                 android:textStyle="bold"
                 android:textSize="18sp"
                 android:textColor="@color/black"
-                android:layout_margin="16dp"
+                android:layout_margin="30dp"
                 android:backgroundTint="#FFC107" />
 
         </LinearLayout>

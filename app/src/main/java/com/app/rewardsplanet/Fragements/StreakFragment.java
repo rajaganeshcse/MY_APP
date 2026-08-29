@@ -2,13 +2,21 @@ package com.app.rewardsplanet.Fragements;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.view.*;
-import android.widget.*;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.GridLayout;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.app.rewardsplanet.Activitys.MainActivity;
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.network.ApiClient;
 import com.app.rewardsplanet.network.ApiService;
@@ -21,13 +29,18 @@ import com.google.firebase.auth.FirebaseUser;
 import org.json.JSONObject;
 
 import okhttp3.ResponseBody;
-import retrofit2.*;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class StreakFragment extends Fragment {
 
     private ShimmerFrameLayout shimmerContainer;
     private LinearLayout contentLayout;
-    private GridLayout shimmerGrid, streakContainer;
+
+    private GridLayout shimmerGrid;
+    private GridLayout streakContainer;
+
     private MaterialButton btnClaim;
     private ImageView btnBack;
 
@@ -36,189 +49,729 @@ public class StreakFragment extends Fragment {
     private int currentStreak = 0;
     private boolean isClaimedToday = false;
 
+    private OnBackPressedCallback backPressedCallback;
+
+
+    // =========================================================
+    // CREATE VIEW
+    // =========================================================
+
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             @Nullable ViewGroup container,
-                             @Nullable Bundle savedInstanceState) {
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(R.layout.activity_fragment_streak, container, false);
+        View view = inflater.inflate(
+                R.layout.activity_fragment_streak,
+                container,
+                false
+        );
 
-        shimmerContainer = view.findViewById(R.id.shimmerContainer);
-        contentLayout = view.findViewById(R.id.contentLayout);
-        shimmerGrid = view.findViewById(R.id.shimmerGrid);
 
-        streakContainer = view.findViewById(R.id.streakContainer);
-        btnClaim = view.findViewById(R.id.btnClaim);
-        btnBack = view.findViewById(R.id.btnBack);
+        // =====================================================
+        // FIND VIEWS
+        // =====================================================
 
-        apiService = ApiClient.getClient().create(ApiService.class);
+        shimmerContainer =
+                view.findViewById(
+                        R.id.shimmerContainer
+                );
 
-        btnBack.setOnClickListener(v -> requireActivity().onBackPressed());
+        contentLayout =
+                view.findViewById(
+                        R.id.contentLayout
+                );
+
+        shimmerGrid =
+                view.findViewById(
+                        R.id.shimmerGrid
+                );
+
+        streakContainer =
+                view.findViewById(
+                        R.id.streakContainer
+                );
+
+        btnClaim =
+                view.findViewById(
+                        R.id.btnClaim
+                );
+
+        btnBack =
+                view.findViewById(
+                        R.id.btnBack
+                );
+
+
+        // =====================================================
+        // API
+        // =====================================================
+
+        apiService =
+                ApiClient
+                        .getClient()
+                        .create(ApiService.class);
+
+
+        // =====================================================
+        // TOOLBAR BACK BUTTON
+        // =====================================================
+
+        btnBack.setOnClickListener(v -> {
+
+            loadHomeFragment();
+
+        });
+
+
+        // =====================================================
+        // ANDROID SYSTEM BACK
+        // =====================================================
+
+        setupBackPressed();
+
+
+        // =====================================================
+        // SHIMMER
+        // =====================================================
 
         setupShimmerGrid();
+
         applyGreyShimmer();
+
         shimmerContainer.startShimmer();
+
+
+        // =====================================================
+        // LOAD STREAK
+        // =====================================================
 
         loadStreakStatus();
 
-        btnClaim.setOnClickListener(v -> claimStreak());
+
+        // =====================================================
+        // CLAIM BUTTON
+        // =====================================================
+
+        btnClaim.setOnClickListener(
+                v -> claimStreak()
+        );
+
 
         return view;
     }
 
-    // 🔥 create shimmer cells
-    private void setupShimmerGrid() {
-        for(int i=0; i<6; i++){
-            View item = LayoutInflater.from(getContext())
-                    .inflate(R.layout.item_shimmer_streak, shimmerGrid, false);
 
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+    // =========================================================
+    // SYSTEM BACK
+    // =========================================================
+
+    private void setupBackPressed() {
+
+        backPressedCallback =
+                new OnBackPressedCallback(true) {
+
+                    @Override
+                    public void handleOnBackPressed() {
+
+                        loadHomeFragment();
+                    }
+                };
+
+
+        requireActivity()
+                .getOnBackPressedDispatcher()
+                .addCallback(
+                        getViewLifecycleOwner(),
+                        backPressedCallback
+                );
+    }
+
+
+    // =========================================================
+    // LOAD HOME FRAGMENT
+    // =========================================================
+
+    private void loadHomeFragment() {
+
+        MainActivity activity =
+                (MainActivity) requireActivity();
+
+
+        // Select HOME navigation
+        activity.selectNav(
+                activity.navHome
+        );
+
+
+        // Load HomeFragment
+        activity.loadFragment(
+                new HomeFragment()
+        );
+    }
+
+
+    // =========================================================
+    // SHIMMER GRID
+    // =========================================================
+
+    private void setupShimmerGrid() {
+
+        if (shimmerGrid == null) {
+            return;
+        }
+
+
+        shimmerGrid.removeAllViews();
+
+
+        for (int i = 0; i < 7; i++) {
+
+            View item =
+                    LayoutInflater
+                            .from(requireContext())
+                            .inflate(
+                                    R.layout.item_shimmer_streak,
+                                    shimmerGrid,
+                                    false
+                            );
+
+
+            GridLayout.LayoutParams params =
+                    new GridLayout.LayoutParams();
+
+
             params.width = 0;
-            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-            params.setMargins(8,8,8,8);
+
+            params.columnSpec =
+                    GridLayout.spec(
+                            GridLayout.UNDEFINED,
+                            1f
+                    );
+
+
+            params.setMargins(
+                    4,
+                    4,
+                    4,
+                    4
+            );
+
 
             item.setLayoutParams(params);
+
             shimmerGrid.addView(item);
         }
     }
 
-    // 🔥 GOLD SHIMMER
+
+    // =========================================================
+    // GREY SHIMMER
+    // =========================================================
+
     private void applyGreyShimmer() {
 
-        Shimmer shimmer = new Shimmer.ColorHighlightBuilder()
-                .setBaseColor(Color.parseColor("#858e96"))     // base grey
-                .setHighlightColor(Color.parseColor("#e3e3e3")) // light grey shine
-                .setDuration(3000)
-                .setDirection(Shimmer.Direction.TOP_TO_BOTTOM)
-                .setAutoStart(true)
-                .build();
+        Shimmer shimmer =
+                new Shimmer.ColorHighlightBuilder()
 
-        shimmerContainer.setShimmer(shimmer);
+                        .setBaseColor(
+                                Color.parseColor(
+                                        "#858E96"
+                                )
+                        )
+
+                        .setHighlightColor(
+                                Color.parseColor(
+                                        "#E3E3E3"
+                                )
+                        )
+
+                        .setDuration(1000)
+
+                        .setDirection(
+                                Shimmer.Direction.RIGHT_TO_LEFT
+                        )
+
+                        .setAutoStart(true)
+
+                        .build();
+
+
+        shimmerContainer.setShimmer(
+                shimmer
+        );
     }
 
-    // 🔥 LOAD DATA
+
+    // =========================================================
+    // LOAD STREAK STATUS
+    // =========================================================
+
     private void loadStreakStatus() {
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user == null) return;
+        FirebaseUser user =
+                FirebaseAuth
+                        .getInstance()
+                        .getCurrentUser();
 
-        user.getIdToken(true).addOnSuccessListener(result -> {
 
-            apiService.getStreakStatus(result.getToken())
-                    .enqueue(new Callback<ResponseBody>() {
+        if (user == null) {
 
-                        @Override
-                        public void onResponse(Call<ResponseBody> call,
-                                               Response<ResponseBody> response) {
+            showContent();
 
-                            if(response.isSuccessful()){
-                                try {
-                                    String res = response.body().string();
-                                    JSONObject json = new JSONObject(res);
+            return;
+        }
 
-                                    currentStreak = json.getInt("streak");
-                                    isClaimedToday = json.getBoolean("claimedToday");
 
-                                    showContent();
+        user.getIdToken(true)
+                .addOnSuccessListener(result -> {
 
-                                } catch (Exception e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
+                    String token =
+                            result.getToken();
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {
-                            Toast.makeText(getContext(),"Error",Toast.LENGTH_SHORT).show();
-                        }
-                    });
-        });
+
+                    if (token == null) {
+
+                        showContent();
+
+                        return;
+                    }
+
+
+                    apiService
+                            .getStreakStatus(token)
+                            .enqueue(
+                                    new Callback<ResponseBody>() {
+
+                                        @Override
+                                        public void onResponse(
+                                                Call<ResponseBody> call,
+                                                Response<ResponseBody> response) {
+
+                                            if (response.isSuccessful()
+                                                    && response.body() != null) {
+
+                                                try {
+
+                                                    String res =
+                                                            response.body()
+                                                                    .string();
+
+
+                                                    JSONObject json =
+                                                            new JSONObject(res);
+
+
+                                                    currentStreak =
+                                                            json.optInt(
+                                                                    "streak",
+                                                                    0
+                                                            );
+
+
+                                                    isClaimedToday =
+                                                            json.optBoolean(
+                                                                    "claimedToday",
+                                                                    false
+                                                            );
+
+
+                                                } catch (Exception e) {
+
+                                                    e.printStackTrace();
+                                                }
+                                            }
+
+
+                                            showContent();
+                                        }
+
+
+                                        @Override
+                                        public void onFailure(
+                                                Call<ResponseBody> call,
+                                                Throwable t) {
+
+                                            Toast.makeText(
+                                                    requireContext(),
+                                                    "Error loading streak",
+                                                    Toast.LENGTH_SHORT
+                                            ).show();
+
+
+                                            showContent();
+                                        }
+                                    }
+                            );
+                });
     }
 
-    // 🔥 SWITCH UI
-    private void showContent() {
-        shimmerContainer.stopShimmer();
-        shimmerContainer.setVisibility(View.GONE);
 
-        contentLayout.setVisibility(View.VISIBLE);
+    // =========================================================
+    // SHOW CONTENT
+    // =========================================================
+
+    private void showContent() {
+
+        if (!isAdded()) {
+            return;
+        }
+
+
+        shimmerContainer.stopShimmer();
+
+        shimmerContainer.setVisibility(
+                View.GONE
+        );
+
+
+        contentLayout.setVisibility(
+                View.VISIBLE
+        );
+
 
         setupStreakUI();
     }
 
-    // 🔥 REAL GRID
+
+    // =========================================================
+    // STREAK UI
+    // =========================================================
+
     private void setupStreakUI() {
 
-        int[] rewards = {10,20,30,40,50,75,100};
-
-        for(int i=0;i<7;i++){
-
-            View item = LayoutInflater.from(getContext())
-                    .inflate(R.layout.item_streak, streakContainer, false);
-
-            TextView day = item.findViewById(R.id.txtDay);
-            TextView reward = item.findViewById(R.id.txtReward);
-            ImageView fire = item.findViewById(R.id.imgFire);
-
-            day.setText("Day " + (i+1));
-            reward.setText(String.valueOf(rewards[i]));
-
-            if(i < currentStreak - 1){
-                fire.setColorFilter(Color.parseColor("#FF6F00"));
-            } else if(i == currentStreak - 1){
-                fire.setColorFilter(isClaimedToday ? Color.parseColor("#FF6F00")
-                        : Color.parseColor("#FFA000"));
-            } else {
-                fire.setColorFilter(Color.GRAY);
-                item.setAlpha(0.5f);
-            }
-
-            GridLayout.LayoutParams params = new GridLayout.LayoutParams();
-            params.width = 0;
-            params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
-            params.setMargins(8,8,8,8);
-
-            item.setLayoutParams(params);
-            streakContainer.addView(item);
+        if (streakContainer == null) {
+            return;
         }
 
-        btnClaim.setEnabled(!isClaimedToday);
+
+        streakContainer.removeAllViews();
+
+
+        int[] rewards = {
+                10,
+                20,
+                30,
+                40,
+                50,
+                75,
+                100
+        };
+
+
+        for (int i = 0; i < 7; i++) {
+
+            View item =
+                    LayoutInflater
+                            .from(requireContext())
+                            .inflate(
+                                    R.layout.item_streak,
+                                    streakContainer,
+                                    false
+                            );
+
+
+            TextView day =
+                    item.findViewById(
+                            R.id.txtDay
+                    );
+
+
+            TextView reward =
+                    item.findViewById(
+                            R.id.txtReward
+                    );
+
+
+            ImageView fire =
+                    item.findViewById(
+                            R.id.imgFire
+                    );
+
+
+            day.setText(
+                    "Day " + (i + 1)
+            );
+
+
+            reward.setText(
+                    String.valueOf(
+                            rewards[i]
+                    )
+            );
+
+
+            // =================================================
+            // COMPLETED DAYS
+            // =================================================
+
+            if (i < currentStreak - 1) {
+
+                // COMPLETED
+                day.setText("Completed");
+                day.setTextColor(Color.parseColor("#000000"));
+
+                fire.setImageResource(
+                        R.drawable.ic_success
+                );
+                fire.setColorFilter(Color.GREEN);
+                reward.setTextColor(Color.YELLOW);
+
+                item.setAlpha(1f);
+
+            }
+            else if (i == currentStreak - 1) {
+
+                // CURRENT DAY
+                day.setText("Day " + (i + 1));
+                day.setTextColor(Color.parseColor("#39FF14"));
+                day.setText("Today");
+                reward.setTextColor(Color.YELLOW);
+                fire.setImageResource(
+                        R.drawable.flame
+                );
+
+
+
+
+                if (isClaimedToday) {
+
+                    fire.setColorFilter(
+                            Color.GREEN
+                    );
+                    btnClaim.setEnabled(false);
+                    btnClaim.setBackgroundColor(Color.GREEN);
+                    btnClaim.setText(" Today Claimed");
+                    btnClaim.setTextColor(Color.parseColor("#000000"));
+                    fire.setImageResource(
+                            R.drawable.ic_success
+                    );
+
+                } else {
+
+                    fire.setColorFilter(
+                            Color.parseColor("#FFA000")
+                    );
+                }
+
+                item.setAlpha(1f);
+
+            }
+            else {
+
+                // FUTURE DAY
+                day.setText("Day " + (i + 1));
+                day.setTextColor(Color.parseColor("#000000"));
+
+                fire.setImageResource(
+                        R.drawable.ic_strike
+                );
+                day.setTextColor(Color.parseColor("#000000"));
+
+                fire.setColorFilter(Color.RED);
+                reward.setTextColor(Color.YELLOW);
+
+                item.setAlpha(1f);
+            }
+
+            // =================================================
+            // LOCKED DAYS
+            // =================================================
+
+
+
+
+            GridLayout.LayoutParams params =
+                    new GridLayout.LayoutParams();
+
+
+            params.width = 0;
+
+
+            params.columnSpec =
+                    GridLayout.spec(
+                            GridLayout.UNDEFINED,
+                            1f
+                    );
+
+
+            params.setMargins(
+                    4,
+                    4,
+                    4,
+                    4
+            );
+
+
+            item.setLayoutParams(
+                    params
+            );
+
+
+            streakContainer.addView(
+                    item
+            );
+        }
+
+
+        btnClaim.setEnabled(
+                !isClaimedToday
+        );
     }
 
-    // 🔥 CLAIM
+
+    // =========================================================
+    // CLAIM STREAK
+    // =========================================================
+
     private void claimStreak() {
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if(user == null) return;
+        FirebaseUser user =
+                FirebaseAuth
+                        .getInstance()
+                        .getCurrentUser();
 
-        user.getIdToken(true).addOnSuccessListener(result -> {
 
-            apiService.claimStreak(result.getToken())
-                    .enqueue(new Callback<ResponseBody>() {
+        if (user == null) {
 
-                        @Override
-                        public void onResponse(Call<ResponseBody> call,
-                                               Response<ResponseBody> response) {
+            Toast.makeText(
+                    requireContext(),
+                    "Please login first",
+                    Toast.LENGTH_SHORT
+            ).show();
 
-                            if(response.isSuccessful()){
-                                try {
-                                    JSONObject json = new JSONObject(response.body().string());
+            return;
+        }
 
-                                    currentStreak = json.getInt("streak");
-                                    isClaimedToday = true;
 
-                                    streakContainer.removeAllViews();
-                                    setupStreakUI();
+        btnClaim.setEnabled(false);
 
-                                    Toast.makeText(getContext(),"Reward Claimed",Toast.LENGTH_SHORT).show();
 
-                                } catch (Exception e) {}
-                            }
-                        }
+        user.getIdToken(true)
+                .addOnSuccessListener(result -> {
 
-                        @Override
-                        public void onFailure(Call<ResponseBody> call, Throwable t) {}
-                    });
-        });
+                    String token =
+                            result.getToken();
+
+
+                    if (token == null) {
+
+                        btnClaim.setEnabled(true);
+
+                        return;
+                    }
+
+
+                    apiService
+                            .claimStreak(token)
+                            .enqueue(
+                                    new Callback<ResponseBody>() {
+
+                                        @Override
+                                        public void onResponse(
+                                                Call<ResponseBody> call,
+                                                Response<ResponseBody> response) {
+
+                                            if (response.isSuccessful()
+                                                    && response.body() != null) {
+
+                                                try {
+
+                                                    JSONObject json =
+                                                            new JSONObject(
+                                                                    response.body()
+                                                                            .string()
+                                                            );
+
+
+                                                    currentStreak =
+                                                            json.optInt(
+                                                                    "streak",
+                                                                    currentStreak
+                                                            );
+
+
+                                                    isClaimedToday =
+                                                            true;
+
+
+                                                    setupStreakUI();
+
+
+                                                    Toast.makeText(
+                                                            requireContext(),
+                                                            "Reward Claimed",
+                                                            Toast.LENGTH_SHORT
+                                                    ).show();
+
+
+                                                } catch (Exception e) {
+
+                                                    btnClaim.setEnabled(true);
+
+                                                    e.printStackTrace();
+                                                }
+
+                                            } else {
+
+                                                btnClaim.setEnabled(true);
+
+
+                                                Toast.makeText(
+                                                        requireContext(),
+                                                        "Unable to claim reward",
+                                                        Toast.LENGTH_SHORT
+                                                ).show();
+                                            }
+                                        }
+
+
+                                        @Override
+                                        public void onFailure(
+                                                Call<ResponseBody> call,
+                                                Throwable t) {
+
+                                            btnClaim.setEnabled(true);
+
+
+                                            Toast.makeText(
+                                                    requireContext(),
+                                                    "Network error",
+                                                    Toast.LENGTH_SHORT
+                                            ).show();
+                                        }
+                                    }
+                            );
+                })
+                .addOnFailureListener(e -> {
+
+                    btnClaim.setEnabled(true);
+
+
+                    Toast.makeText(
+                            requireContext(),
+                            "Authentication error",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                });
+    }
+
+
+    // =========================================================
+    // DESTROY VIEW
+    // =========================================================
+
+    @Override
+    public void onDestroyView() {
+
+        if (shimmerContainer != null) {
+
+            shimmerContainer.stopShimmer();
+        }
+
+
+        super.onDestroyView();
     }
 }
