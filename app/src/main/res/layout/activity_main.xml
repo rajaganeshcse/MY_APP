@@ -6,19 +6,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <!-- ================================================= -->
-    <!-- MAIN ACTIVITY -->
-    <!-- ================================================= -->
-
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/base_color">
 
-        <!-- ================================================= -->
-        <!-- FRAGMENT CONTAINER -->
-        <!-- ================================================= -->
-
+        <!-- Fragment -->
         <FrameLayout
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
@@ -26,19 +19,18 @@
             android:layout_above="@id/bottomNav" />
 
 
-        <!-- ================================================= -->
-        <!-- BOTTOM NAVIGATION -->
-        <!-- ================================================= -->
-
+        <!-- Bottom Navigation -->
         <LinearLayout
             android:id="@+id/bottomNav"
             android:layout_width="match_parent"
-            android:layout_height="80dp"
+            android:layout_height="64dp"
             android:layout_alignParentBottom="true"
             android:orientation="horizontal"
-            android:paddingBottom="25dp"
+            android:gravity="center"
+            android:paddingBottom="8dp"
             android:background="@android:color/white"
             android:elevation="15dp">
+
 
             <!-- HOME -->
             <LinearLayout
@@ -47,14 +39,19 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:gravity="center"
+                android:padding="10dp"
                 android:orientation="vertical"
                 android:clickable="true"
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="42dp"
-                    android:layout_height="39dp"
-                    android:src="@drawable/ic_home" />
+                    android:id="@+id/imgNavHome"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:padding="2dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_home"
+                    android:contentDescription="Home" />
 
             </LinearLayout>
 
@@ -71,9 +68,13 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="52dp"
-                    android:layout_height="41dp"
-                    android:src="@drawable/ic_game" />
+                    android:id="@+id/imgNavGame"
+                    android:layout_width="35dp"
+                    android:layout_height="35dp"
+                    android:padding="2dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_game"
+                    android:contentDescription="Game" />
 
             </LinearLayout>
 
@@ -90,9 +91,13 @@
                 android:focusable="true">
 
                 <ImageView
-                    android:layout_width="47dp"
-                    android:layout_height="50dp"
-                    android:src="@drawable/ic_gift" />
+                    android:id="@+id/imgNavReward"
+                    android:layout_width="355dp"
+                    android:layout_height="35dp"
+                    android:padding="2dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_gift"
+                    android:contentDescription="Reward" />
 
             </LinearLayout>
 
@@ -110,10 +115,12 @@
 
                 <ImageView
                     android:id="@+id/imgNavLeaderboard"
-                    android:layout_width="39dp"
-                    android:layout_height="40dp"
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:padding="1dp"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_leaderboard" />
+                    android:src="@drawable/ic_leaderboard"
+                    android:contentDescription="Leaderboard" />
 
             </LinearLayout>
 
@@ -122,10 +129,7 @@
     </RelativeLayout>
 
 
-    <!-- ================================================= -->
-    <!-- DRAWER MENU -->
-    <!-- ================================================= -->
-
+    <!-- Drawer -->
     <include
         android:id="@+id/drawerMenu"
         layout="@layout/drawer_menu"

@@ -27,13 +27,13 @@
             <LinearLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="93dp"
                 android:background="@color/white"
                 android:elevation="8dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="8dp"
-                android:paddingTop="22dp"
+                android:paddingTop="20dp"
                 android:paddingEnd="8dp">
 
                 <!-- MENU -->
@@ -59,7 +59,7 @@
                     android:maxLines="1"
                     android:text="@string/app_name"
                     android:textColor="@color/Primary2"
-                    android:textSize="25sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
                 <!-- FLAME -->
@@ -103,21 +103,59 @@
                     android:paddingBottom="20dp">
 
                     <!-- YOUR EXISTING CARDS -->
-
                     <include
-                        layout="@layout/card_spinner" />
+                        layout="@layout/card_dailybonus"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:gravity="center_horizontal"
+                        android:layout_gravity="center_horizontal"
+                        android:paddingLeft="3dp"
+                        android:layout_height="wrap_content">
+
+                        <include
+                            layout="@layout/card_spinner" />
+
+                        <include
+                            layout="@layout/card_scratch"/>
+
+                    </LinearLayout>
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingLeft="3dp"
+                    android:layout_height="wrap_content">
 
                     <include
                         layout="@layout/card_lucky_draw" />
 
                     <include
                         layout="@layout/card_watch_earn" />
+                </LinearLayout>
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:gravity="center_horizontal"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingLeft="3dp"
+                    android:layout_height="wrap_content">
 
                     <include
                         layout="@layout/card_tasks" />
 
                     <include
                         layout="@layout/card_surveys" />
+
+                </LinearLayout>
+
+                    <include layout="@layout/card_hit_rewardz"/>
+
+                    <include layout="@layout/card_daily_quiz"/>
 
                     <include
                         layout="@layout/card_invite" />

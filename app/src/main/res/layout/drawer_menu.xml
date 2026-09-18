@@ -35,8 +35,10 @@
                 android:layout_width="54dp"
                 android:layout_height="53dp"
                 android:layout_gravity="center"
+                android:padding="2.5dp"
                 android:contentDescription="Profile"
                 android:scaleType="centerCrop"
+                android:background="@drawable/bg_profile_circle"
                 android:src="@drawable/ic_profile" />
 
         </FrameLayout>
@@ -97,10 +99,11 @@
             android:id="@+id/btnEditProfile"
             android:layout_width="30dp"
             android:layout_height="28dp"
-            android:layout_marginLeft="10dp"
+            android:layout_marginLeft="5dp"
             android:background="@drawable/bg_edit_circle"
             android:contentDescription="Edit Profile"
             android:padding="5dp"
+            android:layout_marginRight="10dp"
             android:scaleType="centerInside"
             android:src="@drawable/ic_edit" />
 
@@ -156,10 +159,10 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="38dp"
-                            android:layout_height="38dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_marginEnd="10dp"
-                            android:src="@drawable/ic_coin"/>
+                            android:src="@drawable/ic_coin" />
 
                         <TextView
                             android:id="@+id/txtCoins"
@@ -183,8 +186,8 @@
                         android:orientation="horizontal">
 
                         <ImageView
-                            android:layout_width="38dp"
-                            android:layout_height="38dp"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
                             android:layout_marginEnd="10dp"
                             android:src="@drawable/ic_ticket"/>
 
@@ -218,7 +221,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="2dp"
                 android:layout_marginTop="8dp"
                 android:background="#E0E0E0" />
 
@@ -376,7 +379,7 @@
 
             <View
                 android:layout_width="match_parent"
-                android:layout_height="3dp"
+                android:layout_height="2dp"
                 android:layout_marginTop="8dp"
                 android:background="#E0E0E0" />
 
@@ -667,6 +670,19 @@
                 android:text="version 1.0"
                 android:layout_marginBottom="25dp"
                 android:textColor="@color/black"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:alpha="0.7"
+
+                android:text="REWARDHUB 💖 INDIA "
+                android:layout_marginBottom="25dp"
+                android:textColor="@color/black"/>
+
 
 
         </LinearLayout>

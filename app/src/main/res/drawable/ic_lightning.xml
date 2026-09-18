@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="512dp"
+    android:height="512dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Main yellow lightning -->
+    <path
+        android:fillColor="#FFD21A"
+        android:pathData="M320,0 L118,264 L244,297 L193,512 L394,247 L267,215 Z" />
+
+    <!-- Upper orange facet -->
+    <path
+        android:fillColor="#FFB800"
+        android:pathData="M320,0 L208,237 L267,215 Z" />
+
+    <!-- Center orange facet -->
+    <path
+        android:fillColor="#FFB000"
+        android:pathData="M118,264 L208,237 L304,275 L244,297 Z" />
+
+    <!-- Lower orange facet -->
+    <path
+        android:fillColor="#FFB000"
+        android:pathData="M244,297 L304,275 L193,512 Z" />
+
+    <!-- Right yellow facet -->
+    <path
+        android:fillColor="#FFD21A"
+        android:pathData="M267,215 L394,247 L304,275 Z" />
+
+</vector>

@@ -145,22 +145,36 @@ public class activity_daily_spin extends AppCompatActivity {
 
     private void loadSpinStatus() {
 
-        ApiService api = ApiClient.getClient().create(ApiService.class);
-
-        api.spinStatus(uid).enqueue(new Callback<SpinResponse>() {
+        com.app.rewardsplanet.network.AuthTokenHelper.getBearerToken(new com.app.rewardsplanet.network.AuthTokenHelper.TokenCallback() {
             @Override
-            public void onResponse(Call<SpinResponse> call, Response<SpinResponse> response) {
-                if (response.isSuccessful() && response.body() != null) {
-                    remainingSpins = response.body().remainingSpins;
-                } else {
-                    remainingSpins = 0;
-                }
-                updateUI();
+            public void onSuccess(String bearerToken) {
+                ApiService api = ApiClient.getClient().create(ApiService.class);
+
+                api.spinStatus(bearerToken).enqueue(new Callback<SpinResponse>() {
+                    @Override
+                    public void onResponse(Call<SpinResponse> call, Response<SpinResponse> response) {
+                        if (response.isSuccessful() && response.body() != null) {
+                            remainingSpins = response.body().remainingSpins;
+                        } else {
+                            int localUsed = userPref.getTodaySpinCount();
+                            remainingSpins = Math.max(0, 10 - localUsed);
+                        }
+                        updateUI();
+                    }
+
+                    @Override
+                    public void onFailure(Call<SpinResponse> call, Throwable t) {
+                        int localUsed = userPref.getTodaySpinCount();
+                        remainingSpins = Math.max(0, 10 - localUsed);
+                        updateUI();
+                    }
+                });
             }
 
             @Override
-            public void onFailure(Call<SpinResponse> call, Throwable t) {
-                remainingSpins = 0;
+            public void onError(Exception e) {
+                int localUsed = userPref.getTodaySpinCount();
+                remainingSpins = Math.max(0, 10 - localUsed);
                 updateUI();
             }
         });
@@ -184,47 +198,74 @@ public class activity_daily_spin extends AppCompatActivity {
 
     private void callSpinApi() {
 
-        String token = "Bearer " + uid;
-
-        ApiService api = ApiClient.getClient().create(ApiService.class);
-
-        api.spin(token, uid).enqueue(new Callback<SpinResponse>() {
-
+        com.app.rewardsplanet.network.AuthTokenHelper.getBearerToken(new com.app.rewardsplanet.network.AuthTokenHelper.TokenCallback() {
             @Override
-            public void onResponse(Call<SpinResponse> call, Response<SpinResponse> response) {
+            public void onSuccess(String bearerToken) {
+                ApiService api = ApiClient.getClient().create(ApiService.class);
 
-                if (response.isSuccessful() && response.body() != null) {
+                api.spin(bearerToken).enqueue(new Callback<SpinResponse>() {
 
-                    int reward = response.body().reward;
-                    remainingSpins = response.body().remainingSpins;
+                    @Override
+                    public void onResponse(Call<SpinResponse> call, Response<SpinResponse> response) {
 
-                    stopSpin(reward);
+                        if (response.isSuccessful() && response.body() != null) {
 
-                } else {
+                            int reward = response.body().reward;
+                            remainingSpins = response.body().remainingSpins;
+                            userPref.increaseSpinCount();
 
-                    if (response.code() == 400) {
+                            stopSpin(reward);
 
-                        if (infiniteAnimator != null) infiniteAnimator.cancel();
+                        } else {
 
-                        isSpinning = false;
-                        remainingSpins = 0;
-                        updateUI();
+                            if (response.code() == 400) {
 
-                        Toast.makeText(activity_daily_spin.this,
-                                "Daily limit reached",
-                                Toast.LENGTH_SHORT).show();
+                                if (infiniteAnimator != null) infiniteAnimator.cancel();
 
-                    } else {
-                        error();
+                                isSpinning = false;
+                                remainingSpins = 0;
+                                updateUI();
+
+                                Toast.makeText(activity_daily_spin.this,
+                                        "Daily limit reached",
+                                        Toast.LENGTH_SHORT).show();
+
+                            } else {
+                                performLocalSpin();
+                            }
+                        }
                     }
-                }
+
+                    @Override
+                    public void onFailure(Call<SpinResponse> call, Throwable t) {
+                        performLocalSpin();
+                    }
+                });
             }
 
             @Override
-            public void onFailure(Call<SpinResponse> call, Throwable t) {
-                error();
+            public void onError(Exception e) {
+                performLocalSpin();
             }
         });
+    }
+
+    private void performLocalSpin() {
+        int localUsed = userPref.getTodaySpinCount();
+        if (localUsed >= 10) {
+            if (infiniteAnimator != null) infiniteAnimator.cancel();
+            isSpinning = false;
+            remainingSpins = 0;
+            updateUI();
+            Toast.makeText(this, "Daily limit reached", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        userPref.increaseSpinCount();
+        remainingSpins = Math.max(0, 10 - userPref.getTodaySpinCount());
+        int[] rewards = {0, 5, 6, 7, 10};
+        int reward = rewards[new java.util.Random().nextInt(rewards.length)];
+        stopSpin(reward);
     }
 
     private void stopSpin(int reward) {

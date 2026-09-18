@@ -24,7 +24,8 @@
             android:layout_height="46dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Status"
+            android:textStyle="bold"
+            android:text="Transaction Status"
             android:textColor="@color/black"
             android:textSize="25sp"
              />
@@ -156,6 +157,7 @@
             android:layout_marginTop="20sp"
             android:textSize="20sp"
             android:text="DONE"
+            android:layout_marginBottom="20dp"
             android:textStyle="bold"
             android:textColor="@color/white" />
 

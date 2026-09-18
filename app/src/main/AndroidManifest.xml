@@ -88,13 +88,21 @@
         </provider>
 
         <activity
-            android:name=".ProfileActivity"
-            android:exported="false"
-            android:theme="@style/Theme.RGamer"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name=".Activitys.ProfileActivity"
             android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".lucky_draw.ScratchActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".NetworkIssueActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity_delete_account"
+            android:exported="false"
+            android:theme="@style/Theme.RGamer"
             android:windowSoftInputMode="adjustResize" />
     </application>
 

@@ -54,7 +54,7 @@
         android:layout_marginEnd="12dp"
         android:text="₹0"
         android:textStyle="bold"
-        android:textColor="#6A1BFF"
+        android:textColor="#1DC120"
         android:textSize="16sp" />
 
     <!-- 🔹 STATUS -->

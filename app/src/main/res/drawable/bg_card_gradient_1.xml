@@ -5,7 +5,7 @@
     <!-- Mask (controls ripple shape) -->
     <item android:id="@android:id/mask">
         <shape android:shape="rectangle">
-            <corners android:radius="20dp"/>
+            <corners android:radius="18dp"/>
             <solid android:color="#b6edc8"/>
         </shape>
     </item>
@@ -17,9 +17,9 @@
             <gradient
                 android:type="linear"
                 android:angle="0"
-                android:startColor="#01dbff"
-                android:endColor="#6710c2" />
-            <corners android:radius="20dp" />
+                android:startColor="@color/app_spash"
+                android:endColor="@color/app_spash" />
+            <corners android:radius="18dp" />
 
         </shape>
     </item>

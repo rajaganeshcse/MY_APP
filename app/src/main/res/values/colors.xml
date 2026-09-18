@@ -18,6 +18,7 @@
     <color name="base_color">#F5F7FB</color>
     <color name="light_purple">#d9ccee</color>
     <color name="Primary2">#FF6200EE</color>
+    <color name="snow">#FFFBFF</color>
     
 
     <color name="brown">#8c1105</color>
@@ -31,6 +32,12 @@
     
     
     <color name="lightgrey">#878787</color>
+    <color name="app_spash">#ACE1AF</color>
+
+    <color name="bule_color">#0959D9</color>
+    <color name="bule_color2">#0864F7</color>
+
+
 
 
 

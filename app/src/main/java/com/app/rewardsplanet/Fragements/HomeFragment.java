@@ -2,7 +2,13 @@ package com.app.rewardsplanet.Fragements;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.ConnectivityManager;
+import android.net.Network;
+import android.net.NetworkCapabilities;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +29,7 @@ import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.ads.AdsManager;
 import com.app.rewardsplanet.network.ApiClient;
 import com.app.rewardsplanet.network.ApiService;
+
 import com.google.android.gms.ads.AdLoader;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -30,12 +37,18 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
-import com.google.android.gms.ads.rewarded.RewardItem;
+
+import com.google.android.material.button.MaterialButton;
+
+import com.google.firebase.Timestamp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.android.material.button.MaterialButton;
 
+import org.json.JSONObject;
+
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -45,6 +58,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+
 public class HomeFragment extends Fragment {
 
     // =========================================================
@@ -53,6 +67,7 @@ public class HomeFragment extends Fragment {
 
     private CardView card_spinner;
     private CardView card_lucky_draw;
+    private CardView card_scratch;
     private CardView card_tasks;
     private CardView card_surveys;
     private CardView cardInvite;
@@ -62,19 +77,23 @@ public class HomeFragment extends Fragment {
 
     private ImageView imgRewardCoin;
     private ImageView strikeIcon;
-
-    // MENU ICON
     private ImageView menuIcon;
 
     private MaterialButton btnWatchNow;
 
+    // DAILY BONUS
+    private MaterialButton btnClaimBonus;
+    private TextView txtBonusInfo;
+
     private AlertDialog loadingDialog;
+
 
     // =========================================================
     // ADS
     // =========================================================
 
     private RewardedAd rewardedAd;
+
 
     // =========================================================
     // DATA
@@ -89,6 +108,11 @@ public class HomeFragment extends Fragment {
     private static final int DAILY_LIMIT = 10;
 
     private int currentAds = 0;
+
+    // India timezone
+    private static final ZoneId APP_ZONE =
+            ZoneId.of("Asia/Kolkata");
+
 
     // =========================================================
     // CREATE VIEW
@@ -111,7 +135,11 @@ public class HomeFragment extends Fragment {
 
         loadUserData();
 
+        // Firebase realtime user data
         listenUserRealtime();
+
+        // Directly check Daily Bonus status
+        checkDailyBonusStatus();
 
         loadRewardAd();
 
@@ -121,6 +149,74 @@ public class HomeFragment extends Fragment {
 
         return view;
     }
+
+
+    // =========================================================
+    // NETWORK CHECK - ADDED ONLY
+    // =========================================================
+
+    private boolean isInternetAvailable() {
+
+        if (!isAdded()) {
+            return false;
+        }
+
+        ConnectivityManager connectivityManager =
+                (ConnectivityManager)
+                        requireContext().getSystemService(
+                                Context.CONNECTIVITY_SERVICE
+                        );
+
+        if (connectivityManager == null) {
+            return false;
+        }
+
+        Network network =
+                connectivityManager.getActiveNetwork();
+
+        if (network == null) {
+            return false;
+        }
+
+        NetworkCapabilities capabilities =
+                connectivityManager.getNetworkCapabilities(network);
+
+        if (capabilities == null) {
+            return false;
+        }
+
+        return capabilities.hasCapability(
+                NetworkCapabilities.NET_CAPABILITY_INTERNET
+        )
+                && capabilities.hasCapability(
+                NetworkCapabilities.NET_CAPABILITY_VALIDATED
+        );
+    }
+
+
+    // =========================================================
+    // NETWORK ISSUE PAGE - ADDED ONLY
+    // =========================================================
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (!isAdded()) {
+            return;
+        }
+
+        if (!isInternetAvailable()) {
+
+            Intent intent = new Intent(
+                    requireContext(),
+                    com.app.rewardsplanet.NetworkIssueActivity.class
+            );
+
+            startActivity(intent);
+        }
+    }
+
 
     // =========================================================
     // INIT
@@ -136,17 +232,19 @@ public class HomeFragment extends Fragment {
                 .getClient()
                 .create(ApiService.class);
 
-        // -----------------------------------------------------
+
+        // =====================================================
         // MENU
-        // -----------------------------------------------------
+        // =====================================================
 
         menuIcon = view.findViewById(
                 R.id.menuIcon
         );
 
-        // -----------------------------------------------------
+
+        // =====================================================
         // TEXT
-        // -----------------------------------------------------
+        // =====================================================
 
         txtToken = view.findViewById(
                 R.id.txtToken
@@ -156,12 +254,17 @@ public class HomeFragment extends Fragment {
                 R.id.txtAdCount
         );
 
-        // -----------------------------------------------------
+
+        // =====================================================
         // CARDS
-        // -----------------------------------------------------
+        // =====================================================
 
         card_lucky_draw = view.findViewById(
                 R.id.card_lucky_draw
+        );
+
+        card_scratch = view.findViewById(
+                R.id.card_scratch
         );
 
         card_spinner = view.findViewById(
@@ -173,20 +276,39 @@ public class HomeFragment extends Fragment {
         );
 
         card_tasks = view.findViewById(
-                R.id.card_tasks
+                R.id.card_task
         );
 
         card_surveys = view.findViewById(
                 R.id.card_surveys
         );
 
-        // -----------------------------------------------------
-        // OTHER UI
-        // -----------------------------------------------------
+
+        // =====================================================
+        // WATCH AD
+        // =====================================================
 
         btnWatchNow = view.findViewById(
                 R.id.btnWatchNow
         );
+
+
+        // =====================================================
+        // DAILY BONUS
+        // =====================================================
+
+        btnClaimBonus = view.findViewById(
+                R.id.btnClaimBonus
+        );
+
+        txtBonusInfo = view.findViewById(
+                R.id.txtBonusInfo
+        );
+
+
+        // =====================================================
+        // OTHER UI
+        // =====================================================
 
         imgRewardCoin = view.findViewById(
                 R.id.coin
@@ -197,21 +319,23 @@ public class HomeFragment extends Fragment {
         );
     }
 
+
     // =========================================================
     // CLICK LISTENERS
     // =========================================================
 
     private void setupClickListeners() {
 
-        // -----------------------------------------------------
+        // =====================================================
         // MENU DRAWER
-        // -----------------------------------------------------
+        // =====================================================
 
         setupMenuDrawer();
 
-        // -----------------------------------------------------
+
+        // =====================================================
         // SPIN
-        // -----------------------------------------------------
+        // =====================================================
 
         if (card_spinner != null) {
 
@@ -228,9 +352,30 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        // -----------------------------------------------------
+
+        // =====================================================
+        // SCRATCH
+        // =====================================================
+
+        if (card_scratch != null) {
+
+            card_scratch.setOnClickListener(v -> {
+
+                startActivity(
+                        new Intent(
+                                requireContext(),
+                                com.app.rewardsplanet
+                                        .lucky_draw
+                                        .ScratchActivity.class
+                        )
+                );
+            });
+        }
+
+
+        // =====================================================
         // LUCKY DRAW
-        // -----------------------------------------------------
+        // =====================================================
 
         if (card_lucky_draw != null) {
 
@@ -247,9 +392,10 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        // -----------------------------------------------------
+
+        // =====================================================
         // INVITE
-        // -----------------------------------------------------
+        // =====================================================
 
         if (cardInvite != null) {
 
@@ -266,9 +412,10 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        // -----------------------------------------------------
+
+        // =====================================================
         // SURVEYS
-        // -----------------------------------------------------
+        // =====================================================
 
         if (card_surveys != null) {
 
@@ -282,9 +429,10 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        // -----------------------------------------------------
+
+        // =====================================================
         // TASKS
-        // -----------------------------------------------------
+        // =====================================================
 
         if (card_tasks != null) {
 
@@ -298,9 +446,10 @@ public class HomeFragment extends Fragment {
             });
         }
 
-        // -----------------------------------------------------
+
+        // =====================================================
         // WATCH AD
-        // -----------------------------------------------------
+        // =====================================================
 
         if (btnWatchNow != null) {
 
@@ -309,9 +458,22 @@ public class HomeFragment extends Fragment {
             );
         }
 
-        // -----------------------------------------------------
+
+        // =====================================================
+        // DAILY BONUS
+        // =====================================================
+
+        if (btnClaimBonus != null) {
+
+            btnClaimBonus.setOnClickListener(
+                    v -> claimDailyBonus()
+            );
+        }
+
+
+        // =====================================================
         // STREAK
-        // -----------------------------------------------------
+        // =====================================================
 
         if (strikeIcon != null) {
 
@@ -335,6 +497,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+
     // =========================================================
     // MENU DRAWER
     // =========================================================
@@ -357,6 +520,7 @@ public class HomeFragment extends Fragment {
             activity.openDrawer();
         });
     }
+
 
     // =========================================================
     // LOADING DIALOG
@@ -386,6 +550,7 @@ public class HomeFragment extends Fragment {
         loadingDialog.show();
     }
 
+
     private void hideLoading() {
 
         if (loadingDialog != null
@@ -395,15 +560,223 @@ public class HomeFragment extends Fragment {
         }
     }
 
+
     // =========================================================
-    // REWARD DIALOG
+    // DAILY BONUS STATUS
     // =========================================================
 
-    private void showRewardDialogOnly(int reward) {
+    private void checkDailyBonusStatus() {
 
         if (!isAdded()) {
             return;
         }
+
+        if (db == null || userPref == null) {
+            return;
+        }
+
+        String uid = userPref.getUid();
+
+        if (uid == null || uid.isEmpty()) {
+
+            setDailyBonusCheckFailed();
+
+            return;
+        }
+
+
+        if (btnClaimBonus != null) {
+
+            btnClaimBonus.setEnabled(false);
+
+            btnClaimBonus.setText(
+                    "CHECKING..."
+            );
+        }
+
+        if (txtBonusInfo != null) {
+
+            txtBonusInfo.setText(
+                    "Checking today's bonus..."
+            );
+        }
+
+
+        db.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(document -> {
+
+                    if (!isAdded()) {
+                        return;
+                    }
+
+                    if (document == null
+                            || !document.exists()) {
+
+                        setDailyBonusAvailable();
+
+                        return;
+                    }
+
+
+                    String today =
+                            LocalDate
+                                    .now(APP_ZONE)
+                                    .toString();
+
+
+                    Object claimDateObject =
+                            document.get(
+                                    "dailyBonusClaimDate"
+                            );
+
+
+                    String claimDate = null;
+
+
+                    if (claimDateObject instanceof String) {
+
+                        claimDate =
+                                (String) claimDateObject;
+                    }
+
+
+                    else if (
+                            claimDateObject
+                                    instanceof Timestamp) {
+
+                        Timestamp timestamp =
+                                (Timestamp)
+                                        claimDateObject;
+
+                        claimDate =
+                                timestamp
+                                        .toDate()
+                                        .toInstant()
+                                        .atZone(APP_ZONE)
+                                        .toLocalDate()
+                                        .toString();
+                    }
+
+
+                    if (today.equals(claimDate)) {
+
+                        setDailyBonusClaimed();
+
+                    } else {
+
+                        setDailyBonusAvailable();
+                    }
+
+                })
+                .addOnFailureListener(e -> {
+
+                    if (!isAdded()) {
+                        return;
+                    }
+
+                    setDailyBonusCheckFailed();
+                });
+    }
+
+
+    // =========================================================
+    // DAILY BONUS AVAILABLE
+    // =========================================================
+
+    private void setDailyBonusAvailable() {
+
+        if (!isAdded()) {
+            return;
+        }
+
+        if (btnClaimBonus != null) {
+
+            btnClaimBonus.setEnabled(true);
+
+            btnClaimBonus.setText(
+                    "CLAIM BONUS NOW"
+            );
+        }
+
+        if (txtBonusInfo != null) {
+
+            txtBonusInfo.setText(
+                    "Your daily bonus is ready!"
+            );
+        }
+    }
+
+
+    // =========================================================
+    // DAILY BONUS CLAIMED
+    // =========================================================
+
+    private void setDailyBonusClaimed() {
+
+        if (!isAdded()) {
+            return;
+        }
+
+        if (btnClaimBonus != null) {
+
+            btnClaimBonus.setEnabled(false);
+
+            btnClaimBonus.setText(
+                    "CLAIMED TODAY"
+            );
+        }
+
+        if (txtBonusInfo != null) {
+
+            txtBonusInfo.setText(
+                    "Come back tomorrow for your next bonus"
+            );
+        }
+    }
+
+
+    // =========================================================
+    // DAILY BONUS CHECK FAILED
+    // =========================================================
+
+    private void setDailyBonusCheckFailed() {
+
+        if (!isAdded()) {
+            return;
+        }
+
+        if (btnClaimBonus != null) {
+
+            btnClaimBonus.setEnabled(false);
+
+            btnClaimBonus.setText(
+                    "CHECK FAILED"
+            );
+        }
+
+        if (txtBonusInfo != null) {
+
+            txtBonusInfo.setText(
+                    "Unable to check daily bonus"
+            );
+        }
+    }
+
+
+    // =========================================================
+    // REWARD DIALOG
+    // =========================================================
+
+    private void showRewardDialogOnly(
+            int reward,
+            long currentBalance) {
+
+        if (!isAdded()) {
+            return;
+        }
+
 
         Dialog dialog =
                 new Dialog(requireContext());
@@ -412,44 +785,68 @@ public class HomeFragment extends Fragment {
                 Window.FEATURE_NO_TITLE
         );
 
+
         dialog.setContentView(
                 R.layout.dialog_spin_result
         );
 
-        TextView txt =
+
+        TextView txtWinAmount =
                 dialog.findViewById(
                         R.id.txtWinAmount
                 );
 
-        MaterialButton ok =
+        TextView txtCurrentBalance =
+                dialog.findViewById(
+                        R.id.txtCurrentBalance
+                );
+
+        MaterialButton btnOk =
                 dialog.findViewById(
                         R.id.btnOk
                 );
 
-        if (txt != null) {
 
-            txt.setText(
+        if (txtWinAmount != null) {
+
+            txtWinAmount.setText(
                     "+" + reward + " Coins"
             );
         }
 
-        if (ok != null) {
 
-            ok.setOnClickListener(
+        if (txtCurrentBalance != null) {
+
+            txtCurrentBalance.setText(
+                    "Current Balance: "
+                            + currentBalance
+                            + " Coins"
+            );
+        }
+
+
+        if (btnOk != null) {
+
+            btnOk.setOnClickListener(
                     v -> dialog.dismiss()
             );
         }
 
+
         if (dialog.getWindow() != null) {
 
             dialog.getWindow()
-                    .setBackgroundDrawableResource(
-                            android.R.color.transparent
+                    .setBackgroundDrawable(
+                            new ColorDrawable(
+                                    Color.TRANSPARENT
+                            )
                     );
         }
 
+
         dialog.show();
     }
+
 
     // =========================================================
     // USER DATA
@@ -467,6 +864,7 @@ public class HomeFragment extends Fragment {
          */
     }
 
+
     // =========================================================
     // FIREBASE REALTIME
     // =========================================================
@@ -475,16 +873,19 @@ public class HomeFragment extends Fragment {
 
         if (userPref == null
                 || db == null) {
+
             return;
         }
 
-        String uid = userPref.getUid();
+        String uid =
+                userPref.getUid();
 
         if (uid == null
                 || uid.isEmpty()) {
 
             return;
         }
+
 
         db.collection("users")
                 .document(uid)
@@ -495,67 +896,56 @@ public class HomeFragment extends Fragment {
                                 return;
                             }
 
+                            if (error != null) {
+                                return;
+                            }
+
                             if (value == null
                                     || !value.exists()) {
 
                                 return;
                             }
 
-                            // -------------------------------------------------
-                            // COINS
-                            // -------------------------------------------------
 
                             Long coins =
                                     value.getLong(
                                             "coins"
                                     );
 
-                            // -------------------------------------------------
-                            // TICKETS
-                            // -------------------------------------------------
 
                             Long tickets =
                                     value.getLong(
                                             "tickets"
                                     );
 
-                            // -------------------------------------------------
-                            // DAILY ADS
-                            // -------------------------------------------------
 
                             Long ads =
                                     value.getLong(
                                             "daily_ads_count"
                                     );
 
-                            // -------------------------------------------------
-                            // REFERRAL CODE
-                            // -------------------------------------------------
 
                             String referralCode =
                                     value.getString(
                                             "referralCode"
                                     );
 
-                            userPref.setReferralCode(
-                                    referralCode
-                            );
+                            if (referralCode != null) {
 
-                            // -------------------------------------------------
-                            // COINS
-                            // -------------------------------------------------
+                                userPref.setReferralCode(
+                                        referralCode
+                                );
+                            }
+
 
                             if (coins != null) {
 
                                 /*
-                                 * If your TextView displays coins,
-                                 * update it here.
+                                 * If you have a wallet coin TextView
+                                 * in fragment_home.xml, update it here.
                                  */
                             }
 
-                            // -------------------------------------------------
-                            // TICKETS
-                            // -------------------------------------------------
 
                             if (tickets != null) {
 
@@ -573,9 +963,6 @@ public class HomeFragment extends Fragment {
                                 );
                             }
 
-                            // -------------------------------------------------
-                            // DAILY ADS
-                            // -------------------------------------------------
 
                             currentAds =
                                     ads != null
@@ -591,10 +978,12 @@ public class HomeFragment extends Fragment {
                                 );
                             }
 
+
                             updateButtonState();
                         }
                 );
     }
+
 
     // =========================================================
     // WATCH BUTTON STATE
@@ -632,6 +1021,7 @@ public class HomeFragment extends Fragment {
         }
     }
 
+
     // =========================================================
     // WATCH AD
     // =========================================================
@@ -654,6 +1044,7 @@ public class HomeFragment extends Fragment {
             return;
         }
 
+
         if (currentAds >= DAILY_LIMIT) {
 
             Toast.makeText(
@@ -664,6 +1055,7 @@ public class HomeFragment extends Fragment {
 
             return;
         }
+
 
         if (rewardedAd == null) {
 
@@ -676,7 +1068,9 @@ public class HomeFragment extends Fragment {
             return;
         }
 
+
         btnWatchNow.setEnabled(false);
+
 
         rewardedAd.show(
                 requireActivity(),
@@ -689,8 +1083,9 @@ public class HomeFragment extends Fragment {
         );
     }
 
+
     // =========================================================
-    // REWARD API
+    // REWARDED AD API
     // =========================================================
 
     private void callRewardAPI() {
@@ -709,16 +1104,25 @@ public class HomeFragment extends Fragment {
             return;
         }
 
+
         user.getIdToken(true)
                 .addOnSuccessListener(result -> {
 
                     String token =
                             result.getToken();
 
+
                     if (token == null
                             || token.isEmpty()) {
 
                         hideLoading();
+
+                        if (btnWatchNow != null) {
+
+                            btnWatchNow.setEnabled(
+                                    true
+                            );
+                        }
 
                         Toast.makeText(
                                 getContext(),
@@ -726,12 +1130,9 @@ public class HomeFragment extends Fragment {
                                 Toast.LENGTH_SHORT
                         ).show();
 
-                        if (btnWatchNow != null) {
-                            btnWatchNow.setEnabled(true);
-                        }
-
                         return;
                     }
+
 
                     Map<String, String> body =
                             new HashMap<>();
@@ -741,6 +1142,7 @@ public class HomeFragment extends Fragment {
                             UUID.randomUUID()
                                     .toString()
                     );
+
 
                     apiService
                             .rewardAd(
@@ -753,20 +1155,22 @@ public class HomeFragment extends Fragment {
                                         @Override
                                         public void onResponse(
                                                 Call<ResponseBody> call,
-                                                Response<ResponseBody> response
-                                        ) {
+                                                Response<ResponseBody> response) {
+
+                                            hideLoading();
+
 
                                             if (btnWatchNow != null) {
+
                                                 btnWatchNow.setEnabled(
                                                         true
                                                 );
                                             }
 
+
                                             if (response.isSuccessful()) {
 
                                                 try {
-
-                                                    hideLoading();
 
                                                     String res =
                                                             response.body()
@@ -778,13 +1182,7 @@ public class HomeFragment extends Fragment {
                                                             Toast.LENGTH_SHORT
                                                     ).show();
 
-                                                    showRewardDialogOnly(
-                                                            10
-                                                    );
-
                                                 } catch (Exception e) {
-
-                                                    hideLoading();
 
                                                     Toast.makeText(
                                                             getContext(),
@@ -796,8 +1194,6 @@ public class HomeFragment extends Fragment {
                                             } else {
 
                                                 try {
-
-                                                    hideLoading();
 
                                                     String err =
                                                             response.errorBody()
@@ -811,8 +1207,6 @@ public class HomeFragment extends Fragment {
 
                                                 } catch (Exception e) {
 
-                                                    hideLoading();
-
                                                     Toast.makeText(
                                                             getContext(),
                                                             "Error",
@@ -822,19 +1216,20 @@ public class HomeFragment extends Fragment {
                                             }
                                         }
 
+
                                         @Override
                                         public void onFailure(
                                                 Call<ResponseBody> call,
-                                                Throwable t
-                                        ) {
+                                                Throwable t) {
+
+                                            hideLoading();
 
                                             if (btnWatchNow != null) {
+
                                                 btnWatchNow.setEnabled(
                                                         true
                                                 );
                                             }
-
-                                            hideLoading();
 
                                             Toast.makeText(
                                                     getContext(),
@@ -845,8 +1240,324 @@ public class HomeFragment extends Fragment {
                                         }
                                     }
                             );
+
+                })
+                .addOnFailureListener(e -> {
+
+                    hideLoading();
+
+                    if (btnWatchNow != null) {
+
+                        btnWatchNow.setEnabled(
+                                true
+                        );
+                    }
+
+                    Toast.makeText(
+                            getContext(),
+                            "Authentication error",
+                            Toast.LENGTH_LONG
+                    ).show();
                 });
     }
+
+
+    // =========================================================
+    // DAILY BONUS
+    // =========================================================
+
+    private void claimDailyBonus() {
+
+        FirebaseUser user =
+                FirebaseAuth
+                        .getInstance()
+                        .getCurrentUser();
+
+
+        if (user == null) {
+
+            Toast.makeText(
+                    getContext(),
+                    "Login again",
+                    Toast.LENGTH_LONG
+            ).show();
+
+            return;
+        }
+
+
+        if (btnClaimBonus != null) {
+
+            btnClaimBonus.setEnabled(false);
+
+            btnClaimBonus.setText(
+                    "CLAIMING..."
+            );
+        }
+
+
+        showLoading();
+
+
+        user.getIdToken(true)
+                .addOnSuccessListener(result -> {
+
+                    String token =
+                            result.getToken();
+
+
+                    if (token == null
+                            || token.isEmpty()) {
+
+                        hideLoading();
+
+                        resetDailyBonusButton();
+
+                        Toast.makeText(
+                                getContext(),
+                                "Token error",
+                                Toast.LENGTH_SHORT
+                        ).show();
+
+                        return;
+                    }
+
+
+                    Map<String, String> body =
+                            new HashMap<>();
+
+                    body.put(
+                            "requestId",
+                            UUID.randomUUID()
+                                    .toString()
+                    );
+
+
+                    apiService
+                            .claimDailyBonus(
+                                    token.trim(),
+                                    body
+                            )
+                            .enqueue(
+                                    new Callback<ResponseBody>() {
+
+                                        @Override
+                                        public void onResponse(
+                                                Call<ResponseBody> call,
+                                                Response<ResponseBody> response) {
+
+                                            hideLoading();
+
+
+                                            if (response.isSuccessful()) {
+
+                                                try {
+
+                                                    if (response.body() == null) {
+
+                                                        resetDailyBonusButton();
+
+                                                        Toast.makeText(
+                                                                getContext(),
+                                                                "Empty server response",
+                                                                Toast.LENGTH_LONG
+                                                        ).show();
+
+                                                        return;
+                                                    }
+
+
+                                                    String responseText =
+                                                            response.body()
+                                                                    .string();
+
+
+                                                    JSONObject json =
+                                                            new JSONObject(
+                                                                    responseText
+                                                            );
+
+
+                                                    boolean success =
+                                                            json.optBoolean(
+                                                                    "success",
+                                                                    false
+                                                            );
+
+                                                    int reward =
+                                                            json.optInt(
+                                                                    "reward",
+                                                                    0
+                                                            );
+
+                                                    long coins =
+                                                            json.optLong(
+                                                                    "coins",
+                                                                    0
+                                                            );
+
+                                                    String message =
+                                                            json.optString(
+                                                                    "message",
+                                                                    "Daily bonus claimed"
+                                                            );
+
+
+                                                    if (success) {
+
+                                                        setDailyBonusClaimed();
+
+                                                        showRewardDialogOnly(
+                                                                reward,
+                                                                coins
+                                                        );
+
+
+                                                        if (txtBonusInfo != null) {
+
+                                                            txtBonusInfo.setText(
+                                                                    "+"
+                                                                            + reward
+                                                                            + " Coins earned"
+                                                            );
+                                                        }
+
+                                                    } else {
+
+                                                        resetDailyBonusButton();
+
+                                                        Toast.makeText(
+                                                                getContext(),
+                                                                message,
+                                                                Toast.LENGTH_LONG
+                                                        ).show();
+                                                    }
+
+
+                                                } catch (Exception e) {
+
+                                                    resetDailyBonusButton();
+
+                                                    Toast.makeText(
+                                                            getContext(),
+                                                            "Invalid server response",
+                                                            Toast.LENGTH_LONG
+                                                    ).show();
+                                                }
+
+
+                                            } else {
+
+                                                if (response.code() == 409) {
+
+                                                    setDailyBonusClaimed();
+
+                                                    Toast.makeText(
+                                                            getContext(),
+                                                            "Daily bonus already claimed today",
+                                                            Toast.LENGTH_LONG
+                                                    ).show();
+
+                                                    return;
+                                                }
+
+
+                                                resetDailyBonusButton();
+
+                                                try {
+
+                                                    if (response.errorBody() != null) {
+
+                                                        String error =
+                                                                response.errorBody()
+                                                                        .string();
+
+                                                        Toast.makeText(
+                                                                getContext(),
+                                                                error,
+                                                                Toast.LENGTH_LONG
+                                                        ).show();
+
+                                                    } else {
+
+                                                        Toast.makeText(
+                                                                getContext(),
+                                                                "Unable to claim bonus",
+                                                                Toast.LENGTH_LONG
+                                                        ).show();
+                                                    }
+
+                                                } catch (Exception e) {
+
+                                                    Toast.makeText(
+                                                            getContext(),
+                                                            "Unable to claim bonus",
+                                                            Toast.LENGTH_LONG
+                                                    ).show();
+                                                }
+                                            }
+                                        }
+
+
+                                        @Override
+                                        public void onFailure(
+                                                Call<ResponseBody> call,
+                                                Throwable t) {
+
+                                            hideLoading();
+
+                                            resetDailyBonusButton();
+
+                                            Toast.makeText(
+                                                    getContext(),
+                                                    "Server error: "
+                                                            + t.getMessage(),
+                                                    Toast.LENGTH_LONG
+                                            ).show();
+                                        }
+                                    }
+                            );
+
+                })
+                .addOnFailureListener(e -> {
+
+                    hideLoading();
+
+                    resetDailyBonusButton();
+
+                    Toast.makeText(
+                            getContext(),
+                            "Authentication error",
+                            Toast.LENGTH_LONG
+                    ).show();
+                });
+    }
+
+
+    // =========================================================
+    // RESET DAILY BONUS BUTTON
+    // =========================================================
+
+    private void resetDailyBonusButton() {
+
+        if (btnClaimBonus == null) {
+            return;
+        }
+
+        btnClaimBonus.setEnabled(true);
+
+        btnClaimBonus.setText(
+                "CLAIM BONUS NOW"
+        );
+
+        if (txtBonusInfo != null) {
+
+            txtBonusInfo.setText(
+                    "Your daily bonus is ready!"
+            );
+        }
+    }
+
 
     // =========================================================
     // REWARD ANIMATION
@@ -868,17 +1579,16 @@ public class HomeFragment extends Fragment {
 
         imgRewardCoin.setAlpha(1f);
 
+
         imgRewardCoin.animate()
                 .scaleX(1.2f)
                 .scaleY(1.2f)
                 .setDuration(300)
                 .withEndAction(() ->
-
                         imgRewardCoin.animate()
                                 .alpha(0f)
                                 .setDuration(200)
                                 .withEndAction(() ->
-
                                         imgRewardCoin
                                                 .setVisibility(
                                                         View.GONE
@@ -888,6 +1598,7 @@ public class HomeFragment extends Fragment {
                 )
                 .start();
     }
+
 
     // =========================================================
     // LOAD REWARDED AD
@@ -907,12 +1618,12 @@ public class HomeFragment extends Fragment {
 
                     @Override
                     public void onAdLoaded(
-                            @NonNull RewardedAd ad
-                    ) {
+                            @NonNull RewardedAd ad) {
 
                         rewardedAd = ad;
 
                         updateButtonState();
+
 
                         rewardedAd
                                 .setFullScreenContentCallback(
@@ -930,10 +1641,10 @@ public class HomeFragment extends Fragment {
                                 );
                     }
 
+
                     @Override
                     public void onAdFailedToLoad(
-                            @NonNull LoadAdError error
-                    ) {
+                            @NonNull LoadAdError error) {
 
                         rewardedAd = null;
 
@@ -943,13 +1654,13 @@ public class HomeFragment extends Fragment {
         );
     }
 
+
     // =========================================================
     // LOAD NATIVE AD
     // =========================================================
 
     private void loadNativeAd(
-            View rootView
-    ) {
+            View rootView) {
 
         AdLoader adLoader =
                 new AdLoader.Builder(
@@ -967,6 +1678,7 @@ public class HomeFragment extends Fragment {
                                 return;
                             }
 
+
                             TextView headline =
                                     adView.findViewById(
                                             R.id.ad_headline
@@ -979,9 +1691,11 @@ public class HomeFragment extends Fragment {
                                 );
                             }
 
+
                             adView.setNativeAd(ad);
                         })
                         .build();
+
 
         adLoader.loadAd(
                 new AdRequest.Builder()
@@ -989,12 +1703,15 @@ public class HomeFragment extends Fragment {
         );
     }
 
+
     // =========================================================
     // DESTROY VIEW
     // =========================================================
 
     @Override
     public void onDestroyView() {
+
+        hideLoading();
 
         menuIcon = null;
 
@@ -1007,6 +1724,11 @@ public class HomeFragment extends Fragment {
         strikeIcon = null;
 
         btnWatchNow = null;
+
+        // DAILY BONUS
+        btnClaimBonus = null;
+
+        txtBonusInfo = null;
 
         card_spinner = null;
 

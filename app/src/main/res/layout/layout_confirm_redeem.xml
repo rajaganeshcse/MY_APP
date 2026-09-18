@@ -17,7 +17,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#83c5be"
+            android:background="#6A1BFF"
             android:padding="16dp"
             android:orientation="horizontal"
             android:gravity="center_vertical">
@@ -30,7 +30,7 @@
                 android:text="Confirm Redeem"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:textColor="@color/black" />
+                android:textColor="@color/white" />
 
         </LinearLayout>
 
@@ -50,7 +50,7 @@
                 android:text="Amount: ₹0"
                 android:textSize="20sp"
                 android:textStyle="bold"
-                android:textColor="#06BD0D"
+                android:textColor="#6A1BFF"
                 android:layout_marginBottom="6dp"/>
 
             <!-- COINS -->

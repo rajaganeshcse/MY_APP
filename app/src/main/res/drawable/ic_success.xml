@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+    <!-- Green circle -->
+    <path
+        android:fillColor="#3CC454"
+        android:pathData="M50,0
+                          A50,50 0,1 0,50,100
+                          A50,50 0,1 0,50,0" />
+
+    <!-- Check mark -->
+    <path
+        android:fillColor="#ffffff"
+        android:pathData="M30,45
+                          L45,60
+                          L72,33
+                          C76,29 82,35 78,39
+                          L49,68
+                          C47,70 43,70 41,68
+                          L25,52
+                          C21,48 26,42 30,45 Z" />
+
+</vector>

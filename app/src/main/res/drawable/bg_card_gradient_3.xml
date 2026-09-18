@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="#b6edc8">
+
+    <!-- Mask (controls ripple shape) -->
+    <item android:id="@android:id/mask">
+        <shape android:shape="rectangle">
+            <corners android:radius="18dp"/>
+            <solid android:color="#4b2142"/>
+        </shape>
+    </item>
+
+    <!-- Content (your gradient background) -->
+    <item>
+        <shape android:shape="rectangle">
+
+            <gradient
+                android:type="linear"
+                android:angle="0"
+                android:startColor="@color/color_purple"
+                android:endColor="@color/Primary" />
+            <corners android:radius="18dp" />
+
+        </shape>
+    </item>
+
+</ripple>

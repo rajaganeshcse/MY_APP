@@ -5,16 +5,21 @@ plugins {
 
 android {
     namespace = "com.app.rewardsplanet"
+
     compileSdk = 36
 
     defaultConfig {
         applicationId = "com.example.rgamer"
+
         minSdk = 23
+
         targetSdk = 34
+
         versionCode = 1
         versionName = "1.0"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner =
+            "androidx.test.runner.AndroidJUnitRunner"
     }
 
     buildTypes {
@@ -22,7 +27,9 @@ android {
             isMinifyEnabled = false
 
             proguardFiles(
-                getDefaultProguardFile("proguard-android-optimize.txt"),
+                getDefaultProguardFile(
+                    "proguard-android-optimize.txt"
+                ),
                 "proguard-rules.pro"
             )
         }
@@ -40,34 +47,114 @@ android {
 
 dependencies {
 
+    // ==============================
+    // ANDROIDX
+    // ==============================
+
     implementation(libs.activity.ktx)
+    implementation(libs.activity)
     implementation(libs.appcompat)
     implementation(libs.material)
-    implementation(libs.activity)
     implementation(libs.constraintlayout)
+
+
+    // ==============================
+    // NAVIGATION
+    // ==============================
 
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
 
-    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
 
-    implementation("com.google.firebase:firebase-analytics")
-    implementation("com.google.firebase:firebase-auth")
-    implementation("com.google.firebase:firebase-firestore")
-    implementation("com.google.firebase:firebase-messaging")
+    // ==============================
+    // FIREBASE
+    // ==============================
 
-    implementation("com.google.android.gms:play-services-auth:20.7.0")
-    implementation("com.google.android.gms:play-services-ads:23.0.0")
+    implementation(
+        platform(
+            "com.google.firebase:firebase-bom:34.6.0"
+        )
+    )
 
-    implementation("com.github.bumptech.glide:glide:4.16.0")
-    annotationProcessor("com.github.bumptech.glide:compiler:4.16.0")
+    implementation(
+        "com.google.firebase:firebase-analytics"
+    )
 
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation(
+        "com.google.firebase:firebase-auth"
+    )
 
-    implementation("com.facebook.shimmer:shimmer:0.5.0")
+    implementation(
+        "com.google.firebase:firebase-firestore"
+    )
+
+    implementation(
+        "com.google.firebase:firebase-messaging"
+    )
+
+
+    // ==============================
+    // GOOGLE SIGN-IN
+    // ==============================
+
+    implementation(
+        "com.google.android.gms:play-services-auth:20.7.0"
+    )
+
+
+    // ==============================
+    // ADMOB
+    // ==============================
+
+    implementation(
+        "com.google.android.gms:play-services-ads:23.0.0"
+    )
+
+
+    // ==============================
+    // GLIDE
+    // ==============================
+
+    implementation(
+        "com.github.bumptech.glide:glide:4.16.0"
+    )
+
+    annotationProcessor(
+        "com.github.bumptech.glide:compiler:4.16.0"
+    )
+
+
+    // ==============================
+    // RETROFIT
+    // ==============================
+
+    implementation(
+        "com.squareup.retrofit2:retrofit:2.9.0"
+    )
+
+    implementation(
+        "com.squareup.retrofit2:converter-gson:2.9.0"
+    )
+
+
+    // ==============================
+    // SHIMMER
+    // ==============================
+
+    implementation(
+        "com.facebook.shimmer:shimmer:0.5.0"
+    )
+
+
+    // ==============================
+    // TESTING
+    // ==============================
 
     testImplementation(libs.junit)
+
     androidTestImplementation(libs.ext.junit)
-    androidTestImplementation(libs.espresso.core)
+
+    androidTestImplementation(
+        libs.espresso.core
+    )
 }

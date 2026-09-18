@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:id="@+id/card_daily_quiz"
+
+    android:layout_width="match_parent"
+    android:layout_height="86dp"
+
+    android:layout_marginStart="6dp"
+    android:layout_marginEnd="6dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp"
+
+    app:cardCornerRadius="18dp"
+    app:cardElevation="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="86dp"
+
+        android:background="@drawable/bg_card_gradient_3"
+
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+
+        android:paddingStart="14dp"
+        android:paddingEnd="8dp">
+
+        <!-- TEXT CONTENT -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+
+            android:gravity="center_vertical"
+            android:orientation="vertical">
+
+            <!-- TITLE -->
+            <TextView
+                android:id="@+id/txtDailyQuizTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center"
+                android:text="Daily Quiz"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <!-- SUBTITLE -->
+            <TextView
+                android:id="@+id/txtDailyQuizSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+
+                android:layout_marginTop="2dp"
+
+                android:gravity="center"
+                android:text="Answer &amp; earn rewards"
+                android:textColor="@color/white"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+        <!-- BUTTON -->
+
+        <!-- RIGHT IMAGE -->
+
+        <ImageView
+            android:id="@+id/ic_daily_quiz"
+
+            android:layout_width="68dp"
+            android:layout_height="66dp"
+
+            android:contentDescription="Daily Quiz"
+
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_quiz"
+            android:tint="@color/white" />
+
+        <ImageView
+            android:id="@+id/imgRewardArrow"
+
+            android:layout_width="31dp"
+            android:layout_height="54dp"
+            android:layout_marginStart="40dp"
+
+            android:contentDescription="Open"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_arrow_right"
+            android:tint="@color/white" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

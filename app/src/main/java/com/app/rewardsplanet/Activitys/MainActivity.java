@@ -59,6 +59,16 @@ public class MainActivity extends AppCompatActivity {
 
 
     // =========================================================
+    // NAV IMAGES
+    // =========================================================
+
+    private ImageView imgNavHome;
+    private ImageView imgNavGame;
+    private ImageView imgNavReward;
+    private ImageView imgNavLeaderboard;
+
+
+    // =========================================================
     // USER PREFERENCE
     // =========================================================
 
@@ -94,6 +104,8 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView btnCopy;
 
+    ImageView btnEditProfile;
+
     private LinearLayout menuRate;
     private LinearLayout menuFeedback;
     private LinearLayout menuContact;
@@ -108,7 +120,8 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(
+            @Nullable Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
@@ -159,16 +172,19 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
 
-                    String token = task.getResult();
+                    String token =
+                            task.getResult();
 
                     Log.d(
                             "FCM_TOKEN",
                             token
                     );
 
-                    String uid = userPref.getUid();
+                    String uid =
+                            userPref.getUid();
 
-                    if (uid != null && !uid.isEmpty()) {
+                    if (uid != null &&
+                            !uid.isEmpty()) {
 
                         FirebaseFirestore
                                 .getInstance()
@@ -202,7 +218,9 @@ public class MainActivity extends AppCompatActivity {
 
         selectNav(navHome);
 
-        loadFragment(new HomeFragment());
+        loadFragment(
+                new HomeFragment()
+        );
     }
 
 
@@ -212,13 +230,57 @@ public class MainActivity extends AppCompatActivity {
 
     private void initViews() {
 
-        navHome = findViewById(R.id.navHome);
+        // =====================================================
+        // NAV CONTAINERS
+        // =====================================================
 
-        navGame = findViewById(R.id.navGame);
+        navHome =
+                findViewById(
+                        R.id.navHome
+                );
 
-        navReward = findViewById(R.id.navReward);
+        navGame =
+                findViewById(
+                        R.id.navGame
+                );
 
-        navLeaderboard = findViewById(R.id.navLeaderboard);
+        navReward =
+                findViewById(
+                        R.id.navReward
+                );
+
+        navLeaderboard =
+                findViewById(
+                        R.id.navLeaderboard
+                );
+
+
+        // =====================================================
+        // NAV IMAGES
+        // =====================================================
+        // These IDs must belong to ImageViews in XML.
+        // XML controls their size and scaleType.
+        // =====================================================
+
+        imgNavHome =
+                findViewById(
+                        R.id.imgNavHome
+                );
+
+        imgNavGame =
+                findViewById(
+                        R.id.imgNavGame
+                );
+
+        imgNavReward =
+                findViewById(
+                        R.id.imgNavReward
+                );
+
+        imgNavLeaderboard =
+                findViewById(
+                        R.id.imgNavLeaderboard
+                );
     }
 
 
@@ -228,47 +290,100 @@ public class MainActivity extends AppCompatActivity {
 
     private void initDrawer() {
 
-        drawerLayout = findViewById(R.id.drawerLayout);
+        drawerLayout =
+                findViewById(
+                        R.id.drawerLayout
+                );
 
 
         // =====================================================
         // DRAWER USER DETAILS
         // =====================================================
 
-        txtName = findViewById(R.id.txtDrawerName);
+        txtName =
+                findViewById(
+                        R.id.txtDrawerName
+                );
 
-        txtUid = findViewById(R.id.txtDrawerPhone);
+        txtUid =
+                findViewById(
+                        R.id.txtDrawerPhone
+                );
 
-        txtCoins = findViewById(R.id.txtCoins);
+        txtCoins =
+                findViewById(
+                        R.id.txtCoins
+                );
 
-        txtTickets = findViewById(R.id.txtTickets);
+        txtTickets =
+                findViewById(
+                        R.id.txtTickets
+                );
 
-        imgProfile = findViewById(R.id.profileImage);
+        imgProfile =
+                findViewById(
+                        R.id.profileImage
+                );
 
 
         // =====================================================
         // DRAWER MENU
         // =====================================================
 
-        menuWallet = findViewById(R.id.menuWallet);
+        btnEditProfile =
+                findViewById(
+                        R.id.btnEditProfile
+                );
 
-        menuActivity = findViewById(R.id.menuActivity);
+        menuWallet =
+                findViewById(
+                        R.id.menuWallet
+                );
 
-        menuRefer = findViewById(R.id.menuRefer);
+        menuActivity =
+                findViewById(
+                        R.id.menuActivity
+                );
 
-        btnCopy = findViewById(R.id.btnCopy);
+        menuRefer =
+                findViewById(
+                        R.id.menuRefer
+                );
 
-        menuRate = findViewById(R.id.menuRate);
+        btnCopy =
+                findViewById(
+                        R.id.btnCopy
+                );
 
-        menuFeedback = findViewById(R.id.menuFeedback);
+        menuRate =
+                findViewById(
+                        R.id.menuRate
+                );
 
-        menuContact = findViewById(R.id.menuContact);
+        menuFeedback =
+                findViewById(
+                        R.id.menuFeedback
+                );
 
-        menuFaq = findViewById(R.id.menuFaq);
+        menuContact =
+                findViewById(
+                        R.id.menuContact
+                );
 
-        menuPrivacy = findViewById(R.id.menuPrivacy);
+        menuFaq =
+                findViewById(
+                        R.id.menuFaq
+                );
 
-        btnLogout1 = findViewById(R.id.btnLogout1);
+        menuPrivacy =
+                findViewById(
+                        R.id.menuPrivacy
+                );
+
+        btnLogout1 =
+                findViewById(
+                        R.id.btnLogout1
+                );
 
 
         // =====================================================
@@ -283,7 +398,30 @@ public class MainActivity extends AppCompatActivity {
 
                 selectNav(navReward);
 
-                loadFragment(new RewardFragment());
+                loadFragment(
+                        new RewardFragment()
+                );
+            });
+        }
+
+
+        // =====================================================
+        // EDIT PROFILE
+        // =====================================================
+
+        if (btnEditProfile != null) {
+
+            btnEditProfile.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                Intent intent =
+                        new Intent(
+                                MainActivity.this,
+                                ProfileActivity.class
+                        );
+
+                startActivity(intent);
             });
         }
 
@@ -310,10 +448,11 @@ public class MainActivity extends AppCompatActivity {
 
                 closeDrawer();
 
-                Intent intent = new Intent(
-                        MainActivity.this,
-                        TransactionHistoryActivity.class
-                );
+                Intent intent =
+                        new Intent(
+                                MainActivity.this,
+                                TransactionHistoryActivity.class
+                        );
 
                 startActivity(intent);
             });
@@ -330,10 +469,11 @@ public class MainActivity extends AppCompatActivity {
 
                 closeDrawer();
 
-                Intent intent = new Intent(
-                        MainActivity.this,
-                        activity_refer_earn.class
-                );
+                Intent intent =
+                        new Intent(
+                                MainActivity.this,
+                                activity_refer_earn.class
+                        );
 
                 startActivity(intent);
             });
@@ -458,8 +598,10 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+
         String referralCode =
                 userPref.getReferralCode();
+
 
         if (referralCode == null ||
                 referralCode.trim().isEmpty()) {
@@ -473,13 +615,17 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        referralCode = referralCode.trim();
+
+        referralCode =
+                referralCode.trim();
+
 
         ClipboardManager clipboard =
                 (ClipboardManager)
                         getSystemService(
                                 Context.CLIPBOARD_SERVICE
                         );
+
 
         if (clipboard == null) {
 
@@ -492,13 +638,16 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
+
         ClipData clip =
                 ClipData.newPlainText(
                         "Referral Code",
                         referralCode
                 );
 
+
         clipboard.setPrimaryClip(clip);
+
 
         Toast.makeText(
                 MainActivity.this,
@@ -523,14 +672,19 @@ public class MainActivity extends AppCompatActivity {
             String name =
                     userPref.getName();
 
+
             if (name != null &&
                     !name.isEmpty()) {
 
-                txtName.setText(name);
+                txtName.setText(
+                        name
+                );
 
             } else {
 
-                txtName.setText("Hi, User");
+                txtName.setText(
+                        "Hi, User"
+                );
             }
         }
 
@@ -544,14 +698,19 @@ public class MainActivity extends AppCompatActivity {
             String referralCode =
                     userPref.getReferralCode();
 
+
             if (referralCode != null &&
                     !referralCode.isEmpty()) {
 
-                txtUid.setText(referralCode);
+                txtUid.setText(
+                        referralCode
+                );
 
             } else {
 
-                txtUid.setText("Referral Code: -");
+                txtUid.setText(
+                        "Referral Code: -"
+                );
             }
         }
 
@@ -581,7 +740,7 @@ public class MainActivity extends AppCompatActivity {
                             userPref.getTickets()
                     )
             );
-        }   // <-- THIS WAS MISSING
+        }
 
 
         // =====================================================
@@ -593,14 +752,27 @@ public class MainActivity extends AppCompatActivity {
                         .getInstance()
                         .getCurrentUser();
 
+
         if (user != null &&
                 user.getPhotoUrl() != null &&
                 imgProfile != null) {
 
             Glide.with(this)
                     .load(user.getPhotoUrl())
+                    .placeholder(
+                            R.drawable.ic_profile
+                    )
+                    .error(
+                            R.drawable.ic_profile
+                    )
                     .circleCrop()
                     .into(imgProfile);
+
+        } else if (imgProfile != null) {
+
+            imgProfile.setImageResource(
+                    R.drawable.ic_profile
+            );
         }
     }
 
@@ -646,7 +818,6 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================
 
     private void setupNavigation() {
-
 
         // =====================================================
         // HOME
@@ -733,6 +904,7 @@ public class MainActivity extends AppCompatActivity {
 
         resetNav();
 
+
         if (selected != null) {
 
             selected.setBackgroundResource(
@@ -756,6 +928,7 @@ public class MainActivity extends AppCompatActivity {
                 navLeaderboard
         };
 
+
         for (View nav : navs) {
 
             if (nav != null) {
@@ -772,7 +945,8 @@ public class MainActivity extends AppCompatActivity {
     // LOAD FRAGMENT
     // =========================================================
 
-    public void loadFragment(Fragment fragment) {
+    public void loadFragment(
+            Fragment fragment) {
 
         getSupportFragmentManager()
                 .beginTransaction()
@@ -852,13 +1026,17 @@ public class MainActivity extends AppCompatActivity {
 
     private void makeFullScreen() {
 
-        Window window = getWindow();
+        Window window =
+                getWindow();
 
 
         if (Build.VERSION.SDK_INT >=
                 Build.VERSION_CODES.R) {
 
-            window.setDecorFitsSystemWindows(false);
+            window.setDecorFitsSystemWindows(
+                    false
+            );
+
 
             WindowInsetsController controller =
                     window.getInsetsController();
@@ -931,6 +1109,7 @@ public class MainActivity extends AppCompatActivity {
                             Intent.ACTION_VIEW,
                             Uri.parse(url)
                     );
+
 
             startActivity(intent);
 

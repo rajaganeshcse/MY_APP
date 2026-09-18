@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingStart="8dp"
+    android:paddingEnd="8dp">
+
+    <!-- ================= SCRATCH CARD ================= -->
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_scratch"
+
+        android:layout_width="150dp"
+        android:layout_height="184dp"
+
+        android:layout_marginStart="6dp"
+        android:layout_marginEnd="6dp"
+        android:clickable="true"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="12dp"
+
+        app:cardCornerRadius="20dp"
+        app:cardElevation="6dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+
+            android:background="@drawable/bg_card_gradient"
+
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <!-- TITLE -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:text="Scratch &amp; Win"
+                android:textColor="@color/black"
+                android:textSize="17sp"
+                android:textStyle="bold"
+
+                android:layout_marginBottom="2dp" />
+
+            <!-- GIFT IMAGE -->
+            <ImageView
+                android:id="@+id/ic_gift_box"
+
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+
+                android:contentDescription="Scratch"
+                android:scaleType="centerInside"
+                android:src="@drawable/ic_gift_box" />
+
+            <!-- SCRATCH BUTTON -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnscratch"
+
+                android:layout_width="wrap_content"
+                android:layout_height="38dp"
+
+                android:layout_marginTop="4dp"
+
+                android:background="@drawable/bg_button_ripple"
+
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="0dp"
+                android:paddingBottom="0dp"
+
+                android:text="GO"
+                android:textColor="#000000"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:clickable="false"
+                app:backgroundTint="@null"
+                app:rippleColor="@null" />
+
+        </LinearLayout>
+
+    </androidx.cardview.widget.CardView>
+
+</LinearLayout>
