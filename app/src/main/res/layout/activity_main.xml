@@ -24,29 +24,28 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:paddingStart="14dp"
-            android:paddingEnd="14dp"
-            android:paddingBottom="12dp"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="10dp"
             android:clipToPadding="false">
 
             <LinearLayout
                 android:id="@+id/bottomNav"
                 android:layout_width="match_parent"
-                android:layout_height="62dp"
+                android:layout_height="60dp"
                 android:background="@drawable/bg_bottom_nav_container"
                 android:elevation="12dp"
                 android:orientation="horizontal"
                 android:gravity="center_vertical"
-                android:paddingStart="6dp"
-                android:paddingEnd="6dp"
-                android:weightSum="4">
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp">
 
                 <!-- 1. HOME -->
                 <LinearLayout
                     android:id="@+id/navHome"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="1.75"
                     android:gravity="center"
                     android:clickable="true"
                     android:focusable="true">
@@ -54,17 +53,17 @@
                     <LinearLayout
                         android:id="@+id/navPillHome"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="40dp"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:paddingStart="14dp"
+                        android:paddingStart="12dp"
                         android:paddingEnd="14dp"
                         android:background="@drawable/bg_nav_pill_home">
 
                         <ImageView
                             android:id="@+id/imgNavHome"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/ic_nav_home"
                             android:contentDescription="Home" />
@@ -73,13 +72,15 @@
                             android:id="@+id/txtNavHome"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
+                            android:layout_marginStart="5dp"
                             android:text="Home"
                             android:textColor="#FFFFFF"
-                            android:textSize="13sp"
+                            android:textSize="12.5sp"
                             android:textStyle="bold"
-                            android:visibility="visible"
-                            android:singleLine="true" />
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:ellipsize="none"
+                            android:visibility="visible" />
 
                     </LinearLayout>
 
@@ -90,7 +91,7 @@
                     android:id="@+id/navGame"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="0.85"
                     android:gravity="center"
                     android:clickable="true"
                     android:focusable="true">
@@ -98,16 +99,16 @@
                     <LinearLayout
                         android:id="@+id/navPillGame"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="40dp"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:paddingStart="14dp"
+                        android:paddingStart="12dp"
                         android:paddingEnd="14dp">
 
                         <ImageView
                             android:id="@+id/imgNavGame"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/ic_nav_game"
                             android:contentDescription="Games" />
@@ -116,13 +117,15 @@
                             android:id="@+id/txtNavGame"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
+                            android:layout_marginStart="5dp"
                             android:text="Games"
                             android:textColor="#FFFFFF"
-                            android:textSize="13sp"
+                            android:textSize="12.5sp"
                             android:textStyle="bold"
-                            android:visibility="gone"
-                            android:singleLine="true" />
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:ellipsize="none"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
@@ -133,7 +136,7 @@
                     android:id="@+id/navReward"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="0.85"
                     android:gravity="center"
                     android:clickable="true"
                     android:focusable="true">
@@ -141,16 +144,16 @@
                     <LinearLayout
                         android:id="@+id/navPillReward"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="40dp"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:paddingStart="14dp"
+                        android:paddingStart="12dp"
                         android:paddingEnd="14dp">
 
                         <ImageView
                             android:id="@+id/imgNavReward"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/ic_nav_reward"
                             android:contentDescription="Reward" />
@@ -159,13 +162,15 @@
                             android:id="@+id/txtNavReward"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
+                            android:layout_marginStart="5dp"
                             android:text="Reward"
                             android:textColor="#FFFFFF"
-                            android:textSize="13sp"
+                            android:textSize="12.5sp"
                             android:textStyle="bold"
-                            android:visibility="gone"
-                            android:singleLine="true" />
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:ellipsize="none"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 
@@ -176,7 +181,7 @@
                     android:id="@+id/navLeaderboard"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="0.85"
                     android:gravity="center"
                     android:clickable="true"
                     android:focusable="true">
@@ -184,16 +189,16 @@
                     <LinearLayout
                         android:id="@+id/navPillLeaderboard"
                         android:layout_width="wrap_content"
-                        android:layout_height="44dp"
+                        android:layout_height="40dp"
                         android:orientation="horizontal"
                         android:gravity="center"
-                        android:paddingStart="12dp"
+                        android:paddingStart="10dp"
                         android:paddingEnd="12dp">
 
                         <ImageView
                             android:id="@+id/imgNavLeaderboard"
-                            android:layout_width="22dp"
-                            android:layout_height="22dp"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:scaleType="fitCenter"
                             android:src="@drawable/ic_nav_leaderboard"
                             android:contentDescription="Leaderboard" />
@@ -202,13 +207,15 @@
                             android:id="@+id/txtNavLeaderboard"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="6dp"
+                            android:layout_marginStart="5dp"
                             android:text="Leaderboard"
                             android:textColor="#FFFFFF"
-                            android:textSize="13sp"
+                            android:textSize="12.5sp"
                             android:textStyle="bold"
-                            android:visibility="gone"
-                            android:singleLine="true" />
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:ellipsize="none"
+                            android:visibility="gone" />
 
                     </LinearLayout>
 

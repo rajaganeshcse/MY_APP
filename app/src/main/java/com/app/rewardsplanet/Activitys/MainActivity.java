@@ -919,6 +919,7 @@ public class MainActivity extends AppCompatActivity {
 
         activeNavPosition = position;
 
+        LinearLayout[] navContainers = {navHome, navGame, navReward, navLeaderboard};
         LinearLayout[] pills = {navPillHome, navPillGame, navPillReward, navPillLeaderboard};
         ImageView[] icons = {imgNavHome, imgNavGame, imgNavReward, imgNavLeaderboard};
         TextView[] texts = {txtNavHome, txtNavGame, txtNavReward, txtNavLeaderboard};
@@ -931,9 +932,15 @@ public class MainActivity extends AppCompatActivity {
 
         for (int i = 0; i < 4; i++) {
             final int index = i;
-            if (pills[i] == null || icons[i] == null || texts[i] == null) continue;
+            if (navContainers[i] == null || pills[i] == null || icons[i] == null || texts[i] == null) continue;
+
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) navContainers[i].getLayoutParams();
 
             if (i == position) {
+                // Expand selected container weight to 1.75f
+                lp.weight = 1.75f;
+                navContainers[i].setLayoutParams(lp);
+
                 // Active item expanding pill
                 pills[i].setBackgroundResource(bgGradients[i]);
                 texts[i].setVisibility(View.VISIBLE);
@@ -952,6 +959,10 @@ public class MainActivity extends AppCompatActivity {
                         })
                         .start();
             } else {
+                // Contract unselected containers weight to 0.85f
+                lp.weight = 0.85f;
+                navContainers[i].setLayoutParams(lp);
+
                 // Unselected items collapsed icon
                 pills[i].setBackground(null);
                 texts[i].setVisibility(View.GONE);
