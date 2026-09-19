@@ -154,6 +154,9 @@ public class activity_lucky_draw extends AppCompatActivity
                         list.add(m);
                     }
 
+                    // Sort ascending by reward coins (e.g. 25 -> 100 -> 200 -> 250 -> 500 -> 1000)
+                    Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
+
                     adapter.notifyDataSetChanged();
                 });
     }
@@ -185,6 +188,7 @@ public class activity_lucky_draw extends AppCompatActivity
                     model.setMyTicketsCount(ticketCount);
 
                     adapter.clearLoading(model.getId());
+                    Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
                     adapter.notifyDataSetChanged();
                 });
     }
