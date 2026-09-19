@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="64dp"
+    android:height="64dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+
+    <!-- GREEN SCALLOPED FLOWER/STARBURST BADGE BACKGROUND -->
+    <path
+        android:fillColor="#10B981"
+        android:pathData="M22.5,12.5c0-1.58-0.875-2.95-2.148-3.655c0.154-0.548,0.24-1.127,0.24-1.724c0-2.836-2.3-5.136-5.137-5.136c-0.596,0-1.175,0.086-1.723,0.24C12.98,0.952,11.609,0.077,10.029,0.077C7.193,0.077,4.893,2.377,4.893,5.213c0,0.597,0.086,1.176,0.24,1.724C3.86,7.64,2.985,9.012,2.985,10.592c0,1.58,0.875,2.952,2.148,3.656c-0.154,0.548-0.24,1.127-0.24,1.724c0,2.836,2.3,5.136,5.137,5.136c0.596,0,1.175-0.086,1.723-0.24c0.752,1.273,2.124,2.148,3.704,2.148c1.58,0,2.952-0.875,3.656-2.148c0.548,0.154,1.127,0.24,1.724,0.24c2.836,0,5.136-2.3,5.136-5.136c0-0.597-0.086-1.176-0.24-1.724C21.625,15.452,22.5,14.08,22.5,12.5z" />
+
+    <!-- THICK WHITE CHECKMARK -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M10.2,16.2l-4.2,-4.2 1.4,-1.4 2.8,2.8 7.4,-7.4 1.4,1.4z"
+        android:strokeWidth="0.8"
+        android:strokeColor="#FFFFFF" />
+
+</vector>

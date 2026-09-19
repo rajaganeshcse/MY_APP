@@ -24,7 +24,7 @@
         <ImageView
             android:layout_width="64dp"
             android:layout_height="64dp"
-            android:src="@drawable/done_icon"
+            android:src="@drawable/ic_verified_badge"
             android:contentDescription="Success Badge" />
 
         <!-- TITLE -->
