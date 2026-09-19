@@ -1601,7 +1601,7 @@ public class HomeFragment extends Fragment {
 
     private void playRewardAnimation() {
 
-        if (imgRewardCoin == null) {
+        if (!isAdded() || imgRewardCoin == null) {
             return;
         }
 

@@ -3,19 +3,19 @@
     <!-- Background Track -->
     <item android:id="@android:id/background">
         <shape android:shape="rectangle">
-            <corners android:radius="21dp" />
+            <corners android:radius="22dp" />
             <solid android:color="#FFFFFF" />
         </shape>
     </item>
-    <!-- Progress Fill -->
+    <!-- Ultra-Bright Neon Progress Fill -->
     <item android:id="@android:id/progress">
         <clip>
             <shape android:shape="rectangle">
-                <corners android:radius="21dp" />
+                <corners android:radius="22dp" />
                 <gradient
-                    android:startColor="#F59E0B"
-                    android:centerColor="#10B981"
-                    android:endColor="#059669"
+                    android:startColor="#FFD200"
+                    android:centerColor="#00F2FE"
+                    android:endColor="#00FF87"
                     android:angle="0" />
             </shape>
         </clip>

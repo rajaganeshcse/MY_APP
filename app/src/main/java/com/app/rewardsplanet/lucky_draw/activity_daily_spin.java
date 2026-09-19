@@ -345,6 +345,8 @@ public class activity_daily_spin extends AppCompatActivity {
 
     private void playEffects() {
 
+        if (isFinishing() || isDestroyed()) return;
+
         FrameLayout root = findViewById(android.R.id.content);
 
         if (root != null && imgWheel != null) {
@@ -369,7 +371,9 @@ public class activity_daily_spin extends AppCompatActivity {
                 set.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
-                        root.removeView(coin);
+                        try {
+                            root.removeView(coin);
+                        } catch (Exception ignored) {}
                     }
                 });
 
@@ -388,7 +392,9 @@ public class activity_daily_spin extends AppCompatActivity {
             fade.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    root.removeView(fire);
+                    try {
+                        root.removeView(fire);
+                    } catch (Exception ignored) {}
                 }
             });
 
@@ -439,6 +445,8 @@ public class activity_daily_spin extends AppCompatActivity {
 
     private void showRewardDialogOnly(int reward) {
 
+        if (isFinishing() || isDestroyed()) return;
+
         Dialog d = new Dialog(this);
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
         d.setContentView(R.layout.dialog_spin_result);
@@ -473,6 +481,8 @@ public class activity_daily_spin extends AppCompatActivity {
     }
 
     private void showRewardDialogWithAd(int reward) {
+
+        if (isFinishing() || isDestroyed()) return;
 
         Dialog d = new Dialog(this);
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
