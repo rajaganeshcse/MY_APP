@@ -95,8 +95,10 @@ public class activity_lucky_draw extends AppCompatActivity
             rv.setAdapter(adapter);
         }
 
-        MobileAds.initialize(this);
-        loadAd();
+        try {
+            MobileAds.initialize(this, status -> {});
+            loadAd();
+        } catch (Exception ignored) {}
 
         loadDraws();
         makeFullScreen();
@@ -260,23 +262,27 @@ public class activity_lucky_draw extends AppCompatActivity
     /* ================= AD ================= */
 
     private void loadAd() {
-        AdRequest adRequest = new AdRequest.Builder().build();
+        try {
+            AdRequest adRequest = new AdRequest.Builder().build();
 
-        RewardedAd.load(this,
-                AdsManager.REWARDED_AD_ID,
-                adRequest,
-                new RewardedAdLoadCallback() {
+            RewardedAd.load(this,
+                    AdsManager.REWARDED_AD_ID,
+                    adRequest,
+                    new RewardedAdLoadCallback() {
 
-                    @Override
-                    public void onAdLoaded(@NonNull RewardedAd ad) {
-                        rewardedAd = ad;
-                    }
+                        @Override
+                        public void onAdLoaded(@NonNull RewardedAd ad) {
+                            rewardedAd = ad;
+                        }
 
-                    @Override
-                    public void onAdFailedToLoad(@NonNull LoadAdError error) {
-                        rewardedAd = null;
-                    }
-                });
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError error) {
+                            rewardedAd = null;
+                        }
+                    });
+        } catch (Exception e) {
+            rewardedAd = null;
+        }
     }
 
     /* ================= CLICK ================= */
