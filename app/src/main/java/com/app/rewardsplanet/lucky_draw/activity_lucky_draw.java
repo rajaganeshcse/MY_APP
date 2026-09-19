@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.rewardsplanet.R;
+import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.ads.AdsManager;
 import com.app.rewardsplanet.models.JoinResponse;
 import com.app.rewardsplanet.models.LuckyDrawModel;
