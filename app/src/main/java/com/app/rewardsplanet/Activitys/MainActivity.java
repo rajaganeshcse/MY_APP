@@ -260,39 +260,7 @@ public class MainActivity extends AppCompatActivity {
             dialog.getWindow().setGravity(android.view.Gravity.CENTER);
         }
 
-        ImageView successBadge = view.findViewById(R.id.successBadge);
-        ImageView checkIcon = view.findViewById(R.id.checkIcon);
-
-        if (successBadge != null && checkIcon != null) {
-            successBadge.setScaleX(0f);
-            successBadge.setScaleY(0f);
-            checkIcon.setAlpha(0f);
-
-            successBadge.animate()
-                    .scaleX(1.15f)
-                    .scaleY(1.15f)
-                    .setDuration(180)
-                    .withEndAction(() -> {
-                        // Small bounce back
-                        successBadge.animate()
-                                .scaleX(1f)
-                                .scaleY(1f)
-                                .setDuration(120)
-                                .withEndAction(() -> {
-                                    // Show check icon
-                                    checkIcon.setAlpha(1f);
-
-                                    Drawable drawable = checkIcon.getDrawable();
-                                    if (drawable instanceof AnimatedVectorDrawable) {
-                                        ((AnimatedVectorDrawable) drawable).start();
-                                    } else if (drawable instanceof androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat) {
-                                        ((androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat) drawable).start();
-                                    }
-                                })
-                                .start();
-                    })
-                    .start();
-        }
+        com.app.rewardsplanet.utils.SuccessAnimationHelper.animate(dialog);
 
         View btnOk = view.findViewById(R.id.btnProfileSuccessOk);
         if (btnOk != null) {

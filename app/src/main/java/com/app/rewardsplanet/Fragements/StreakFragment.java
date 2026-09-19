@@ -29,9 +29,11 @@ import com.app.rewardsplanet.Activitys.MainActivity;
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.ads.AdsManager;
+import com.app.rewardsplanet.models.UserModel;
 import com.app.rewardsplanet.network.ApiClient;
 import com.app.rewardsplanet.network.ApiService;
 import com.app.rewardsplanet.repository.UserRepository;
+import com.app.rewardsplanet.utils.SuccessAnimationHelper;
 import com.facebook.shimmer.Shimmer;
 import com.facebook.shimmer.ShimmerFrameLayout;
 import com.google.android.gms.ads.AdError;
@@ -634,6 +636,8 @@ public class StreakFragment extends Fragment {
             btnOk.setText("COLLECT REWARD");
             btnOk.setOnClickListener(v -> dialog.dismiss());
         }
+
+        SuccessAnimationHelper.animate(dialog);
 
         dialog.show();
         if (window != null) {

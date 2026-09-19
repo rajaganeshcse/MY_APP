@@ -23,6 +23,7 @@ import com.app.rewardsplanet.ads.AdsManager;
 import com.app.rewardsplanet.models.SpinResponse;
 import com.app.rewardsplanet.network.ApiClient;
 import com.app.rewardsplanet.network.ApiService;
+import com.app.rewardsplanet.utils.SuccessAnimationHelper;
 import com.google.android.material.button.MaterialButton;
 
 // Ads
@@ -466,6 +467,8 @@ public class activity_daily_spin extends AppCompatActivity {
             d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
 
+        SuccessAnimationHelper.animate(d);
+
         d.show();
     }
 
@@ -499,6 +502,8 @@ public class activity_daily_spin extends AppCompatActivity {
         if (d.getWindow() != null) {
             d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
+
+        SuccessAnimationHelper.animate(d);
 
         d.show();
     }

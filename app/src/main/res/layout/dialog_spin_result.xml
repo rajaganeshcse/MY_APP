@@ -1,13 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
-    android:layout_width="265dp"
+    android:layout_width="280dp"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
-
     app:cardCornerRadius="24dp"
-    app:cardElevation="16dp"
+    app:cardElevation="12dp"
     app:cardBackgroundColor="@android:color/white"
     app:strokeWidth="0dp">
 
@@ -16,55 +15,77 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingStart="18dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="18dp"
-        android:paddingBottom="15dp">
+        android:background="@drawable/bg_scratch_gradient"
+        android:paddingStart="20dp"
+        android:paddingTop="20dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp">
 
-        <!-- SUCCESS ICON -->
+        <!-- ANIMATED GREEN SUCCESS CHECK CONTAINER -->
+        <FrameLayout
+            android:id="@+id/successContainer"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:gravity="center">
+
+            <!-- Green Success Badge -->
+            <ImageView
+                android:id="@+id/successBadge"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_gravity="center"
+                android:src="@drawable/bg_success"
+                android:scaleX="0"
+                android:scaleY="0"
+                android:contentDescription="Success Badge" />
+
+            <!-- White Check (AnimatedVectorDrawable) -->
+            <ImageView
+                android:id="@+id/checkIcon"
+                android:layout_width="45dp"
+                android:layout_height="45dp"
+                android:layout_gravity="center"
+                android:src="@drawable/animated_check"
+                android:alpha="0"
+                android:contentDescription="Checkmark" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="14dp"
             android:gravity="center"
-            android:paddingBottom="25dp"
-            android:text="    Congratulations ! 🎉"
-            android:textColor="@color/color_green"
-            android:textSize="22sp"
+            android:text="Congratulations! 🎉"
+            android:textColor="#0F172A"
+            android:textSize="20sp"
             android:textStyle="bold" />
-
-        <ImageView
-            android:layout_width="78dp"
-            android:layout_height="78dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_success" />
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="4dp"
             android:gravity="center"
             android:text="You earned"
-            android:textColor="@color/color_violet"
-            android:textSize="14sp" />
+            android:textColor="#64748B"
+            android:textSize="13sp" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="4dp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/imgWinCoin"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
-                android:layout_marginEnd="5dp"
-                android:padding="2dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_coin" />
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginEnd="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_coin"
+                android:contentDescription="Coin Icon" />
 
             <TextView
                 android:id="@+id/txtWinAmount"
@@ -72,7 +93,7 @@
                 android:layout_height="wrap_content"
                 android:text="10 Coins"
                 android:textColor="#F97316"
-                android:textSize="25sp"
+                android:textSize="24sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -81,30 +102,28 @@
             android:id="@+id/txtCurrentBalance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:gravity="center"
             android:text="Current Balance: 112 Coins"
-            android:textColor="#172554"
+            android:textColor="#475569"
             android:textSize="13sp"
             android:textStyle="bold" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnOk"
-            android:layout_width="232dp"
-            android:layout_height="52dp"
-            android:layout_marginTop="13dp"
-            android:layout_marginBottom="10dp"
-            android:gravity="center"
-            android:paddingBottom="4dp"
-            android:text="COLLECT"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="18dp"
+            android:text="COLLECT REWARD"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textSize="20sp"
+            android:textSize="15sp"
             android:textStyle="bold"
-            app:backgroundTint="#FF9638"
-            app:cornerRadius="23dp"
-            app:elevation="0dp"
-            app:strokeWidth="0dp" />
+            android:letterSpacing="0.02"
+            app:backgroundTint="@color/bule_color2"
+            app:cornerRadius="24dp"
+            app:rippleColor="#40FFFFFF"
+            app:elevation="4dp" />
 
     </LinearLayout>
 

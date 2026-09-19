@@ -22,6 +22,7 @@ import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.network.ApiService;
 import com.app.rewardsplanet.network.ApiClient;
 import com.app.rewardsplanet.models.ScratchResponse;
+import com.app.rewardsplanet.utils.SuccessAnimationHelper;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.AdView;
@@ -435,6 +436,8 @@ public class ScratchActivity extends AppCompatActivity {
                 }
             });
         }
+
+        SuccessAnimationHelper.animate(dialog);
 
         dialog.show();
         if (window != null) {
