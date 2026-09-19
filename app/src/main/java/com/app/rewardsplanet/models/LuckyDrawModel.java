@@ -23,6 +23,7 @@ public class LuckyDrawModel {
     private Long totalSlots;
     private Long participationLimit;
     private Long currentParticipation;
+    private Long remainingSlots;
 
     private String winnerUid;
     private String winningToken;
@@ -33,22 +34,29 @@ public class LuckyDrawModel {
 
     private boolean joinedByMe;
 
-    public LuckyDrawModel() {}
+    public LuckyDrawModel() {
+        // Required empty constructor for Firestore
+    }
 
     public String getWinningToken() {
         if (winningToken != null && !winningToken.isEmpty()) return winningToken;
         if (winnerToken != null && !winnerToken.isEmpty()) return winnerToken;
         return "";
     }
-
     public void setWinningToken(String winningToken) {
         this.winningToken = winningToken;
+    }
+
+    public String getWinnerToken() {
+        return winnerToken == null ? "" : winnerToken;
+    }
+    public void setWinnerToken(String winnerToken) {
+        this.winnerToken = winnerToken;
     }
 
     public String getWinnerName() {
         return winnerName == null ? "" : winnerName;
     }
-
     public void setWinnerName(String winnerName) {
         this.winnerName = winnerName;
     }
@@ -68,6 +76,7 @@ public class LuckyDrawModel {
     public void setDrawNumber(Long drawNumber) { this.drawNumber = drawNumber; }
 
     public String getStatus() { return status == null ? "" : status; }
+    public void setStatus(String status) { this.status = status; }
 
     public int getRewardCoins() {
         return rewardCoins == null ? 0 : rewardCoins.intValue();
@@ -84,11 +93,7 @@ public class LuckyDrawModel {
         if (currentParticipation != null) return currentParticipation.intValue();
         return 0;
     }
-
     public void setFilledSlots(Long filledSlots) {
-        this.filledSlots = filledSlots;
-    }
-    public void setFilledSlots(long filledSlots) {
         this.filledSlots = filledSlots;
     }
 
@@ -97,11 +102,7 @@ public class LuckyDrawModel {
         if (participationLimit != null) return participationLimit.intValue();
         return 10;
     }
-
     public void setTotalSlots(Long totalSlots) {
-        this.totalSlots = totalSlots;
-    }
-    public void setTotalSlots(long totalSlots) {
         this.totalSlots = totalSlots;
     }
 
@@ -115,6 +116,11 @@ public class LuckyDrawModel {
         this.participationLimit = participationLimit;
     }
 
+    public Long getRemainingSlots() { return remainingSlots; }
+    public void setRemainingSlots(Long remainingSlots) {
+        this.remainingSlots = remainingSlots;
+    }
+
     public boolean isJoinedByMe() { return joinedByMe; }
     public void setJoinedByMe(boolean joinedByMe) {
         this.joinedByMe = joinedByMe;
@@ -123,9 +129,15 @@ public class LuckyDrawModel {
     public String getWinnerUid() {
         return winnerUid == null ? "" : winnerUid;
     }
+    public void setWinnerUid(String winnerUid) {
+        this.winnerUid = winnerUid;
+    }
 
     public Timestamp getCreatedAt() { return createdAt; }
+    public void setCreatedAt(Timestamp createdAt) { this.createdAt = createdAt; }
+
     public Timestamp getCompletedAt() { return completedAt; }
+    public void setCompletedAt(Timestamp completedAt) { this.completedAt = completedAt; }
 
     public boolean isFull() {
         return getTotalSlots() > 0 &&
@@ -168,4 +180,4 @@ public class LuckyDrawModel {
     public void setMyTicketsCount(int count) {
         this.myTicketsCount = count;
     }
-}
+}

@@ -698,7 +698,7 @@ public class activity_lucky_draw extends AppCompatActivity
                                                             m.getMyTicketsCount() + count
                                                     );
                                                 }
-                                                m.setFilledSlots(m.getFilledSlots() + count);
+                                                m.setFilledSlots((long) (m.getFilledSlots() + count));
                                                 break;
                                             }
                                         }
