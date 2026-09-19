@@ -177,11 +177,11 @@ public class StreakFragment extends Fragment {
     private void applyGreyShimmer() {
         if (shimmerContainer == null) return;
         Shimmer shimmer = new Shimmer.ColorHighlightBuilder()
-                .setBaseColor(Color.parseColor("#94A3B8"))
+                .setBaseColor(Color.parseColor("#64748B"))
                 .setHighlightColor(Color.parseColor("#FFFFFF"))
-                .setIntensity(0.85f)
-                .setDropoff(0.4f)
-                .setDuration(900)
+                .setIntensity(1.0f)
+                .setDropoff(0.1f)
+                .setDuration(800)
                 .setDirection(Shimmer.Direction.LEFT_TO_RIGHT)
                 .setAutoStart(true)
                 .build();

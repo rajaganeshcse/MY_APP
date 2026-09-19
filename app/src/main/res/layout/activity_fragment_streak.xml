@@ -157,9 +157,9 @@
                         <View
                             android:layout_width="match_parent"
                             android:layout_height="56dp"
-                            android:layout_marginTop="28dp"
+                            android:layout_marginTop="40dp"
                             android:background="@drawable/bg_btn_claim_active"
-                            android:alpha="0.3" />
+                            android:alpha="0.4" />
 
                     </LinearLayout>
 
@@ -185,7 +185,7 @@
                         android:id="@+id/btnClaim"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
-                        android:layout_marginTop="28dp"
+                        android:layout_marginTop="40dp"
                         android:layout_marginBottom="16dp"
                         android:text="🎁 CLAIM TODAY'S REWARD"
                         android:textSize="16sp"
