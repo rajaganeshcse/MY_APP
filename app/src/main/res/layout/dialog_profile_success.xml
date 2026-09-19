@@ -20,12 +20,35 @@
         android:paddingTop="28dp"
         android:paddingBottom="24dp">
 
-        <!-- GREEN SCALLOPED VERIFIED CHECKMARK ICON (MATCHING SCREENSHOT 2) -->
-        <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/ic_verified_badge"
-            android:contentDescription="Success Badge" />
+        <!-- ANIMATED GREEN SUCCESS CHECK CONTAINER -->
+        <FrameLayout
+            android:id="@+id/successContainer"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:gravity="center">
+
+            <!-- Green Success Badge -->
+            <ImageView
+                android:id="@+id/successBadge"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:src="@drawable/bg_success"
+                android:scaleX="0"
+                android:scaleY="0"
+                android:contentDescription="Success Badge" />
+
+            <!-- White Check (AnimatedVectorDrawable) -->
+            <ImageView
+                android:id="@+id/checkIcon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/animated_check"
+                android:alpha="0"
+                android:contentDescription="Checkmark" />
+
+        </FrameLayout>
 
         <!-- TITLE -->
         <TextView
