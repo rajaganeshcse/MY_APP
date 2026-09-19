@@ -709,15 +709,15 @@ public class activity_lucky_draw extends AppCompatActivity
                                         } catch (Exception ignored) {}
 
                                         if ("TICKET".equals(type)) {
-                                            int ticketCostPerEntry = 1;
-                                            for (LuckyDrawModel m : list) {
-                                                if (m.getId().equals(drawId)) {
-                                                    ticketCostPerEntry = Math.max(1, m.getTicketCost());
-                                                    break;
-                                                }
+                                            if (res.remainingTickets != null && res.remainingTickets >= 0) {
+                                                userTickets = res.remainingTickets;
+                                            } else {
+                                                int deducted = (res.ticketsDeducted != null && res.ticketsDeducted > 0)
+                                                        ? res.ticketsDeducted
+                                                        : count;
+                                                userTickets = Math.max(0, userTickets - deducted);
                                             }
-                                            int totalDeduction = count * ticketCostPerEntry;
-                                            userTickets = Math.max(0, userTickets - totalDeduction);
+                                            userPref.setTickets(userTickets);
                                             if (adapter != null) adapter.updateUserTickets(userTickets);
                                             if (tickets != null) {
                                                 tickets.setText(String.valueOf(userTickets));

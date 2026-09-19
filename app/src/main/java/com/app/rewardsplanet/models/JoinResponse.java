@@ -8,5 +8,7 @@ public class JoinResponse {
     public String error;
     public String drawId;
     public int ticketsEntered;
+    public Integer ticketsDeducted;
+    public Integer remainingTickets;
     public List<String> tokens;
 }
