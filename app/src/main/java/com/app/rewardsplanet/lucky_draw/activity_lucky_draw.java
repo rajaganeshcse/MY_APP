@@ -64,11 +64,16 @@ public class activity_lucky_draw extends AppCompatActivity
         tickets = findViewById(R.id.tickets);
 
         cardLuckyDrawHistory = findViewById(R.id.cardLuckyDrawHistory);
-        cardLuckyDrawHistory.setOnClickListener(v ->
-                startActivity(new Intent(this, activity_lucky_draw_winner.class))
-        );
+        if (cardLuckyDrawHistory != null) {
+            cardLuckyDrawHistory.setOnClickListener(v ->
+                    startActivity(new Intent(this, activity_lucky_draw_winner.class))
+            );
+        }
 
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
+        View btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
+        }
 
         db = FirebaseFirestore.getInstance();
         api = ApiClient.getClient().create(ApiService.class);
@@ -84,10 +89,11 @@ public class activity_lucky_draw extends AppCompatActivity
         }
 
         RecyclerView rv = findViewById(R.id.luckyDrawRecycler);
-        rv.setLayoutManager(new LinearLayoutManager(this));
-
-        adapter = new LuckyDrawAdapter(list, this, userTickets);
-        rv.setAdapter(adapter);
+        if (rv != null) {
+            rv.setLayoutManager(new LinearLayoutManager(this));
+            adapter = new LuckyDrawAdapter(list, this, userTickets);
+            rv.setAdapter(adapter);
+        }
 
         MobileAds.initialize(this);
         loadAd();
@@ -558,21 +564,34 @@ public class activity_lucky_draw extends AppCompatActivity
 
     /* ================= LOADING ================= */
 
+    /* ================= LOADING ================= */
+
     private void showLoading() {
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null);
+        if (isFinishing() || isDestroyed()) return;
+        try {
+            hideLoading();
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null);
 
-        loadingDialog = new AlertDialog.Builder(this)
-                .setView(view)
-                .setCancelable(false)
-                .create();
+            loadingDialog = new AlertDialog.Builder(this)
+                    .setView(view)
+                    .setCancelable(false)
+                    .create();
 
-        loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        loadingDialog.show();
+            if (loadingDialog.getWindow() != null) {
+                loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+            loadingDialog.show();
+        } catch (Exception ignored) {}
     }
 
     private void hideLoading() {
-        if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
+        if (loadingDialog != null) {
+            try {
+                if (loadingDialog.isShowing()) {
+                    loadingDialog.dismiss();
+                }
+            } catch (Exception ignored) {}
+            loadingDialog = null;
         }
     }
 
@@ -643,6 +662,8 @@ public class activity_lucky_draw extends AppCompatActivity
                                     hideLoading();
                                     adapter.clearLoading(drawId);
 
+                                    if (isFinishing() || isDestroyed()) return;
+
                                     if (response.isSuccessful() && response.body() != null) {
 
                                         JoinResponse res = response.body();
@@ -663,8 +684,10 @@ public class activity_lucky_draw extends AppCompatActivity
                                             }
                                         }
 
-                                        Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
-                                        adapter.notifyDataSetChanged();
+                                        try {
+                                            Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
+                                            adapter.notifyDataSetChanged();
+                                        } catch (Exception ignored) {}
 
                                         if ("TICKET".equals(type)) {
                                             int ticketCostPerEntry = 1;
@@ -677,7 +700,9 @@ public class activity_lucky_draw extends AppCompatActivity
                                             int totalDeduction = count * ticketCostPerEntry;
                                             userTickets = Math.max(0, userTickets - totalDeduction);
                                             adapter.updateUserTickets(userTickets);
-                                            tickets.setText(String.valueOf(userTickets));
+                                            if (tickets != null) {
+                                                tickets.setText(String.valueOf(userTickets));
+                                            }
                                         }
 
                                     } else {
@@ -701,6 +726,7 @@ public class activity_lucky_draw extends AppCompatActivity
                                 public void onFailure(Call<JoinResponse> call, Throwable t) {
                                     hideLoading();
                                     adapter.clearLoading(drawId);
+                                    if (isFinishing() || isDestroyed()) return;
                                     Toast.makeText(activity_lucky_draw.this,
                                             t.getMessage() != null ? t.getMessage() : "Network error", Toast.LENGTH_LONG).show();
                                 }
@@ -709,6 +735,7 @@ public class activity_lucky_draw extends AppCompatActivity
                 .addOnFailureListener(e -> {
                     hideLoading();
                     adapter.clearLoading(drawId);
+                    if (isFinishing() || isDestroyed()) return;
                     Toast.makeText(activity_lucky_draw.this,
                             "Authentication error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
@@ -717,45 +744,67 @@ public class activity_lucky_draw extends AppCompatActivity
     /* ================= SUCCESS ================= */
 
     private void showSuccessDialog(String msg, List<String> tokens) {
+        if (isFinishing() || isDestroyed()) return;
 
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_draw_success, null);
+        try {
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_draw_success, null);
 
-        AlertDialog dialog = new AlertDialog.Builder(this)
-                .setView(view)
-                .create();
+            AlertDialog dialog = new AlertDialog.Builder(this)
+                    .setView(view)
+                    .create();
 
-        if (dialog.getWindow() != null) {
-            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        }
-        dialog.show();
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.setCancelable(true);
-
-        com.app.rewardsplanet.utils.SuccessAnimationHelper.animate(dialog);
-
-        LinearLayout layoutTokensList = view.findViewById(R.id.layoutTokensList);
-        TextView txtMsg = view.findViewById(R.id.txtSuccessMsg);
-        TextView txtTokensList = view.findViewById(R.id.txtTokensList);
-        View cardTokensContainer = view.findViewById(R.id.cardTokensContainer);
-        MaterialButton btnAwesome = view.findViewById(R.id.btnAwesome);
-
-        if (txtMsg != null) {
-            txtMsg.setText(msg);
-        }
-
-        if (tokens != null && !tokens.isEmpty()) {
-            if (cardTokensContainer != null) cardTokensContainer.setVisibility(View.VISIBLE);
-            if (layoutTokensList != null) {
-                com.app.rewardsplanet.utils.TokenBlockHelper.renderTokenBlocks(layoutTokensList, tokens);
-            } else if (txtTokensList != null) {
-                txtTokensList.setText(String.join("\n", tokens));
+            if (dialog.getWindow() != null) {
+                dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
-        } else {
-            if (cardTokensContainer != null) cardTokensContainer.setVisibility(View.GONE);
-        }
+            dialog.show();
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.setCancelable(true);
 
-        if (btnAwesome != null) {
-            btnAwesome.setOnClickListener(v -> dialog.dismiss());
+            com.app.rewardsplanet.utils.SuccessAnimationHelper.animate(dialog);
+
+            LinearLayout layoutTokensList = view.findViewById(R.id.layoutTokensList);
+            TextView txtMsg = view.findViewById(R.id.txtSuccessMsg);
+            TextView txtTokensList = view.findViewById(R.id.txtTokensList);
+            View cardTokensContainer = view.findViewById(R.id.cardTokensContainer);
+            MaterialButton btnAwesome = view.findViewById(R.id.btnAwesome);
+
+            if (txtMsg != null) {
+                txtMsg.setText(msg != null ? msg : "Entry Success!");
+            }
+
+            if (tokens != null && !tokens.isEmpty()) {
+                if (cardTokensContainer != null) cardTokensContainer.setVisibility(View.VISIBLE);
+                if (layoutTokensList != null) {
+                    com.app.rewardsplanet.utils.TokenBlockHelper.renderTokenBlocks(layoutTokensList, tokens);
+                } else if (txtTokensList != null) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        txtTokensList.setText(String.join("\n", tokens));
+                    } else {
+                        StringBuilder sb = new StringBuilder();
+                        for (int i = 0; i < tokens.size(); i++) {
+                            sb.append(tokens.get(i));
+                            if (i < tokens.size() - 1) sb.append("\n");
+                        }
+                        txtTokensList.setText(sb.toString());
+                    }
+                }
+            } else {
+                if (cardTokensContainer != null) cardTokensContainer.setVisibility(View.GONE);
+            }
+
+            if (btnAwesome != null) {
+                btnAwesome.setOnClickListener(v -> {
+                    try { dialog.dismiss(); } catch (Exception ignored) {}
+                });
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, msg != null ? msg : "Joined successfully!", Toast.LENGTH_LONG).show();
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        hideLoading();
     }
 }
