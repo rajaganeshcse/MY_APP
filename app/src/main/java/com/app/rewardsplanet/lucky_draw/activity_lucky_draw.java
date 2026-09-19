@@ -181,6 +181,22 @@ public class activity_lucky_draw extends AppCompatActivity
                         if (m == null) continue;
 
                         m.setId(d.getId());
+
+                        // Fallback manual field population for slots and limits
+                        Long fSlots = d.getLong("filledSlots");
+                        if (fSlots == null) fSlots = d.getLong("currentParticipation");
+                        if (fSlots != null) m.setFilledSlots(fSlots);
+
+                        Long tSlots = d.getLong("totalSlots");
+                        if (tSlots == null) tSlots = d.getLong("participationLimit");
+                        if (tSlots != null) m.setTotalSlots(tSlots);
+
+                        Long rCoins = d.getLong("rewardCoins");
+                        if (rCoins != null) m.setRewardCoins(rCoins);
+
+                        Long tCost = d.getLong("ticketCost");
+                        if (tCost != null) m.setTicketCost(tCost);
+
                         checkUserEntries(m);
                         list.add(m);
                     }

@@ -85,6 +85,9 @@ public class LuckyDrawModel {
         return 0;
     }
 
+    public void setFilledSlots(Long filledSlots) {
+        this.filledSlots = filledSlots;
+    }
     public void setFilledSlots(long filledSlots) {
         this.filledSlots = filledSlots;
     }
@@ -95,8 +98,21 @@ public class LuckyDrawModel {
         return 10;
     }
 
+    public void setTotalSlots(Long totalSlots) {
+        this.totalSlots = totalSlots;
+    }
     public void setTotalSlots(long totalSlots) {
         this.totalSlots = totalSlots;
+    }
+
+    public Long getCurrentParticipation() { return currentParticipation; }
+    public void setCurrentParticipation(Long currentParticipation) {
+        this.currentParticipation = currentParticipation;
+    }
+
+    public Long getParticipationLimit() { return participationLimit; }
+    public void setParticipationLimit(Long participationLimit) {
+        this.participationLimit = participationLimit;
     }
 
     public boolean isJoinedByMe() { return joinedByMe; }
