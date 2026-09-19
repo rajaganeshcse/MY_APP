@@ -966,7 +966,7 @@ public class MainActivity extends AppCompatActivity {
                 // Unselected items collapsed icon
                 pills[i].setBackground(null);
                 texts[i].setVisibility(View.GONE);
-                icons[i].setColorFilter(Color.parseColor("#94A3B8"));
+                icons[i].setColorFilter(Color.parseColor("#64748B"));
                 icons[i].setScaleX(1.0f);
                 icons[i].setScaleY(1.0f);
             }
