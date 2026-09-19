@@ -10,7 +10,7 @@
     android:layout_marginEnd="12dp"
     android:layout_marginBottom="6dp"
     app:cardCornerRadius="20dp"
-    app:cardElevation="2dp"
+    app:cardElevation="4dp"
     app:cardBackgroundColor="@android:color/transparent">
 
     <LinearLayout
@@ -18,10 +18,10 @@
         android:layout_height="match_parent"
         android:background="@drawable/bg_daily_bonus"
         android:orientation="vertical"
-        android:paddingStart="16dp"
+        android:paddingStart="18dp"
         android:paddingTop="12dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="10dp">
+        android:paddingEnd="18dp"
+        android:paddingBottom="8dp">
 
         <!-- TITLE + GIFT -->
         <LinearLayout
@@ -35,7 +35,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="start"
+                android:gravity="center"
                 android:orientation="vertical">
 
                 <TextView
@@ -43,31 +43,31 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Daily Bonus Reward"
-                    android:textColor="#0F172A"
-                    android:textSize="18sp"
+                    android:textColor="@android:color/white"
+                    android:textSize="19sp"
                     android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/txtDailyBonusSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
+                    android:layout_marginTop="1dp"
                     android:text="Hold for 5 seconds to claim your daily bonus"
-                    android:textColor="#475569"
+                    android:textColor="#E4DCFF"
                     android:textSize="12sp" />
 
             </LinearLayout>
 
-            <!-- GIFT ICON BADGE -->
+            <!-- GIFT -->
             <FrameLayout
-                android:layout_width="44dp"
+                android:layout_width="48dp"
                 android:layout_height="44dp"
                 android:background="@drawable/bg_bonus_icon">
 
                 <ImageView
                     android:id="@+id/imgDailyBonus"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="32dp"
+                    android:layout_height="34dp"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_gift1"
@@ -80,8 +80,8 @@
         <!-- HOLD PROGRESS CONTAINER -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="46dp"
-            android:layout_marginTop="10dp">
+            android:layout_height="50dp"
+            android:layout_marginTop="7dp">
 
             <!-- PROGRESS BAR BACKGROUND FILL -->
             <ProgressBar
@@ -99,10 +99,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="HOLD TO CLAIM 0%"
-                android:textColor="#0F172A"
-                android:textSize="14sp"
+                android:textColor="#4B35B8"
+                android:textSize="15sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.03"
                 app:backgroundTint="@android:color/transparent"
                 app:cornerRadius="21dp"
                 app:elevation="0dp"
@@ -114,25 +113,25 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="5dp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:src="@drawable/ic_info"
-                app:tint="#475569"
+                app:tint="@android:color/white"
                 android:contentDescription="Info Icon" />
 
             <TextView
                 android:id="@+id/txtBonusInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
+                android:layout_marginStart="6dp"
                 android:text="Hold for 5 seconds to claim"
-                android:textColor="#475569"
-                android:textSize="11.5sp"
+                android:textColor="#E3DBFF"
+                android:textSize="11sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
