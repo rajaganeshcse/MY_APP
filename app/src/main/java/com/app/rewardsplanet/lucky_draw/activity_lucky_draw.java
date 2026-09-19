@@ -165,7 +165,7 @@ public class activity_lucky_draw extends AppCompatActivity
 
     private void checkUserEntries(LuckyDrawModel model) {
 
-        if (uid.isEmpty()) return;
+        if (uid == null || uid.isEmpty() || model == null || model.getId() == null || model.getId().isEmpty()) return;
 
         db.collection("lucky_draw_tickets")
                 .document(model.getId())
@@ -177,19 +177,26 @@ public class activity_lucky_draw extends AppCompatActivity
                     int ticketCount = 0;
                     boolean adUsed = false;
 
-                    for (DocumentSnapshot d : snap.getDocuments()) {
-                        String type = d.getString("type");
+                    if (snap != null) {
+                        for (DocumentSnapshot d : snap.getDocuments()) {
+                            String type = d.getString("type");
 
-                        if ("AD".equals(type)) adUsed = true;
-                        else if ("TICKET".equals(type)) ticketCount++;
+                            if ("AD".equals(type)) adUsed = true;
+                            else if ("TICKET".equals(type)) ticketCount++;
+                        }
                     }
 
                     model.setAdJoined(adUsed);
                     model.setMyTicketsCount(ticketCount);
 
                     adapter.clearLoading(model.getId());
-                    Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
-                    adapter.notifyDataSetChanged();
+                    if (list.contains(model)) {
+                        Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
+                        adapter.notifyDataSetChanged();
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    adapter.clearLoading(model.getId());
                 });
     }
 
@@ -522,68 +529,87 @@ public class activity_lucky_draw extends AppCompatActivity
             return;
         }
 
-        user.getIdToken(false).addOnSuccessListener(result -> {
+        user.getIdToken(false)
+                .addOnSuccessListener(result -> {
 
-            String token = result.getToken();
+                    String token = result.getToken();
 
-            Map<String, Object> body = new HashMap<>();
-            body.put("drawId", drawId);
-            body.put("type", type);
-            body.put("count", count);
+                    Map<String, Object> body = new HashMap<>();
+                    body.put("drawId", drawId);
+                    body.put("type", type);
+                    body.put("count", count);
 
-            api.joinDraw("Bearer " + token, body)
-                    .enqueue(new Callback<JoinResponse>() {
+                    api.joinDraw("Bearer " + token, body)
+                            .enqueue(new Callback<JoinResponse>() {
 
-                        @Override
-                        public void onResponse(Call<JoinResponse> call,
-                                               Response<JoinResponse> response) {
+                                @Override
+                                public void onResponse(Call<JoinResponse> call,
+                                                       Response<JoinResponse> response) {
 
-                            hideLoading();
-                            adapter.clearLoading(drawId);
+                                    hideLoading();
+                                    adapter.clearLoading(drawId);
 
-                            if (response.isSuccessful() && response.body() != null) {
+                                    if (response.isSuccessful() && response.body() != null) {
 
-                                JoinResponse res = response.body();
-                                showSuccessDialog(res.message, res.tokens);
+                                        JoinResponse res = response.body();
+                                        showSuccessDialog(res.message, res.tokens);
 
-                                for (LuckyDrawModel m : list) {
-                                    if (m.getId().equals(drawId)) {
+                                        for (LuckyDrawModel m : list) {
+                                            if (m.getId().equals(drawId)) {
 
-                                        if ("AD".equals(type)) {
-                                            m.setAdJoined(true);
-                                        } else {
-                                            m.setMyTicketsCount(
-                                                    m.getMyTicketsCount() + count
-                                            );
+                                                if ("AD".equals(type)) {
+                                                    m.setAdJoined(true);
+                                                } else {
+                                                    m.setMyTicketsCount(
+                                                            m.getMyTicketsCount() + count
+                                                    );
+                                                }
+                                                m.setFilledSlots(m.getFilledSlots() + count);
+                                                break;
+                                            }
                                         }
-                                        m.setFilledSlots(m.getFilledSlots() + count);
-                                        break;
+
+                                        Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
+                                        adapter.notifyDataSetChanged();
+
+                                        if ("TICKET".equals(type)) {
+                                            userTickets = Math.max(0, userTickets - count);
+                                            adapter.updateUserTickets(userTickets);
+                                            tickets.setText(String.valueOf(userTickets));
+                                        }
+
+                                    } else {
+                                        String errMsg = "Join failed";
+                                        try {
+                                            if (response.errorBody() != null) {
+                                                String errStr = response.errorBody().string();
+                                                if (errStr.contains("message")) {
+                                                    org.json.JSONObject obj = new org.json.JSONObject(errStr);
+                                                    if (obj.has("message")) errMsg = obj.getString("message");
+                                                }
+                                            }
+                                        } catch (Exception ignored) {}
+
+                                        Toast.makeText(activity_lucky_draw.this,
+                                                errMsg, Toast.LENGTH_LONG).show();
                                     }
                                 }
 
-                                adapter.notifyDataSetChanged();
-
-                                if ("TICKET".equals(type)) {
-                                    userTickets = Math.max(0, userTickets - count);
-                                    adapter.updateUserTickets(userTickets);
-                                    tickets.setText(String.valueOf(userTickets));
+                                @Override
+                                public void onFailure(Call<JoinResponse> call, Throwable t) {
+                                    hideLoading();
+                                    adapter.clearLoading(drawId);
+                                    Toast.makeText(activity_lucky_draw.this,
+                                            t.getMessage() != null ? t.getMessage() : "Network error", Toast.LENGTH_LONG).show();
                                 }
-
-                            } else {
-                                Toast.makeText(activity_lucky_draw.this,
-                                        "Join failed", Toast.LENGTH_SHORT).show();
-                            }
-                        }
-
-                        @Override
-                        public void onFailure(Call<JoinResponse> call, Throwable t) {
-                            hideLoading();
-                            adapter.clearLoading(drawId);
-                            Toast.makeText(activity_lucky_draw.this,
-                                    t.getMessage(), Toast.LENGTH_LONG).show();
-                        }
-                    });
-        });
+                            });
+                })
+                .addOnFailureListener(e -> {
+                    hideLoading();
+                    adapter.clearLoading(drawId);
+                    Toast.makeText(activity_lucky_draw.this,
+                            "Authentication error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                });
     }
 
     /* ================= SUCCESS ================= */
