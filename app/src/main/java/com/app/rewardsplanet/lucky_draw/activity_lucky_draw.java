@@ -88,10 +88,11 @@ public class activity_lucky_draw extends AppCompatActivity
             tickets.setText(String.valueOf(userTickets));
         }
 
+        adapter = new LuckyDrawAdapter(list, this, userTickets);
+
         RecyclerView rv = findViewById(R.id.luckyDrawRecycler);
         if (rv != null) {
             rv.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new LuckyDrawAdapter(list, this, userTickets);
             rv.setAdapter(adapter);
         }
 
@@ -111,7 +112,9 @@ public class activity_lucky_draw extends AppCompatActivity
                         if (snap != null && snap.exists()) {
                             userTickets = parseTickets(snap);
                             userPref.setTickets(userTickets);
-                            adapter.updateUserTickets(userTickets);
+                            if (adapter != null) {
+                                adapter.updateUserTickets(userTickets);
+                            }
                             if (tickets != null) {
                                 tickets.setText(String.valueOf(userTickets));
                             }
@@ -210,9 +213,13 @@ public class activity_lucky_draw extends AppCompatActivity
                     }
 
                     // Sort ascending by reward coins (e.g. 25 -> 100 -> 200 -> 250 -> 500 -> 1000)
-                    Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
+                    try {
+                        Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
+                    } catch (Exception ignored) {}
 
-                    adapter.notifyDataSetChanged();
+                    if (adapter != null) {
+                        adapter.notifyDataSetChanged();
+                    }
                 });
     }
 
@@ -248,14 +255,22 @@ public class activity_lucky_draw extends AppCompatActivity
                     model.setAdJoined(adUsed);
                     model.setMyTicketsCount(ticketCount);
 
-                    adapter.clearLoading(model.getId());
+                    if (adapter != null) {
+                        adapter.clearLoading(model.getId());
+                    }
                     if (list.contains(model)) {
-                        Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
-                        adapter.notifyDataSetChanged();
+                        try {
+                            Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
+                        } catch (Exception ignored) {}
+                        if (adapter != null) {
+                            adapter.notifyDataSetChanged();
+                        }
                     }
                 })
                 .addOnFailureListener(e -> {
-                    adapter.clearLoading(model.getId());
+                    if (adapter != null) {
+                        adapter.clearLoading(model.getId());
+                    }
                 });
     }
 
@@ -543,21 +558,21 @@ public class activity_lucky_draw extends AppCompatActivity
 
         if (closebtn != null) {
             closebtn.setOnClickListener(v -> {
-                adapter.clearLoading(model.getId());
-                dialog.dismiss();
+                if (adapter != null) adapter.clearLoading(model.getId());
+                try { dialog.dismiss(); } catch (Exception ignored) {}
             });
         }
 
         if (btnCancel != null) {
             btnCancel.setOnClickListener(v -> {
-                adapter.clearLoading(model.getId());
-                dialog.dismiss();
+                if (adapter != null) adapter.clearLoading(model.getId());
+                try { dialog.dismiss(); } catch (Exception ignored) {}
             });
         }
 
         btnConfirm.setOnClickListener(v -> {
             btnConfirm.setEnabled(false);
-            dialog.dismiss();
+            try { dialog.dismiss(); } catch (Exception ignored) {}
 
             if ("AD".equals(type)) {
                 showAdThenJoin(model);
@@ -567,8 +582,6 @@ public class activity_lucky_draw extends AppCompatActivity
             }
         });
     }
-
-    /* ================= LOADING ================= */
 
     /* ================= LOADING ================= */
 
@@ -607,20 +620,20 @@ public class activity_lucky_draw extends AppCompatActivity
 
         if (rewardedAd != null) {
 
-            adapter.setLoading(model.getId(), true);
+            if (adapter != null) adapter.setLoading(model.getId(), true);
 
             rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
 
                 @Override
                 public void onAdDismissedFullScreenContent() {
-                    adapter.clearLoading(model.getId());
+                    if (adapter != null) adapter.clearLoading(model.getId());
                     rewardedAd = null;
                     loadAd();
                 }
 
                 @Override
                 public void onAdFailedToShowFullScreenContent(AdError adError) {
-                    adapter.clearLoading(model.getId());
+                    if (adapter != null) adapter.clearLoading(model.getId());
                 }
             });
 
@@ -631,7 +644,7 @@ public class activity_lucky_draw extends AppCompatActivity
 
         } else {
             Toast.makeText(this, "Ad not ready", Toast.LENGTH_SHORT).show();
-            adapter.clearLoading(model.getId());
+            if (adapter != null) adapter.clearLoading(model.getId());
             loadAd();
         }
     }
@@ -643,7 +656,7 @@ public class activity_lucky_draw extends AppCompatActivity
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             hideLoading();
-            adapter.clearLoading(drawId);
+            if (adapter != null) adapter.clearLoading(drawId);
             Toast.makeText(this, "Login required", Toast.LENGTH_SHORT).show();
             return;
         }
@@ -666,7 +679,7 @@ public class activity_lucky_draw extends AppCompatActivity
                                                        Response<JoinResponse> response) {
 
                                     hideLoading();
-                                    adapter.clearLoading(drawId);
+                                    if (adapter != null) adapter.clearLoading(drawId);
 
                                     if (isFinishing() || isDestroyed()) return;
 
@@ -692,7 +705,7 @@ public class activity_lucky_draw extends AppCompatActivity
 
                                         try {
                                             Collections.sort(list, (a, b) -> Integer.compare(a.getRewardCoins(), b.getRewardCoins()));
-                                            adapter.notifyDataSetChanged();
+                                            if (adapter != null) adapter.notifyDataSetChanged();
                                         } catch (Exception ignored) {}
 
                                         if ("TICKET".equals(type)) {
@@ -705,7 +718,7 @@ public class activity_lucky_draw extends AppCompatActivity
                                             }
                                             int totalDeduction = count * ticketCostPerEntry;
                                             userTickets = Math.max(0, userTickets - totalDeduction);
-                                            adapter.updateUserTickets(userTickets);
+                                            if (adapter != null) adapter.updateUserTickets(userTickets);
                                             if (tickets != null) {
                                                 tickets.setText(String.valueOf(userTickets));
                                             }
@@ -731,7 +744,7 @@ public class activity_lucky_draw extends AppCompatActivity
                                 @Override
                                 public void onFailure(Call<JoinResponse> call, Throwable t) {
                                     hideLoading();
-                                    adapter.clearLoading(drawId);
+                                    if (adapter != null) adapter.clearLoading(drawId);
                                     if (isFinishing() || isDestroyed()) return;
                                     Toast.makeText(activity_lucky_draw.this,
                                             t.getMessage() != null ? t.getMessage() : "Network error", Toast.LENGTH_LONG).show();
@@ -740,7 +753,7 @@ public class activity_lucky_draw extends AppCompatActivity
                 })
                 .addOnFailureListener(e -> {
                     hideLoading();
-                    adapter.clearLoading(drawId);
+                    if (adapter != null) adapter.clearLoading(drawId);
                     if (isFinishing() || isDestroyed()) return;
                     Toast.makeText(activity_lucky_draw.this,
                             "Authentication error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
