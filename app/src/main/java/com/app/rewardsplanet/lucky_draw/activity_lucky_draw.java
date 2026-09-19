@@ -46,6 +46,7 @@ public class activity_lucky_draw extends AppCompatActivity
     List<LuckyDrawModel> list = new ArrayList<>();
     LuckyDrawAdapter adapter;
 
+    UserPref userPref;
     String uid;
     int userTickets = 0;
 
@@ -56,6 +57,8 @@ public class activity_lucky_draw extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_lucky_draw);
+
+        userPref = new UserPref(this);
 
         tickets = findViewById(R.id.tickets);
 
@@ -70,7 +73,14 @@ public class activity_lucky_draw extends AppCompatActivity
         api = ApiClient.getClient().create(ApiService.class);
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        uid = user != null ? user.getUid() : "";
+        uid = (user != null && user.getUid() != null && !user.getUid().isEmpty())
+                ? user.getUid()
+                : userPref.getUid();
+
+        userTickets = userPref.getTickets();
+        if (tickets != null) {
+            tickets.setText(String.valueOf(userTickets));
+        }
 
         RecyclerView rv = findViewById(R.id.luckyDrawRecycler);
         rv.setLayoutManager(new LinearLayoutManager(this));
@@ -85,14 +95,17 @@ public class activity_lucky_draw extends AppCompatActivity
         makeFullScreen();
 
         // user tickets listener
-        if (!uid.isEmpty()) {
+        if (uid != null && !uid.isEmpty()) {
             db.collection("users")
                     .document(uid)
                     .addSnapshotListener(this, (snap, e) -> {
                         if (snap != null && snap.exists()) {
                             userTickets = parseTickets(snap);
+                            userPref.setTickets(userTickets);
                             adapter.updateUserTickets(userTickets);
-                            tickets.setText(String.valueOf(userTickets));
+                            if (tickets != null) {
+                                tickets.setText(String.valueOf(userTickets));
+                            }
                         }
                     });
         }
@@ -102,6 +115,8 @@ public class activity_lucky_draw extends AppCompatActivity
         if (snap == null || !snap.exists()) return 0;
         Object val = snap.get("tickets");
         if (val == null) val = snap.get("ticket");
+        if (val == null) val = snap.get("user_tickets");
+        if (val == null) val = snap.get("total_tickets");
         if (val == null) val = snap.get("tokens");
 
         if (val instanceof Number) {
