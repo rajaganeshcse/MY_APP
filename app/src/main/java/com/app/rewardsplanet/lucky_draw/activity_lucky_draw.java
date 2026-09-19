@@ -690,15 +690,7 @@ public class activity_lucky_draw extends AppCompatActivity
 
                                         for (LuckyDrawModel m : list) {
                                             if (m.getId().equals(drawId)) {
-
-                                                if ("AD".equals(type)) {
-                                                    m.setAdJoined(true);
-                                                } else {
-                                                    m.setMyTicketsCount(
-                                                            m.getMyTicketsCount() + count
-                                                    );
-                                                }
-                                                m.setFilledSlots((long) (m.getFilledSlots() + count));
+                                                checkUserEntries(m);
                                                 break;
                                             }
                                         }
