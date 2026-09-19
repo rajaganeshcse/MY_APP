@@ -1,6 +1,7 @@
 package com.app.rewardsplanet.Activitys;
 
 import android.app.DatePickerDialog;
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -508,40 +510,33 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     // =========================================================
-    // GENDER SELECTION ANCHORED DROPDOWN
+    // GENDER SELECTION CENTERED DIALOG
     // =========================================================
 
-    private PopupWindow genderPopupWindow;
+    private Dialog genderDialog;
 
     private void showGenderDropdown() {
 
-        if (genderContainer == null) return;
-
-        if (genderPopupWindow != null && genderPopupWindow.isShowing()) {
-            genderPopupWindow.dismiss();
+        if (genderDialog != null && genderDialog.isShowing()) {
+            genderDialog.dismiss();
             return;
         }
 
+        genderDialog = new Dialog(this);
+        genderDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        genderDialog.setCancelable(true);
+        genderDialog.setCanceledOnTouchOutside(true);
+
         View popupView = LayoutInflater.from(this).inflate(R.layout.dialog_gender_select, null);
+        genderDialog.setContentView(popupView);
 
-        int width = genderContainer.getWidth();
-        if (width <= 0) {
-            width = ViewGroup.LayoutParams.MATCH_PARENT;
-        }
-
-        genderPopupWindow = new PopupWindow(
-                popupView,
-                width,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                true
-        );
-
-        genderPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        genderPopupWindow.setOutsideTouchable(true);
-        genderPopupWindow.setFocusable(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            genderPopupWindow.setElevation(12f);
+        if (genderDialog.getWindow() != null) {
+            genderDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            genderDialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.90f),
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            genderDialog.getWindow().setGravity(Gravity.CENTER);
         }
 
         LinearLayout optionMale = popupView.findViewById(R.id.optionMale);
@@ -561,32 +556,32 @@ public class ProfileActivity extends AppCompatActivity {
         }
 
         if (optionMale != null) {
-            optionMale.setBackgroundResource("Male".equalsIgnoreCase(currentGender) ? R.drawable.bg_gender_option_selected : android.R.color.transparent);
+            optionMale.setBackgroundResource("Male".equalsIgnoreCase(currentGender) ? R.drawable.bg_gender_option_selected : R.drawable.bg_chip_light);
             optionMale.setOnClickListener(v -> {
                 txtGender.setText("Male");
                 updateGenderSymbol("Male");
                 updateProfileStrength();
-                genderPopupWindow.dismiss();
+                genderDialog.dismiss();
             });
         }
 
         if (optionFemale != null) {
-            optionFemale.setBackgroundResource("Female".equalsIgnoreCase(currentGender) ? R.drawable.bg_gender_option_selected : android.R.color.transparent);
+            optionFemale.setBackgroundResource("Female".equalsIgnoreCase(currentGender) ? R.drawable.bg_gender_option_selected : R.drawable.bg_chip_light);
             optionFemale.setOnClickListener(v -> {
                 txtGender.setText("Female");
                 updateGenderSymbol("Female");
                 updateProfileStrength();
-                genderPopupWindow.dismiss();
+                genderDialog.dismiss();
             });
         }
 
         if (optionOther != null) {
-            optionOther.setBackgroundResource("Rather not to say".equalsIgnoreCase(currentGender) ? R.drawable.bg_gender_option_selected : android.R.color.transparent);
+            optionOther.setBackgroundResource("Rather not to say".equalsIgnoreCase(currentGender) ? R.drawable.bg_gender_option_selected : R.drawable.bg_chip_light);
             optionOther.setOnClickListener(v -> {
                 txtGender.setText("Rather not to say");
                 updateGenderSymbol("Rather not to say");
                 updateProfileStrength();
-                genderPopupWindow.dismiss();
+                genderDialog.dismiss();
             });
         }
 
@@ -594,20 +589,20 @@ public class ProfileActivity extends AppCompatActivity {
             imgGenderChevron.setImageResource(R.drawable.ic_chevron_up);
         }
 
-        genderPopupWindow.setOnDismissListener(() -> {
+        genderDialog.setOnDismissListener(dialogInterface -> {
             if (imgGenderChevron != null) {
                 imgGenderChevron.setImageResource(R.drawable.ic_chevron_down);
             }
         });
 
-        genderPopupWindow.showAsDropDown(genderContainer, 0, 10);
+        genderDialog.show();
     }
 
     // =========================================================
-    // DATE PICKER POPUP (SCROLLABLE SINGLE UI)
+    // DATE PICKER CENTERED DIALOG
     // =========================================================
 
-    private PopupWindow dobPopupWindow;
+    private Dialog dobDialog;
 
     private static final String[] MONTH_NAMES = {
             "January", "February", "March", "April", "May", "June",
@@ -615,33 +610,27 @@ public class ProfileActivity extends AppCompatActivity {
     };
 
     private void showDatePicker() {
-        if (dateContainer == null) return;
 
-        if (dobPopupWindow != null && dobPopupWindow.isShowing()) {
-            dobPopupWindow.dismiss();
+        if (dobDialog != null && dobDialog.isShowing()) {
+            dobDialog.dismiss();
             return;
         }
 
+        dobDialog = new Dialog(this);
+        dobDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dobDialog.setCancelable(true);
+        dobDialog.setCanceledOnTouchOutside(true);
+
         View popupView = LayoutInflater.from(this).inflate(R.layout.dialog_dob_select, null);
+        dobDialog.setContentView(popupView);
 
-        int width = dateContainer.getWidth();
-        if (width <= 0) {
-            width = ViewGroup.LayoutParams.MATCH_PARENT;
-        }
-
-        dobPopupWindow = new PopupWindow(
-                popupView,
-                width,
-                ViewGroup.LayoutParams.WRAP_CONTENT,
-                true
-        );
-
-        dobPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        dobPopupWindow.setOutsideTouchable(true);
-        dobPopupWindow.setFocusable(true);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            dobPopupWindow.setElevation(12f);
+        if (dobDialog.getWindow() != null) {
+            dobDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dobDialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.90f),
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            dobDialog.getWindow().setGravity(Gravity.CENTER);
         }
 
         NumberPicker npDay = popupView.findViewById(R.id.npDay);
@@ -726,7 +715,7 @@ public class ProfileActivity extends AppCompatActivity {
         npDay.setValue(initialDay);
 
         if (btnCancelDob != null) {
-            btnCancelDob.setOnClickListener(v -> dobPopupWindow.dismiss());
+            btnCancelDob.setOnClickListener(v -> dobDialog.dismiss());
         }
 
         if (btnConfirmDob != null) {
@@ -741,7 +730,7 @@ public class ProfileActivity extends AppCompatActivity {
                 String formattedDob = String.format(Locale.ENGLISH, "%02d-%s-%d", day, MONTH_NAMES[month], year);
                 txtDob.setText(formattedDob);
                 updateProfileStrength();
-                dobPopupWindow.dismiss();
+                dobDialog.dismiss();
             });
         }
 
@@ -749,13 +738,13 @@ public class ProfileActivity extends AppCompatActivity {
             imgDobChevron.setImageResource(R.drawable.ic_chevron_up);
         }
 
-        dobPopupWindow.setOnDismissListener(() -> {
+        dobDialog.setOnDismissListener(dialogInterface -> {
             if (imgDobChevron != null) {
                 imgDobChevron.setImageResource(R.drawable.ic_chevron_down);
             }
         });
 
-        dobPopupWindow.showAsDropDown(dateContainer, 0, 10);
+        dobDialog.show();
     }
 
     // =========================================================

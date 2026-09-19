@@ -162,6 +162,63 @@
                  WHAT GETS DELETED CARD
                  ==================================================== -->
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="18dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Confirm your action"
+                    android:textColor="#374151"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text='Type  "Delete my account"  to confirm'
+                    android:textColor="#6B7280"
+                    android:textSize="15sp" />
+
+                <EditText
+                    android:id="@+id/edtConfirmation"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_delete_input"
+                    android:gravity="center_vertical"
+                    android:hint="Delete my account"
+                    android:inputType="text"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="14dp"
+                    android:singleLine="true"
+                    android:textColor="#1F2937"
+                    android:textColorHint="#9CA3AF"
+                    android:textSize="14sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnDeleteAccount"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:layout_marginTop="14dp"
+                    android:minHeight="0dp"
+                    android:stateListAnimator="@null"
+                    android:text="Request Account Deletion"
+                    android:textAllCaps="false"
+                    android:textColor="@android:color/white"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:backgroundTint="#EF4444"
+                    app:cornerRadius="12dp"
+                    app:rippleColor="#DC2626"
+                    app:strokeWidth="0dp" />
+
+            </LinearLayout>
+
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -272,63 +329,6 @@
                 app:cardCornerRadius="14dp"
                 app:cardElevation="3dp"
                 app:cardBackgroundColor="#FFFFFF">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="18dp">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Confirm your action"
-                        android:textColor="#374151"
-                        android:textSize="18sp"
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text='Type  "Delete my account"  to confirm'
-                        android:textColor="#6B7280"
-                        android:textSize="15sp"/>
-
-                    <EditText
-                        android:id="@+id/edtConfirmation"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="10dp"
-                        android:paddingStart="14dp"
-                        android:paddingEnd="14dp"
-                        android:gravity="center_vertical"
-                        android:hint="Delete my account"
-                        android:textColorHint="#9CA3AF"
-                        android:textColor="#1F2937"
-                        android:textSize="14sp"
-                        android:singleLine="true"
-                        android:inputType="text"
-                        android:background="@drawable/bg_delete_input"/>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnDeleteAccount"
-                        android:layout_width="match_parent"
-                        android:layout_height="50dp"
-                        android:layout_marginTop="14dp"
-                        android:minHeight="0dp"
-                        android:stateListAnimator="@null"
-                        android:text="Request Account Deletion"
-                        android:textAllCaps="false"
-                        android:textColor="@android:color/white"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        app:backgroundTint="#EF4444"
-                        app:cornerRadius="12dp"
-                        app:strokeWidth="0dp"
-                        app:rippleColor="#DC2626"/>
-
-                </LinearLayout>
 
             </androidx.cardview.widget.CardView>
 
