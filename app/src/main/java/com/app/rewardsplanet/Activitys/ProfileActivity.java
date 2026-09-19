@@ -812,10 +812,15 @@ public class ProfileActivity extends AppCompatActivity {
         final String finalGender = gender;
         final String finalDob = dob;
 
+        btnSave.setEnabled(false);
+        btnSave.setText("Saving...");
+
         db.collection("users")
                 .document(uid)
                 .update(updates)
                 .addOnSuccessListener(unused -> {
+                    btnSave.setEnabled(true);
+                    btnSave.setText("Save Changes");
 
                     // 1. Sync local UserPref
                     UserPref userPref = new UserPref(ProfileActivity.this);
@@ -836,15 +841,14 @@ public class ProfileActivity extends AppCompatActivity {
                         UserRepository.getInstance(ProfileActivity.this).refreshCurrentUser();
                     }
 
-                    Toast.makeText(
-                            ProfileActivity.this,
-                            "Profile saved successfully",
-                            Toast.LENGTH_SHORT
-                    ).show();
-
                     updateProfileStrength();
+
+                    // 3. Show professional success dialog UI
+                    showProfileSavedSuccessDialog();
                 })
                 .addOnFailureListener(e -> {
+                    btnSave.setEnabled(true);
+                    btnSave.setText("Save Changes");
 
                     Toast.makeText(
                             ProfileActivity.this,
@@ -852,6 +856,46 @@ public class ProfileActivity extends AppCompatActivity {
                             Toast.LENGTH_LONG
                     ).show();
                 });
+    }
+
+    // =========================================================
+    // PROFESSIONAL SUCCESS DIALOG & MAIN NAVIGATION
+    // =========================================================
+
+    private void showProfileSavedSuccessDialog() {
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_profile_success, null);
+        dialog.setContentView(view);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.88f),
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            dialog.getWindow().setGravity(Gravity.CENTER);
+        }
+
+        View btnOk = view.findViewById(R.id.btnProfileSuccessOk);
+        if (btnOk != null) {
+            btnOk.setOnClickListener(v -> {
+                dialog.dismiss();
+                navigateToMainActivity();
+            });
+        }
+
+        dialog.show();
+    }
+
+    private void navigateToMainActivity() {
+        Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
     }
 
     // =========================================================
