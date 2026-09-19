@@ -708,20 +708,18 @@ public class activity_lucky_draw extends AppCompatActivity
                                             if (adapter != null) adapter.notifyDataSetChanged();
                                         } catch (Exception ignored) {}
 
-                                        if ("TICKET".equals(type)) {
-                                            if (res.remainingTickets != null && res.remainingTickets >= 0) {
-                                                userTickets = res.remainingTickets;
-                                            } else {
-                                                int deducted = (res.ticketsDeducted != null && res.ticketsDeducted > 0)
-                                                        ? res.ticketsDeducted
-                                                        : count;
-                                                userTickets = Math.max(0, userTickets - deducted);
-                                            }
-                                            userPref.setTickets(userTickets);
-                                            if (adapter != null) adapter.updateUserTickets(userTickets);
-                                            if (tickets != null) {
-                                                tickets.setText(String.valueOf(userTickets));
-                                            }
+                                        if (res.remainingTickets != null && res.remainingTickets >= 0) {
+                                            userTickets = res.remainingTickets;
+                                        } else if ("TICKET".equals(type)) {
+                                            int deducted = (res.ticketsDeducted != null && res.ticketsDeducted > 0)
+                                                    ? res.ticketsDeducted
+                                                    : count;
+                                            userTickets = Math.max(0, userTickets - deducted);
+                                        }
+                                        userPref.setTickets(userTickets);
+                                        if (adapter != null) adapter.updateUserTickets(userTickets);
+                                        if (tickets != null) {
+                                            tickets.setText(String.valueOf(userTickets));
                                         }
 
                                     } else {
