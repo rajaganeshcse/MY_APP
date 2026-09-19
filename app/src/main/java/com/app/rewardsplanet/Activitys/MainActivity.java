@@ -221,6 +221,49 @@ public class MainActivity extends AppCompatActivity {
         loadFragment(
                 new HomeFragment()
         );
+
+        // Check if redirected from ProfileActivity after saving changes
+        checkProfileSuccessDialog(getIntent());
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        checkProfileSuccessDialog(intent);
+    }
+
+    private void checkProfileSuccessDialog(Intent intent) {
+        if (intent != null && intent.getBooleanExtra("SHOW_PROFILE_SUCCESS_DIALOG", false)) {
+            intent.putExtra("SHOW_PROFILE_SUCCESS_DIALOG", false);
+            showProfileSavedSuccessDialog();
+        }
+    }
+
+    private void showProfileSavedSuccessDialog() {
+        android.app.Dialog dialog = new android.app.Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+
+        View view = getLayoutInflater().inflate(R.layout.dialog_profile_success, null);
+        dialog.setContentView(view);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new android.graphics.drawable.ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.86f),
+                    android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+            dialog.getWindow().setGravity(android.view.Gravity.CENTER);
+        }
+
+        View btnOk = view.findViewById(R.id.btnProfileSuccessOk);
+        if (btnOk != null) {
+            btnOk.setOnClickListener(v -> dialog.dismiss());
+        }
+
+        dialog.show();
     }
 
 

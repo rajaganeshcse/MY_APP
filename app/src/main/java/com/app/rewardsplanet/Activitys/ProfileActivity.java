@@ -843,8 +843,12 @@ public class ProfileActivity extends AppCompatActivity {
 
                     updateProfileStrength();
 
-                    // 3. Show professional success dialog UI
-                    showProfileSavedSuccessDialog();
+                    // 3. Automatically redirect to MainActivity and present success dialog on MainActivity
+                    Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+                    intent.putExtra("SHOW_PROFILE_SUCCESS_DIALOG", true);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+                    startActivity(intent);
+                    finish();
                 })
                 .addOnFailureListener(e -> {
                     btnSave.setEnabled(true);
