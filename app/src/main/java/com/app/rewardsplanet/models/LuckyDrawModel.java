@@ -75,7 +75,7 @@ public class LuckyDrawModel {
     public void setRewardCoins(Long rewardCoins) { this.rewardCoins = rewardCoins; }
 
     public int getTicketCost() {
-        return ticketCost == null ? 10 : ticketCost.intValue();
+        return ticketCost == null ? 1 : ticketCost.intValue();
     }
     public void setTicketCost(Long ticketCost) { this.ticketCost = ticketCost; }
 

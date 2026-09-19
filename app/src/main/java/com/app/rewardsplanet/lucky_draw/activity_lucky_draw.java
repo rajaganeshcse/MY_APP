@@ -433,8 +433,10 @@ public class activity_lucky_draw extends AppCompatActivity
         MaterialButton btnCancel = view.findViewById(R.id.btnCancel);
         ImageView closebtn = view.findViewById(R.id.btnClose);
 
+        final int costPerEntry = Math.max(1, model.getTicketCost());
         final int remainingSlots = Math.max(0, model.getTotalSlots() - model.getFilledSlots());
-        final int maxAllowed = Math.min(userTickets, remainingSlots);
+        final int maxEntriesByTickets = userTickets / costPerEntry;
+        final int maxAllowed = Math.min(maxEntriesByTickets, remainingSlots);
 
         selectedTicketQty = 1;
 
@@ -447,39 +449,41 @@ public class activity_lucky_draw extends AppCompatActivity
         } else {
             if (txtTitle != null) txtTitle.setText("Ticket Entry 🎟️");
             if (txtMessage != null) txtMessage.setText("Join Contest with Tickets");
-            if (txtSubtitle != null) txtSubtitle.setText("Select how many tickets you want to submit");
+            if (txtSubtitle != null) txtSubtitle.setText("1 Entry = " + costPerEntry + " Ticket" + (costPerEntry > 1 ? "s" : ""));
             if (layoutQuantity != null) layoutQuantity.setVisibility(View.VISIBLE);
 
             if (maxAllowed < 1) {
                 selectedTicketQty = 0;
                 if (txtQuantity != null) txtQuantity.setText("0");
                 if (txtTicketBalance != null) {
-                    if (userTickets <= 0) {
-                        txtTicketBalance.setText("⚠️ You don't have any tickets available.");
+                    if (userTickets < costPerEntry) {
+                        txtTicketBalance.setText("⚠️ Requires " + costPerEntry + " ticket(s) (You have " + userTickets + ").");
                     } else {
                         txtTicketBalance.setText("⚠️ Contest slots are full.");
                     }
                     txtTicketBalance.setTextColor(Color.parseColor("#EF4444"));
                 }
                 btnConfirm.setEnabled(false);
-                btnConfirm.setText("NO TICKETS");
+                btnConfirm.setText("INSUFFICIENT TICKETS");
             } else {
                 selectedTicketQty = 1;
+                int totalCost = selectedTicketQty * costPerEntry;
                 if (txtQuantity != null) txtQuantity.setText(String.valueOf(selectedTicketQty));
                 if (txtTicketBalance != null) {
                     txtTicketBalance.setText("Available: " + userTickets + " Tickets  •  " + remainingSlots + " Slots Left");
                     txtTicketBalance.setTextColor(Color.parseColor("#64748B"));
                 }
                 btnConfirm.setEnabled(true);
-                btnConfirm.setText("JOIN DRAW · " + selectedTicketQty);
+                btnConfirm.setText("JOIN DRAW · " + totalCost + " Ticket" + (totalCost > 1 ? "s" : ""));
             }
 
             if (btnMinus != null) {
                 btnMinus.setOnClickListener(v -> {
                     if (selectedTicketQty > 1) {
                         selectedTicketQty--;
+                        int totalCost = selectedTicketQty * costPerEntry;
                         if (txtQuantity != null) txtQuantity.setText(String.valueOf(selectedTicketQty));
-                        btnConfirm.setText("JOIN DRAW · " + selectedTicketQty);
+                        btnConfirm.setText("JOIN DRAW · " + totalCost + " Ticket" + (totalCost > 1 ? "s" : ""));
                     }
                 });
             }
@@ -488,8 +492,9 @@ public class activity_lucky_draw extends AppCompatActivity
                 btnPlus.setOnClickListener(v -> {
                     if (selectedTicketQty < maxAllowed) {
                         selectedTicketQty++;
+                        int totalCost = selectedTicketQty * costPerEntry;
                         if (txtQuantity != null) txtQuantity.setText(String.valueOf(selectedTicketQty));
-                        btnConfirm.setText("JOIN DRAW · " + selectedTicketQty);
+                        btnConfirm.setText("JOIN DRAW · " + totalCost + " Ticket" + (totalCost > 1 ? "s" : ""));
                     } else if (maxAllowed > 0 && selectedTicketQty >= maxAllowed) {
                         Toast.makeText(this, "Max entry limit reached (" + maxAllowed + ")", Toast.LENGTH_SHORT).show();
                     }
@@ -500,8 +505,9 @@ public class activity_lucky_draw extends AppCompatActivity
                 btnMax.setOnClickListener(v -> {
                     if (maxAllowed > 0) {
                         selectedTicketQty = maxAllowed;
+                        int totalCost = selectedTicketQty * costPerEntry;
                         if (txtQuantity != null) txtQuantity.setText(String.valueOf(selectedTicketQty));
-                        btnConfirm.setText("JOIN DRAW · " + selectedTicketQty);
+                        btnConfirm.setText("JOIN DRAW · " + totalCost + " Ticket" + (totalCost > 1 ? "s" : ""));
                     }
                 });
             }
@@ -645,7 +651,15 @@ public class activity_lucky_draw extends AppCompatActivity
                                         adapter.notifyDataSetChanged();
 
                                         if ("TICKET".equals(type)) {
-                                            userTickets = Math.max(0, userTickets - count);
+                                            int ticketCostPerEntry = 1;
+                                            for (LuckyDrawModel m : list) {
+                                                if (m.getId().equals(drawId)) {
+                                                    ticketCostPerEntry = Math.max(1, m.getTicketCost());
+                                                    break;
+                                                }
+                                            }
+                                            int totalDeduction = count * ticketCostPerEntry;
+                                            userTickets = Math.max(0, userTickets - totalDeduction);
                                             adapter.updateUserTickets(userTickets);
                                             tickets.setText(String.valueOf(userTickets));
                                         }
