@@ -6,14 +6,14 @@ plugins {
 android {
     namespace = "com.app.rewardsplanet"
 
-    compileSdk = 36
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.example.rgamer"
 
         minSdk = 23
 
-        targetSdk = 34
+        targetSdk = 35
 
         versionCode = 1
         versionName = "1.0"
@@ -72,7 +72,7 @@ dependencies {
 
     implementation(
         platform(
-            "com.google.firebase:firebase-bom:34.6.0"
+            "com.google.firebase:firebase-bom:33.7.0"
         )
     )
 
@@ -107,7 +107,7 @@ dependencies {
     // ==============================
 
     implementation(
-        "com.google.android.gms:play-services-ads:23.0.0"
+        "com.google.android.gms:play-services-ads:23.6.0"
     )
 
 

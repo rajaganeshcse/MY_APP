@@ -4,10 +4,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F8FAFF">
+    android:background="#0C0A1E">
 
     <!-- ============================================================
-         FULL GRADIENT BACKGROUND (LIGHT MODE)
+         FULL GRADIENT BACKGROUND
          ============================================================ -->
     <View
         android:id="@+id/bgGradient"
@@ -17,22 +17,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <!-- ============================================================
-         DECORATIVE GLOW CIRCLE - TOP RIGHT
-         ============================================================ -->
+    <!-- Decorative glow top-right -->
     <View
         android:id="@+id/glowCircle"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:alpha="0.30"
+        android:alpha="0.22"
         android:background="@drawable/bg_glow_circle"
-        android:translationX="60dp"
-        android:translationY="-60dp"
+        android:translationX="50dp"
+        android:translationY="-50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <!-- ============================================================
-         MAIN SCROLL CONTAINER
+         MAIN SCROLL
          ============================================================ -->
     <ScrollView
         android:layout_width="match_parent"
@@ -46,11 +44,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingBottom="20dp">
+            android:paddingBottom="28dp">
 
-            <!-- ======================================================
-                 HEADER ROW
-                 ====================================================== -->
+            <!-- ==========================================================
+                 HEADER
+                 ========================================================== -->
             <LinearLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
@@ -59,17 +57,16 @@
                 android:orientation="horizontal"
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
-                android:paddingTop="30dp"
+                android:paddingTop="40dp"
                 android:paddingBottom="10dp">
 
-                <!-- Back Button -->
+                <!-- Back -->
                 <ImageView
                     android:id="@+id/btnBack"
-                    android:layout_width="52dp"
-                    android:layout_height="52dp"
-                    android:padding="13dp"
+                    android:layout_width="48dp"
+                    android:layout_height="48dp"
+                    android:padding="12dp"
                     android:src="@drawable/back_arrow"
-                    app:tint="#1E293B"
                     android:background="@drawable/bg_delete_back"
                     android:contentDescription="Back" />
 
@@ -79,15 +76,15 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:layout_marginStart="16dp">
+                    android:layout_marginStart="14dp">
 
                     <TextView
                         android:id="@+id/txtTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Daily Spin"
-                        android:textColor="#0F172A"
-                        android:textSize="20sp"
+                        android:textColor="#000000"
+                        android:textSize="21sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.02" />
 
@@ -95,13 +92,13 @@
                         android:id="@+id/txtSubtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Spin the wheel &amp; win rewards"
-                        android:textColor="#64748B"
+                        android:text="Spin to win coins!"
+                        android:textColor="#333333"
                         android:textSize="12sp" />
 
                 </LinearLayout>
 
-                <!-- Coin Balance Chip -->
+                <!-- Coin chip -->
                 <LinearLayout
                     android:id="@+id/layoutCoins"
                     android:layout_width="wrap_content"
@@ -110,13 +107,11 @@
                     android:orientation="horizontal"
                     android:background="@drawable/bg_chip_light"
                     android:paddingStart="10dp"
-                    android:paddingEnd="12dp"
-                    android:paddingTop="6dp"
-                    android:paddingBottom="6dp">
+                    android:paddingEnd="12dp">
 
                     <ImageView
-                        android:layout_width="22dp"
-                        android:layout_height="22dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:src="@drawable/ic_coin"
                         android:contentDescription="Coins" />
 
@@ -126,7 +121,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="5dp"
                         android:text="0"
-                        android:textColor="#D97706"
+                        android:textColor="#FFD700"
                         android:textSize="16sp"
                         android:textStyle="bold" />
 
@@ -134,109 +129,115 @@
 
             </LinearLayout>
 
-            <!-- ======================================================
-                 SPINS STATUS CHIP / CARD
-                 ====================================================== -->
+            <!-- ==========================================================
+                 SPINS LEFT CHIP
+                 ========================================================== -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:orientation="vertical"
-                android:layout_marginTop="10dp"
-                android:layout_marginBottom="16dp"
-                android:layout_marginStart="20dp"
-                android:layout_marginEnd="20dp">
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="18dp">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/bg_delete_input"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp"
-                    android:paddingTop="10dp"
-                    android:paddingBottom="10dp"
+                    android:layout_height="44dp"
                     android:gravity="center"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:paddingStart="24dp"
+                    android:paddingEnd="24dp"
+                    android:background="@drawable/bg_delete_input">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_spinner"
+                        android:contentDescription="Spin icon"
+                        android:layout_marginEnd="8dp" />
 
                     <TextView
                         android:id="@+id/txtSpinsLeft"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Spins Left: 5"
-                        android:textColor="#0F172A"
-                        android:textSize="18sp"
+                        android:textColor="#000000"
+                        android:textSize="17sp"
                         android:textStyle="bold" />
 
                 </LinearLayout>
 
             </LinearLayout>
 
-            <!-- ======================================================
-                 WHEEL AREA
-                 ====================================================== -->
+            <!-- ==========================================================
+                 WHEEL + POINTER CONTAINER
+                 ========================================================== -->
             <FrameLayout
-                android:layout_width="320dp"
-                android:layout_height="340dp"
+                android:layout_width="316dp"
+                android:layout_height="356dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="10dp"
+                android:clipChildren="false">
 
-                <!-- Wheel -->
-                <ImageView
-                    android:id="@+id/imgWheel"
-                    android:layout_width="310dp"
-                    android:layout_height="310dp"
+                <!-- ──────────────────────────────────────────────────────
+                     Programmatic Wheel View
+                     Index 0 = top (12 o'clock), clockwise.
+                     Rotation animation is applied to this view.
+                     ────────────────────────────────────────────────────── -->
+                <com.app.rewardsplanet.lucky_draw.SpinWheelView
+                    android:id="@+id/wheelView"
+                    android:layout_width="300dp"
+                    android:layout_height="300dp"
                     android:layout_gravity="bottom|center_horizontal"
-                    android:padding="4dp"
-                    android:src="@drawable/spin_wheel" />
+                    android:elevation="4dp" />
 
-                <!-- Pointer -->
+                <!-- ──────────────────────────────────────────────────────
+                     Pointer — FIXED at top, wheel rotates under it.
+                     Points DOWN into the wheel.
+                     ────────────────────────────────────────────────────── -->
                 <ImageView
                     android:id="@+id/imgPointer"
-                    android:layout_width="74dp"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="10dp"
+                    android:layout_width="52dp"
+                    android:layout_height="64dp"
                     android:layout_gravity="top|center_horizontal"
-                    android:src="@drawable/ic_pointer" />
-
-                <!-- COIN ANIMATION VIEW -->
-                <ImageView
-                    android:id="@+id/imgCoinAnim"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_gravity="center"
-                    android:src="@drawable/ic_coin"
-                    android:visibility="gone" />
+                    android:layout_marginTop="0dp"
+                    android:src="@drawable/ic_pointer"
+                    android:elevation="12dp"
+                    android:contentDescription="Pointer" />
 
             </FrameLayout>
 
-            <!-- ======================================================
+            <!-- ==========================================================
                  SPIN BUTTON
-                 ====================================================== -->
+                 ========================================================== -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnSpin"
                 android:layout_width="220dp"
-                android:layout_height="54dp"
+                android:layout_height="56dp"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:background="@drawable/bg_save_button"
                 android:text="SPIN NOW"
                 android:textColor="#FFFFFF"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:letterSpacing="0.04"
+                android:letterSpacing="0.06"
                 app:backgroundTint="@null"
-                app:cornerRadius="27dp"
-                app:elevation="4dp"
+                app:cornerRadius="28dp"
+                app:elevation="6dp"
                 app:rippleColor="@null" />
 
-            <!-- ======================================================
+            <!-- ==========================================================
+                 SEGMENT VALUE LEGEND CARD
+                 ========================================================== -->
+
+            <!-- ==========================================================
                  BANNER AD
-                 ====================================================== -->
+                 ========================================================== -->
             <com.google.android.gms.ads.AdView
                 android:id="@+id/adView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="24dp"
                 android:layout_gravity="center_horizontal"
                 app:adSize="BANNER"
                 app:adUnitId="ca-app-pub-3940256099942544/6300978111" />

@@ -21,6 +21,7 @@ public class LuckyDrawAdapter
         void onJoin(LuckyDrawModel model);
         void onJoinWithTickets(LuckyDrawModel model);
         void onCheckWinners(LuckyDrawModel model);
+        void onViewMyTokens(LuckyDrawModel model);
     }
 
     private final List<LuckyDrawModel> list;
@@ -53,49 +54,64 @@ public class LuckyDrawAdapter
         int filled = model.getFilledSlots();
 
         h.txtReward.setText("Win " + model.getRewardCoins() + " Coins 🎉");
-        h.txtSlots.setText("Filled : " + filled + "/" + total);
+        h.txtSlots.setText("Filled: " + filled + " / " + total + " Slots");
         h.txtPercent.setText((filled * 100 / total) + "% Filled");
 
         h.progressSlots.setMax(total);
         h.progressSlots.setProgress(filled);
 
         int totalJoined = model.getMyTicketsCount() + (model.isAdJoined() ? 1 : 0);
-        h.token.setText(totalJoined + " Joined 👍");
-        if(totalJoined>0){
+        
+        if (totalJoined > 0) {
+            String tokenText = "✓ " + totalJoined + (totalJoined == 1 ? " Token" : " Tokens");
+            h.token.setText(tokenText);
+            h.token.setTextColor(Color.WHITE);
+            h.joined.setBackgroundResource(R.drawable.bg_joined_chip_glow);
             h.joined.setVisibility(View.VISIBLE);
-        }else{
+            h.joined.setOnClickListener(v -> listener.onViewMyTokens(model));
+            if (h.cardRoot != null) {
+                h.cardRoot.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#10B981")));
+                h.cardRoot.setStrokeWidth(4);
+            }
+        } else {
             h.joined.setVisibility(View.GONE);
+            if (h.cardRoot != null) {
+                h.cardRoot.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#EEF2FF")));
+                h.cardRoot.setStrokeWidth(2);
+            }
         }
 
         /* RESET */
         h.btnJoin.setEnabled(true);
         h.btnticket.setEnabled(true);
 
+        /* TICKET COUNT BUTTON TEXT */
+        if (model.getMyTicketsCount() > 0) {
+            h.btnticket.setText("🎟️ Tickets " + model.getMyTicketsCount());
+        } else {
+            h.btnticket.setText("🎟️ Tickets");
+        }
+        h.btnticket.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4F46E5")));
+
         /* AD STATE */
         if (model.isAdJoined()) {
-            h.btnJoin.setText("Used");
-            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#0974f1")));
-            h.btnJoin.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#0974f1")));
+            h.btnJoin.setText("✓ Free Used");
+            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#94A3B8")));
             h.btnJoin.setEnabled(false);
         } else {
-            h.btnJoin.setText("Free");
-            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#2a8d08")));
-            h.btnJoin.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#2a8d08")));
-
+            h.btnJoin.setText("📺 Free Entry");
+            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#10B981")));
         }
 
-        /* FULL */
+        /* FULL / CLOSED STATE */
         if (model.isFull() || !"OPEN".equals(model.getStatus())) {
-            h.btnJoin.setText("FULL");
+            h.btnJoin.setText("🔒 Draw Closed");
+            h.btnticket.setText("🔒 Draw Closed");
             h.btnJoin.setEnabled(false);
             h.btnticket.setEnabled(false);
-            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#e01f2d")));
-            h.btnticket.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#e01f2d")));
-            h.btnticket.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#e01f2d")));
+            h.btnJoin.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#EF4444")));
+            h.btnticket.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#EF4444")));
         }
-
-        /* TICKET COUNT UI */
-        h.btnticket.setText("1 Tickets");
 
         /* FREE ENTRY (ONLY ONCE) */
         h.btnJoin.setOnClickListener(v -> {
@@ -164,7 +180,8 @@ public class LuckyDrawAdapter
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView txtReward, txtSlots, txtPercent,token;
+        com.google.android.material.card.MaterialCardView cardRoot;
+        TextView txtReward, txtSlots, txtPercent, token;
         ProgressBar progressSlots;
         LinearLayout joined;
         MaterialButton btnJoin, btnticket;
@@ -172,13 +189,14 @@ public class LuckyDrawAdapter
         ViewHolder(@NonNull View itemView) {
             super(itemView);
 
+            cardRoot = itemView.findViewById(R.id.cardLuckyDrawRoot);
             txtReward = itemView.findViewById(R.id.txtReward);
             txtSlots = itemView.findViewById(R.id.txtSlots);
             txtPercent = itemView.findViewById(R.id.txtPercent);
             progressSlots = itemView.findViewById(R.id.progressSlots);
-            joined=itemView.findViewById(R.id.joined);
+            joined = itemView.findViewById(R.id.joined);
             btnJoin = itemView.findViewById(R.id.btnFreeEntry);
-            token=itemView.findViewById(R.id.token);
+            token = itemView.findViewById(R.id.token);
             btnticket = itemView.findViewById(R.id.btnticketEntry);
         }
     }

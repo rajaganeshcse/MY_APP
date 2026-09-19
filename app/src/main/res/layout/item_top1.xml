@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-
+<!--
+    item_top1.xml — Podium layout for Top 3 leaderboard positions.
+    Layout order (L→R): 2nd | 1st | 3rd  (standard podium arrangement)
+    Fixes: corrected emoji, silver bg for 2nd, dark themed text colors.
+-->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:gravity="bottom"
-    android:paddingStart="3dp"
-    android:paddingEnd="3dp">
+    android:paddingStart="10dp"
+    android:paddingEnd="10dp"
+    android:paddingTop="12dp">
 
     <!-- ================================================= -->
-    <!-- 2ND PLACE -->
+    <!-- 2ND PLACE (left)                                   -->
     <!-- ================================================= -->
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -22,16 +26,26 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="25dp" />
+            android:layout_height="30dp" />
 
-        <!-- Profile -->
+        <!-- Silver medal badge -->
+        <TextView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:gravity="center"
+            android:text="🥈"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Profile image -->
         <ImageView
             android:id="@+id/img2"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginBottom="3dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/bg_profile_circle"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="2nd place" />
 
         <!-- Name -->
         <TextView
@@ -41,8 +55,8 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:gravity="center"
-            android:text="User"
-            android:textColor="@color/black"
+            android:text="—"
+            android:textColor="#000000"
             android:textSize="11sp"
             android:textStyle="bold" />
 
@@ -51,26 +65,26 @@
             android:id="@+id/score2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="4dp"
             android:gravity="center"
-            android:text="🔥 0"
-            android:textColor="#FF5722"
-            android:textSize="10sp" />
+            android:text="🪙 0"
+            android:textColor="#FFD700"
+            android:textSize="10sp"
+            android:textStyle="bold" />
 
-        <!-- Podium -->
+        <!-- Podium block — silver -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="62dp"
-            android:background="@drawable/bg_bronze"
+            android:layout_height="60dp"
+            android:background="@drawable/bg_silver"
             android:gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2nd"
-                android:textColor="@color/black"
-                android:textSize="14sp"
+                android:textColor="#000000"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -79,9 +93,8 @@
 
 
     <!-- ================================================= -->
-    <!-- 1ST PLACE -->
+    <!-- 1ST PLACE (center, tallest)                        -->
     <!-- ================================================= -->
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -89,23 +102,24 @@
         android:orientation="vertical"
         android:gravity="center_horizontal">
 
-        <!-- Crown -->
+        <!-- Crown icon -->
         <ImageView
-            android:layout_width="82dp"
-            android:layout_height="38dp"
-            android:layout_marginBottom="1dp"
+            android:layout_width="72dp"
+            android:layout_height="36dp"
+            android:layout_marginBottom="2dp"
             android:scaleType="centerInside"
             android:src="@drawable/crown"
             android:contentDescription="Winner crown" />
 
-        <!-- Profile -->
+        <!-- Profile image -->
         <ImageView
             android:id="@+id/img1"
-            android:layout_width="58dp"
-            android:layout_height="58dp"
-            android:layout_marginBottom="3dp"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/bg_profile_circle"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="1st place" />
 
         <!-- Name -->
         <TextView
@@ -115,9 +129,9 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:gravity="center"
-            android:text="User"
-            android:textColor="@color/black"
-            android:textSize="12sp"
+            android:text="—"
+            android:textColor="#000000"
+            android:textSize="13sp"
             android:textStyle="bold" />
 
         <!-- Score -->
@@ -125,28 +139,27 @@
             android:id="@+id/score1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="4dp"
             android:gravity="center"
-            android:text="🔥 0"
-            android:textColor="#FF5722"
-            android:textSize="11sp" />
+            android:text="🪙 0"
+            android:textColor="#FFD700"
+            android:textSize="12sp"
+            android:textStyle="bold" />
 
-        <!-- Podium -->
+        <!-- Podium block — gold (tallest) -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="74dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_height="80dp"
+            android:layout_marginHorizontal="4dp"
             android:background="@drawable/bg_gold"
             android:gravity="center">
 
             <TextView
-                android:layout_width="55dp"
-                android:layout_height="36dp"
-                android:text="1st"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:gravity="center"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👑 1st"
+                android:textColor="#000000"
+                android:textSize="18sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -155,9 +168,8 @@
 
 
     <!-- ================================================= -->
-    <!-- 3RD PLACE -->
+    <!-- 3RD PLACE (right)                                  -->
     <!-- ================================================= -->
-
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -167,16 +179,26 @@
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="25dp" />
+            android:layout_height="30dp" />
 
-        <!-- Profile -->
+        <!-- Bronze medal badge -->
+        <TextView
+            android:layout_width="26dp"
+            android:layout_height="26dp"
+            android:gravity="center"
+            android:text="🥉"
+            android:textSize="16sp"
+            android:layout_marginBottom="4dp" />
+
+        <!-- Profile image -->
         <ImageView
             android:id="@+id/img3"
-            android:layout_width="44dp"
-            android:layout_height="44dp"
-            android:layout_marginBottom="3dp"
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:layout_marginBottom="4dp"
             android:background="@drawable/bg_profile_circle"
-            android:scaleType="centerCrop" />
+            android:scaleType="centerCrop"
+            android:contentDescription="3rd place" />
 
         <!-- Name -->
         <TextView
@@ -186,8 +208,8 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:gravity="center"
-            android:text="User"
-            android:textColor="@color/black"
+            android:text="—"
+            android:textColor="#000000"
             android:textSize="11sp"
             android:textStyle="bold" />
 
@@ -196,17 +218,17 @@
             android:id="@+id/score3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="0dp"
-            android:layout_marginBottom="3dp"
+            android:layout_marginBottom="4dp"
             android:gravity="center"
-            android:text="🔥 0"
-            android:textColor="#FF5722"
-            android:textSize="10sp" />
+            android:text="🪙 0"
+            android:textColor="#FFD700"
+            android:textSize="10sp"
+            android:textStyle="bold" />
 
-        <!-- Podium -->
+        <!-- Podium block — bronze -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="62dp"
+            android:layout_height="60dp"
             android:background="@drawable/bg_bronze"
             android:gravity="center">
 
@@ -214,8 +236,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3rd"
-                android:textColor="@color/black"
-                android:textSize="14sp"
+                android:textColor="#000000"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -223,4 +245,3 @@
     </LinearLayout>
 
 </LinearLayout>
-

@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.*;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -227,48 +228,215 @@ public class activity_lucky_draw extends AppCompatActivity
         Toast.makeText(this, "Coming soon", Toast.LENGTH_SHORT).show();
     }
 
-    /* ================= CONFIRM DIALOG ================= */
+    @Override
+    public void onViewMyTokens(LuckyDrawModel model) {
+        if (model == null || uid == null || uid.isEmpty()) return;
 
-    private void showConfirmDialog(LuckyDrawModel model, String type) {
-
-
-
-
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirmation, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_my_tokens, null);
 
         AlertDialog dialog = new MaterialAlertDialogBuilder(this)
                 .setView(view)
                 .setCancelable(true)
                 .create();
+
         if (dialog.getWindow() != null) {
             dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         }
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
         dialog.show();
-        dialog.setCanceledOnTouchOutside(false);
-        dialog.setCancelable(false);
 
-        if(type.equals("AD")) {
-            TextView txt = view.findViewById(R.id.txtMessage);
-            TextView txtTitle = view.findViewById(R.id.txtTitle);
-            TextView txt2 = view.findViewById(R.id.Message);
-            txt2.setText("Watch Ad 📺");
-            txt.setText("Are you Watch Ads 📽️");
-            txtTitle.setText("Confirmation");
+        LinearLayout layoutTokensList = view.findViewById(R.id.layoutTokensList);
+        TextView txtContestInfo = view.findViewById(R.id.txtContestInfo);
+        TextView txtTotalJoinedBadge = view.findViewById(R.id.txtTotalJoinedBadge);
+        TextView txtTokensList = view.findViewById(R.id.txtTokensList);
+        ImageView btnClose = view.findViewById(R.id.btnClose);
+        MaterialButton btnGotIt = view.findViewById(R.id.btnGotIt);
+        MaterialButton btnCopyTokens = view.findViewById(R.id.btnCopyTokens);
+
+        if (txtContestInfo != null) {
+            txtContestInfo.setText("Win " + model.getRewardCoins() + " Coins Contest");
         }
+
+        int totalJoined = model.getMyTicketsCount() + (model.isAdJoined() ? 1 : 0);
+        if (txtTotalJoinedBadge != null) {
+            txtTotalJoinedBadge.setText("✓ " + totalJoined + " Ticket" + (totalJoined > 1 ? "s" : "") + " Submitted");
+        }
+
+        if (btnClose != null) btnClose.setOnClickListener(v -> dialog.dismiss());
+        if (btnGotIt != null) btnGotIt.setOnClickListener(v -> dialog.dismiss());
+
+        final List<String> fetchedTokens = new ArrayList<>();
+
+        db.collection("lucky_draw_tickets")
+                .document(model.getId())
+                .collection("tickets")
+                .whereEqualTo("uid", uid)
+                .get()
+                .addOnSuccessListener(snap -> {
+                    if (snap != null && !snap.isEmpty()) {
+                        for (DocumentSnapshot d : snap.getDocuments()) {
+                            String tokenStr = d.getString("token");
+                            if (tokenStr != null && !tokenStr.isEmpty()) {
+                                fetchedTokens.add(tokenStr);
+                            }
+                        }
+
+                        if (layoutTokensList != null && !fetchedTokens.isEmpty()) {
+                            com.app.rewardsplanet.utils.TokenBlockHelper.renderTokenBlocks(layoutTokensList, fetchedTokens);
+                        } else if (txtTokensList != null) {
+                            txtTokensList.setText("No tokens generated yet.");
+                        }
+                    } else {
+                        if (txtTokensList != null) {
+                            txtTokensList.setText("No tokens found for this contest.");
+                        }
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (txtTokensList != null) {
+                        txtTokensList.setText("Error loading tokens.");
+                    }
+                });
+
+        if (btnCopyTokens != null) {
+            btnCopyTokens.setOnClickListener(v -> {
+                if (!fetchedTokens.isEmpty()) {
+                    StringBuilder sbCopy = new StringBuilder();
+                    for (int i = 0; i < fetchedTokens.size(); i++) {
+                        sbCopy.append(fetchedTokens.get(i));
+                        if (i < fetchedTokens.size() - 1) sbCopy.append("\n");
+                    }
+                    android.content.ClipboardManager clipboard = (android.content.ClipboardManager) getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+                    android.content.ClipData clip = android.content.ClipData.newPlainText("My Ticket Tokens", sbCopy.toString());
+                    if (clipboard != null) {
+                        clipboard.setPrimaryClip(clip);
+                        Toast.makeText(this, "Tokens copied to clipboard!", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    Toast.makeText(this, "No tokens to copy", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private int selectedTicketQty = 1;
+
+    /* ================= CONFIRM DIALOG ================= */
+
+    private void showConfirmDialog(LuckyDrawModel model, String type) {
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_confirmation, null);
+
+        AlertDialog dialog = new MaterialAlertDialogBuilder(this)
+                .setView(view)
+                .setCancelable(false)
+                .create();
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        dialog.show();
+
+        TextView txtTitle = view.findViewById(R.id.txtTitle);
+        TextView txtMessage = view.findViewById(R.id.txtMessage);
+        TextView txtSubtitle = view.findViewById(R.id.Message);
+        View layoutQuantity = view.findViewById(R.id.layoutQuantityContainer);
+        View btnMinus = view.findViewById(R.id.btnMinus);
+        View btnPlus = view.findViewById(R.id.btnPlus);
+        View btnMax = view.findViewById(R.id.btnMax);
+        TextView txtQuantity = view.findViewById(R.id.txtQuantity);
+        TextView txtTicketBalance = view.findViewById(R.id.txtTicketBalance);
 
         MaterialButton btnConfirm = view.findViewById(R.id.btnConfirm);
         MaterialButton btnCancel = view.findViewById(R.id.btnCancel);
-        ImageView closebtn=view.findViewById(R.id.btnClose);
-        closebtn.setOnClickListener(v ->{
-            adapter.clearLoading(model.getId());
-            dialog.dismiss();} );
+        ImageView closebtn = view.findViewById(R.id.btnClose);
 
+        final int remainingSlots = Math.max(0, model.getTotalSlots() - model.getFilledSlots());
+        final int maxAllowed = Math.min(userTickets, remainingSlots);
 
-        btnCancel.setOnClickListener(v -> {
-            dialog.dismiss();
-            adapter.clearLoading(model.getId());
-        });
+        selectedTicketQty = 1;
+
+        if ("AD".equals(type)) {
+            if (txtTitle != null) txtTitle.setText("Watch Ad 📺");
+            if (txtMessage != null) txtMessage.setText("Watch Free Ad Entry");
+            if (txtSubtitle != null) txtSubtitle.setText("Watch a short video ad to claim 1 free entry ticket into this draw!");
+            if (layoutQuantity != null) layoutQuantity.setVisibility(View.GONE);
+            btnConfirm.setText("Watch Ad & Join");
+        } else {
+            if (txtTitle != null) txtTitle.setText("Ticket Entry 🎟️");
+            if (txtMessage != null) txtMessage.setText("Join Contest with Tickets");
+            if (txtSubtitle != null) txtSubtitle.setText("Select how many tickets you want to submit");
+            if (layoutQuantity != null) layoutQuantity.setVisibility(View.VISIBLE);
+
+            if (maxAllowed < 1) {
+                selectedTicketQty = 0;
+                if (txtQuantity != null) txtQuantity.setText("0");
+                if (txtTicketBalance != null) {
+                    if (userTickets <= 0) {
+                        txtTicketBalance.setText("⚠️ You don't have any tickets available.");
+                    } else {
+                        txtTicketBalance.setText("⚠️ Contest slots are full.");
+                    }
+                    txtTicketBalance.setTextColor(Color.parseColor("#EF4444"));
+                }
+                btnConfirm.setEnabled(false);
+                btnConfirm.setText("NO TICKETS");
+            } else {
+                selectedTicketQty = 1;
+                if (txtQuantity != null) txtQuantity.setText(String.valueOf(selectedTicketQty));
+                if (txtTicketBalance != null) {
+                    txtTicketBalance.setText("Available: " + userTickets + " Tickets  •  " + remainingSlots + " Slots Left");
+                    txtTicketBalance.setTextColor(Color.parseColor("#64748B"));
+                }
+                btnConfirm.setEnabled(true);
+                btnConfirm.setText("JOIN DRAW · " + selectedTicketQty);
+            }
+
+            if (btnMinus != null) {
+                btnMinus.setOnClickListener(v -> {
+                    if (selectedTicketQty > 1) {
+                        selectedTicketQty--;
+                        if (txtQuantity != null) txtQuantity.setText(String.valueOf(selectedTicketQty));
+                        btnConfirm.setText("JOIN DRAW · " + selectedTicketQty);
+                    }
+                });
+            }
+
+            if (btnPlus != null) {
+                btnPlus.setOnClickListener(v -> {
+                    if (selectedTicketQty < maxAllowed) {
+                        selectedTicketQty++;
+                        if (txtQuantity != null) txtQuantity.setText(String.valueOf(selectedTicketQty));
+                        btnConfirm.setText("JOIN DRAW · " + selectedTicketQty);
+                    } else if (maxAllowed > 0 && selectedTicketQty >= maxAllowed) {
+                        Toast.makeText(this, "Max entry limit reached (" + maxAllowed + ")", Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            if (btnMax != null) {
+                btnMax.setOnClickListener(v -> {
+                    if (maxAllowed > 0) {
+                        selectedTicketQty = maxAllowed;
+                        if (txtQuantity != null) txtQuantity.setText(String.valueOf(selectedTicketQty));
+                        btnConfirm.setText("JOIN DRAW · " + selectedTicketQty);
+                    }
+                });
+            }
+        }
+
+        if (closebtn != null) {
+            closebtn.setOnClickListener(v -> {
+                adapter.clearLoading(model.getId());
+                dialog.dismiss();
+            });
+        }
+
+        if (btnCancel != null) {
+            btnCancel.setOnClickListener(v -> {
+                adapter.clearLoading(model.getId());
+                dialog.dismiss();
+            });
+        }
 
         btnConfirm.setOnClickListener(v -> {
             btnConfirm.setEnabled(false);
@@ -278,7 +446,7 @@ public class activity_lucky_draw extends AppCompatActivity
                 showAdThenJoin(model);
             } else {
                 showLoading();
-                join(model.getId(), type);
+                join(model.getId(), type, selectedTicketQty);
             }
         });
     }
@@ -328,7 +496,7 @@ public class activity_lucky_draw extends AppCompatActivity
 
             rewardedAd.show(this, rewardItem -> {
                 showLoading();
-                join(model.getId(), "AD");
+                join(model.getId(), "AD", 1);
             });
 
         } else {
@@ -340,7 +508,7 @@ public class activity_lucky_draw extends AppCompatActivity
 
     /* ================= API ================= */
 
-    private void join(String drawId, String type) {
+    private void join(String drawId, String type, int count) {
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
@@ -357,6 +525,7 @@ public class activity_lucky_draw extends AppCompatActivity
             Map<String, Object> body = new HashMap<>();
             body.put("drawId", drawId);
             body.put("type", type);
+            body.put("count", count);
 
             api.joinDraw("Bearer " + token, body)
                     .enqueue(new Callback<JoinResponse>() {
@@ -370,7 +539,8 @@ public class activity_lucky_draw extends AppCompatActivity
 
                             if (response.isSuccessful() && response.body() != null) {
 
-                                showSuccessDialog(response.body().message);
+                                JoinResponse res = response.body();
+                                showSuccessDialog(res.message, res.tokens);
 
                                 for (LuckyDrawModel m : list) {
                                     if (m.getId().equals(drawId)) {
@@ -379,9 +549,10 @@ public class activity_lucky_draw extends AppCompatActivity
                                             m.setAdJoined(true);
                                         } else {
                                             m.setMyTicketsCount(
-                                                    m.getMyTicketsCount() + 1
+                                                    m.getMyTicketsCount() + count
                                             );
                                         }
+                                        m.setFilledSlots(m.getFilledSlots() + count);
                                         break;
                                     }
                                 }
@@ -389,7 +560,7 @@ public class activity_lucky_draw extends AppCompatActivity
                                 adapter.notifyDataSetChanged();
 
                                 if ("TICKET".equals(type)) {
-                                    userTickets--;
+                                    userTickets = Math.max(0, userTickets - count);
                                     adapter.updateUserTickets(userTickets);
                                     tickets.setText(String.valueOf(userTickets));
                                 }
@@ -413,23 +584,46 @@ public class activity_lucky_draw extends AppCompatActivity
 
     /* ================= SUCCESS ================= */
 
-    private void showSuccessDialog(String msg) {
+    private void showSuccessDialog(String msg, List<String> tokens) {
 
-        View view = LayoutInflater.from(this).inflate(R.layout.dialog_spin_result, null);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_draw_success, null);
 
         AlertDialog dialog = new AlertDialog.Builder(this)
                 .setView(view)
                 .create();
 
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
         dialog.show();
         dialog.setCanceledOnTouchOutside(true);
         dialog.setCancelable(true);
 
-        TextView txt = view.findViewById(R.id.txtWinAmount);
-        MaterialButton btnOk = view.findViewById(R.id.btnOk);
+        com.app.rewardsplanet.utils.SuccessAnimationHelper.animate(dialog);
 
-        txt.setText(msg);
-        btnOk.setOnClickListener(v -> dialog.dismiss());
+        LinearLayout layoutTokensList = view.findViewById(R.id.layoutTokensList);
+        TextView txtMsg = view.findViewById(R.id.txtSuccessMsg);
+        TextView txtTokensList = view.findViewById(R.id.txtTokensList);
+        View cardTokensContainer = view.findViewById(R.id.cardTokensContainer);
+        MaterialButton btnAwesome = view.findViewById(R.id.btnAwesome);
+
+        if (txtMsg != null) {
+            txtMsg.setText(msg);
+        }
+
+        if (tokens != null && !tokens.isEmpty()) {
+            if (cardTokensContainer != null) cardTokensContainer.setVisibility(View.VISIBLE);
+            if (layoutTokensList != null) {
+                com.app.rewardsplanet.utils.TokenBlockHelper.renderTokenBlocks(layoutTokensList, tokens);
+            } else if (txtTokensList != null) {
+                txtTokensList.setText(String.join("\n", tokens));
+            }
+        } else {
+            if (cardTokensContainer != null) cardTokensContainer.setVisibility(View.GONE);
+        }
+
+        if (btnAwesome != null) {
+            btnAwesome.setOnClickListener(v -> dialog.dismiss());
+        }
     }
 }

@@ -1,73 +1,78 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--
+    card_dailybonus.xml — Professional Daily Bonus Card UI Redesign.
+    Features: Gradient card, glassmorphic gift badge, gold/orange progress fill, high-contrast typography.
+-->
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_daily_bonus"
     android:layout_width="match_parent"
-    android:layout_height="160dp"
+    android:layout_height="wrap_content"
     android:layout_marginStart="12dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="12dp"
-    android:layout_marginBottom="6dp"
-    app:cardCornerRadius="20dp"
-    app:cardElevation="4dp"
+    android:layout_marginBottom="8dp"
+    app:cardCornerRadius="22dp"
+    app:cardElevation="6dp"
     app:cardBackgroundColor="@android:color/transparent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:background="@drawable/bg_daily_bonus"
         android:orientation="vertical"
-        android:paddingStart="18dp"
-        android:paddingTop="12dp"
-        android:paddingEnd="18dp"
-        android:paddingBottom="8dp">
+        android:paddingStart="20dp"
+        android:paddingTop="16dp"
+        android:paddingEnd="20dp"
+        android:paddingBottom="14dp">
 
-        <!-- TITLE + GIFT -->
+        <!-- TITLE + GIFT BADGE -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
             android:orientation="horizontal">
 
-            <!-- TEXT -->
+            <!-- TEXT COLUMN -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:paddingEnd="10dp">
 
                 <TextView
                     android:id="@+id/txtDailyBonusTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Daily Bonus Reward"
-                    android:textColor="@android:color/white"
+                    android:text="🎁 Daily Bonus Reward"
+                    android:textColor="#FFFFFF"
                     android:textSize="19sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    android:letterSpacing="0.01" />
 
                 <TextView
                     android:id="@+id/txtDailyBonusSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="1dp"
+                    android:layout_marginTop="3dp"
                     android:text="Hold for 5 seconds to claim your daily bonus"
-                    android:textColor="#E4DCFF"
+                    android:textColor="#E9D5FF"
                     android:textSize="12sp" />
 
             </LinearLayout>
 
-            <!-- GIFT -->
+            <!-- GIFT BADGE -->
             <FrameLayout
-                android:layout_width="48dp"
-                android:layout_height="44dp"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
                 android:background="@drawable/bg_bonus_icon">
 
                 <ImageView
                     android:id="@+id/imgDailyBonus"
-                    android:layout_width="32dp"
-                    android:layout_height="34dp"
+                    android:layout_width="34dp"
+                    android:layout_height="36dp"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_gift1"
@@ -80,8 +85,9 @@
         <!-- HOLD PROGRESS CONTAINER -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="7dp">
+            android:layout_height="52dp"
+            android:layout_marginTop="14dp"
+            android:layout_marginBottom="4dp">
 
             <!-- PROGRESS BAR BACKGROUND FILL -->
             <ProgressBar
@@ -99,11 +105,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="HOLD TO CLAIM 0%"
-                android:textColor="#4B35B8"
+                android:textColor="#FFFFFF"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                android:letterSpacing="0.02"
                 app:backgroundTint="@android:color/transparent"
-                app:cornerRadius="21dp"
+                app:cornerRadius="24dp"
                 app:elevation="0dp"
                 app:strokeWidth="0dp" />
 
@@ -113,7 +120,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:orientation="horizontal">
 
@@ -121,7 +128,7 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:src="@drawable/ic_info"
-                app:tint="@android:color/white"
+                app:tint="#FFD700"
                 android:contentDescription="Info Icon" />
 
             <TextView
@@ -130,8 +137,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="6dp"
                 android:text="Hold for 5 seconds to claim"
-                android:textColor="#E3DBFF"
-                android:textSize="11sp"
+                android:textColor="#F3E8FF"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
         </LinearLayout>

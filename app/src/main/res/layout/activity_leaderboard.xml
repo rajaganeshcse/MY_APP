@@ -1,60 +1,180 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#ffffff">
+    android:background="#0C0A1E">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#C4C3EF"
-        android:gravity="center"
-        android:minHeight="64dp"
-        android:orientation="horizontal"
-        android:paddingStart="12dp"
-        android:paddingTop="15dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="8dp">
-
-        <ImageView
-            android:id="@+id/backbtn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/back_arrow"
-            android:visibility="gone" />
-        <!-- Header -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_margin="16dp"
-            android:text="Leaderboard"
-            android:padding="3dp"
-            android:textColor="#000000"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-    </LinearLayout>
-
-    <!-- TOP 3 SECTION -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:padding="10dp">
-
-        <!-- 2ND -->
-        <include layout="@layout/item_top1"/>
-
-
-
-    </LinearLayout>
-
-    <!-- LIST -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler"
+    <!-- ============================================================
+         FULL GRADIENT BACKGROUND
+         ============================================================ -->
+    <View
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="10dp"/>
+        android:background="@drawable/bg_scratch_gradient" />
 
-</LinearLayout>
+    <!-- Decorative glow top-left -->
+    <View
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:alpha="0.18"
+        android:background="@drawable/bg_glow_circle"
+        android:translationX="-40dp"
+        android:translationY="-40dp" />
+
+    <!-- ============================================================
+         MAIN CONTENT
+         ============================================================ -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <!-- ============================================================
+             HEADER
+             ============================================================ -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="40dp"
+            android:paddingBottom="12dp">
+
+            <!-- Back button (set gone as requested) -->
+            <ImageView
+                android:id="@+id/backbtn"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:padding="10dp"
+                android:src="@drawable/back_arrow"
+                android:background="@drawable/bg_delete_back"
+                android:contentDescription="Back"
+                app:tint="#FFFFFF"
+                android:visibility="gone" />
+
+            <!-- Title -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🏆 Leaderboard"
+                    android:textColor="#000000"
+                    android:textSize="22sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.01" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Top earners this season"
+                    android:textColor="#9C27B0"
+                    android:layout_marginStart="30dp"
+                    android:textSize="13sp" />
+
+            </LinearLayout>
+
+            <!-- Season chip — violet color text in top-right corner -->
+            <TextView
+                android:id="@+id/seasonChip"
+                android:layout_width="wrap_content"
+                android:layout_height="34dp"
+                android:gravity="center"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:text="Season 1"
+                android:textColor="@color/gold"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:background="@drawable/bg_coin_chip_dark" />
+
+        </LinearLayout>
+
+        <!-- ============================================================
+             SCROLLABLE CONTENT
+             ============================================================ -->
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:fillViewport="true">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:paddingBottom="24dp">
+
+                <!-- ======================================================
+                     PODIUM — TOP 3
+                     ====================================================== -->
+                <include layout="@layout/item_top1" />
+
+                <!-- ======================================================
+                     BANNER AD (in between 1, 2, 3 podium & below items)
+                     ====================================================== -->
+                <FrameLayout
+                    android:id="@+id/bannerAdContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="12dp"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center">
+
+                    <com.google.android.gms.ads.AdView
+                        android:id="@+id/adView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        app:adSize="BANNER"
+                        app:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+
+                </FrameLayout>
+
+                <!-- Divider label -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginTop="2dp"
+                    android:layout_marginBottom="2dp"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
+                    android:paddingTop="2dp"
+                    android:paddingBottom="2dp"
+                    android:text="Rankings"
+                    android:textColor="@color/color_violet"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.12"
+                    android:background="@drawable/bg_scratch_count_chip" />
+
+                <!-- ======================================================
+                     RECYCLER LIST — ranks 4 and below
+                     ====================================================== -->
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:clipToPadding="false" />
+
+            </LinearLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </LinearLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

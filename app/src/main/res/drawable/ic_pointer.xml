@@ -1,12 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
-    android:width="24dp"
-    android:height="24dp"
-    android:viewportWidth="24"
-    android:viewportHeight="24">
+    android:width="52dp"
+    android:height="64dp"
+    android:viewportWidth="52"
+    android:viewportHeight="64">
 
-    <!-- Triangle Pointer -->
+    <!-- Drop shadow layer -->
     <path
-        android:fillColor="#E53935"
-        android:pathData="M12,22 L22,2 L2,2 Z"/>
+        android:fillColor="#33000000"
+        android:pathData="M27,61 L6,10 Q6,5 11,5 L41,5 Q46,5 46,10 Z" />
+
+    <!-- Main pointer body — gold gradient simulation via layering -->
+    <!-- Outer amber body -->
+    <path
+        android:fillColor="#F59E0B"
+        android:pathData="M26,58 L5,9 Q5,4 10,4 L42,4 Q47,4 47,9 Z" />
+
+    <!-- Bright gold center highlight -->
+    <path
+        android:fillColor="#FDE68A"
+        android:pathData="M26,48 L15,12 L37,12 Z" />
+
+    <!-- Deep amber edge shading (left) -->
+    <path
+        android:fillColor="#B45309"
+        android:pathData="M26,58 L5,9 Q5,4 10,4 L17,4 L26,48 Z" />
+
+    <!-- Deep amber edge shading (right) -->
+    <path
+        android:fillColor="#B45309"
+        android:pathData="M26,58 L47,9 Q47,4 42,4 L35,4 L26,48 Z" />
+
+    <!-- Top rounded bar -->
+    <path
+        android:fillColor="#FCD34D"
+        android:pathData="M10,4 Q10,2 26,2 Q42,2 42,4 L42,10 Q42,12 26,12 Q10,12 10,10 Z" />
+
+    <!-- Outline stroke effect -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#92400E"
+        android:strokeWidth="1.5"
+        android:pathData="M26,58 L5,9 Q5,4 10,4 L42,4 Q47,4 47,9 Z" />
+
+    <!-- Tip star/dot at bottom point -->
+    <path
+        android:fillColor="#FFF8DC"
+        android:pathData="M26,56 A2,2 0 1,0 26.01,56 Z" />
+
 </vector>

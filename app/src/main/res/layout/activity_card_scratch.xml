@@ -150,15 +150,9 @@
                 android:layout_marginTop="16dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:background="@drawable/bg_chip_light"
+                android:background="@drawable/bg_delete_input"
                 android:paddingStart="14dp"
                 android:paddingEnd="14dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🎟️"
-                    android:textSize="14sp" />
 
                 <TextView
                     android:id="@+id/txtScratchLabel"

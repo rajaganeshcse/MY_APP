@@ -764,7 +764,7 @@ public class HomeFragment extends Fragment {
                     triggerHaptic(250);
 
                     if (btnClaimBonus != null) {
-                        btnClaimBonus.setText("✓ CLAIMING...");
+                        btnClaimBonus.setText("CLAIMING...");
                         btnClaimBonus.setEnabled(false);
                     }
 
@@ -821,7 +821,7 @@ public class HomeFragment extends Fragment {
         if (btnClaimBonus != null) {
             btnClaimBonus.setEnabled(true);
             btnClaimBonus.setText("HOLD TO CLAIM 0%");
-            btnClaimBonus.setTextColor(Color.parseColor("#0F172A"));
+            btnClaimBonus.setTextColor(Color.parseColor("#FFFFFF"));
         }
 
         if (progressHoldBonus != null) {
@@ -848,8 +848,8 @@ public class HomeFragment extends Fragment {
 
         if (btnClaimBonus != null) {
             btnClaimBonus.setEnabled(false);
-            btnClaimBonus.setText("✓ CLAIMED TODAY");
-            btnClaimBonus.setTextColor(Color.parseColor("#047857"));
+            btnClaimBonus.setText("CLAIMED TODAY");
+            btnClaimBonus.setTextColor(Color.parseColor("#000000"));
         }
 
         if (progressHoldBonus != null) {
@@ -877,7 +877,7 @@ public class HomeFragment extends Fragment {
         if (btnClaimBonus != null) {
             btnClaimBonus.setEnabled(false);
             btnClaimBonus.setText("CHECK FAILED");
-            btnClaimBonus.setTextColor(Color.parseColor("#DC2626"));
+            btnClaimBonus.setTextColor(Color.parseColor("#F87171"));
         }
 
         if (txtBonusInfo != null) {

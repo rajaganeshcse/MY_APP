@@ -1,53 +1,108 @@
-<LinearLayout
-
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    item_row.xml — Leaderboard list item for ranks 4+.
+    Dark gaming theme: deep card bg + gold accent + coin icon score.
+-->
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardRoot"
     android:layout_width="match_parent"
-    android:layout_height="70dp"
-    android:background="@drawable/bg_yellow_outline"
-    android:layout_margin="10dp"
-    android:layout_marginBottom="12dp"
-    android:padding="12dp"
-    android:orientation="horizontal"
-    android:gravity="center_vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:layout_height="72dp"
+    android:layout_marginStart="0dp"
+    android:layout_marginEnd="0dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#1E1B3A">
 
-    <!-- Rank -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/rank"
-        android:text="#4"
-        android:textColor="@color/black"
-        android:textStyle="bold"
-        android:textSize="16sp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:paddingStart="14dp"
+        android:paddingEnd="14dp">
 
-    <!-- Profile -->
-    <ImageView
-        android:id="@+id/image"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/circle_bg"/>
+        <!-- Rank number badge -->
+        <TextView
+            android:id="@+id/rank"
+            android:layout_width="38dp"
+            android:layout_height="38dp"
+            android:gravity="center"
+            android:text="#4"
+            android:textColor="#000000"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:background="@drawable/bg_delete_back" />
 
-    <!-- Name -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/name"
-        android:textColor="@color/black"
-        android:layout_weight="1"
-        android:layout_marginStart="10dp"
-        android:textStyle="bold"
-        android:text="Username"
-        android:maxLines="1"/>
+        <!-- Profile image -->
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bg_profile_circle"
+            android:scaleType="centerCrop"
+            android:contentDescription="Profile" />
 
-    <!-- Score -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/score"
-        android:layout_marginRight="15dp"
-        android:text="🔥 0"
-        android:textColor="#FF5722"
-        android:textStyle="bold"/>
+        <!-- Name + subtitle column -->
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:orientation="vertical">
 
-</LinearLayout>
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textColor="#FFFFFF"
+                android:textStyle="bold"
+                android:textSize="14sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/txtRankLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Leaderboard"
+                android:textColor="#6B7280"
+                android:textSize="11sp" />
+
+        </LinearLayout>
+
+        <!-- Score chip (coins) -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_coin_chip_dark"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/ic_coin"
+                android:contentDescription="Coins"
+                android:layout_marginEnd="4dp" />
+
+            <TextView
+                android:id="@+id/score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textColor="#FFD700"
+                android:textStyle="bold"
+                android:textSize="13sp" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>

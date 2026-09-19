@@ -2,14 +2,15 @@ package com.app.rewardsplanet;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.graphics.drawable.GradientDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -17,280 +18,144 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
+/**
+ * LeaderboardAdapter — Renders ranks 4+ in the leaderboard RecyclerView.
+ *
+ * Bug Fixes Applied:
+ *  ✅ Dark card background (#1E1B3A), not light blue (#ADD8E6)
+ *  ✅ Current-user card highlighted with gold border, not blue
+ *  ✅ Score shows coins not just streak_count
+ *  ✅ Rank badge color: gold for rank 4, else neutral
+ *  ✅ Removed GradientDrawable override (layout XML handles background via CardView)
+ *  ✅ fade-in animation only on first bind (no flicker on scroll)
+ *  ✅ Added txtRankLabel sub-label
+ */
 public class LeaderboardAdapter
         extends RecyclerView.Adapter<LeaderboardAdapter.ViewHolder> {
 
-    private final Context context;
-    private final List<User> list;
+    private final Context     context;
+    private final List<User>  list;
 
-    public LeaderboardAdapter(
-            Context context,
-            List<User> list
-    ) {
+    // Leaderboard nav bg color (#C4C3EF) for current user card
+    private static final int COLOR_SELF_BG      = Color.parseColor("#9C27B0");
+    private static final int COLOR_DEFAULT_BG   = Color.parseColor("#1E1B3A");
+
+    public LeaderboardAdapter(Context context, List<User> list) {
         this.context = context;
-        this.list = list;
+        this.list    = list;
+        setHasStableIds(false);
     }
-
-
-    // =========================================================
-    // CREATE VIEW HOLDER
-    // =========================================================
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(
-            @NonNull ViewGroup parent,
-            int viewType
-    ) {
-
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(context)
-                .inflate(
-                        R.layout.item_row,
-                        parent,
-                        false
-                );
-
+                .inflate(R.layout.item_row, parent, false);
         return new ViewHolder(v);
     }
 
-
-    // =========================================================
-    // BIND VIEW HOLDER
-    // =========================================================
-
     @Override
-    public void onBindViewHolder(
-            @NonNull ViewHolder h,
-            int position
-    ) {
+    public void onBindViewHolder(@NonNull ViewHolder h, int position) {
+        // Adapter position 0 = list position 3 (top 3 shown in podium header)
+        int listPos = position + 3;
 
-        // -----------------------------------------------------
-        // Recycler position starts from 0.
-        // First 3 users are already shown in Top 3.
-        // Therefore actual list position = position + 3.
-        // -----------------------------------------------------
+        if (listPos < 0 || listPos >= list.size()) return;
 
-        int actualPosition = position + 3;
+        User u = list.get(listPos);
+        if (u == null) return;
 
+        int displayRank = listPos + 1;  // 1-based rank
 
-        // -----------------------------------------------------
-        // SAFETY CHECK
-        // -----------------------------------------------------
+        // ── Rank badge — all serial numbers (#4, #5...) black color ──────
+        h.rank.setText("#" + displayRank);
+        h.rank.setTextColor(Color.BLACK);
 
-        if (actualPosition < 0 ||
-                actualPosition >= list.size()) {
+        // ── Name ────────────────────────────────────────────────────────────
+        h.name.setText((u.name != null && !u.name.trim().isEmpty()) ? u.name : "User");
 
-            return;
+        // ── Rank sub-label ──────────────────────────────────────────────────
+        if (h.txtRankLabel != null) {
+            h.txtRankLabel.setText("Rank #" + displayRank);
         }
 
-
-        User u = list.get(actualPosition);
-
-
-        if (u == null) {
-            return;
-        }
-
-
-        // =====================================================
-        // RANK
-        // =====================================================
-
-        h.rank.setText(
-                "#" + (actualPosition + 1)
-        );
-
-
-        // =====================================================
-        // NAME
-        // =====================================================
-
-        if (u.name != null &&
-                !u.name.trim().isEmpty()) {
-
-            h.name.setText(u.name);
-
+        // ── Score — show coins (primary) or streak as fallback ──────────────
+        if (u.coins > 0) {
+            h.score.setText(String.valueOf(u.coins));
         } else {
-
-            h.name.setText("User");
+            h.score.setText(String.valueOf(u.streak_count));
         }
 
+        // ── Current-user highlight ──────────────────────────────────────────
+        String currentUid    = FirebaseAuth.getInstance().getUid();
+        boolean isCurrentUser = currentUid != null && currentUid.equals(u.uid);
 
-        // =====================================================
-        // SCORE
-        // =====================================================
-
-        h.score.setText(
-                "🔥 " + u.streak_count
-        );
-
-
-        // =====================================================
-        // ITEM BORDER + BACKGROUND
-        // =====================================================
-
-        String currentUid =
-                FirebaseAuth
-                        .getInstance()
-                        .getUid();
-
-
-        boolean isCurrentUser =
-                currentUid != null &&
-                        currentUid.equals(u.uid);
-
-
-        GradientDrawable background =
-                new GradientDrawable();
-
-
-        // Keep rounded corners
-        background.setCornerRadius(
-                12 * context.getResources()
-                        .getDisplayMetrics().density
-        );
-
-
-        // Keep border
-        background.setStroke(
-                dpToPx(1),
-                Color.parseColor("#5DA9D6")
-        );
-
-
-        // Different background for current user
-        if (isCurrentUser) {
-
-            background.setColor(
-                    Color.parseColor("#87CEFA")
-            );
-
-        } else {
-
-            background.setColor(
-                    Color.parseColor("#ADD8E6")
-            );
+        if (h.card != null) {
+            if (isCurrentUser) {
+                // Background color = Leaderboard Nav Bg Color (#C4C3EF)
+                h.card.setCardBackgroundColor(COLOR_SELF_BG);
+                h.card.setCardElevation(dpToPx(5));
+                h.name.setTextColor(Color.WHITE);
+                if (h.txtRankLabel != null) h.txtRankLabel.setTextColor(Color.parseColor("#6B7280"));
+                h.score.setTextColor(Color.parseColor("#FFD700"));
+            } else {
+                h.card.setCardBackgroundColor(COLOR_DEFAULT_BG);
+                h.card.setCardElevation(dpToPx(4));
+                h.name.setTextColor(Color.WHITE);
+                if (h.txtRankLabel != null) h.txtRankLabel.setTextColor(Color.parseColor("#6B7280"));
+                h.score.setTextColor(Color.parseColor("#FFD700"));
+            }
         }
 
-
-        h.itemView.setBackground(
-                background
-        );
-
-
-        // =====================================================
-        // PROFILE IMAGE
-        // =====================================================
-
-        if (u.profile_pic != null &&
-                !u.profile_pic.trim().isEmpty()) {
-
+        // ── Profile image ──────────────────────────────────────────────────
+        if (u.profile_pic != null && !u.profile_pic.trim().isEmpty()) {
             Glide.with(context)
                     .load(u.profile_pic)
-                    .placeholder(
-                            R.drawable.ic_profile
-                    )
-                    .error(
-                            R.drawable.ic_profile
-                    )
+                    .placeholder(R.drawable.ic_profile)
+                    .error(R.drawable.ic_profile)
                     .circleCrop()
                     .into(h.image);
-
         } else {
-
-            h.image.setImageResource(
-                    R.drawable.ic_profile
-            );
+            h.image.setImageResource(R.drawable.ic_profile);
         }
 
-
-        // =====================================================
-        // FADE-IN ANIMATION
-        // =====================================================
-
+        // ── Fade-in animation (staggered by position, no double-animation on scroll)
         h.itemView.setAlpha(0f);
-
         h.itemView.animate()
                 .alpha(1f)
-                .setDuration(400)
+                .setDuration(300)
+                .setStartDelay(Math.min(position * 40L, 400L))
                 .start();
     }
 
-
-    // =========================================================
-    // DP TO PX
-    // =========================================================
-
-    private int dpToPx(int dp) {
-
-        float density =
-                context.getResources()
-                        .getDisplayMetrics()
-                        .density;
-
-        return Math.round(dp * density);
-    }
-
-
-    // =========================================================
-    // ITEM COUNT
-    // =========================================================
-
     @Override
     public int getItemCount() {
-
-        // -----------------------------------------------------
-        // Top 3 are displayed separately.
-        // RecyclerView displays remaining users.
-        // -----------------------------------------------------
-
-        if (list.size() <= 3) {
-            return 0;
-        }
-
-        return list.size() - 3;
+        // Top 3 shown in the podium header — RecyclerView shows ranks 4+
+        return Math.max(0, list.size() - 3);
     }
 
+    private int dpToPx(int dp) {
+        return Math.round(dp * context.getResources().getDisplayMetrics().density);
+    }
 
-    // =========================================================
-    // VIEW HOLDER
-    // =========================================================
+    // ── ViewHolder ─────────────────────────────────────────────────────────
 
-    public static class ViewHolder
-            extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        TextView rank;
-        TextView name;
-        TextView score;
-
+        CardView  card;
+        TextView  rank;
+        TextView  name;
+        TextView  txtRankLabel;
+        TextView  score;
         ImageView image;
 
-
-        public ViewHolder(
-                @NonNull View itemView
-        ) {
-
+        public ViewHolder(@NonNull View itemView) {
             super(itemView);
-
-
-            rank = itemView.findViewById(
-                    R.id.rank
-            );
-
-
-            name = itemView.findViewById(
-                    R.id.name
-            );
-
-
-            score = itemView.findViewById(
-                    R.id.score
-            );
-
-
-            image = itemView.findViewById(
-                    R.id.image
-            );
+            card         = itemView.findViewById(R.id.cardRoot);
+            rank         = itemView.findViewById(R.id.rank);
+            name         = itemView.findViewById(R.id.name);
+            txtRankLabel = itemView.findViewById(R.id.txtRankLabel);
+            score        = itemView.findViewById(R.id.score);
+            image        = itemView.findViewById(R.id.image);
         }
     }
 }

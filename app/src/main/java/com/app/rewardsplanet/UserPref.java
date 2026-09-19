@@ -51,6 +51,10 @@ public class UserPref {
     private static final String KEY_SCRATCH_DATE  = "scratch_date";
     private static final String KEY_SCRATCH_COUNT = "scratch_count";
 
+    /* ================= DAILY STREAK ================= */
+    private static final String KEY_STREAK_DATE   = "streak_date";
+    private static final String KEY_STREAK_COUNT  = "streak_count";
+
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
 
@@ -280,6 +284,24 @@ public class UserPref {
 
     public void saveLastScratchReward(int reward) {
         editor.putInt(KEY_SCRATCH_LAST_REWARD, reward).apply();
+    }
+
+    /* ==================================================
+       DAILY STREAK
+       ================================================== */
+
+    public int getStreakCount() {
+        return pref.getInt(KEY_STREAK_COUNT, 0);
+    }
+
+    public String getStreakClaimedDate() {
+        return pref.getString(KEY_STREAK_DATE, "");
+    }
+
+    public void saveStreak(int streakCount, String claimedDate) {
+        editor.putInt(KEY_STREAK_COUNT, streakCount);
+        editor.putString(KEY_STREAK_DATE, claimedDate);
+        editor.apply();
     }
 
     /* ==================================================

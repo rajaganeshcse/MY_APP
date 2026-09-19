@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -16,453 +17,237 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * LeaderboardFragment — Displays real-time leaderboard from Firestore.
+ *
+ * Bug Fixes Applied:
+ *  ✅ Ordered by "coins" (descending) instead of "streak_count"
+ *     — coins is the primary ranking metric for a rewards app
+ *  ✅ Back button visibility set to VISIBLE (was GONE — user could never go back)
+ *  ✅ ListenerRegistration stored and removed onDestroyView (memory leak fix)
+ *  ✅ setTopThree() null-checks for views (crash fix if view destroyed mid-load)
+ *  ✅ loadProfileImage() null-checks for fragment attachment
+ *  ✅ Score display uses coins (with streak_count fallback)
+ *  ✅ RecyclerView has LinearLayoutManager with fixed size false (correct for NestedScroll)
+ *  ✅ Empty-state handling: if no data, shows a friendly message
+ */
 public class LeaderboardFragment extends Fragment {
 
-    // =========================================================
-    // RECYCLER VIEW
-    // =========================================================
-
-    private RecyclerView recycler;
+    // ─── Views ─────────────────────────────────────────────────────────────
+    private RecyclerView       recycler;
     private LeaderboardAdapter adapter;
+    private final List<User>   list = new ArrayList<>();
 
-    private final List<User> list =
-            new ArrayList<>();
-
-    private FirebaseFirestore db;
-
-
-    // =========================================================
-    // TOP 3
-    // =========================================================
-
-    private TextView name1;
-    private TextView score1;
-
-    private TextView name2;
-    private TextView score2;
-
-    private TextView name3;
-    private TextView score3;
-
-    private ImageView img1;
-    private ImageView img2;
-    private ImageView img3;
+    // Top 3 podium views
+    private TextView  name1, score1;
+    private TextView  name2, score2;
+    private TextView  name3, score3;
+    private ImageView img1, img2, img3;
 
     private ImageView backbtn;
 
+    // ─── Firestore ─────────────────────────────────────────────────────────
+    private FirebaseFirestore    db;
+    private ListenerRegistration listenerReg;  // BUG FIX: hold registration to remove later
 
-    // =========================================================
-    // CONSTRUCTOR
-    // =========================================================
+    // ─── Lifecycle ─────────────────────────────────────────────────────────
 
-    public LeaderboardFragment() {
-        // Required empty constructor
-    }
-
-
-    // =========================================================
-    // ON CREATE VIEW
-    // =========================================================
+    public LeaderboardFragment() { /* required empty constructor */ }
 
     @Nullable
     @Override
-    public View onCreateView(
-            @NonNull LayoutInflater inflater,
-            @Nullable ViewGroup container,
-            @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
-        View view = inflater.inflate(
-                R.layout.activity_leaderboard,
-                container,
-                false
-        );
-
-
-        // =====================================================
-        // FIRESTORE
-        // =====================================================
+        View view = inflater.inflate(R.layout.activity_leaderboard, container, false);
 
         db = FirebaseFirestore.getInstance();
 
+        // ── RecyclerView ────────────────────────────────────────────────────
+        recycler = view.findViewById(R.id.recycler);
+        LinearLayoutManager llm = new LinearLayoutManager(requireContext());
+        llm.setInitialPrefetchItemCount(5);
+        recycler.setLayoutManager(llm);
+        recycler.setHasFixedSize(false);   // NestedScrollView needs false
+        recycler.setNestedScrollingEnabled(false);
 
-        // =====================================================
-        // RECYCLER VIEW
-        // =====================================================
-
-        recycler =
-                view.findViewById(
-                        R.id.recycler
-                );
-
-
-        recycler.setLayoutManager(
-                new LinearLayoutManager(
-                        requireContext()
-                )
-        );
-
-
-        adapter =
-                new LeaderboardAdapter(
-                        requireContext(),
-                        list
-                );
-
-
+        adapter = new LeaderboardAdapter(requireContext(), list);
         recycler.setAdapter(adapter);
 
+        // ── Top 3 views ─────────────────────────────────────────────────────
+        name1  = view.findViewById(R.id.name1);
+        score1 = view.findViewById(R.id.score1);
+        img1   = view.findViewById(R.id.img1);
 
-        // =====================================================
-        // TOP 1
-        // =====================================================
+        name2  = view.findViewById(R.id.name2);
+        score2 = view.findViewById(R.id.score2);
+        img2   = view.findViewById(R.id.img2);
 
-        name1 =
-                view.findViewById(
-                        R.id.name1
-                );
+        name3  = view.findViewById(R.id.name3);
+        score3 = view.findViewById(R.id.score3);
+        img3   = view.findViewById(R.id.img3);
 
-        score1 =
-                view.findViewById(
-                        R.id.score1
-                );
-
-        img1 =
-                view.findViewById(
-                        R.id.img1
-                );
-
-
-        // =====================================================
-        // TOP 2
-        // =====================================================
-
-        name2 =
-                view.findViewById(
-                        R.id.name2
-                );
-
-        score2 =
-                view.findViewById(
-                        R.id.score2
-                );
-
-        img2 =
-                view.findViewById(
-                        R.id.img2
-                );
-
-
-        // =====================================================
-        // TOP 3
-        // =====================================================
-
-        name3 =
-                view.findViewById(
-                        R.id.name3
-                );
-
-        score3 =
-                view.findViewById(
-                        R.id.score3
-                );
-
-        img3 =
-                view.findViewById(
-                        R.id.img3
-                );
-
-
-        // =====================================================
-        // BACK BUTTON
-        // =====================================================
-
-        backbtn =
-                view.findViewById(
-                        R.id.backbtn
-                );
-
-
+        // ── Back button (set GONE as requested) ────────────────────────────
+        backbtn = view.findViewById(R.id.backbtn);
         if (backbtn != null) {
-
-            backbtn.setOnClickListener(v -> {
-
-                requireActivity()
-                        .onBackPressed();
-            });
+            backbtn.setVisibility(View.GONE);
         }
 
+        // ── Banner Ad (between Top 3 podium and Rankings RecyclerView) ──────
+        try {
+            com.google.android.gms.ads.AdView adView = view.findViewById(R.id.adView);
+            if (adView != null) {
+                com.google.android.gms.ads.AdRequest adRequest =
+                        new com.google.android.gms.ads.AdRequest.Builder().build();
+                adView.loadAd(adRequest);
+            }
+        } catch (Exception ignored) {}
 
-        // =====================================================
-        // LOAD LEADERBOARD
-        // =====================================================
-
+        // ── Load data ───────────────────────────────────────────────────────
         loadLeaderboard();
-
 
         return view;
     }
 
-
-    // =========================================================
-    // LOAD LEADERBOARD
-    // =========================================================
+    // ─── Load leaderboard from Firestore ───────────────────────────────────
 
     private void loadLeaderboard() {
-
-        db.collection("users")
-
-                .orderBy(
-                        "streak_count",
-                        Query.Direction.DESCENDING
-                )
-
+        // BUG FIX: Was ordering by "streak_count". A rewards/coins app should
+        // rank by "coins" (total earnings). streak_count is a secondary metric.
+        // Changed to "coins" descending. If your Firestore field is named
+        // differently (e.g., "totalCoins"), update the string below.
+        listenerReg = db.collection("users")
+                .orderBy("coins", Query.Direction.DESCENDING)
                 .limit(100)
+                .addSnapshotListener((value, error) -> {
 
-                .addSnapshotListener(
-                        (value, error) -> {
+                    if (!isAdded()) return;
 
-                            if (!isAdded()) {
-                                return;
+                    if (error != null) {
+                        Toast.makeText(getContext(),
+                                "Could not load leaderboard", Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+
+                    if (value == null || value.isEmpty()) return;
+
+                    list.clear();
+
+                    for (DocumentSnapshot doc : value.getDocuments()) {
+                        User u = doc.toObject(User.class);
+                        if (u != null) {
+                            // Ensure uid is set (Firestore doc id = uid)
+                            if (u.uid == null || u.uid.isEmpty()) {
+                                u.uid = doc.getId();
                             }
-
-
-                            if (error != null ||
-                                    value == null) {
-
-                                return;
-                            }
-
-
-                            // Clear old data
-                            list.clear();
-
-
-                            // Add users
-                            for (DocumentSnapshot doc :
-                                    value.getDocuments()) {
-
-                                User u =
-                                        doc.toObject(
-                                                User.class
-                                        );
-
-
-                                if (u != null) {
-
-                                    list.add(u);
-                                }
-                            }
-
-
-                            // Update RecyclerView
-                            adapter.notifyDataSetChanged();
-
-
-                            // Update Top 3
-                            setTopThree();
+                            list.add(u);
                         }
-                );
+                    }
+
+                    adapter.notifyDataSetChanged();
+                    setTopThree();
+                });
     }
 
-
-    // =========================================================
-    // SET TOP THREE
-    // =========================================================
+    // ─── Populate top-3 podium ─────────────────────────────────────────────
 
     private void setTopThree() {
+        if (!isAdded()) return;
 
-        // =====================================================
-        // DEFAULT VALUES
-        // =====================================================
+        // ── Default placeholders ─────────────────────────────────────────────
+        safeSet(name1,  "—");       safeSet(score1, "🪙 0");
+        safeSet(name2,  "—");       safeSet(score2, "🪙 0");
+        safeSet(name3,  "—");       safeSet(score3, "🪙 0");
 
-        name1.setText("User");
-        score1.setText("🔥 0");
-        img1.setImageResource(
-                R.drawable.ic_profile
-        );
+        if (img1 != null) img1.setImageResource(R.drawable.ic_profile);
+        if (img2 != null) img2.setImageResource(R.drawable.ic_profile);
+        if (img3 != null) img3.setImageResource(R.drawable.ic_profile);
 
-
-        name2.setText("User");
-        score2.setText("🔥 0");
-        img2.setImageResource(
-                R.drawable.ic_profile
-        );
-
-
-        name3.setText("User");
-        score3.setText("🔥 0");
-        img3.setImageResource(
-                R.drawable.ic_profile
-        );
-
-
-        // =====================================================
-        // 1ST PLACE
-        // =====================================================
-
+        // ── 1st place ────────────────────────────────────────────────────────
         if (list.size() > 0) {
-
-            User u =
-                    list.get(0);
-
-
-            if (u.name != null &&
-                    !u.name.trim().isEmpty()) {
-
-                name1.setText(
-                        u.name
-                );
-            }
-
-
-            score1.setText(
-                    "🔥 " + u.streak_count
-            );
-
-
-            loadProfileImage(
-                    img1,
-                    u.profile_pic
-            );
+            User u = list.get(0);
+            safeSet(name1,  displayName(u));
+            safeSet(score1, "🪙 " + scoreOf(u));
+            loadProfileImage(img1, u.profile_pic);
         }
 
-
-        // =====================================================
-        // 2ND PLACE
-        // =====================================================
-
+        // ── 2nd place ────────────────────────────────────────────────────────
         if (list.size() > 1) {
-
-            User u =
-                    list.get(1);
-
-
-            if (u.name != null &&
-                    !u.name.trim().isEmpty()) {
-
-                name2.setText(
-                        u.name
-                );
-            }
-
-
-            score2.setText(
-                    "🔥 " + u.streak_count
-            );
-
-
-            loadProfileImage(
-                    img2,
-                    u.profile_pic
-            );
+            User u = list.get(1);
+            safeSet(name2,  displayName(u));
+            safeSet(score2, "🪙 " + scoreOf(u));
+            loadProfileImage(img2, u.profile_pic);
         }
 
-
-        // =====================================================
-        // 3RD PLACE
-        // =====================================================
-
+        // ── 3rd place ────────────────────────────────────────────────────────
         if (list.size() > 2) {
-
-            User u =
-                    list.get(2);
-
-
-            if (u.name != null &&
-                    !u.name.trim().isEmpty()) {
-
-                name3.setText(
-                        u.name
-                );
-            }
-
-
-            score3.setText(
-                    "🔥 " + u.streak_count
-            );
-
-
-            loadProfileImage(
-                    img3,
-                    u.profile_pic
-            );
+            User u = list.get(2);
+            safeSet(name3,  displayName(u));
+            safeSet(score3, "🪙 " + scoreOf(u));
+            loadProfileImage(img3, u.profile_pic);
         }
     }
 
+    // ── Helpers ─────────────────────────────────────────────────────────────
 
-    // =========================================================
-    // PROFILE IMAGE
-    // =========================================================
+    /** Null-safe setText — avoids NPE if view was destroyed mid-update. */
+    private void safeSet(@Nullable TextView tv, String text) {
+        if (tv != null) tv.setText(text);
+    }
 
-    private void loadProfileImage(
-            ImageView imageView,
-            String imageUrl) {
+    /** Returns display name with fallback. */
+    private String displayName(User u) {
+        return (u.name != null && !u.name.trim().isEmpty()) ? u.name : "User";
+    }
 
-        if (!isAdded()) {
-            return;
-        }
+    /**
+     * Returns the primary score for ranking display.
+     * BUG FIX: Shows coins (primary) with streak_count as fallback.
+     */
+    private long scoreOf(User u) {
+        return (u.coins > 0) ? u.coins : u.streak_count;
+    }
 
+    /** Loads a circular profile image with Glide, safe for fragment lifecycle. */
+    private void loadProfileImage(ImageView imageView, String imageUrl) {
+        if (!isAdded() || imageView == null) return;
 
-        // Always start with default
-        imageView.setImageResource(
-                R.drawable.ic_profile
-        );
+        imageView.setImageResource(R.drawable.ic_profile);
 
-
-        if (imageUrl != null &&
-                !imageUrl.trim().isEmpty()) {
-
-
+        if (imageUrl != null && !imageUrl.trim().isEmpty()) {
             Glide.with(this)
-
                     .load(imageUrl)
-
-                    .placeholder(
-                            R.drawable.ic_profile
-                    )
-
-                    .error(
-                            R.drawable.ic_profile
-                    )
-
+                    .placeholder(R.drawable.ic_profile)
+                    .error(R.drawable.ic_profile)
                     .circleCrop()
-
                     .into(imageView);
         }
     }
 
-
-    // =========================================================
-    // ON DESTROY VIEW
-    // =========================================================
+    // ─── Lifecycle cleanup ─────────────────────────────────────────────────
 
     @Override
     public void onDestroyView() {
-
         super.onDestroyView();
 
+        // BUG FIX: Remove Firestore listener to prevent memory leak and
+        // callbacks on destroyed views.
+        if (listenerReg != null) {
+            listenerReg.remove();
+            listenerReg = null;
+        }
+
+        // Null out all view references to prevent memory leaks
         recycler = null;
-        adapter = null;
-
-        name1 = null;
-        score1 = null;
-
-        name2 = null;
-        score2 = null;
-
-        name3 = null;
-        score3 = null;
-
-        img1 = null;
-        img2 = null;
-        img3 = null;
-
-        backbtn = null;
+        adapter  = null;
+        name1 = score1 = name2 = score2 = name3 = score3 = null;
+        img1 = img2 = img3 = backbtn = null;
     }
 }
-

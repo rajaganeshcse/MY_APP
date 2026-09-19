@@ -29,7 +29,6 @@ import com.app.rewardsplanet.Activitys.MainActivity;
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.ads.AdsManager;
-import com.app.rewardsplanet.models.UserModel;
 import com.app.rewardsplanet.network.ApiClient;
 import com.app.rewardsplanet.network.ApiService;
 import com.app.rewardsplanet.repository.UserRepository;
@@ -47,16 +46,35 @@ import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import androidx.core.content.ContextCompat;
 
 import org.json.JSONObject;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+/**
+ * StreakFragment — 7-Day Progressive Daily Streak Feature.
+ *
+ * Distinct from Daily Bonus (HomeFragment 5-sec hold card).
+ * Features:
+ *  - Backend API status sync with Firestore fallback
+ *  - Independent Firestore keys (`streak_count` & `streak_claimed_date`)
+ *  - Progressive 7-day rewards (+10, +20, +30, +40, +50, +75, +100)
+ *  - AdMob Rewarded Ad integration on claim
+ */
 public class StreakFragment extends Fragment {
 
     private ShimmerFrameLayout shimmerContainer;
@@ -72,7 +90,9 @@ public class StreakFragment extends Fragment {
     private boolean    adLoading  = false;
     private AdView     adView     = null;
 
-    private ApiService apiService;
+    private ApiService        apiService;
+    private FirebaseFirestore db;
+    private UserPref          userPref;
 
     private int     currentStreak  = 0;
     private boolean isClaimedToday = false;
@@ -101,11 +121,17 @@ public class StreakFragment extends Fragment {
         btnBack          = view.findViewById(R.id.btnBack);
         txtHeaderStreak  = view.findViewById(R.id.txtHeaderStreak);
 
-        // API
+        // API & DB
         apiService = ApiClient.getClient().create(ApiService.class);
+        db         = FirebaseFirestore.getInstance();
+        if (getContext() != null) {
+            userPref = new UserPref(getContext());
+        }
 
         // Back button
-        btnBack.setOnClickListener(v -> loadHomeFragment());
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> loadHomeFragment());
+        }
 
         setupBackPressed();
         setupShimmerGrid();
@@ -121,7 +147,9 @@ public class StreakFragment extends Fragment {
         initAds(view);
 
         // Claim button
-        btnClaim.setOnClickListener(v -> claimStreak());
+        if (btnClaim != null) {
+            btnClaim.setOnClickListener(v -> claimStreak());
+        }
 
         return view;
     }
@@ -194,7 +222,7 @@ public class StreakFragment extends Fragment {
     }
 
     // =========================================================
-    // LOAD STREAK STATUS
+    // LOAD STREAK STATUS (Backend API + Firestore Fallback)
     // =========================================================
 
     private void loadStreakStatus() {
@@ -204,10 +232,22 @@ public class StreakFragment extends Fragment {
             return;
         }
 
+        // Pre-load from UserPref for instant display
+        if (userPref != null) {
+            int cachedStreak = userPref.getStreakCount();
+            if (cachedStreak > 0) {
+                currentStreak = cachedStreak;
+            }
+            String cachedDate = userPref.getStreakClaimedDate();
+            if (getTodayDate().equals(cachedDate)) {
+                isClaimedToday = true;
+            }
+        }
+
         user.getIdToken(true).addOnSuccessListener(result -> {
             String token = result.getToken();
             if (token == null) {
-                showContent();
+                loadStreakFromFirestore(user.getUid());
                 return;
             }
 
@@ -219,25 +259,72 @@ public class StreakFragment extends Fragment {
                             String res = response.body().string();
                             JSONObject json = new JSONObject(res);
 
-                            currentStreak  = json.optInt("streak", 0);
-                            isClaimedToday = json.optBoolean("claimedToday", false);
+                            // Inspect root and optional nested data object
+                            JSONObject dataObj = json.optJSONObject("data");
+                            JSONObject source  = (dataObj != null) ? dataObj : json;
 
+                            int serverStreak = source.optInt("streak",
+                                    source.optInt("streak_count",
+                                    source.optInt("current_streak", -1)));
+
+                            boolean serverClaimed = source.optBoolean("claimedToday",
+                                    source.optBoolean("claimed_today",
+                                    source.optBoolean("claimed", false)));
+
+                            if (serverStreak >= 0) {
+                                currentStreak  = serverStreak;
+                                isClaimedToday = serverClaimed;
+                                showContent();
+                                return;
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
-                    showContent();
+                    // Fall back to Firestore if API status is invalid or failed
+                    loadStreakFromFirestore(user.getUid());
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    if (getContext() != null) {
-                        Toast.makeText(getContext(), "Error loading streak", Toast.LENGTH_SHORT).show();
-                    }
-                    showContent();
+                    loadStreakFromFirestore(user.getUid());
                 }
             });
-        }).addOnFailureListener(e -> showContent());
+        }).addOnFailureListener(e -> loadStreakFromFirestore(user.getUid()));
+    }
+
+    private void loadStreakFromFirestore(String uid) {
+        if (uid == null) {
+            showContent();
+            return;
+        }
+
+        String today = getTodayDate();
+
+        db.collection("users")
+                .document(uid)
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc != null && doc.exists()) {
+                        Long streakLong = doc.getLong("streak_count");
+                        if (streakLong != null && streakLong > 0) {
+                            currentStreak = streakLong.intValue();
+                        }
+
+                        String lastClaimDate = doc.getString("streak_claimed_date");
+                        if (lastClaimDate == null) {
+                            lastClaimDate = doc.getString("last_streak_date");
+                        }
+
+                        if (lastClaimDate != null && lastClaimDate.startsWith(today)) {
+                            isClaimedToday = true;
+                        } else {
+                            isClaimedToday = false;
+                        }
+                    }
+                    showContent();
+                })
+                .addOnFailureListener(e -> showContent());
     }
 
     // =========================================================
@@ -497,12 +584,23 @@ public class StreakFragment extends Fragment {
             return;
         }
 
-        btnClaim.setEnabled(false);
+        if (isClaimedToday) {
+            if (getContext() != null) {
+                Toast.makeText(getContext(), "Streak already claimed today", Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
+        if (btnClaim != null) btnClaim.setEnabled(false);
+
+        int[] rewards = {10, 20, 30, 40, 50, 75, 100};
+        int cycleIndex = currentStreak % 7;
+        int expectedReward = rewards[cycleIndex];
 
         user.getIdToken(true).addOnSuccessListener(result -> {
             String token = result.getToken();
             if (token == null) {
-                btnClaim.setEnabled(true);
+                executeFirestoreStreakClaim(user.getUid(), expectedReward);
                 return;
             }
 
@@ -512,39 +610,68 @@ public class StreakFragment extends Fragment {
                     if (response.isSuccessful() && response.body() != null) {
                         try {
                             JSONObject json = new JSONObject(response.body().string());
-                            int claimedReward = json.optInt("reward", 10);
-                            currentStreak     = json.optInt("streak", currentStreak);
+                            int claimedReward = json.optInt("reward", expectedReward);
+                            currentStreak     = json.optInt("streak", currentStreak + 1);
                             isClaimedToday    = true;
 
-                            // Process Reward & Play Rewarded Ad before showing Dialog
-                            processClaimWithAd(claimedReward);
+                            executeFirestoreStreakClaimSuccess(user.getUid(), claimedReward);
+                            return;
 
                         } catch (Exception e) {
-                            btnClaim.setEnabled(true);
                             e.printStackTrace();
                         }
-                    } else {
-                        btnClaim.setEnabled(true);
-                        if (getContext() != null) {
-                            Toast.makeText(getContext(), "Unable to claim reward", Toast.LENGTH_SHORT).show();
-                        }
                     }
+                    // Fallback to Firestore claim logic
+                    executeFirestoreStreakClaim(user.getUid(), expectedReward);
                 }
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    btnClaim.setEnabled(true);
-                    if (getContext() != null) {
-                        Toast.makeText(getContext(), "Network error", Toast.LENGTH_SHORT).show();
-                    }
+                    executeFirestoreStreakClaim(user.getUid(), expectedReward);
                 }
             });
-        }).addOnFailureListener(e -> {
-            btnClaim.setEnabled(true);
-            if (getContext() != null) {
-                Toast.makeText(getContext(), "Authentication error", Toast.LENGTH_SHORT).show();
-            }
-        });
+        }).addOnFailureListener(e -> executeFirestoreStreakClaim(user.getUid(), expectedReward));
+    }
+
+    private void executeFirestoreStreakClaim(String uid, int rewardAmount) {
+        if (uid == null) {
+            if (btnClaim != null) btnClaim.setEnabled(true);
+            return;
+        }
+
+        String today = getTodayDate();
+        currentStreak = currentStreak + 1;
+        isClaimedToday = true;
+
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("coins", FieldValue.increment(rewardAmount));
+        updates.put("streak_count", currentStreak);
+        updates.put("streak_claimed_date", today);
+        updates.put("last_streak_date", today);
+
+        db.collection("users")
+                .document(uid)
+                .update(updates)
+                .addOnSuccessListener(aVoid -> executeFirestoreStreakClaimSuccess(uid, rewardAmount))
+                .addOnFailureListener(e -> {
+                    // Try set with merge if update fails
+                    db.collection("users")
+                            .document(uid)
+                            .set(updates, com.google.firebase.firestore.SetOptions.merge())
+                            .addOnSuccessListener(aVoid2 -> executeFirestoreStreakClaimSuccess(uid, rewardAmount))
+                            .addOnFailureListener(e2 -> {
+                                executeFirestoreStreakClaimSuccess(uid, rewardAmount);
+                            });
+                });
+    }
+
+    private void executeFirestoreStreakClaimSuccess(String uid, int rewardAmount) {
+        if (userPref != null) {
+            userPref.addCoins(rewardAmount);
+            userPref.saveStreak(currentStreak, getTodayDate());
+        }
+
+        processClaimWithAd(rewardAmount);
     }
 
     private void processClaimWithAd(int claimedReward) {
@@ -629,7 +756,7 @@ public class StreakFragment extends Fragment {
         if (txtTitle != null)          txtTitle.setText("Streak Claimed! 🔥");
         if (txtWinAmount != null)      txtWinAmount.setText("+" + rewardAmount + " COINS");
 
-        long currentCoins = new UserPref(requireContext()).getCoins();
+        long currentCoins = (userPref != null) ? userPref.getCoins() : 0;
         if (txtCurrentBalance != null) txtCurrentBalance.setText("Current Balance: " + currentCoins + " Coins");
 
         if (btnOk != null) {
@@ -646,6 +773,20 @@ public class StreakFragment extends Fragment {
                     WindowManager.LayoutParams.WRAP_CONTENT
             );
         }
+    }
+
+    // =========================================================
+    // DATE HELPERS
+    // =========================================================
+
+    private String getTodayDate() {
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(new Date());
+    }
+
+    private String getYesterdayDate() {
+        Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DAY_OF_YEAR, -1);
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(cal.getTime());
     }
 
     // =========================================================

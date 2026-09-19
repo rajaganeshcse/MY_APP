@@ -14,12 +14,20 @@ public class LuckyDrawModel {
     private int myTicketsCount;
 
     private String id;
+    private String drawId;
+    private Long drawNumber;
     private String status;
     private Long rewardCoins;
+    private Long ticketCost;
     private Long filledSlots;
     private Long totalSlots;
+    private Long participationLimit;
+    private Long currentParticipation;
 
     private String winnerUid;
+    private String winningToken;
+    private String winnerToken;
+    private String winnerName;
     private Timestamp createdAt;
     private Timestamp completedAt;
 
@@ -27,21 +35,68 @@ public class LuckyDrawModel {
 
     public LuckyDrawModel() {}
 
-    public String getId() { return id; }
+    public String getWinningToken() {
+        if (winningToken != null && !winningToken.isEmpty()) return winningToken;
+        if (winnerToken != null && !winnerToken.isEmpty()) return winnerToken;
+        return "";
+    }
+
+    public void setWinningToken(String winningToken) {
+        this.winningToken = winningToken;
+    }
+
+    public String getWinnerName() {
+        return winnerName == null ? "" : winnerName;
+    }
+
+    public void setWinnerName(String winnerName) {
+        this.winnerName = winnerName;
+    }
+
+    public String getId() {
+        if (drawId != null && !drawId.isEmpty()) return drawId;
+        return id != null ? id : "";
+    }
     public void setId(String id) { this.id = id; }
+
+    public String getDrawId() {
+        return drawId != null ? drawId : (id != null ? id : "");
+    }
+    public void setDrawId(String drawId) { this.drawId = drawId; }
+
+    public Long getDrawNumber() { return drawNumber; }
+    public void setDrawNumber(Long drawNumber) { this.drawNumber = drawNumber; }
 
     public String getStatus() { return status == null ? "" : status; }
 
     public int getRewardCoins() {
         return rewardCoins == null ? 0 : rewardCoins.intValue();
     }
+    public void setRewardCoins(Long rewardCoins) { this.rewardCoins = rewardCoins; }
+
+    public int getTicketCost() {
+        return ticketCost == null ? 10 : ticketCost.intValue();
+    }
+    public void setTicketCost(Long ticketCost) { this.ticketCost = ticketCost; }
 
     public int getFilledSlots() {
-        return filledSlots == null ? 0 : filledSlots.intValue();
+        if (filledSlots != null) return filledSlots.intValue();
+        if (currentParticipation != null) return currentParticipation.intValue();
+        return 0;
+    }
+
+    public void setFilledSlots(long filledSlots) {
+        this.filledSlots = filledSlots;
     }
 
     public int getTotalSlots() {
-        return totalSlots == null ? 0 : totalSlots.intValue();
+        if (totalSlots != null) return totalSlots.intValue();
+        if (participationLimit != null) return participationLimit.intValue();
+        return 10;
+    }
+
+    public void setTotalSlots(long totalSlots) {
+        this.totalSlots = totalSlots;
     }
 
     public boolean isJoinedByMe() { return joinedByMe; }
@@ -97,4 +152,4 @@ public class LuckyDrawModel {
     public void setMyTicketsCount(int count) {
         this.myTicketsCount = count;
     }
-}
+}
