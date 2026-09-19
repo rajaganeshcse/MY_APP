@@ -7,15 +7,14 @@
             <solid android:color="#FFFFFF" />
         </shape>
     </item>
-    <!-- Ultra-Bright Neon Progress Fill -->
+    <!-- Progress Fill matching Reward Nav Tab gradient -->
     <item android:id="@android:id/progress">
         <clip>
             <shape android:shape="rectangle">
                 <corners android:radius="22dp" />
                 <gradient
-                    android:startColor="#FFD200"
-                    android:centerColor="#00F2FE"
-                    android:endColor="#00FF87"
+                    android:startColor="#FF9900"
+                    android:endColor="#FF5E00"
                     android:angle="0" />
             </shape>
         </clip>
