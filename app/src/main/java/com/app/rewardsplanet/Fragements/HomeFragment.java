@@ -821,7 +821,7 @@ public class HomeFragment extends Fragment {
         if (btnClaimBonus != null) {
             btnClaimBonus.setEnabled(true);
             btnClaimBonus.setText("HOLD TO CLAIM 0%");
-            btnClaimBonus.setTextColor(Color.parseColor("#4B35B8"));
+            btnClaimBonus.setTextColor(Color.parseColor("#0F172A"));
         }
 
         if (progressHoldBonus != null) {
@@ -849,7 +849,7 @@ public class HomeFragment extends Fragment {
         if (btnClaimBonus != null) {
             btnClaimBonus.setEnabled(false);
             btnClaimBonus.setText("✓ CLAIMED TODAY");
-            btnClaimBonus.setTextColor(Color.parseColor("#059669"));
+            btnClaimBonus.setTextColor(Color.parseColor("#047857"));
         }
 
         if (progressHoldBonus != null) {

@@ -46,7 +46,7 @@
                     android:layout_height="wrap_content"
                     android:text="Daily Bonus Reward"
                     android:layout_gravity="center"
-                    android:textColor="#1E1B4B"
+                    android:textColor="#0F172A"
                     android:textSize="19sp"
                     android:textStyle="bold" />
 
@@ -57,8 +57,8 @@
                     android:layout_marginTop="1dp"
                     android:layout_gravity="center"
                     android:text="Hold for 5 seconds to claim your daily bonus"
-                    android:textColor="#4338CA"
-                    android:textSize="12sp" />
+                    android:textColor="#334155"
+                    android:textSize="12.5sp" />
 
             </LinearLayout>
 
@@ -103,9 +103,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:text="HOLD TO CLAIM 0%"
-                android:textColor="#4B35B8"
+                android:textColor="#0F172A"
                 android:textSize="15sp"
                 android:textStyle="bold"
+                android:letterSpacing="0.03"
                 app:backgroundTint="@android:color/transparent"
                 app:cornerRadius="21dp"
                 app:elevation="0dp"
@@ -125,7 +126,7 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:src="@drawable/ic_info"
-                app:tint="#4338CA"
+                app:tint="#334155"
                 android:contentDescription="Info Icon" />
 
             <TextView
@@ -136,8 +137,8 @@
                 android:layout_marginStart="6dp"
                 android:gravity="center_horizontal"
                 android:text="Hold for 5 seconds to claim"
-                android:textColor="#4338CA"
-                android:textSize="11sp"
+                android:textColor="#334155"
+                android:textSize="11.5sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
