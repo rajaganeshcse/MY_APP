@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_round"
+    android:padding="24dp">
+
+    <!-- WARNING ICON -->
+    <FrameLayout
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_warning_circle">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_warning_delete"
+            android:contentDescription="Warning"/>
+
+    </FrameLayout>
+
+    <!-- TITLE -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="14dp"
+        android:text="Delete Account?"
+        android:textColor="#111827"
+        android:textSize="18sp"
+        android:textStyle="bold"/>
+
+    <!-- SUBTITLE -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:gravity="center"
+        android:text="Are you sure you want to request account deletion? This action will begin a 7-day review period."
+        android:textColor="#6B7280"
+        android:textSize="13sp"
+        android:lineSpacingMultiplier="1.4"/>
+
+    <!-- DIVIDER -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="20dp"
+        android:background="#F1F5F9"/>
+
+    <!-- BUTTONS ROW -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <!-- CANCEL -->
+        <TextView
+            android:id="@+id/btnDialogCancel"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="Cancel"
+            android:textColor="#6B7280"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_outline_button"
+            android:clickable="true"
+            android:focusable="true"/>
+
+        <View
+            android:layout_width="12dp"
+            android:layout_height="1dp"/>
+
+        <!-- DELETE -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogDelete"
+            android:layout_width="0dp"
+            android:layout_height="44dp"
+            android:layout_weight="1"
+            android:minHeight="0dp"
+            android:text="Delete"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            app:backgroundTint="#EF4444"
+            app:cornerRadius="10dp"
+            app:strokeWidth="0dp"/>
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -3,18 +3,23 @@ package com.app.rewardsplanet.Activitys;
 import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowInsetsController;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
+import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -25,7 +30,10 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.app.rewardsplanet.R;
+import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.activity_delete_account;
+import com.app.rewardsplanet.models.UserModel;
+import com.app.rewardsplanet.repository.UserRepository;
 import com.bumptech.glide.Glide;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -34,7 +42,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 public class ProfileActivity extends AppCompatActivity {
 
@@ -52,14 +62,16 @@ public class ProfileActivity extends AppCompatActivity {
 
     private TextView txtDob;
     private TextView txtProfileStrength;
+    private ImageView imgDobChevron;
 
     private ProgressBar profileProgress;
 
     private LinearLayout dateContainer;
 
-    private RadioGroup radioGender;
-    private RadioButton radioMale;
-    private RadioButton radioFemale;
+    private LinearLayout genderContainer;
+    private TextView txtGenderSymbol;
+    private TextView txtGender;
+    private ImageView imgGenderChevron;
 
     private MaterialButton btnSave;
     private TextView btnDelete;
@@ -156,10 +168,12 @@ public class ProfileActivity extends AppCompatActivity {
         profileProgress = findViewById(R.id.profileProgress);
 
         dateContainer = findViewById(R.id.dateContainer);
+        imgDobChevron = findViewById(R.id.imgDobChevron);
 
-        radioGender = findViewById(R.id.radioGender);
-        radioMale = findViewById(R.id.radioMale);
-        radioFemale = findViewById(R.id.radioFemale);
+        genderContainer = findViewById(R.id.genderContainer);
+        txtGenderSymbol = findViewById(R.id.txtGenderSymbol);
+        txtGender = findViewById(R.id.txtGender);
+        imgGenderChevron = findViewById(R.id.imgGenderChevron);
 
         btnSave = findViewById(R.id.btnSave);
         btnDelete = findViewById(R.id.btnDelete);
@@ -175,141 +189,60 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
-        FirebaseUser currentUser = auth.getCurrentUser();
+        UserRepository.getInstance(this)
+                .getUser()
+                .observe(this, user -> {
 
-        // =====================================================
-        // GOOGLE / FIREBASE PROFILE IMAGE
-        // =====================================================
+                    if (user == null) return;
 
-        if (currentUser != null && currentUser.getPhotoUrl() != null) {
-
-            loadImage(currentUser.getPhotoUrl());
-
-        } else {
-
-            imgProfile.setImageResource(R.drawable.ic_profile);
-        }
-
-        // =====================================================
-        // FIRESTORE USER DATA
-        // =====================================================
-
-        db.collection("users")
-                .document(uid)
-                .get()
-                .addOnSuccessListener(documentSnapshot -> {
-
-                    if (!documentSnapshot.exists()) {
-
-                        Toast.makeText(
-                                ProfileActivity.this,
-                                "User data not found",
-                                Toast.LENGTH_SHORT
-                        ).show();
-
-                        updateProfileStrength();
-
-                        return;
+                    if (user.getName() != null && !user.getName().trim().isEmpty()) {
+                        edtName.setText(user.getName());
                     }
 
-                    // =================================================
-                    // NAME
-                    // =================================================
-
-                    String name = documentSnapshot.getString("name");
-
-                    if (name != null && !name.trim().isEmpty()) {
-
-                        edtName.setText(name);
+                    if (user.getPhone() != null && !user.getPhone().trim().isEmpty()) {
+                        edtMobile.setText(user.getPhone());
                     }
 
-                    // =================================================
-                    // EMAIL
-                    // =================================================
-
-                    String email = documentSnapshot.getString("email");
-
-                    if (email != null && !email.trim().isEmpty()) {
-
-                        edtEmail.setText(email);
+                    if (user.getEmail() != null && !user.getEmail().trim().isEmpty()) {
+                        edtEmail.setText(user.getEmail());
                     }
 
-                    // =================================================
-                    // MOBILE
-                    // =================================================
-
-                    String mobile = documentSnapshot.getString("mobile");
-
-                    if (mobile != null && !mobile.trim().isEmpty()) {
-
-                        edtMobile.setText(mobile);
+                    if (user.getDob() != null && !user.getDob().trim().isEmpty()) {
+                        txtDob.setText(user.getDob());
                     }
 
-                    // =================================================
-                    // DOB
-                    // =================================================
-
-                    String dob = documentSnapshot.getString("dob");
-
-                    if (dob != null && !dob.trim().isEmpty()) {
-
-                        txtDob.setText(dob);
+                    String gender = user.getGender();
+                    if (gender != null && !gender.trim().isEmpty()) {
+                        txtGender.setText(gender);
+                    } else {
+                        txtGender.setText("Male");
                     }
+                    updateGenderSymbol(txtGender.getText().toString());
 
-                    // =================================================
-                    // GENDER
-                    // =================================================
-
-                    String gender = documentSnapshot.getString("gender");
-
-                    if (gender != null) {
-
-                        if (gender.equalsIgnoreCase("Male")) {
-
-                            radioMale.setChecked(true);
-
-                        } else if (gender.equalsIgnoreCase("Female")) {
-
-                            radioFemale.setChecked(true);
+                    if (user.getProfile_pic() != null && !user.getProfile_pic().trim().isEmpty()) {
+                        loadImage(Uri.parse(user.getProfile_pic()));
+                    } else {
+                        FirebaseUser currentUser = auth.getCurrentUser();
+                        if (currentUser != null && currentUser.getPhotoUrl() != null) {
+                            loadImage(currentUser.getPhotoUrl());
+                        } else {
+                            imgProfile.setImageResource(R.drawable.ic_profile);
                         }
                     }
 
-                    // =================================================
-                    // FIRESTORE PROFILE IMAGE
-                    // =================================================
-
-                    String profileImage =
-                            documentSnapshot.getString("profileImage");
-
-                    /*
-                     * Use Firestore image only if Firebase Auth
-                     * does not have a Google/Firebase photo.
-                     */
-
-                    if ((currentUser == null
-                            || currentUser.getPhotoUrl() == null)
-                            && profileImage != null
-                            && !profileImage.trim().isEmpty()) {
-
-                        loadImage(Uri.parse(profileImage));
-                    }
-
-                    // =================================================
-                    // PROFILE STRENGTH
-                    // =================================================
-
-                    updateProfileStrength();
-                })
-                .addOnFailureListener(e -> {
-
-                    Toast.makeText(
-                            ProfileActivity.this,
-                            "Failed to load profile: " + e.getMessage(),
-                            Toast.LENGTH_LONG
-                    ).show();
-
                     updateProfileStrength();
                 });
+    }
+
+    private void updateGenderSymbol(String gender) {
+        if (txtGenderSymbol == null) return;
+        if ("Female".equalsIgnoreCase(gender)) {
+            txtGenderSymbol.setText("♀");
+        } else if ("Male".equalsIgnoreCase(gender)) {
+            txtGenderSymbol.setText("♂");
+        } else {
+            txtGenderSymbol.setText("👤");
+        }
     }
 
     // =========================================================
@@ -352,8 +285,7 @@ public class ProfileActivity extends AppCompatActivity {
                 || edtMobile == null
                 || edtEmail == null
                 || txtDob == null
-                || radioMale == null
-                || radioFemale == null
+                || txtGender == null
                 || profileProgress == null
                 || txtProfileStrength == null) {
 
@@ -420,8 +352,11 @@ public class ProfileActivity extends AppCompatActivity {
         // GENDER
         // =====================================================
 
-        if (radioMale.isChecked()
-                || radioFemale.isChecked()) {
+        String gender = txtGender.getText()
+                .toString()
+                .trim();
+
+        if (!gender.isEmpty()) {
 
             completed++;
         }
@@ -490,16 +425,14 @@ public class ProfileActivity extends AppCompatActivity {
         );
 
         // =====================================================
-        // GENDER
+        // GENDER DROPDOWN
         // =====================================================
 
-        radioMale.setOnClickListener(
-                v -> updateProfileStrength()
-        );
-
-        radioFemale.setOnClickListener(
-                v -> updateProfileStrength()
-        );
+        if (genderContainer != null) {
+            genderContainer.setOnClickListener(
+                    v -> showGenderDropdown()
+            );
+        }
 
         // =====================================================
         // NAME
@@ -536,6 +469,21 @@ public class ProfileActivity extends AppCompatActivity {
                 }
         );
 
+        edtMobile.addTextChangedListener(
+                new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        updateProfileStrength();
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable s) {}
+                }
+        );
+
         // =====================================================
         // SAVE
         // =====================================================
@@ -560,47 +508,254 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     // =========================================================
-    // DATE PICKER
+    // GENDER SELECTION ANCHORED DROPDOWN
     // =========================================================
 
+    private PopupWindow genderPopupWindow;
+
+    private void showGenderDropdown() {
+
+        if (genderContainer == null) return;
+
+        if (genderPopupWindow != null && genderPopupWindow.isShowing()) {
+            genderPopupWindow.dismiss();
+            return;
+        }
+
+        View popupView = LayoutInflater.from(this).inflate(R.layout.dialog_gender_select, null);
+
+        int width = genderContainer.getWidth();
+        if (width <= 0) {
+            width = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+
+        genderPopupWindow = new PopupWindow(
+                popupView,
+                width,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true
+        );
+
+        genderPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        genderPopupWindow.setOutsideTouchable(true);
+        genderPopupWindow.setFocusable(true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            genderPopupWindow.setElevation(12f);
+        }
+
+        LinearLayout optionMale = popupView.findViewById(R.id.optionMale);
+        LinearLayout optionFemale = popupView.findViewById(R.id.optionFemale);
+        LinearLayout optionOther = popupView.findViewById(R.id.optionOther);
+
+        ImageView checkMale = popupView.findViewById(R.id.checkMale);
+        ImageView checkFemale = popupView.findViewById(R.id.checkFemale);
+        ImageView checkOther = popupView.findViewById(R.id.checkOther);
+
+        String currentGender = txtGender.getText().toString().trim();
+
+        if (checkMale != null && checkFemale != null && checkOther != null) {
+            checkMale.setVisibility("Male".equalsIgnoreCase(currentGender) ? View.VISIBLE : View.GONE);
+            checkFemale.setVisibility("Female".equalsIgnoreCase(currentGender) ? View.VISIBLE : View.GONE);
+            checkOther.setVisibility("Rather not to say".equalsIgnoreCase(currentGender) ? View.VISIBLE : View.GONE);
+        }
+
+        if (optionMale != null) {
+            optionMale.setBackgroundResource("Male".equalsIgnoreCase(currentGender) ? R.drawable.bg_gender_option_selected : android.R.color.transparent);
+            optionMale.setOnClickListener(v -> {
+                txtGender.setText("Male");
+                updateGenderSymbol("Male");
+                updateProfileStrength();
+                genderPopupWindow.dismiss();
+            });
+        }
+
+        if (optionFemale != null) {
+            optionFemale.setBackgroundResource("Female".equalsIgnoreCase(currentGender) ? R.drawable.bg_gender_option_selected : android.R.color.transparent);
+            optionFemale.setOnClickListener(v -> {
+                txtGender.setText("Female");
+                updateGenderSymbol("Female");
+                updateProfileStrength();
+                genderPopupWindow.dismiss();
+            });
+        }
+
+        if (optionOther != null) {
+            optionOther.setBackgroundResource("Rather not to say".equalsIgnoreCase(currentGender) ? R.drawable.bg_gender_option_selected : android.R.color.transparent);
+            optionOther.setOnClickListener(v -> {
+                txtGender.setText("Rather not to say");
+                updateGenderSymbol("Rather not to say");
+                updateProfileStrength();
+                genderPopupWindow.dismiss();
+            });
+        }
+
+        if (imgGenderChevron != null) {
+            imgGenderChevron.setImageResource(R.drawable.ic_chevron_up);
+        }
+
+        genderPopupWindow.setOnDismissListener(() -> {
+            if (imgGenderChevron != null) {
+                imgGenderChevron.setImageResource(R.drawable.ic_chevron_down);
+            }
+        });
+
+        genderPopupWindow.showAsDropDown(genderContainer, 0, 10);
+    }
+
+    // =========================================================
+    // DATE PICKER POPUP (SCROLLABLE SINGLE UI)
+    // =========================================================
+
+    private PopupWindow dobPopupWindow;
+
+    private static final String[] MONTH_NAMES = {
+            "January", "February", "March", "April", "May", "June",
+            "July", "August", "September", "October", "November", "December"
+    };
+
     private void showDatePicker() {
+        if (dateContainer == null) return;
 
-        Calendar calendar = Calendar.getInstance();
+        if (dobPopupWindow != null && dobPopupWindow.isShowing()) {
+            dobPopupWindow.dismiss();
+            return;
+        }
 
-        DatePickerDialog datePickerDialog =
-                new DatePickerDialog(
-                        this,
-                        (view, year, month, dayOfMonth) -> {
+        View popupView = LayoutInflater.from(this).inflate(R.layout.dialog_dob_select, null);
 
-                            selectedDate =
-                                    Calendar.getInstance();
+        int width = dateContainer.getWidth();
+        if (width <= 0) {
+            width = ViewGroup.LayoutParams.MATCH_PARENT;
+        }
 
-                            selectedDate.set(
-                                    year,
-                                    month,
-                                    dayOfMonth
-                            );
+        dobPopupWindow = new PopupWindow(
+                popupView,
+                width,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                true
+        );
 
-                            SimpleDateFormat sdf =
-                                    new SimpleDateFormat(
-                                            "dd-MMMM-yyyy",
-                                            Locale.ENGLISH
-                                    );
+        dobPopupWindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        dobPopupWindow.setOutsideTouchable(true);
+        dobPopupWindow.setFocusable(true);
 
-                            txtDob.setText(
-                                    sdf.format(
-                                            selectedDate.getTime()
-                                    )
-                            );
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            dobPopupWindow.setElevation(12f);
+        }
 
-                            updateProfileStrength();
-                        },
-                        calendar.get(Calendar.YEAR),
-                        calendar.get(Calendar.MONTH),
-                        calendar.get(Calendar.DAY_OF_MONTH)
-                );
+        NumberPicker npDay = popupView.findViewById(R.id.npDay);
+        NumberPicker npMonth = popupView.findViewById(R.id.npMonth);
+        NumberPicker npYear = popupView.findViewById(R.id.npYear);
 
-        datePickerDialog.show();
+        TextView btnCancelDob = popupView.findViewById(R.id.btnCancelDob);
+        View btnConfirmDob = popupView.findViewById(R.id.btnConfirmDob);
+
+        // Configure Month Picker
+        npMonth.setMinValue(0);
+        npMonth.setMaxValue(MONTH_NAMES.length - 1);
+        npMonth.setDisplayedValues(MONTH_NAMES);
+        npMonth.setWrapSelectorWheel(true);
+
+        // Configure Year Picker
+        int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+        npYear.setMinValue(1950);
+        npYear.setMaxValue(currentYear);
+        npYear.setWrapSelectorWheel(false);
+
+        // Configure Day Picker
+        npDay.setMinValue(1);
+        npDay.setMaxValue(31);
+        npDay.setFormatter(value -> String.format(Locale.ENGLISH, "%02d", value));
+        npDay.setWrapSelectorWheel(true);
+
+        // Dynamic day limit on month/year change
+        NumberPicker.OnValueChangeListener dateChangeListener = (picker, oldVal, newVal) -> {
+            int year = npYear.getValue();
+            int month = npMonth.getValue();
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.YEAR, year);
+            cal.set(Calendar.MONTH, month);
+            int maxDays = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+            npDay.setMaxValue(maxDays);
+            if (npDay.getValue() > maxDays) {
+                npDay.setValue(maxDays);
+            }
+        };
+
+        npMonth.setOnValueChangedListener(dateChangeListener);
+        npYear.setOnValueChangedListener(dateChangeListener);
+
+        // Set initial values from txtDob if available
+        String currentDob = txtDob.getText().toString().trim();
+        int initialDay = 7;
+        int initialMonth = 8; // September
+        int initialYear = 2005;
+
+        if (currentDob.contains("-")) {
+            String[] parts = currentDob.split("-");
+            if (parts.length == 3) {
+                try {
+                    initialDay = Integer.parseInt(parts[0].trim());
+                } catch (Exception ignored) {}
+
+                String mStr = parts[1].trim();
+                for (int i = 0; i < MONTH_NAMES.length; i++) {
+                    if (MONTH_NAMES[i].equalsIgnoreCase(mStr) || MONTH_NAMES[i].toLowerCase().startsWith(mStr.toLowerCase())) {
+                        initialMonth = i;
+                        break;
+                    }
+                }
+
+                try {
+                    initialYear = Integer.parseInt(parts[2].trim());
+                } catch (Exception ignored) {}
+            }
+        }
+
+        if (initialYear < 1950 || initialYear > currentYear) initialYear = 2000;
+        npYear.setValue(initialYear);
+        npMonth.setValue(initialMonth);
+
+        Calendar initCal = Calendar.getInstance();
+        initCal.set(Calendar.YEAR, initialYear);
+        initCal.set(Calendar.MONTH, initialMonth);
+        int maxDaysForInit = initCal.getActualMaximum(Calendar.DAY_OF_MONTH);
+        npDay.setMaxValue(maxDaysForInit);
+        if (initialDay > maxDaysForInit) initialDay = maxDaysForInit;
+        npDay.setValue(initialDay);
+
+        if (btnCancelDob != null) {
+            btnCancelDob.setOnClickListener(v -> dobPopupWindow.dismiss());
+        }
+
+        if (btnConfirmDob != null) {
+            btnConfirmDob.setOnClickListener(v -> {
+                int day = npDay.getValue();
+                int month = npMonth.getValue();
+                int year = npYear.getValue();
+
+                selectedDate = Calendar.getInstance();
+                selectedDate.set(year, month, day);
+
+                String formattedDob = String.format(Locale.ENGLISH, "%02d-%s-%d", day, MONTH_NAMES[month], year);
+                txtDob.setText(formattedDob);
+                updateProfileStrength();
+                dobPopupWindow.dismiss();
+            });
+        }
+
+        if (imgDobChevron != null) {
+            imgDobChevron.setImageResource(R.drawable.ic_chevron_up);
+        }
+
+        dobPopupWindow.setOnDismissListener(() -> {
+            if (imgDobChevron != null) {
+                imgDobChevron.setImageResource(R.drawable.ic_chevron_down);
+            }
+        });
+
+        dobPopupWindow.showAsDropDown(dateContainer, 0, 10);
     }
 
     // =========================================================
@@ -629,20 +784,23 @@ public class ProfileActivity extends AppCompatActivity {
             return;
         }
 
+        String mobile = edtMobile.getText()
+                .toString()
+                .trim();
+
+        if (!mobile.isEmpty() && mobile.length() != 10) {
+            edtMobile.setError("Mobile number must be 10 digits");
+            edtMobile.requestFocus();
+            return;
+        }
+
         // =====================================================
         // GENDER
         // =====================================================
 
-        String gender = "";
-
-        if (radioMale.isChecked()) {
-
-            gender = "Male";
-
-        } else if (radioFemale.isChecked()) {
-
-            gender = "Female";
-        }
+        String gender = txtGender.getText()
+                .toString()
+                .trim();
 
         // =====================================================
         // DOB
@@ -656,14 +814,38 @@ public class ProfileActivity extends AppCompatActivity {
         // UPDATE FIRESTORE
         // =====================================================
 
+        Map<String, Object> updates = new HashMap<>();
+        updates.put("name", name);
+        updates.put("phone", mobile);
+        updates.put("dob", dob);
+        updates.put("gender", gender);
+
+        final String finalGender = gender;
+        final String finalDob = dob;
+
         db.collection("users")
                 .document(uid)
-                .update(
-                        "name", name,
-                        "dob", dob,
-                        "gender", gender
-                )
+                .update(updates)
                 .addOnSuccessListener(unused -> {
+
+                    // 1. Sync local UserPref
+                    UserPref userPref = new UserPref(ProfileActivity.this);
+                    userPref.setName(name);
+                    userPref.setPhone(mobile);
+                    userPref.setGender(finalGender);
+                    userPref.setDob(finalDob);
+
+                    // 2. Sync central UserRepository state
+                    UserModel currentUserModel = UserRepository.getInstance(ProfileActivity.this).getCurrentUserModel();
+                    if (currentUserModel != null) {
+                        currentUserModel.setName(name);
+                        currentUserModel.setPhone(mobile);
+                        currentUserModel.setGender(finalGender);
+                        currentUserModel.setDob(finalDob);
+                        UserRepository.getInstance(ProfileActivity.this).updateLocalUser(currentUserModel);
+                    } else {
+                        UserRepository.getInstance(ProfileActivity.this).refreshCurrentUser();
+                    }
 
                     Toast.makeText(
                             ProfileActivity.this,

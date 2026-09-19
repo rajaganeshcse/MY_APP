@@ -1,14 +1,19 @@
 package com.app.rewardsplanet.Activitys;
 
+import android.app.Dialog;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -21,7 +26,10 @@ import com.app.rewardsplanet.network.*;
 
 import com.google.android.gms.auth.api.signin.*;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.*;
+
+import java.io.IOException;
 
 import okhttp3.ResponseBody;
 import retrofit2.*;
@@ -39,7 +47,6 @@ public class activity_login extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         makeFullScreen();
-
 
         auth = FirebaseAuth.getInstance();
         userPref = new UserPref(this);
@@ -130,6 +137,30 @@ public class activity_login extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Log.d("API_DEBUG", "Auth SUCCESS");
                     fetchUser(token);
+
+                } else if (response.code() == 403) {
+
+                    // Read the body to determine which 403 case
+                    String errorBody = "";
+                    try {
+                        if (response.errorBody() != null) {
+                            errorBody = response.errorBody().string();
+                        }
+                    } catch (IOException ignored) {}
+
+                    Log.d("API_DEBUG", "Auth 403 body: " + errorBody);
+
+                    // Full sign-out: revokes Google session so silent re-auth can't bypass the check
+                    forceLogout();
+
+                    if ("ACCOUNT_PENDING".equals(errorBody)) {
+                        showAccountPendingDialog();
+                    } else if ("ACCOUNT_DELETED".equals(errorBody)) {
+                        showAccountDeletedDialog();
+                    } else {
+                        Toast.makeText(activity_login.this, "Access denied", Toast.LENGTH_SHORT).show();
+                    }
+
                 } else {
                     Log.e("API_DEBUG", "Auth FAILED: " + response.message());
                     Toast.makeText(activity_login.this, "Auth Failed", Toast.LENGTH_SHORT).show();
@@ -142,6 +173,109 @@ public class activity_login extends AppCompatActivity {
                 Toast.makeText(activity_login.this, "Server Error", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    // =========================================================
+    // FULL LOGOUT (Firebase + Google session + UserPref)
+    // =========================================================
+
+    private void forceLogout() {
+        // 1. Clear UserRepository listener + LiveData
+        com.app.rewardsplanet.repository.UserRepository.getInstance(this).clearUser();
+
+        // 2. Sign out Firebase Auth
+        auth.signOut();
+
+        // 3. Revoke Google Sign-In (prevents silent re-auth on next launch)
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        GoogleSignInClient googleClient = GoogleSignIn.getClient(this, gso);
+        googleClient.signOut();
+        googleClient.revokeAccess();
+
+        // 4. Clear local prefs
+        new UserPref(this).logout();
+    }
+
+    // =========================================================
+    // DIALOG: ACCOUNT PENDING (Under 7-Day Review)
+    // =========================================================
+
+    private void showAccountPendingDialog() {
+
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_account_pending, null);
+        dialog.setContentView(view);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.88f),
+                    android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+        }
+
+        TextView tvEmail = view.findViewById(R.id.tvAccountPendingEmail);
+        if (tvEmail != null) {
+            tvEmail.setOnClickListener(v -> openSupportEmail());
+        }
+
+        MaterialButton btnOk = view.findViewById(R.id.btnAccountPendingOk);
+        btnOk.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    // =========================================================
+    // DIALOG: ACCOUNT DELETED (Permanent)
+    // =========================================================
+
+    private void showAccountDeletedDialog() {
+
+        Dialog dialog = new Dialog(this);
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_account_deleted, null);
+        dialog.setContentView(view);
+
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            dialog.getWindow().setLayout(
+                    (int) (getResources().getDisplayMetrics().widthPixels * 0.88f),
+                    android.view.ViewGroup.LayoutParams.WRAP_CONTENT
+            );
+        }
+
+        MaterialButton btnSupport = view.findViewById(R.id.btnContactSupport);
+        TextView btnDismiss = view.findViewById(R.id.btnAccountDeletedDismiss);
+
+        // Open email/support link
+        btnSupport.setOnClickListener(v -> {
+            openSupportEmail();
+            dialog.dismiss();
+        });
+
+        btnDismiss.setOnClickListener(v -> dialog.dismiss());
+
+        dialog.show();
+    }
+
+    private void openSupportEmail() {
+        try {
+            Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
+            emailIntent.setData(Uri.parse("mailto:loco209832@gmail.com"));
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Account Support Request");
+            startActivity(emailIntent);
+        } catch (Exception e) {
+            Toast.makeText(this, "Contact: loco209832@gmail.com", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void fetchUser(String token) {
@@ -158,39 +292,49 @@ public class activity_login extends AppCompatActivity {
 
                 if (response.isSuccessful() && response.body() != null) {
 
-                    Log.d("API_DEBUG", "User Data Received: " + response.body().getUid());
-
                     UserModel user = response.body();
 
                     userPref.setUid(user.getUid());
                     userPref.setName(user.getName());
                     userPref.setEmail(user.getEmail());
-                    userPref.setProfileImage(user.getProfileImage());
-                    userPref.setProfileImage(user.getReferralCode());
+                    userPref.setProfileImage(user.getProfile_pic());
+                    userPref.setReferralCode(user.getReferralCode());
                     userPref.setCoins(user.getCoins());
-                    userPref.setTickets(user.getTickets());
-                    userPref.setWalletToken(user.getWalletToken());
-
+                    userPref.setTickets((int) user.getTickets());
+                    userPref.setWalletToken((int) user.getTickets());
                     userPref.setLogin(true);
 
-                    openMain();
+                    // Initialize Centralized UserRepository snapshot listener
+                    com.app.rewardsplanet.repository.UserRepository.getInstance(activity_login.this)
+                            .loadCurrentUser(user.getUid(), new com.app.rewardsplanet.repository.UserRepository.UserLoadCallback() {
+                                @Override
+                                public void onSuccess(UserModel userModel) {
+                                    openMain();
+                                }
+
+                                @Override
+                                public void onError(String errorMessage) {
+                                    openMain();
+                                }
+                            });
 
                 } else {
                     Log.e("API_DEBUG", "User fetch failed");
+                    Toast.makeText(activity_login.this, "User setup failed", Toast.LENGTH_SHORT).show();
                 }
             }
 
             @Override
             public void onFailure(Call<UserModel> call, Throwable t) {
                 Log.e("API_DEBUG", "User API ERROR: " + t.getMessage());
-                Toast.makeText(activity_login.this, "Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity_login.this, "Server Error", Toast.LENGTH_SHORT).show();
             }
         });
     }
+
     private void makeFullScreen() {
         Window window = getWindow();
 
-        // 🔥 Make content go behind system bars
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false);
 
@@ -199,9 +343,6 @@ public class activity_login extends AppCompatActivity {
                 controller.setSystemBarsBehavior(
                         WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                 );
-
-                // Optional: hide bars (remove if you only want transparent top)
-                // controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
             }
 
         } else {
@@ -211,10 +352,8 @@ public class activity_login extends AppCompatActivity {
             );
         }
 
-        // 🔥 Make status bar transparent (TOP FIX)
         window.setStatusBarColor(Color.TRANSPARENT);
 
-        // 🔥 Optional: make navigation bar transparent
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setNavigationBarColor(Color.TRANSPARENT);
         }
@@ -225,4 +364,4 @@ public class activity_login extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
-}
+}

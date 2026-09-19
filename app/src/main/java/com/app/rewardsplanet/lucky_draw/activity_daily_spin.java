@@ -289,12 +289,11 @@ public class activity_daily_spin extends AppCompatActivity {
             @Override
             public void onAnimationEnd(Animator animation) {
 
-                playEffects();
+                userPref.addCoins(reward);
+                updateUI();
+                com.app.rewardsplanet.repository.UserRepository.getInstance(activity_daily_spin.this).refreshCurrentUser();
 
-                new Handler().postDelayed(() -> {
-                    userPref.addCoins(reward);
-                    updateUI();
-                }, 400);
+                playEffects();
 
                 spinCounterForAd++;
 
@@ -347,69 +346,91 @@ public class activity_daily_spin extends AppCompatActivity {
 
         FrameLayout root = findViewById(android.R.id.content);
 
-        // 💰 coins
-        for (int i = 0; i < 5; i++) {
+        if (root != null && imgWheel != null) {
+            // 💰 coins
+            for (int i = 0; i < 5; i++) {
 
-            ImageView coin = new ImageView(this);
-            coin.setImageResource(R.drawable.ic_coin);
-            root.addView(coin);
+                ImageView coin = new ImageView(this);
+                coin.setImageResource(R.drawable.ic_coin);
+                root.addView(coin);
 
-            coin.setX(imgWheel.getX() + imgWheel.getWidth() / 2);
-            coin.setY(imgWheel.getY() + imgWheel.getHeight() / 2);
+                coin.setX(imgWheel.getX() + imgWheel.getWidth() / 2f);
+                coin.setY(imgWheel.getY() + imgWheel.getHeight() / 2f);
 
-            ObjectAnimator moveY = ObjectAnimator.ofFloat(coin, "translationY", 0, -600f);
-            ObjectAnimator fade = ObjectAnimator.ofFloat(coin, "alpha", 1f, 0f);
+                ObjectAnimator moveY = ObjectAnimator.ofFloat(coin, "translationY", 0, -600f);
+                ObjectAnimator fade = ObjectAnimator.ofFloat(coin, "alpha", 1f, 0f);
 
-            AnimatorSet set = new AnimatorSet();
-            set.setDuration(800);
-            set.setStartDelay(i * 100);
-            set.playTogether(moveY, fade);
+                AnimatorSet set = new AnimatorSet();
+                set.setDuration(800);
+                set.setStartDelay(i * 100L);
+                set.playTogether(moveY, fade);
 
-            set.addListener(new AnimatorListenerAdapter() {
+                set.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        root.removeView(coin);
+                    }
+                });
+
+                set.start();
+            }
+
+            // 🎆 fireworks
+            TextView fire = new TextView(this);
+            fire.setText("🎆✨🎉");
+            fire.setTextSize(30);
+            root.addView(fire);
+
+            ObjectAnimator fade = ObjectAnimator.ofFloat(fire, "alpha", 1f, 0f);
+            fade.setDuration(1000);
+
+            fade.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    root.removeView(coin);
+                    root.removeView(fire);
                 }
             });
 
-            set.start();
+            fade.start();
         }
 
-        // 🔊 SOUND (FIXED)
-        stopSound();
-        winSound = MediaPlayer.create(this, R.raw.win_sound);
-        winSound.start();
+        // 🔊 SOUND (SAFE)
+        try {
+            stopSound();
+            winSound = MediaPlayer.create(this, R.raw.win_sound);
+            if (winSound != null) {
+                winSound.setOnCompletionListener(mp -> stopSound());
+                winSound.start();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         // 📳 vibration
-        Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-        if (vibrator != null) vibrator.vibrate(150);
-
-        // 🎆 fireworks
-        TextView fire = new TextView(this);
-        fire.setText("🎆✨🎉");
-        fire.setTextSize(30);
-        root.addView(fire);
-
-        ObjectAnimator fade = ObjectAnimator.ofFloat(fire, "alpha", 1f, 0f);
-        fade.setDuration(1000);
-
-        fade.addListener(new AnimatorListenerAdapter() {
-            @Override
-            public void onAnimationEnd(Animator animation) {
-                root.removeView(fire);
+        try {
+            Vibrator vibrator = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+            if (vibrator != null && vibrator.hasVibrator()) {
+                vibrator.vibrate(150);
             }
-        });
-
-        fade.start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /* ================= STOP SOUND ================= */
 
     private void stopSound() {
-        if (winSound != null && winSound.isPlaying()) {
-            winSound.stop();
-            winSound.release();
-            winSound = null;
+        if (winSound != null) {
+            try {
+                if (winSound.isPlaying()) {
+                    winSound.stop();
+                }
+                winSound.release();
+            } catch (Exception e) {
+                e.printStackTrace();
+            } finally {
+                winSound = null;
+            }
         }
     }
 
@@ -417,40 +438,67 @@ public class activity_daily_spin extends AppCompatActivity {
 
     private void showRewardDialogOnly(int reward) {
 
-        stopSound(); // 🔥 stop sound here
-
         Dialog d = new Dialog(this);
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
         d.setContentView(R.layout.dialog_spin_result);
 
-        TextView txt = d.findViewById(R.id.txtWinAmount);
+        TextView txtWinAmount = d.findViewById(R.id.txtWinAmount);
+        TextView txtCurrentBalance = d.findViewById(R.id.txtCurrentBalance);
         MaterialButton ok = d.findViewById(R.id.btnOk);
 
-        txt.setText("+" + reward + " Coins");
+        if (txtWinAmount != null) {
+            txtWinAmount.setText("+" + reward + " Coins");
+        }
+        if (txtCurrentBalance != null) {
+            txtCurrentBalance.setText("Current Balance: " + userPref.getCoins() + " Coins");
+        }
 
-        ok.setOnClickListener(v -> d.dismiss());
-        d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        if (ok != null) {
+            ok.setOnClickListener(v -> {
+                stopSound();
+                d.dismiss();
+            });
+        }
+
+        d.setOnDismissListener(dialog -> stopSound());
+
+        if (d.getWindow() != null) {
+            d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         d.show();
     }
 
     private void showRewardDialogWithAd(int reward) {
 
-        stopSound(); // 🔥 stop sound here
-
         Dialog d = new Dialog(this);
         d.requestWindowFeature(Window.FEATURE_NO_TITLE);
         d.setContentView(R.layout.dialog_spin_result);
 
-        TextView txt = d.findViewById(R.id.txtWinAmount);
+        TextView txtWinAmount = d.findViewById(R.id.txtWinAmount);
+        TextView txtCurrentBalance = d.findViewById(R.id.txtCurrentBalance);
         MaterialButton ok = d.findViewById(R.id.btnOk);
 
-        txt.setText("+" + reward + " Coins");
+        if (txtWinAmount != null) {
+            txtWinAmount.setText("+" + reward + " Coins");
+        }
+        if (txtCurrentBalance != null) {
+            txtCurrentBalance.setText("Current Balance: " + userPref.getCoins() + " Coins");
+        }
 
-        ok.setOnClickListener(v -> {
-            d.dismiss();
-            showAd();
-        });
+        if (ok != null) {
+            ok.setOnClickListener(v -> {
+                stopSound();
+                d.dismiss();
+                showAd();
+            });
+        }
+
+        d.setOnDismissListener(dialog -> stopSound());
+
+        if (d.getWindow() != null) {
+            d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
 
         d.show();
     }
@@ -508,6 +556,12 @@ public class activity_daily_spin extends AppCompatActivity {
         btnSpin.setEnabled(true);
 
         Toast.makeText(this, "Server error", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        stopSound();
     }
 
     @Override

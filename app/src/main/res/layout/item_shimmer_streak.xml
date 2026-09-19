@@ -1,51 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.cardview.widget.CardView
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="136dp"
+    android:layout_margin="5dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp"
+    android:background="@drawable/bg_streak_card_locked">
 
-    android:layout_width="80dp"
-    android:layout_height="160dp"
-    android:layout_margin="4dp"
+    <!-- Day placeholder -->
+    <View
+        android:layout_width="54dp"
+        android:layout_height="18dp"
+        android:background="#CBD5E1" />
 
-    card_view:cardCornerRadius="12dp"
-    card_view:cardElevation="4dp"
-    card_view:cardUseCompatPadding="true">
+    <!-- Icon placeholder -->
+    <View
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="6dp"
+        android:background="#CBD5E1" />
 
-    <com.facebook.shimmer.ShimmerFrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+    <!-- Reward placeholder -->
+    <View
+        android:layout_width="44dp"
+        android:layout_height="16dp"
+        android:background="#CBD5E1" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:padding="6dp"
-            android:background="#A4C2ED">
-
-            <!-- Day placeholder -->
-            <View
-                android:layout_width="50dp"
-                android:layout_height="16dp"
-                android:background="#858E96" />
-
-            <!-- Fire placeholder -->
-            <View
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:layout_marginTop="4dp"
-                android:background="#858E96" />
-
-            <!-- Reward placeholder -->
-            <View
-                android:layout_width="30dp"
-                android:layout_height="16dp"
-                android:layout_marginTop="4dp"
-                android:background="#858E96" />
-
-        </LinearLayout>
-
-    </com.facebook.shimmer.ShimmerFrameLayout>
-
-</androidx.cardview.widget.CardView>
+</LinearLayout>

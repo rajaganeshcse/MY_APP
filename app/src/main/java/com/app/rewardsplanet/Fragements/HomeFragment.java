@@ -871,117 +871,31 @@ public class HomeFragment extends Fragment {
 
     private void listenUserRealtime() {
 
-        if (userPref == null
-                || db == null) {
-
+        if (!isAdded()) {
             return;
         }
 
-        String uid =
-                userPref.getUid();
+        com.app.rewardsplanet.repository.UserRepository.getInstance(requireContext())
+                .getUser()
+                .observe(getViewLifecycleOwner(), user -> {
 
-        if (uid == null
-                || uid.isEmpty()) {
+                    if (!isAdded() || user == null) {
+                        return;
+                    }
 
-            return;
-        }
+                    long tickets = user.getTickets();
+                    currentAds = (int) user.getDaily_ads_count();
 
+                    if (txtToken != null) {
+                        txtToken.setText(String.valueOf(tickets));
+                    }
 
-        db.collection("users")
-                .document(uid)
-                .addSnapshotListener(
-                        (value, error) -> {
+                    if (txtAdCount != null) {
+                        txtAdCount.setText(currentAds + "/" + DAILY_LIMIT);
+                    }
 
-                            if (!isAdded()) {
-                                return;
-                            }
-
-                            if (error != null) {
-                                return;
-                            }
-
-                            if (value == null
-                                    || !value.exists()) {
-
-                                return;
-                            }
-
-
-                            Long coins =
-                                    value.getLong(
-                                            "coins"
-                                    );
-
-
-                            Long tickets =
-                                    value.getLong(
-                                            "tickets"
-                                    );
-
-
-                            Long ads =
-                                    value.getLong(
-                                            "daily_ads_count"
-                                    );
-
-
-                            String referralCode =
-                                    value.getString(
-                                            "referralCode"
-                                    );
-
-                            if (referralCode != null) {
-
-                                userPref.setReferralCode(
-                                        referralCode
-                                );
-                            }
-
-
-                            if (coins != null) {
-
-                                /*
-                                 * If you have a wallet coin TextView
-                                 * in fragment_home.xml, update it here.
-                                 */
-                            }
-
-
-                            if (tickets != null) {
-
-                                if (txtToken != null) {
-
-                                    txtToken.setText(
-                                            String.valueOf(
-                                                    tickets
-                                            )
-                                    );
-                                }
-
-                                userPref.setWalletToken(
-                                        tickets.intValue()
-                                );
-                            }
-
-
-                            currentAds =
-                                    ads != null
-                                            ? ads.intValue()
-                                            : 0;
-
-                            if (txtAdCount != null) {
-
-                                txtAdCount.setText(
-                                        currentAds
-                                                + "/"
-                                                + DAILY_LIMIT
-                                );
-                            }
-
-
-                            updateButtonState();
-                        }
-                );
+                    updateButtonState();
+                });
     }
 
 

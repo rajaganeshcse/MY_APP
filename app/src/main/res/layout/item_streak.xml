@@ -1,45 +1,64 @@
-<androidx.cardview.widget.CardView
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:card_view="http://schemas.android.com/apk/res-auto"
-    android:layout_width="80dp"
-    android:layout_height="160dp"
-    android:layout_margin="6dp"
-    card_view:cardCornerRadius="12dp"
-    card_view:cardElevation="4dp"
-    card_view:cardUseCompatPadding="true">
+    android:id="@+id/cardParent"
+    android:layout_width="match_parent"
+    android:layout_height="136dp"
+    android:layout_margin="5dp"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="8dp"
+    android:background="@drawable/bg_streak_card_locked">
 
+    <!-- Day Badge -->
+    <TextView
+        android:id="@+id/txtDay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DAY 1"
+        android:textStyle="bold"
+        android:textSize="12sp"
+        android:textColor="#64748B"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp"
+        android:letterSpacing="0.04" />
+
+    <!-- Center Icon -->
+    <ImageView
+        android:id="@+id/imgFire"
+        android:layout_width="44dp"
+        android:layout_height="44dp"
+        android:src="@drawable/ic_coin"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="6dp"
+        android:contentDescription="Streak Icon" />
+
+    <!-- Bottom Reward Row (Small Coin Icon + Reward Text) -->
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:gravity="center"
-        android:padding="6dp"
-        android:background="@drawable/bg_streak_box">
-
-        <TextView
-            android:id="@+id/txtDay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Day 1"
-            android:textStyle="bold"
-            android:textSize="16sp"
-            android:textColor="#000"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
 
         <ImageView
-            android:id="@+id/imgFire"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:src="@drawable/ic_strike"
-            android:layout_marginTop="4dp"/>
+            android:id="@+id/imgSmallCoin"
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:layout_marginEnd="3dp"
+            android:src="@drawable/ic_coin"
+            android:contentDescription="Coin" />
 
         <TextView
             android:id="@+id/txtReward"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="10"
-            android:textSize="16sp"
-            android:textColor="#666"/>
+            android:text="+10"
+            android:textSize="13sp"
+            android:textStyle="bold"
+            android:textColor="#0F172A" />
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</LinearLayout>

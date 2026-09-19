@@ -1,107 +1,243 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="#F8FAFF">
+
+    <!-- ============================================================
+         FULL GRADIENT BACKGROUND (MATCHING SCRATCH ACTIVITY)
+         ============================================================ -->
+
+    <View
+        android:id="@+id/bgGradient"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/bg_scratch_gradient"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <!-- ============================================================
+         DECORATIVE GLOW CIRCLE - TOP RIGHT
+         ============================================================ -->
+    <View
+        android:id="@+id/glowCircle"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
+        android:alpha="0.30"
+        android:background="@drawable/bg_glow_circle"
+        android:translationX="60dp"
+        android:translationY="-60dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <!-- ============================================================
+         CONTENT WRAPPER
+         ============================================================ -->
 
     <LinearLayout
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:paddingStart="16dp"
-    android:paddingEnd="16dp"
-    android:paddingTop="30dp"
-    android:paddingBottom="10dp">
-
-    <ImageView
-        android:id="@+id/btnBack"
-        android:layout_width="52dp"
-        android:layout_height="52dp"
-        android:padding="13dp"
-        android:src="@drawable/back_arrow"
-        android:background="@drawable/bg_delete_back"
-        android:contentDescription="Back"/>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Daily Streak"
-            android:textSize="20sp"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginStart="16dp" />
-    </LinearLayout>
-
-    <!-- 💎 CONTENT AREA -->
-    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
 
-        <!-- 🔥 SHIMMER -->
-        <com.facebook.shimmer.ShimmerFrameLayout
-            android:id="@+id/shimmerContainer"
+        <!-- ============================================================
+             HEADER (Matching Scratch & Delete Account Header Style)
+             ============================================================ -->
+
+        <LinearLayout
+            android:id="@+id/header"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:shimmer_auto_start="true"
-            app:shimmer_duration="1200">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="30dp"
+            android:paddingBottom="10dp">
 
+            <!-- Back Button -->
+            <ImageView
+                android:id="@+id/btnBack"
+                android:layout_width="52dp"
+                android:layout_height="52dp"
+                android:padding="13dp"
+                android:src="@drawable/back_arrow"
+                app:tint="#1E293B"
+                android:background="@drawable/bg_delete_back"
+                android:contentDescription="Back" />
+
+            <!-- Title & Subtitle -->
             <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:orientation="vertical"
-                android:padding="8dp">
+                android:layout_marginStart="16dp">
 
-                <GridLayout
-                    android:id="@+id/shimmerGrid"
-                    android:layout_width="match_parent"
+                <TextView
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:columnCount="3" />
+                    android:text="Daily Streak"
+                    android:textColor="#0F172A"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.02" />
 
-                <View
-                    android:layout_width="290dp"
-                    android:layout_height="53dp"
-                    android:layout_gravity="center"
-                    android:layout_marginStart="80dp"
-                    android:layout_marginTop="75dp"
-                    android:layout_marginEnd="80dp"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Claim bonus coins every day"
+                    android:textColor="#64748B"
+                    android:textSize="12sp" />
 
-                    android:background="@drawable/bg_shimmer_button" />
             </LinearLayout>
 
-        </com.facebook.shimmer.ShimmerFrameLayout>
+            <!-- Streak Counter Chip -->
+            <LinearLayout
+                android:id="@+id/streakBadgeChip"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_chip_light"
+                android:paddingStart="12dp"
+                android:paddingEnd="14dp">
 
-        <!-- 🔥 REAL CONTENT -->
-        <LinearLayout
-            android:id="@+id/contentLayout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
+                <TextView
+                    android:id="@+id/txtHeaderStreak"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="🔥 0 Days"
+                    android:textColor="#D97706"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
 
-            <GridLayout
-                android:id="@+id/streakContainer"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:columnCount="3"
-                android:layout_marginTop="5dp"
-                android:padding="3dp" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnClaim"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
-                android:text="Claim Reward"
-                android:layout_gravity="center"
-                android:layout_marginLeft="25dp"
-                android:textStyle="bold"
-                android:textSize="18sp"
-                android:textColor="@color/black"
-                android:layout_margin="30dp"
-                android:backgroundTint="#FFC107" />
+            </LinearLayout>
 
         </LinearLayout>
 
-    </FrameLayout>
+        <!-- ============================================================
+             MAIN SCROLL CONTAINER
+             ============================================================ -->
 
-</LinearLayout>
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:fillViewport="true"
+            android:overScrollMode="never">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="16dp">
+
+                <!-- 🔥 SHIMMER LOADING -->
+                <com.facebook.shimmer.ShimmerFrameLayout
+                    android:id="@+id/shimmerContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:shimmer_auto_start="true"
+                    app:shimmer_duration="1200">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical">
+
+                        <GridLayout
+                            android:id="@+id/shimmerGrid"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:columnCount="3" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="28dp"
+                            android:background="@drawable/bg_btn_claim_active"
+                            android:alpha="0.3" />
+
+                    </LinearLayout>
+
+                </com.facebook.shimmer.ShimmerFrameLayout>
+
+                <!-- 🔥 REAL CONTENT -->
+                <LinearLayout
+                    android:id="@+id/contentLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="gone">
+
+                    <!-- 7-Day Grid -->
+                    <GridLayout
+                        android:id="@+id/streakContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:columnCount="3" />
+
+                    <!-- Claim Button -->
+                    <androidx.appcompat.widget.AppCompatButton
+                        android:id="@+id/btnClaim"
+                        android:layout_width="match_parent"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="28dp"
+                        android:layout_marginBottom="16dp"
+                        android:text="🎁 CLAIM TODAY'S REWARD"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:textColor="#FFFFFF"
+                        android:letterSpacing="0.03"
+                        android:textAllCaps="false"
+                        android:background="@drawable/bg_btn_claim_active"
+                        app:backgroundTint="@null"
+                        android:backgroundTint="@null"
+                        android:stateListAnimator="@null"
+                        android:elevation="6dp" />
+
+                </LinearLayout>
+
+            </FrameLayout>
+
+        </ScrollView>
+
+        <!-- ============================================================
+             ADVERTISEMENT BANNER CONTAINER (BOTTOM)
+             ============================================================ -->
+
+        <LinearLayout
+            android:id="@+id/adContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:paddingTop="6dp"
+            android:paddingBottom="10dp">
+
+            <TextView
+                android:id="@+id/txtAdvertisement"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ADVERTISEMENT"
+                android:textColor="#94A3B8"
+                android:textSize="10sp"
+                android:letterSpacing="0.10" />
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                ads:adSize="BANNER"
+                ads:adUnitId="@string/banner_ad_unit_id" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

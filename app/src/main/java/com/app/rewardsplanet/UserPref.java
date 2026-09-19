@@ -15,6 +15,9 @@ public class UserPref {
     private static final String KEY_UID = "uid";
     private static final String KEY_NAME = "name";
     private static final String KEY_EMAIL = "email";
+    private static final String KEY_PHONE = "phone";
+    private static final String KEY_GENDER = "gender";
+    private static final String KEY_DOB = "dob";
     private static final String KEY_IS_LOGIN = "is_login";
 
     /* ================= WALLET ================= */
@@ -43,6 +46,10 @@ public class UserPref {
     /* ================= DAILY SPIN ================= */
     private static final String KEY_SPIN_DATE = "spin_date";
     private static final String KEY_SPIN_COUNT = "spin_count";
+
+    /* ================= DAILY SCRATCH ================= */
+    private static final String KEY_SCRATCH_DATE  = "scratch_date";
+    private static final String KEY_SCRATCH_COUNT = "scratch_count";
 
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
@@ -78,6 +85,30 @@ public class UserPref {
 
     public String getEmail() {
         return pref.getString(KEY_EMAIL, "");
+    }
+
+    public void setPhone(String phone) {
+        editor.putString(KEY_PHONE, phone).apply();
+    }
+
+    public String getPhone() {
+        return pref.getString(KEY_PHONE, "");
+    }
+
+    public void setGender(String gender) {
+        editor.putString(KEY_GENDER, gender).apply();
+    }
+
+    public String getGender() {
+        return pref.getString(KEY_GENDER, "");
+    }
+
+    public void setDob(String dob) {
+        editor.putString(KEY_DOB, dob).apply();
+    }
+
+    public String getDob() {
+        return pref.getString(KEY_DOB, "");
     }
 
     public void setLogin(boolean status) {
@@ -220,6 +251,35 @@ public class UserPref {
 
     public void increaseSpinCount() {
         editor.putInt(KEY_SPIN_COUNT, getTodaySpinCount() + 1).apply();
+    }
+
+    private static final String KEY_SCRATCH_LAST_REWARD = "scratch_last_reward";
+
+    public int getTodayScratchRemaining() {
+        String today = getTodayDate();
+        String savedDate = pref.getString(KEY_SCRATCH_DATE, "");
+        if (!today.equals(savedDate)) {
+            // New day - reset (will be overwritten by backend anyway)
+            editor.putString(KEY_SCRATCH_DATE, today);
+            editor.putInt(KEY_SCRATCH_COUNT, 0);
+            editor.apply();
+            return 0;
+        }
+        return pref.getInt(KEY_SCRATCH_COUNT, 0);
+    }
+
+    public void saveScratchRemaining(int remaining) {
+        editor.putString(KEY_SCRATCH_DATE, getTodayDate());
+        editor.putInt(KEY_SCRATCH_COUNT, remaining);
+        editor.apply();
+    }
+
+    public int getLastScratchReward() {
+        return pref.getInt(KEY_SCRATCH_LAST_REWARD, 0);
+    }
+
+    public void saveLastScratchReward(int reward) {
+        editor.putInt(KEY_SCRATCH_LAST_REWARD, reward).apply();
     }
 
     /* ==================================================

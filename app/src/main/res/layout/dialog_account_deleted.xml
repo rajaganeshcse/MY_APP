@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@drawable/bg_dialog_round"
+    android:padding="24dp">
+
+    <!-- ICON -->
+    <FrameLayout
+        android:layout_width="68dp"
+        android:layout_height="68dp"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/bg_warning_circle">
+
+        <ImageView
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_delete"
+            android:tint="#EF4444"
+            android:contentDescription="Deleted"/>
+
+    </FrameLayout>
+
+    <!-- TITLE -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="14dp"
+        android:text="Account Deleted"
+        android:textColor="#991B1B"
+        android:textSize="17sp"
+        android:textStyle="bold"/>
+
+    <!-- BADGE -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="6dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="4dp"
+        android:text="🚫  Permanently Removed"
+        android:textColor="#EF4444"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:background="@drawable/bg_warning_circle"/>
+
+    <!-- DIVIDER -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginTop="16dp"
+        android:background="#FECACA"/>
+
+    <!-- MESSAGE -->
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="14dp"
+        android:gravity="center"
+        android:text="Your account has been permanently deleted and all data has been removed.\n\nContact Support: loco209832@gmail.com"
+        android:textColor="#6B7280"
+        android:textSize="13sp"
+        android:lineSpacingMultiplier="1.5"/>
+
+    <!-- CONTACT SUPPORT BUTTON -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnContactSupport"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginTop="20dp"
+        android:minHeight="0dp"
+        android:text="Contact Support"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:backgroundTint="#EF4444"
+        app:cornerRadius="10dp"
+        app:strokeWidth="0dp"/>
+
+    <!-- DISMISS -->
+    <TextView
+        android:id="@+id/btnAccountDeletedDismiss"
+        android:layout_width="match_parent"
+        android:layout_height="38dp"
+        android:layout_marginTop="4dp"
+        android:gravity="center"
+        android:text="Dismiss"
+        android:textColor="#9CA3AF"
+        android:textSize="13sp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+</LinearLayout>

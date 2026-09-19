@@ -1,0 +1,53 @@
+<LinearLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="70dp"
+    android:background="@drawable/bg_yellow_outline"
+    android:layout_margin="10dp"
+    android:layout_marginBottom="12dp"
+    android:padding="12dp"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Rank -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/rank"
+        android:text="#4"
+        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textSize="16sp"/>
+
+    <!-- Profile -->
+    <ImageView
+        android:id="@+id/image"
+        android:layout_width="45dp"
+        android:layout_height="45dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/circle_bg"/>
+
+    <!-- Name -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/name"
+        android:textColor="@color/black"
+        android:layout_weight="1"
+        android:layout_marginStart="10dp"
+        android:textStyle="bold"
+        android:text="Username"
+        android:maxLines="1"/>
+
+    <!-- Score -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/score"
+        android:layout_marginRight="15dp"
+        android:text="🔥 0"
+        android:textColor="#FF5722"
+        android:textStyle="bold"/>
+
+</LinearLayout>

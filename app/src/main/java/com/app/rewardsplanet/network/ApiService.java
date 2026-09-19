@@ -111,4 +111,16 @@ public interface ApiService {
             @Header("Authorization") String token,
             @Body Map<String, Object> body
     );
+
+    /* ================= DELETE ACCOUNT ================= */
+
+    @POST("api/account/delete-request")
+    Call<ResponseBody> requestDeleteAccount(
+            @Body Map<String, String> body
+    );
+
+    @POST("api/account/cancel-delete")
+    Call<ResponseBody> cancelDeleteAccount(
+            @Body Map<String, String> body
+    );
 }
