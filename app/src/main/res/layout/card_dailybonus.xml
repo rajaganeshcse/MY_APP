@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
 
     android:id="@+id/card_daily_bonus"
     android:layout_width="match_parent"
-    android:layout_height="155dp"
+    android:layout_height="160dp"
     android:layout_marginStart="12dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="12dp"
@@ -44,7 +44,7 @@
                     android:id="@+id/txtDailyBonusTitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Daily Streak Reward"
+                    android:text="Daily Bonus Reward"
                     android:layout_gravity="center"
                     android:textColor="@android:color/white"
                     android:textSize="19sp"
@@ -56,7 +56,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="1dp"
                     android:layout_gravity="center"
-                    android:text="Claim up to 100 coins every 24 hours"
+                    android:text="Hold for 5 seconds to claim your daily bonus"
                     android:textColor="#E4DCFF"
                     android:textSize="12sp" />
 
@@ -74,26 +74,44 @@
                     android:layout_height="34dp"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_gift1" />
+                    android:src="@drawable/ic_gift1"
+                    android:contentDescription="Gift Icon" />
 
             </FrameLayout>
 
         </LinearLayout>
 
-        <!-- CLAIM BUTTON -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnClaimBonus"
+        <!-- HOLD PROGRESS CONTAINER -->
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:layout_marginTop="7dp"
-            android:text="CLAIM BONUS NOW"
-            android:textColor="#4B35B8"
-            android:textSize="15sp"
-            android:textStyle="bold"
-            app:backgroundTint="@android:color/white"
-            app:cornerRadius="21dp"
-            app:elevation="0dp"
-            app:strokeWidth="0dp" />
+            android:layout_marginTop="7dp">
+
+            <!-- PROGRESS BAR BACKGROUND FILL -->
+            <ProgressBar
+                android:id="@+id/progressHoldBonus"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:max="100"
+                android:progress="0"
+                android:progressDrawable="@drawable/bg_hold_progress_drawable" />
+
+            <!-- CLAIM BUTTON -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnClaimBonus"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="HOLD TO CLAIM 0%"
+                android:textColor="#4B35B8"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                app:backgroundTint="@android:color/transparent"
+                app:cornerRadius="21dp"
+                app:elevation="0dp"
+                app:strokeWidth="0dp" />
+
+        </FrameLayout>
 
         <!-- INFO ROW -->
         <LinearLayout
@@ -107,7 +125,8 @@
                 android:layout_width="15dp"
                 android:layout_height="15dp"
                 android:src="@drawable/ic_info"
-                android:tint="@android:color/white" />
+                app:tint="@android:color/white"
+                android:contentDescription="Info Icon" />
 
             <TextView
                 android:id="@+id/txtBonusInfo"
@@ -116,9 +135,10 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginStart="6dp"
                 android:gravity="center_horizontal"
-                android:text="Rewards are randomly generated (1 - 50 coins)"
+                android:text="Hold for 5 seconds to claim"
                 android:textColor="#E3DBFF"
-                android:textSize="10sp" />
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

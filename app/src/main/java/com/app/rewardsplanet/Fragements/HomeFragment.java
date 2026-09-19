@@ -59,6 +59,16 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 
+import android.annotation.SuppressLint;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Vibrator;
+import android.os.VibrationEffect;
+import android.view.MotionEvent;
+import android.widget.ProgressBar;
+
+import com.app.rewardsplanet.utils.SuccessAnimationHelper;
+
 public class HomeFragment extends Fragment {
 
     // =========================================================
@@ -81,9 +91,17 @@ public class HomeFragment extends Fragment {
 
     private MaterialButton btnWatchNow;
 
-    // DAILY BONUS
+    // DAILY BONUS HOLD-TO-CLAIM
     private MaterialButton btnClaimBonus;
     private TextView txtBonusInfo;
+    private ProgressBar progressHoldBonus;
+
+    private final Handler holdHandler = new Handler(Looper.getMainLooper());
+    private long holdStartTime = 0;
+    private static final long REQUIRED_HOLD_DURATION_MS = 5000;
+    private boolean isHolding = false;
+    private boolean isDailyBonusAvailable = false;
+    private Runnable holdRunnable;
 
     private AlertDialog loadingDialog;
 
@@ -305,6 +323,10 @@ public class HomeFragment extends Fragment {
                 R.id.txtBonusInfo
         );
 
+        progressHoldBonus = view.findViewById(
+                R.id.progressHoldBonus
+        );
+
 
         // =====================================================
         // OTHER UI
@@ -460,15 +482,10 @@ public class HomeFragment extends Fragment {
 
 
         // =====================================================
-        // DAILY BONUS
+        // DAILY BONUS (5-SECOND HOLD TO CLAIM)
         // =====================================================
 
-        if (btnClaimBonus != null) {
-
-            btnClaimBonus.setOnClickListener(
-                    v -> claimDailyBonus()
-            );
-        }
+        setupHoldToClaimListener();
 
 
         // =====================================================
@@ -682,6 +699,114 @@ public class HomeFragment extends Fragment {
 
 
     // =========================================================
+    // HOLD TO CLAIM LISTENER (5 SECONDS)
+    // =========================================================
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void setupHoldToClaimListener() {
+        if (btnClaimBonus == null) return;
+
+        btnClaimBonus.setOnTouchListener((v, event) -> {
+            if (!isDailyBonusAvailable) {
+                return false;
+            }
+
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    startHoldProcess();
+                    return true;
+
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    cancelHoldProcess();
+                    return true;
+            }
+            return false;
+        });
+    }
+
+    private void startHoldProcess() {
+        if (isHolding) return;
+        isHolding = true;
+        holdStartTime = System.currentTimeMillis();
+
+        triggerHaptic(100);
+
+        if (btnClaimBonus != null) {
+            btnClaimBonus.setTextColor(Color.parseColor("#FFFFFF"));
+        }
+
+        holdRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (!isHolding || !isAdded()) return;
+
+                long elapsed = System.currentTimeMillis() - holdStartTime;
+                float progress = Math.min(1.0f, (float) elapsed / REQUIRED_HOLD_DURATION_MS);
+                int percent = Math.min(100, Math.round(progress * 100));
+                float remainingSec = Math.max(0f, (REQUIRED_HOLD_DURATION_MS - elapsed) / 1000f);
+
+                if (progressHoldBonus != null) {
+                    progressHoldBonus.setProgress(percent);
+                }
+
+                if (btnClaimBonus != null) {
+                    btnClaimBonus.setText(String.format("HOLDING... %d%%", percent));
+                }
+
+                if (txtBonusInfo != null) {
+                    txtBonusInfo.setText(String.format("Keep holding... %.1fs left", remainingSec));
+                }
+
+                if (elapsed >= REQUIRED_HOLD_DURATION_MS) {
+                    isHolding = false;
+                    isDailyBonusAvailable = false;
+                    triggerHaptic(250);
+
+                    if (btnClaimBonus != null) {
+                        btnClaimBonus.setText("✓ CLAIMING...");
+                        btnClaimBonus.setEnabled(false);
+                    }
+
+                    claimDailyBonus();
+                } else {
+                    holdHandler.postDelayed(this, 30);
+                }
+            }
+        };
+
+        holdHandler.post(holdRunnable);
+    }
+
+    private void cancelHoldProcess() {
+        if (!isHolding) return;
+
+        isHolding = false;
+        if (holdRunnable != null) {
+            holdHandler.removeCallbacks(holdRunnable);
+        }
+
+        if (isDailyBonusAvailable) {
+            setDailyBonusAvailable();
+        }
+    }
+
+    private void triggerHaptic(long ms) {
+        try {
+            if (getContext() != null) {
+                Vibrator v = (Vibrator) getContext().getSystemService(Context.VIBRATOR_SERVICE);
+                if (v != null && v.hasVibrator()) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                        v.vibrate(VibrationEffect.createOneShot(ms, VibrationEffect.DEFAULT_AMPLITUDE));
+                    } else {
+                        v.vibrate(ms);
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+    }
+
+    // =========================================================
     // DAILY BONUS AVAILABLE
     // =========================================================
 
@@ -691,20 +816,20 @@ public class HomeFragment extends Fragment {
             return;
         }
 
+        isDailyBonusAvailable = true;
+
         if (btnClaimBonus != null) {
-
             btnClaimBonus.setEnabled(true);
+            btnClaimBonus.setText("HOLD TO CLAIM 0%");
+            btnClaimBonus.setTextColor(Color.parseColor("#4B35B8"));
+        }
 
-            btnClaimBonus.setText(
-                    "CLAIM BONUS NOW"
-            );
+        if (progressHoldBonus != null) {
+            progressHoldBonus.setProgress(0);
         }
 
         if (txtBonusInfo != null) {
-
-            txtBonusInfo.setText(
-                    "Your daily bonus is ready!"
-            );
+            txtBonusInfo.setText("Hold for 5 seconds to claim");
         }
     }
 
@@ -719,20 +844,20 @@ public class HomeFragment extends Fragment {
             return;
         }
 
+        isDailyBonusAvailable = false;
+
         if (btnClaimBonus != null) {
-
             btnClaimBonus.setEnabled(false);
+            btnClaimBonus.setText("✓ CLAIMED TODAY");
+            btnClaimBonus.setTextColor(Color.parseColor("#059669"));
+        }
 
-            btnClaimBonus.setText(
-                    "CLAIMED TODAY"
-            );
+        if (progressHoldBonus != null) {
+            progressHoldBonus.setProgress(100);
         }
 
         if (txtBonusInfo != null) {
-
-            txtBonusInfo.setText(
-                    "Come back tomorrow for your next bonus"
-            );
+            txtBonusInfo.setText("Come back tomorrow for your next bonus");
         }
     }
 
@@ -747,20 +872,16 @@ public class HomeFragment extends Fragment {
             return;
         }
 
+        isDailyBonusAvailable = false;
+
         if (btnClaimBonus != null) {
-
             btnClaimBonus.setEnabled(false);
-
-            btnClaimBonus.setText(
-                    "CHECK FAILED"
-            );
+            btnClaimBonus.setText("CHECK FAILED");
+            btnClaimBonus.setTextColor(Color.parseColor("#DC2626"));
         }
 
         if (txtBonusInfo != null) {
-
-            txtBonusInfo.setText(
-                    "Unable to check daily bonus"
-            );
+            txtBonusInfo.setText("Unable to check daily bonus");
         }
     }
 
@@ -843,6 +964,7 @@ public class HomeFragment extends Fragment {
                     );
         }
 
+        SuccessAnimationHelper.animate(dialog);
 
         dialog.show();
     }
