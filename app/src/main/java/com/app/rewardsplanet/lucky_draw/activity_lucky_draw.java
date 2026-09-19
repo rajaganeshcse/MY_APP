@@ -90,13 +90,28 @@ public class activity_lucky_draw extends AppCompatActivity
                     .document(uid)
                     .addSnapshotListener(this, (snap, e) -> {
                         if (snap != null && snap.exists()) {
-                            Long t = snap.getLong("tickets");
-                            userTickets = t == null ? 0 : t.intValue();
+                            userTickets = parseTickets(snap);
                             adapter.updateUserTickets(userTickets);
                             tickets.setText(String.valueOf(userTickets));
                         }
                     });
         }
+    }
+
+    private int parseTickets(DocumentSnapshot snap) {
+        if (snap == null || !snap.exists()) return 0;
+        Object val = snap.get("tickets");
+        if (val == null) val = snap.get("ticket");
+        if (val == null) val = snap.get("tokens");
+
+        if (val instanceof Number) {
+            return ((Number) val).intValue();
+        } else if (val instanceof String) {
+            try {
+                return Integer.parseInt(((String) val).trim());
+            } catch (Exception ignored) {}
+        }
+        return 0;
     }
 
     /* ================= FULL SCREEN ================= */

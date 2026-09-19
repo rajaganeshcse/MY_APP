@@ -85,11 +85,11 @@ public class LuckyDrawAdapter
         h.btnJoin.setEnabled(true);
         h.btnticket.setEnabled(true);
 
-        /* TICKET COUNT BUTTON TEXT */
+        /* TICKET ENTRY BUTTON TEXT */
         if (model.getMyTicketsCount() > 0) {
-            h.btnticket.setText("🎟️ Tickets " + model.getMyTicketsCount());
+            h.btnticket.setText("🎟️ Submitted (" + model.getMyTicketsCount() + ")");
         } else {
-            h.btnticket.setText("🎟️ Tickets");
+            h.btnticket.setText("🎟️ Ticket Entry");
         }
         h.btnticket.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4F46E5")));
 
