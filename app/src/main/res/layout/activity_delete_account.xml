@@ -79,9 +79,7 @@
                 android:layout_height="wrap_content"
                 app:cardCornerRadius="14dp"
                 app:cardElevation="3dp"
-                app:cardBackgroundColor="@drawable/bg_delete_input"
-
-                >
+                app:cardBackgroundColor="#FEF2F2">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -170,7 +168,97 @@
                 android:layout_marginTop="14dp"
                 app:cardCornerRadius="14dp"
                 app:cardElevation="3dp"
-                app:cardBackgroundColor="#FFFFFF"/>
+                app:cardBackgroundColor="#FFFFFF">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="What will be lost:"
+                        android:textColor="#1F2937"
+                        android:textSize="15sp"
+                        android:textStyle="bold"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="10dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="•  "
+                            android:textColor="#EF4444"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="All accumulated Coins and Rewards balance"
+                            android:textColor="#4B5563"
+                            android:textSize="13sp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="•  "
+                            android:textColor="#EF4444"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Daily streak progress, spin history &amp; tournament records"
+                            android:textColor="#4B5563"
+                            android:textSize="13sp"/>
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="•  "
+                            android:textColor="#EF4444"
+                            android:textSize="14sp"
+                            android:textStyle="bold"/>
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Saved profile details and linked authentication account"
+                            android:textColor="#4B5563"
+                            android:textSize="13sp"/>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
 
             <!-- ====================================================

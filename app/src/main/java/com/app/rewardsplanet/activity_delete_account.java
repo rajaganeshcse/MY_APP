@@ -210,54 +210,41 @@ public class activity_delete_account extends AppCompatActivity {
     // =========================================================
 
     private void logoutUser() {
+        try {
+            if (UserRepository.getInstance(this) != null) {
+                UserRepository.getInstance(this).clearUser();
+            }
+        } catch (Exception ignored) {}
 
-        if (UserRepository.getInstance(this) != null) {
-            UserRepository.getInstance(this).clearUser();
+        try {
+            if (userPref != null) {
+                userPref.logout();
+            }
+        } catch (Exception ignored) {}
+
+        try {
+            FirebaseAuth.getInstance().signOut();
+        } catch (Exception ignored) {}
+
+        try {
+            GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN).build();
+            GoogleSignInClient googleSignInClient = GoogleSignIn.getClient(activity_delete_account.this, gso);
+            googleSignInClient.signOut().addOnCompleteListener(task -> navigateToLogin());
+        } catch (Exception e) {
+            navigateToLogin();
         }
+    }
 
-        if (userPref != null) {
-            userPref.logout();
+    private void navigateToLogin() {
+        try {
+            Toast.makeText(activity_delete_account.this, "Logged out", Toast.LENGTH_SHORT).show();
+            Intent intent = new Intent(activity_delete_account.this, com.app.rewardsplanet.Activitys.activity_login.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+            finish();
+        } catch (Exception e) {
+            finish();
         }
-
-        FirebaseAuth.getInstance().signOut();
-
-        GoogleSignInOptions gso =
-                new GoogleSignInOptions.Builder(
-                        GoogleSignInOptions.DEFAULT_SIGN_IN
-                )
-                        .build();
-
-        GoogleSignInClient googleSignInClient =
-                GoogleSignIn.getClient(
-                        activity_delete_account.this,
-                        gso
-                );
-
-        googleSignInClient
-                .signOut()
-                .addOnCompleteListener(task -> {
-
-                    Toast.makeText(
-                            activity_delete_account.this,
-                            "Logged out",
-                            Toast.LENGTH_SHORT
-                    ).show();
-
-                    Intent intent =
-                            new Intent(
-                                    activity_delete_account.this,
-                                    com.app.rewardsplanet.Activitys.activity_login.class
-                            );
-
-                    intent.setFlags(
-                            Intent.FLAG_ACTIVITY_NEW_TASK |
-                                    Intent.FLAG_ACTIVITY_CLEAR_TASK
-                    );
-
-                    startActivity(intent);
-
-                    finish();
-                });
     }
 
     // =========================================================
@@ -407,7 +394,6 @@ public class activity_delete_account extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        finish();
         super.onBackPressed();
     }
 }

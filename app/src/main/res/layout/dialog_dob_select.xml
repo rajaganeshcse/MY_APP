@@ -4,101 +4,178 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="10dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="12dp"
     app:cardBackgroundColor="#FFFFFF"
-    app:strokeWidth="1dp"
-    app:strokeColor="#E2E8F0">
+    app:strokeWidth="1.5dp"
+    app:strokeColor="#CBD5E1">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="16dp">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Select Date of Birth"
-            android:textColor="#111827"
-            android:textSize="15sp"
-            android:textStyle="bold"/>
+        <!-- ============================================================
+             BACKGROUND GRADIENT & DECORATIVE GLOW (SCRATCH AC STYLE)
+             ============================================================ -->
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
-            android:text="Scroll to pick Date, Month and Year"
-            android:textColor="#6B7280"
-            android:textSize="12sp"/>
-
-        <LinearLayout
+        <View
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_scratch_gradient" />
+
+        <View
+            android:layout_width="160dp"
             android:layout_height="160dp"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            android:gravity="center">
+            android:alpha="0.20"
+            android:background="@drawable/bg_glow_circle"
+            android:translationX="50dp"
+            android:translationY="-50dp"
+            android:layout_gravity="top|end" />
 
-            <NumberPicker
-                android:id="@+id/npDay"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:descendantFocusability="blocksDescendants"/>
-
-            <NumberPicker
-                android:id="@+id/npMonth"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.4"
-                android:descendantFocusability="blocksDescendants"/>
-
-            <NumberPicker
-                android:id="@+id/npYear"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1.2"
-                android:descendantFocusability="blocksDescendants"/>
-
-        </LinearLayout>
+        <!-- ============================================================
+             CONTENT LAYOUT
+             ============================================================ -->
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:orientation="horizontal"
-            android:gravity="end">
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <TextView
-                android:id="@+id/btnCancelDob"
-                android:layout_width="wrap_content"
+            <!-- HEADER ROW -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:text="Cancel"
-                android:textColor="#6B7280"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:clickable="true"
-                android:focusable="true"/>
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnConfirmDob"
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:layout_marginStart="8dp"
-                android:minHeight="0dp"
-                android:text="Set Date"
-                android:textColor="#FFFFFF"
-                android:textSize="13sp"
-                android:textStyle="bold"
-                app:backgroundTint="#0066FF"
-                app:cornerRadius="8dp"/>
+                <ImageView
+                    android:layout_width="38dp"
+                    android:layout_height="38dp"
+                    android:padding="8dp"
+                    android:src="@drawable/ic_calendar"
+                    app:tint="@color/bule_color2"
+                    android:background="@drawable/bg_delete_back"
+                    android:contentDescription="Calendar" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="12dp"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Select Date of Birth"
+                        android:textColor="#0F172A"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Scroll to pick Day, Month and Year"
+                        android:textColor="#64748B"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+            <!-- NUMBER PICKERS FRAME -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:background="@drawable/bg_chip_light"
+                android:elevation="2dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp">
+
+                <NumberPicker
+                    android:id="@+id/npDay"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:descendantFocusability="blocksDescendants" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="110dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="#E2E8F0" />
+
+                <NumberPicker
+                    android:id="@+id/npMonth"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.4"
+                    android:descendantFocusability="blocksDescendants" />
+
+                <View
+                    android:layout_width="1dp"
+                    android:layout_height="110dp"
+                    android:layout_gravity="center_vertical"
+                    android:background="#E2E8F0" />
+
+                <NumberPicker
+                    android:id="@+id/npYear"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1.2"
+                    android:descendantFocusability="blocksDescendants" />
+
+            </LinearLayout>
+
+            <!-- ACTION CONTROL BUTTONS -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="end|center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/btnCancelDob"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:text="Cancel"
+                    android:textColor="#64748B"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnConfirmDob"
+                    android:layout_width="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="10dp"
+                    android:minHeight="0dp"
+                    android:text="SET DATE"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.03"
+                    android:textAllCaps="false"
+                    app:backgroundTint="@color/bule_color2"
+                    app:cornerRadius="22dp"
+                    app:rippleColor="#40FFFFFF"
+                    app:elevation="4dp" />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+    </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>
