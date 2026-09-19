@@ -195,12 +195,15 @@ public class activity_delete_account extends AppCompatActivity {
             });
         }
 
-        MaterialButton btnOk = view.findViewById(R.id.btnDialogOk);
+        View btnOk = view.findViewById(R.id.btnDialogOk);
+        if (btnOk != null) {
+            btnOk.setOnClickListener(v -> {
+                dialog.dismiss();
+                logoutUser();
+            });
+        }
 
-        btnOk.setOnClickListener(v -> {
-            dialog.dismiss();
-            logoutUser();
-        });
+        com.app.rewardsplanet.utils.SuccessAnimationHelper.animate(dialog);
 
         dialog.show();
     }

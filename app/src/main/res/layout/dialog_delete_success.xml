@@ -1,119 +1,141 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:background="@drawable/bg_dialog_round"
-    android:padding="24dp">
+    app:cardCornerRadius="24dp"
+    app:cardElevation="10dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:strokeWidth="0dp">
 
-    <!-- SUCCESS ICON CIRCLE -->
-    <FrameLayout
-        android:layout_width="72dp"
-        android:layout_height="72dp"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/bg_circle_light">
-
-        <ImageView
-            android:layout_width="38dp"
-            android:layout_height="38dp"
-            android:layout_gravity="center"
-            android:src="@drawable/ic_success"
-            android:contentDescription="Success"
-            app:tint="#16A34A"/>
-
-    </FrameLayout>
-
-    <!-- TITLE -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="14dp"
-        android:text="Request Submitted!"
-        android:textColor="#111827"
-        android:textSize="18sp"
-        android:textStyle="bold"/>
-
-    <!-- BADGE -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="6dp"
-        android:paddingStart="12dp"
-        android:paddingEnd="12dp"
-        android:paddingTop="4dp"
-        android:paddingBottom="4dp"
-        android:text="Pending · 7-Day Review"
-        android:textColor="#D97706"
-        android:textSize="12sp"
-        android:textStyle="bold"
-        android:background="@drawable/bg_amount_chip"/>
-
-    <!-- INFO MESSAGE -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:gravity="center"
-        android:text="Your account deletion request has been received. Your account and all data will be permanently deleted after 7 days."
-        android:textColor="#6B7280"
-        android:textSize="13sp"
-        android:lineSpacingMultiplier="1.5"/>
-
-    <!-- INFO ROW -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
-        android:background="@drawable/bg_reward_info"
-        android:padding="12dp"
-        android:orientation="horizontal"
-        android:gravity="center_vertical">
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/bg_scratch_gradient"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="28dp"
+        android:paddingBottom="24dp">
 
-        <ImageView
-            android:layout_width="18dp"
-            android:layout_height="18dp"
-            android:src="@drawable/ic_info_blue"
-            android:contentDescription="Info"/>
+        <!-- ANIMATED GREEN SUCCESS CHECK CONTAINER -->
+        <FrameLayout
+            android:id="@+id/successContainer"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:gravity="center">
 
+            <!-- Green Success Badge -->
+            <ImageView
+                android:id="@+id/successBadge"
+                android:layout_width="90dp"
+                android:layout_height="90dp"
+                android:layout_gravity="center"
+                android:src="@drawable/bg_success"
+                android:scaleX="0"
+                android:scaleY="0"
+                android:contentDescription="Success Badge" />
+
+            <!-- White Check (AnimatedVectorDrawable) -->
+            <ImageView
+                android:id="@+id/checkIcon"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="center"
+                android:src="@drawable/animated_check"
+                android:alpha="0"
+                android:contentDescription="Checkmark" />
+
+        </FrameLayout>
+
+        <!-- TITLE -->
         <TextView
-            android:id="@+id/tvDeleteSuccessEmail"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:layout_marginStart="8dp"
-            android:text="You have been signed out. Contact loco209832@gmail.com to cancel this request within 7 days."
-            android:textColor="#1D4ED8"
-            android:textSize="11sp"
-            android:lineSpacingMultiplier="1.3"
-            android:clickable="true"
-            android:focusable="true"/>
+            android:layout_marginTop="16dp"
+            android:text="Account Deletion Pending"
+            android:textColor="#0F172A"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.01" />
+
+        <!-- 7-DAY REVIEW BADGE CHIP -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
+            android:text="⏳ Under 7-Day Review Period"
+            android:textColor="#B45309"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            android:background="@drawable/bg_streak_badge_active" />
+
+        <!-- MESSAGE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center"
+            android:text="Your account deletion request has been submitted successfully. Your account and data will be reviewed and permanently deleted after 7 days."
+            android:textColor="#64748B"
+            android:textSize="13sp"
+            android:lineSpacingMultiplier="1.4" />
+
+        <!-- SUPPORT CONTACT BOX -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:background="@drawable/bg_reward_info"
+            android:padding="12dp"
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/ic_info_blue"
+                android:contentDescription="Info Icon" />
+
+            <TextView
+                android:id="@+id/tvDeleteSuccessEmail"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:text="You have been signed out. Contact loco209832@gmail.com within 7 days to cancel this request."
+                android:textColor="#1D4ED8"
+                android:textSize="12sp"
+                android:lineSpacingMultiplier="1.3"
+                android:clickable="true"
+                android:focusable="true" />
+
+        </LinearLayout>
+
+        <!-- ACTION BUTTON -->
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnDialogOk"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginTop="20dp"
+            android:minHeight="0dp"
+            android:text="Confirm"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.02"
+            android:textAllCaps="false"
+            app:backgroundTint="@color/bule_color2"
+            app:cornerRadius="25dp"
+            app:rippleColor="#40FFFFFF"
+            app:elevation="4dp" />
 
     </LinearLayout>
 
-    <!-- DIVIDER -->
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginTop="20dp"
-        android:background="#F1F5F9"/>
-
-    <!-- OK BUTTON -->
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btnDialogOk"
-        android:layout_width="match_parent"
-        android:layout_height="46dp"
-        android:layout_marginTop="14dp"
-        android:minHeight="0dp"
-        android:text="OK, Got it"
-        android:textColor="#FFFFFF"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:backgroundTint="#0066FF"
-        app:cornerRadius="10dp"
-        app:strokeWidth="0dp"/>
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
