@@ -59,6 +59,20 @@ public class MainActivity extends AppCompatActivity {
     public LinearLayout navReward;
     private LinearLayout navLeaderboard;
 
+    private LinearLayout bottomNav;
+
+    private LinearLayout navPillHome;
+    private LinearLayout navPillGame;
+    private LinearLayout navPillReward;
+    private LinearLayout navPillLeaderboard;
+
+    private TextView txtNavHome;
+    private TextView txtNavGame;
+    private TextView txtNavReward;
+    private TextView txtNavLeaderboard;
+
+    private int activeNavPosition = -1;
+
 
     // =========================================================
     // NAV IMAGES
@@ -68,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imgNavGame;
     private ImageView imgNavReward;
     private ImageView imgNavLeaderboard;
+
 
 
     // =========================================================
@@ -281,53 +296,27 @@ public class MainActivity extends AppCompatActivity {
         // NAV CONTAINERS
         // =====================================================
 
-        navHome =
-                findViewById(
-                        R.id.navHome
-                );
+        bottomNav = findViewById(R.id.bottomNav);
 
-        navGame =
-                findViewById(
-                        R.id.navGame
-                );
+        navHome = findViewById(R.id.navHome);
+        navGame = findViewById(R.id.navGame);
+        navReward = findViewById(R.id.navReward);
+        navLeaderboard = findViewById(R.id.navLeaderboard);
 
-        navReward =
-                findViewById(
-                        R.id.navReward
-                );
+        navPillHome = findViewById(R.id.navPillHome);
+        navPillGame = findViewById(R.id.navPillGame);
+        navPillReward = findViewById(R.id.navPillReward);
+        navPillLeaderboard = findViewById(R.id.navPillLeaderboard);
 
-        navLeaderboard =
-                findViewById(
-                        R.id.navLeaderboard
-                );
+        imgNavHome = findViewById(R.id.imgNavHome);
+        imgNavGame = findViewById(R.id.imgNavGame);
+        imgNavReward = findViewById(R.id.imgNavReward);
+        imgNavLeaderboard = findViewById(R.id.imgNavLeaderboard);
 
-
-        // =====================================================
-        // NAV IMAGES
-        // =====================================================
-        // These IDs must belong to ImageViews in XML.
-        // XML controls their size and scaleType.
-        // =====================================================
-
-        imgNavHome =
-                findViewById(
-                        R.id.imgNavHome
-                );
-
-        imgNavGame =
-                findViewById(
-                        R.id.imgNavGame
-                );
-
-        imgNavReward =
-                findViewById(
-                        R.id.imgNavReward
-                );
-
-        imgNavLeaderboard =
-                findViewById(
-                        R.id.imgNavLeaderboard
-                );
+        txtNavHome = findViewById(R.id.txtNavHome);
+        txtNavGame = findViewById(R.id.txtNavGame);
+        txtNavReward = findViewById(R.id.txtNavReward);
+        txtNavLeaderboard = findViewById(R.id.txtNavLeaderboard);
     }
 
 
@@ -866,78 +855,35 @@ public class MainActivity extends AppCompatActivity {
 
     private void setupNavigation() {
 
-        // =====================================================
-        // HOME
-        // =====================================================
-
         if (navHome != null) {
-
             navHome.setOnClickListener(v -> {
-
                 closeDrawer();
-
-                selectNav(navHome);
-
-                loadFragment(
-                        new HomeFragment()
-                );
+                selectNavTab(0);
+                loadFragment(new HomeFragment());
             });
         }
-
-
-        // =====================================================
-        // GAME
-        // =====================================================
 
         if (navGame != null) {
-
             navGame.setOnClickListener(v -> {
-
                 closeDrawer();
-
-                selectNav(navGame);
-
-                loadFragment(
-                        new GameFragment()
-                );
+                selectNavTab(1);
+                loadFragment(new GameFragment());
             });
         }
-
-
-        // =====================================================
-        // REWARD
-        // =====================================================
 
         if (navReward != null) {
-
             navReward.setOnClickListener(v -> {
-
                 closeDrawer();
-
-                selectNav(navReward);
-
-                loadFragment(
-                        new RewardFragment()
-                );
+                selectNavTab(2);
+                loadFragment(new RewardFragment());
             });
         }
 
-
-        // =====================================================
-        // LEADERBOARD
-        // =====================================================
-
         if (navLeaderboard != null) {
-
             navLeaderboard.setOnClickListener(v -> {
-
                 closeDrawer();
-
-                selectNav(navLeaderboard);
-
-                loadFragment(
-                        new LeaderboardFragment()
-                );
+                selectNavTab(3);
+                loadFragment(new LeaderboardFragment());
             });
         }
     }
@@ -948,41 +894,70 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================
 
     public void selectNav(View selected) {
-
-        resetNav();
-
-
-        if (selected != null) {
-
-            selected.setBackgroundResource(
-                    R.drawable.bg_nav_selected
-            );
+        if (selected == navHome) {
+            selectNavTab(0);
+        } else if (selected == navGame) {
+            selectNavTab(1);
+        } else if (selected == navReward) {
+            selectNavTab(2);
+        } else if (selected == navLeaderboard) {
+            selectNavTab(3);
         }
     }
 
+    public void selectNavTab(int position) {
+        if (activeNavPosition == position) {
+            return;
+        }
 
-    // =========================================================
-    // RESET NAVIGATION
-    // =========================================================
+        if (bottomNav != null) {
+            android.transition.AutoTransition autoTransition = new android.transition.AutoTransition();
+            autoTransition.setDuration(280);
+            autoTransition.setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator());
+            android.transition.TransitionManager.beginDelayedTransition(bottomNav, autoTransition);
+        }
 
-    private void resetNav() {
+        activeNavPosition = position;
 
-        View[] navs = {
-
-                navHome,
-                navGame,
-                navReward,
-                navLeaderboard
+        LinearLayout[] pills = {navPillHome, navPillGame, navPillReward, navPillLeaderboard};
+        ImageView[] icons = {imgNavHome, imgNavGame, imgNavReward, imgNavLeaderboard};
+        TextView[] texts = {txtNavHome, txtNavGame, txtNavReward, txtNavLeaderboard};
+        int[] bgGradients = {
+                R.drawable.bg_nav_pill_home,
+                R.drawable.bg_nav_pill_game,
+                R.drawable.bg_nav_pill_reward,
+                R.drawable.bg_nav_pill_leaderboard
         };
 
+        for (int i = 0; i < 4; i++) {
+            final int index = i;
+            if (pills[i] == null || icons[i] == null || texts[i] == null) continue;
 
-        for (View nav : navs) {
+            if (i == position) {
+                // Active item expanding pill
+                pills[i].setBackgroundResource(bgGradients[i]);
+                texts[i].setVisibility(View.VISIBLE);
+                texts[i].setAlpha(0f);
+                texts[i].animate().alpha(1f).setDuration(280).start();
 
-            if (nav != null) {
-
-                nav.setBackgroundResource(
-                        R.drawable.bg_nav_unselected
-                );
+                icons[i].setColorFilter(Color.WHITE);
+                icons[i].animate()
+                        .scaleX(1.15f)
+                        .scaleY(1.15f)
+                        .setDuration(150)
+                        .withEndAction(() -> {
+                            if (icons[index] != null) {
+                                icons[index].animate().scaleX(1.0f).scaleY(1.0f).setDuration(120).start();
+                            }
+                        })
+                        .start();
+            } else {
+                // Unselected items collapsed icon
+                pills[i].setBackground(null);
+                texts[i].setVisibility(View.GONE);
+                icons[i].setColorFilter(Color.parseColor("#94A3B8"));
+                icons[i].setScaleX(1.0f);
+                icons[i].setScaleY(1.0f);
             }
         }
     }

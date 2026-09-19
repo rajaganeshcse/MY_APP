@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -11,123 +11,214 @@
         android:layout_height="match_parent"
         android:background="@color/base_color">
 
-        <!-- Fragment -->
+        <!-- Fragment Container -->
         <FrameLayout
             android:id="@+id/fragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/bottomNav" />
+            android:layout_above="@id/bottomNavContainer" />
 
-
-        <!-- Bottom Navigation -->
-        <LinearLayout
-            android:id="@+id/bottomNav"
+        <!-- Bottom Navigation Floating Outer Container -->
+        <FrameLayout
+            android:id="@+id/bottomNavContainer"
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:paddingBottom="8dp"
-            android:background="@android:color/white"
-            android:elevation="15dp">
+            android:paddingStart="14dp"
+            android:paddingEnd="14dp"
+            android:paddingBottom="12dp"
+            android:clipToPadding="false">
 
-
-            <!-- HOME -->
             <LinearLayout
-                android:id="@+id/navHome"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:padding="10dp"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true">
+                android:id="@+id/bottomNav"
+                android:layout_width="match_parent"
+                android:layout_height="62dp"
+                android:background="@drawable/bg_bottom_nav_container"
+                android:elevation="12dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="6dp"
+                android:paddingEnd="6dp"
+                android:weightSum="4">
 
-                <ImageView
-                    android:id="@+id/imgNavHome"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:padding="2dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_home"
-                    android:contentDescription="Home" />
+                <!-- 1. HOME -->
+                <LinearLayout
+                    android:id="@+id/navHome"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:id="@+id/navPillHome"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp"
+                        android:background="@drawable/bg_nav_pill_home">
+
+                        <ImageView
+                            android:id="@+id/imgNavHome"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_nav_home"
+                            android:contentDescription="Home" />
+
+                        <TextView
+                            android:id="@+id/txtNavHome"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="Home"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:visibility="visible"
+                            android:singleLine="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- 2. GAMES -->
+                <LinearLayout
+                    android:id="@+id/navGame"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:id="@+id/navPillGame"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp">
+
+                        <ImageView
+                            android:id="@+id/imgNavGame"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_nav_game"
+                            android:contentDescription="Games" />
+
+                        <TextView
+                            android:id="@+id/txtNavGame"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="Games"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            android:singleLine="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- 3. REWARD -->
+                <LinearLayout
+                    android:id="@+id/navReward"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:id="@+id/navPillReward"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingStart="14dp"
+                        android:paddingEnd="14dp">
+
+                        <ImageView
+                            android:id="@+id/imgNavReward"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_nav_reward"
+                            android:contentDescription="Reward" />
+
+                        <TextView
+                            android:id="@+id/txtNavReward"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="Reward"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            android:singleLine="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- 4. LEADERBOARD -->
+                <LinearLayout
+                    android:id="@+id/navLeaderboard"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:clickable="true"
+                    android:focusable="true">
+
+                    <LinearLayout
+                        android:id="@+id/navPillLeaderboard"
+                        android:layout_width="wrap_content"
+                        android:layout_height="44dp"
+                        android:orientation="horizontal"
+                        android:gravity="center"
+                        android:paddingStart="12dp"
+                        android:paddingEnd="12dp">
+
+                        <ImageView
+                            android:id="@+id/imgNavLeaderboard"
+                            android:layout_width="22dp"
+                            android:layout_height="22dp"
+                            android:scaleType="fitCenter"
+                            android:src="@drawable/ic_nav_leaderboard"
+                            android:contentDescription="Leaderboard" />
+
+                        <TextView
+                            android:id="@+id/txtNavLeaderboard"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="Leaderboard"
+                            android:textColor="#FFFFFF"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:visibility="gone"
+                            android:singleLine="true" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-
-            <!-- GAME -->
-            <LinearLayout
-                android:id="@+id/navGame"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:id="@+id/imgNavGame"
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:padding="2dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_game"
-                    android:contentDescription="Game" />
-
-            </LinearLayout>
-
-
-            <!-- REWARD -->
-            <LinearLayout
-                android:id="@+id/navReward"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:id="@+id/imgNavReward"
-                    android:layout_width="355dp"
-                    android:layout_height="35dp"
-                    android:padding="2dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_gift"
-                    android:contentDescription="Reward" />
-
-            </LinearLayout>
-
-
-            <!-- LEADERBOARD -->
-            <LinearLayout
-                android:id="@+id/navLeaderboard"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:orientation="vertical"
-                android:clickable="true"
-                android:focusable="true">
-
-                <ImageView
-                    android:id="@+id/imgNavLeaderboard"
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
-                    android:padding="1dp"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_leaderboard"
-                    android:contentDescription="Leaderboard" />
-
-            </LinearLayout>
-
-        </LinearLayout>
+        </FrameLayout>
 
     </RelativeLayout>
-
 
     <!-- Drawer -->
     <include
