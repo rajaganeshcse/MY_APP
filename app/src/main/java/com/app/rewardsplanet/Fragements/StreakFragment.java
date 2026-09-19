@@ -42,8 +42,11 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+
+import androidx.core.content.ContextCompat;
 
 import org.json.JSONObject;
 
@@ -58,7 +61,7 @@ public class StreakFragment extends Fragment {
     private LinearLayout        contentLayout;
     private GridLayout          shimmerGrid;
     private GridLayout          streakContainer;
-    private Button              btnClaim;
+    private MaterialButton      btnClaim;
     private ImageView           btnBack;
     private TextView            txtHeaderStreak;
 
@@ -402,16 +405,20 @@ public class StreakFragment extends Fragment {
         if (btnClaim != null) {
             if (isClaimedToday) {
                 btnClaim.setEnabled(false);
-                btnClaim.setAlpha(1.0f);
+                btnClaim.setAlpha(0.85f);
                 btnClaim.setTextColor(Color.parseColor("#FFFFFF"));
-                btnClaim.setText("✓ CLAIMED TODAY");
-                btnClaim.setBackgroundResource(R.drawable.bg_btn_claim_done);
+                btnClaim.setText("CLAIMED TODAY");
+                if (getContext() != null) {
+                    btnClaim.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.color_blue));
+                }
             } else {
                 btnClaim.setEnabled(true);
                 btnClaim.setAlpha(1.0f);
                 btnClaim.setTextColor(Color.parseColor("#FFFFFF"));
                 btnClaim.setText("🎁 CLAIM TODAY'S REWARD");
-                btnClaim.setBackgroundResource(R.drawable.bg_btn_claim_active);
+                if (getContext() != null) {
+                    btnClaim.setBackgroundTintList(ContextCompat.getColorStateList(requireContext(), R.color.bule_color2));
+                }
             }
         }
     }

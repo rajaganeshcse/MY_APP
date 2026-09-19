@@ -181,7 +181,7 @@
                         android:columnCount="3" />
 
                     <!-- Claim Button -->
-                    <androidx.appcompat.widget.AppCompatButton
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnClaim"
                         android:layout_width="match_parent"
                         android:layout_height="56dp"
@@ -193,11 +193,10 @@
                         android:textColor="#FFFFFF"
                         android:letterSpacing="0.03"
                         android:textAllCaps="false"
-                        android:background="@drawable/bg_btn_claim_active"
-                        app:backgroundTint="@null"
-                        android:backgroundTint="@null"
-                        android:stateListAnimator="@null"
-                        android:elevation="6dp" />
+                        app:cornerRadius="28dp"
+                        app:backgroundTint="@color/bule_color2"
+                        app:rippleColor="#40FFFFFF"
+                        app:elevation="6dp" />
 
                 </LinearLayout>
 
