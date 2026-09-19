@@ -170,7 +170,6 @@ public class activity_lucky_draw extends AppCompatActivity
         db.collection("lucky_draw_tickets")
                 .document(model.getId())
                 .collection("tickets")
-                .whereEqualTo("uid", uid)
                 .get()
                 .addOnSuccessListener(snap -> {
 
@@ -179,10 +178,15 @@ public class activity_lucky_draw extends AppCompatActivity
 
                     if (snap != null) {
                         for (DocumentSnapshot d : snap.getDocuments()) {
-                            String type = d.getString("type");
+                            String ticketUid = d.getString("uid");
+                            if (ticketUid == null) ticketUid = d.getString("userId");
 
-                            if ("AD".equals(type)) adUsed = true;
-                            else if ("TICKET".equals(type)) ticketCount++;
+                            if (uid.equals(ticketUid)) {
+                                String type = d.getString("type");
+
+                                if ("AD".equalsIgnoreCase(type)) adUsed = true;
+                                else ticketCount++;
+                            }
                         }
                     }
 
@@ -280,32 +284,48 @@ public class activity_lucky_draw extends AppCompatActivity
         db.collection("lucky_draw_tickets")
                 .document(model.getId())
                 .collection("tickets")
-                .whereEqualTo("uid", uid)
                 .get()
                 .addOnSuccessListener(snap -> {
                     if (snap != null && !snap.isEmpty()) {
                         for (DocumentSnapshot d : snap.getDocuments()) {
-                            String tokenStr = d.getString("token");
-                            if (tokenStr != null && !tokenStr.isEmpty()) {
-                                fetchedTokens.add(tokenStr);
+                            String ticketUid = d.getString("uid");
+                            if (ticketUid == null) ticketUid = d.getString("userId");
+
+                            if (uid.equals(ticketUid)) {
+                                String tokenStr = d.getString("token");
+                                if (tokenStr != null && !tokenStr.isEmpty()) {
+                                    fetchedTokens.add(tokenStr);
+                                }
                             }
                         }
+                    }
 
-                        if (layoutTokensList != null && !fetchedTokens.isEmpty()) {
-                            com.app.rewardsplanet.utils.TokenBlockHelper.renderTokenBlocks(layoutTokensList, fetchedTokens);
-                        } else if (txtTokensList != null) {
-                            txtTokensList.setText("No tokens generated yet.");
-                        }
+                    // Fallback to myTickets collection if lucky_draw_tickets returned no matches
+                    if (fetchedTokens.isEmpty()) {
+                        db.collection("users")
+                                .document(uid)
+                                .collection("myTickets")
+                                .whereEqualTo("drawId", model.getId())
+                                .get()
+                                .addOnSuccessListener(userSnap -> {
+                                    if (userSnap != null && !userSnap.isEmpty()) {
+                                        for (DocumentSnapshot d : userSnap.getDocuments()) {
+                                            String tokenStr = d.getString("token");
+                                            if (tokenStr != null && !tokenStr.isEmpty()) {
+                                                fetchedTokens.add(tokenStr);
+                                            }
+                                        }
+                                    }
+
+                                    renderFetchedTokens(layoutTokensList, txtTokensList, fetchedTokens);
+                                })
+                                .addOnFailureListener(e -> renderFetchedTokens(layoutTokensList, txtTokensList, fetchedTokens));
                     } else {
-                        if (txtTokensList != null) {
-                            txtTokensList.setText("No tokens found for this contest.");
-                        }
+                        renderFetchedTokens(layoutTokensList, txtTokensList, fetchedTokens);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if (txtTokensList != null) {
-                        txtTokensList.setText("Error loading tokens.");
-                    }
+                    renderFetchedTokens(layoutTokensList, txtTokensList, fetchedTokens);
                 });
 
         if (btnCopyTokens != null) {
@@ -326,6 +346,27 @@ public class activity_lucky_draw extends AppCompatActivity
                     Toast.makeText(this, "No tokens to copy", Toast.LENGTH_SHORT).show();
                 }
             });
+        }
+    }
+
+    private void renderFetchedTokens(LinearLayout layoutTokensList, TextView txtTokensList, List<String> fetchedTokens) {
+        if (layoutTokensList != null && !fetchedTokens.isEmpty()) {
+            com.app.rewardsplanet.utils.TokenBlockHelper.renderTokenBlocks(layoutTokensList, fetchedTokens);
+        } else if (txtTokensList != null) {
+            if (!fetchedTokens.isEmpty()) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    txtTokensList.setText(String.join("\n", fetchedTokens));
+                } else {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 0; i < fetchedTokens.size(); i++) {
+                        sb.append(fetchedTokens.get(i));
+                        if (i < fetchedTokens.size() - 1) sb.append("\n");
+                    }
+                    txtTokensList.setText(sb.toString());
+                }
+            } else {
+                txtTokensList.setText("No tokens found for this contest.");
+            }
         }
     }
 
