@@ -20,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.view.GravityCompat;
@@ -164,45 +165,51 @@ public class MainActivity extends AppCompatActivity {
         setupNavigation();
 
 
+        Log.d("RewardsFCM", "Firebase initialization started");
+        try {
+            if (com.google.firebase.FirebaseApp.getInstance() != null) {
+                Log.d("RewardsFCM", "FirebaseApp initialized");
+            }
+        } catch (Exception e) {
+            Log.e("RewardsFCM", "FirebaseApp check failed", e);
+        }
+
         // Ensure notification channel is registered
         MyFirebaseMessagingService.createNotificationChannel(this);
 
         if (Build.VERSION.SDK_INT >= 33) {
-            requestPermissions(
-                    new String[]{
-                            Manifest.permission.POST_NOTIFICATIONS
-                    },
-                    1
-            );
+            if (androidx.core.content.ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                Log.d("RewardsFCM", "Notification permission granted");
+            } else {
+                requestPermissions(
+                        new String[]{
+                                Manifest.permission.POST_NOTIFICATIONS
+                        },
+                        101
+                );
+            }
         }
-
 
         // =====================================================
         // FIREBASE FCM TOKEN
         // =====================================================
 
-        FirebaseMessaging
-                .getInstance()
-                .getToken()
+        FirebaseMessaging.getInstance().getToken()
                 .addOnCompleteListener(task -> {
-
-                    if (!task.isSuccessful()) {
-
-                        Log.e(
-                                "FCM_TOKEN",
-                                "Failed to get FCM token"
-                        );
-
+                    if (!task.isSuccessful() || task.getResult() == null) {
+                        Log.e("RewardsFCM", "Failed to get FCM token", task.getException());
                         return;
                     }
 
-                    String token =
-                            task.getResult();
+                    String token = task.getResult();
+                    if (token == null || token.trim().isEmpty()) {
+                        Log.w("RewardsFCM", "Retrieved FCM token is empty");
+                        return;
+                    }
 
-                    Log.d(
-                            "FCM_TOKEN",
-                            token
-                    );
+                    Log.d("RewardsFCM", "FCM token received successfully");
+                    userPref.setFcmToken(token);
 
                     String uid = userPref.getUid();
                     if (uid == null || uid.isEmpty()) {
@@ -213,7 +220,6 @@ public class MainActivity extends AppCompatActivity {
                     if (uid != null && !uid.isEmpty()) {
                         Map<String, Object> tokenData = new HashMap<>();
                         tokenData.put("fcmToken", token);
-                        tokenData.put("token", token);
                         tokenData.put("notificationEnabled", true);
                         tokenData.put("updatedAt", FieldValue.serverTimestamp());
 
@@ -221,18 +227,18 @@ public class MainActivity extends AppCompatActivity {
                                 .collection("users")
                                 .document(uid)
                                 .set(tokenData, com.google.firebase.firestore.SetOptions.merge())
-                                .addOnSuccessListener(aVoid -> Log.d("FCM_TOKEN", "FCM token saved successfully: " + token))
-                                .addOnFailureListener(e -> Log.e("FCM_TOKEN", "Failed to update token", e));
+                                .addOnSuccessListener(aVoid -> Log.d("RewardsFCM", "FCM token saved successfully to Firestore"))
+                                .addOnFailureListener(e -> Log.e("RewardsFCM", "Failed to update FCM token in Firestore", e));
+                    } else {
+                        Log.w("RewardsFCM", "FirebaseAuth user unavailable when saving FCM token");
                     }
                 });
-
 
         // =====================================================
         // USER DATA
         // =====================================================
 
         loadUserFromPref();
-
 
         // =====================================================
         // DEFAULT FRAGMENT / NOTIFICATION NAV
@@ -248,6 +254,18 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 101) {
+            if (grantResults.length > 0 && grantResults[0] == android.content.pm.PackageManager.PERMISSION_GRANTED) {
+                Log.d("RewardsFCM", "Notification permission granted");
+            } else {
+                Log.d("RewardsFCM", "Notification permission denied");
+            }
+        }
+    }
+
+    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
@@ -258,12 +276,15 @@ public class MainActivity extends AppCompatActivity {
     private void handleNotificationNavigation(Intent intent) {
         if (intent == null) return;
 
-        String screen = intent.getStringExtra("screen");
+        String screen = intent.getStringExtra("notification_screen");
+        if (screen == null || screen.trim().isEmpty()) {
+            screen = intent.getStringExtra("screen");
+        }
         if (screen == null || screen.trim().isEmpty()) {
             return;
         }
 
-        Log.d("NOTIFICATION_NAV", "Navigating to destination screen: " + screen);
+        Log.d("RewardsFCM", "Navigating to destination screen: " + screen);
 
         switch (screen.toUpperCase()) {
             case "DAILY_BONUS":
@@ -300,6 +321,7 @@ public class MainActivity extends AppCompatActivity {
                 loadFragment(new HomeFragment());
                 break;
         }
+        intent.removeExtra("notification_screen");
         intent.removeExtra("screen");
     }
 
