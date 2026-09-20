@@ -101,6 +101,10 @@
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
         <activity
+            android:name=".lucky_draw.WatchVideoActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
             android:name=".NetworkIssueActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />

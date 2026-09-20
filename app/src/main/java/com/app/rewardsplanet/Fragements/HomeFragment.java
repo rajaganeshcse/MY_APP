@@ -81,6 +81,7 @@ public class HomeFragment extends Fragment {
     private CardView card_tasks;
     private CardView card_surveys;
     private CardView cardInvite;
+    private View card_watch;
 
     private TextView txtToken;
     private TextView txtAdCount;
@@ -306,6 +307,10 @@ public class HomeFragment extends Fragment {
         // WATCH AD
         // =====================================================
 
+        card_watch = view.findViewById(
+                R.id.card_watch
+        );
+
         btnWatchNow = view.findViewById(
                 R.id.btnWatchNow
         );
@@ -474,10 +479,15 @@ public class HomeFragment extends Fragment {
         // =====================================================
 
         if (btnWatchNow != null) {
+            btnWatchNow.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), com.app.rewardsplanet.lucky_draw.WatchVideoActivity.class));
+            });
+        }
 
-            btnWatchNow.setOnClickListener(
-                    v -> watchAd()
-            );
+        if (card_watch != null) {
+            card_watch.setOnClickListener(v -> {
+                startActivity(new Intent(requireContext(), com.app.rewardsplanet.lucky_draw.WatchVideoActivity.class));
+            });
         }
 
 

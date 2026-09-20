@@ -1,0 +1,325 @@
+package com.app.rewardsplanet.lucky_draw;
+
+import android.graphics.Color;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.Window;
+import android.view.WindowInsetsController;
+import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.app.rewardsplanet.R;
+import com.app.rewardsplanet.UserPref;
+import com.app.rewardsplanet.ads.AdsManager;
+import com.app.rewardsplanet.models.WatchVideoModel;
+import com.app.rewardsplanet.network.ApiClient;
+import com.app.rewardsplanet.network.ApiService;
+import com.google.android.gms.ads.AdError;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.FullScreenContentCallback;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.MobileAds;
+import com.google.android.gms.ads.rewarded.RewardedAd;
+import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
+public class WatchVideoActivity extends AppCompatActivity implements WatchVideoAdapter.OnWatchClickListener {
+
+    private FirebaseFirestore db;
+    private ApiService api;
+    private UserPref userPref;
+
+    private TextView txtCoins, txtProgressCount;
+    private ProgressBar progressDailyAds;
+    private RecyclerView recyclerView;
+    private WatchVideoAdapter adapter;
+
+    private List<WatchVideoModel> videoList = new ArrayList<>();
+    private String uid;
+    private int userCoins = 0;
+    private int watchedCount = 0;
+
+    private RewardedAd rewardedAd;
+    private AlertDialog loadingDialog;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_watch_video);
+
+        userPref = new UserPref(this);
+        db = FirebaseFirestore.getInstance();
+        api = ApiClient.getClient().create(ApiService.class);
+
+        txtCoins = findViewById(R.id.txtCoins);
+        txtProgressCount = findViewById(R.id.txtProgressCount);
+        progressDailyAds = findViewById(R.id.progressDailyAds);
+        recyclerView = findViewById(R.id.recyclerViewWatchVideos);
+
+        View btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> finish());
+        }
+
+        makeFullScreen();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        uid = (user != null && user.getUid() != null && !user.getUid().isEmpty())
+                ? user.getUid()
+                : userPref.getUid();
+
+        userCoins = (int) userPref.getCoins();
+        if (txtCoins != null) {
+            txtCoins.setText(String.valueOf(userCoins));
+        }
+
+        try {
+            MobileAds.initialize(this, status -> {});
+        } catch (Exception ignored) {}
+
+        setupVideoList();
+
+        if (recyclerView != null) {
+            recyclerView.setLayoutManager(new LinearLayoutManager(this));
+            adapter = new WatchVideoAdapter(videoList, this);
+            recyclerView.setAdapter(adapter);
+        }
+
+        listenUserData();
+    }
+
+    private void makeFullScreen() {
+        Window window = getWindow();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false);
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsBehavior(
+                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                );
+            }
+        } else {
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
+        }
+        window.setStatusBarColor(Color.TRANSPARENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    private void setupVideoList() {
+        videoList.clear();
+        videoList.add(new WatchVideoModel(1, "Daily Video Bonus #1", 10, 1, false));
+        videoList.add(new WatchVideoModel(2, "Daily Video Bonus #2", 10, 1, false));
+        videoList.add(new WatchVideoModel(3, "Daily Video Bonus #3", 10, 1, false));
+        videoList.add(new WatchVideoModel(4, "Quick Reward Video #4", 15, 1, false));
+        videoList.add(new WatchVideoModel(5, "Quick Reward Video #5", 15, 1, false));
+        videoList.add(new WatchVideoModel(6, "Silver Video Bonus #6", 20, 1, false));
+        videoList.add(new WatchVideoModel(7, "Silver Video Bonus #7", 20, 1, false));
+        videoList.add(new WatchVideoModel(8, "Gold Video Bonus #8", 25, 1, false));
+        videoList.add(new WatchVideoModel(9, "Gold Video Bonus #9", 25, 1, false));
+        videoList.add(new WatchVideoModel(10, "Super Mega Bonus #10", 50, 2, false));
+    }
+
+    private void listenUserData() {
+        if (uid == null || uid.isEmpty()) return;
+
+        db.collection("users")
+                .document(uid)
+                .addSnapshotListener(this, (snap, e) -> {
+                    if (snap != null && snap.exists()) {
+                        Long coins = snap.getLong("coins");
+                        if (coins != null) {
+                            userCoins = coins.intValue();
+                            userPref.setCoins(userCoins);
+                            if (txtCoins != null) {
+                                txtCoins.setText(String.valueOf(userCoins));
+                            }
+                        }
+
+                        Long ads = snap.getLong("daily_ads_count");
+                        watchedCount = ads != null ? ads.intValue() : 0;
+                        updateProgressUI();
+                    }
+                });
+    }
+
+    private void updateProgressUI() {
+        if (txtProgressCount != null) {
+            txtProgressCount.setText(watchedCount + " / 10 Completed");
+        }
+        if (progressDailyAds != null) {
+            progressDailyAds.setProgress(Math.min(watchedCount, 10));
+        }
+
+        for (int i = 0; i < videoList.size(); i++) {
+            videoList.get(i).setCompleted(i < watchedCount);
+        }
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onWatchClick(WatchVideoModel item, int position) {
+        if (watchedCount >= 10) {
+            Toast.makeText(this, "Daily video limit reached (10/10)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        item.setLoading(true);
+        if (adapter != null) adapter.notifyItemChanged(position);
+
+        loadAndShowAd(item, position);
+    }
+
+    private void loadAndShowAd(WatchVideoModel item, int position) {
+        try {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            RewardedAd.load(this, AdsManager.REWARDED_AD_ID, adRequest, new RewardedAdLoadCallback() {
+                @Override
+                public void onAdLoaded(@NonNull RewardedAd ad) {
+                    rewardedAd = ad;
+                    rewardedAd.setFullScreenContentCallback(new FullScreenContentCallback() {
+                        @Override
+                        public void onAdDismissedFullScreenContent() {
+                            rewardedAd = null;
+                        }
+
+                        @Override
+                        public void onAdFailedToShowFullScreenContent(AdError adError) {
+                            rewardedAd = null;
+                            item.setLoading(false);
+                            if (adapter != null) adapter.notifyItemChanged(position);
+                            Toast.makeText(WatchVideoActivity.this, "Failed to display ad", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+
+                    rewardedAd.show(WatchVideoActivity.this, rewardItem -> {
+                        claimAdReward(item, position);
+                    });
+                }
+
+                @Override
+                public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                    rewardedAd = null;
+                    item.setLoading(false);
+                    if (adapter != null) adapter.notifyItemChanged(position);
+                    Toast.makeText(WatchVideoActivity.this, "Ad failed to load. Please try again.", Toast.LENGTH_SHORT).show();
+                }
+            });
+        } catch (Exception e) {
+            item.setLoading(false);
+            if (adapter != null) adapter.notifyItemChanged(position);
+            Toast.makeText(this, "Ad error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void claimAdReward(WatchVideoModel item, int position) {
+        showLoading();
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            hideLoading();
+            item.setLoading(false);
+            if (adapter != null) adapter.notifyItemChanged(position);
+            Toast.makeText(this, "Login required", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        user.getIdToken(false).addOnSuccessListener(result -> {
+            String token = result.getToken();
+            Map<String, String> body = new HashMap<>();
+            body.put("requestId", UUID.randomUUID().toString());
+
+            api.rewardAd("Bearer " + token, body).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    hideLoading();
+                    item.setLoading(false);
+
+                    if (response.isSuccessful()) {
+                        item.setCompleted(true);
+                        watchedCount++;
+                        updateProgressUI();
+                        Toast.makeText(WatchVideoActivity.this, "🎉 Reward Claimed! +" + item.getCoinReward() + " Coins Added!", Toast.LENGTH_LONG).show();
+                    } else {
+                        String err = "Claim failed";
+                        try {
+                            if (response.errorBody() != null) err = response.errorBody().string();
+                        } catch (Exception ignored) {}
+                        Toast.makeText(WatchVideoActivity.this, err, Toast.LENGTH_SHORT).show();
+                        if (adapter != null) adapter.notifyItemChanged(position);
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    hideLoading();
+                    item.setLoading(false);
+                    if (adapter != null) adapter.notifyItemChanged(position);
+                    Toast.makeText(WatchVideoActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
+        }).addOnFailureListener(e -> {
+            hideLoading();
+            item.setLoading(false);
+            if (adapter != null) adapter.notifyItemChanged(position);
+            Toast.makeText(this, "Auth error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+        });
+    }
+
+    private void showLoading() {
+        if (isFinishing() || isDestroyed()) return;
+        try {
+            hideLoading();
+            View view = LayoutInflater.from(this).inflate(R.layout.dialog_loading, null);
+            loadingDialog = new AlertDialog.Builder(this)
+                    .setView(view)
+                    .setCancelable(false)
+                    .create();
+            if (loadingDialog.getWindow() != null) {
+                loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+            loadingDialog.show();
+        } catch (Exception ignored) {}
+    }
+
+    private void hideLoading() {
+        if (loadingDialog != null) {
+            try {
+                if (loadingDialog.isShowing()) {
+                    loadingDialog.dismiss();
+                }
+            } catch (Exception ignored) {}
+            loadingDialog = null;
+        }
+    }
+}
