@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================
 
     private TextView txtName;
+    private TextView txtEmail;
     private TextView txtUid;
     private TextView txtCoins;
     private TextView txtTickets;
@@ -340,6 +341,11 @@ public class MainActivity extends AppCompatActivity {
         txtName =
                 findViewById(
                         R.id.txtDrawerName
+                );
+
+        txtEmail =
+                findViewById(
+                        R.id.txtDrawerEmail
                 );
 
         txtUid =
@@ -747,6 +753,30 @@ public class MainActivity extends AppCompatActivity {
                 txtName.setText(
                         "Hi, User"
                 );
+            }
+        }
+
+
+        // =====================================================
+        // EMAIL
+        // =====================================================
+
+        if (txtEmail != null) {
+
+            String email = userPref.getEmail();
+
+            if (email == null || email.trim().isEmpty()) {
+                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+                if (currentUser != null && currentUser.getEmail() != null) {
+                    email = currentUser.getEmail();
+                }
+            }
+
+            if (email != null && !email.trim().isEmpty()) {
+                txtEmail.setText(email.trim());
+                txtEmail.setVisibility(View.VISIBLE);
+            } else {
+                txtEmail.setVisibility(View.GONE);
             }
         }
 

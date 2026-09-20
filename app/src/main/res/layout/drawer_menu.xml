@@ -62,6 +62,19 @@
                 android:ellipsize="end"
                 android:maxLines="1" />
 
+            <!-- USER GMAIL / EMAIL -->
+            <TextView
+                android:id="@+id/txtDrawerEmail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="user@gmail.com"
+                android:textColor="#CBD5E1"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif"
+                android:ellipsize="end"
+                android:maxLines="1" />
+
             <!-- PHONE + COPY -->
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -106,7 +119,7 @@
             android:contentDescription="Edit Profile"
             android:padding="7dp"
             android:scaleType="centerInside"
-            app:tint="#FFFFFF"
+            
             android:src="@drawable/ic_edit" />
 
     </LinearLayout>
