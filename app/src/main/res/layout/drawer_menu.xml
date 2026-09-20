@@ -124,7 +124,7 @@
             android:contentDescription="Edit Profile"
             android:padding="6dp"
             android:scaleType="centerInside"
-            app:tint="#FFFFFF"
+
             android:src="@drawable/ic_edit"
             android:clickable="true"
             android:focusable="true" />

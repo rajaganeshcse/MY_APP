@@ -513,7 +513,7 @@ public class HomeFragment extends Fragment {
         if (notificationIcon != null) {
             notificationIcon.setOnClickListener(v -> {
                 if (!isAdded()) return;
-                Toast.makeText(getContext(), "No new notifications", Toast.LENGTH_SHORT).show();
+                showNotificationCenterBottomSheet();
             });
         }
 
@@ -2223,5 +2223,26 @@ public class HomeFragment extends Fragment {
         cardInvite = null;
 
         super.onDestroyView();
+    }
+
+    private void showNotificationCenterBottomSheet() {
+        if (!isAdded() || getContext() == null) return;
+
+        com.google.android.material.bottomsheet.BottomSheetDialog bottomSheetDialog =
+                new com.google.android.material.bottomsheet.BottomSheetDialog(requireContext());
+        View sheetView = getLayoutInflater().inflate(R.layout.dialog_notifications, null);
+        bottomSheetDialog.setContentView(sheetView);
+
+        if (bottomSheetDialog.getWindow() != null) {
+            bottomSheetDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+
+        View btnClose = sheetView.findViewById(R.id.btnCloseNotifications);
+        View btnDone = sheetView.findViewById(R.id.btnDoneNotifications);
+
+        if (btnClose != null) btnClose.setOnClickListener(v -> bottomSheetDialog.dismiss());
+        if (btnDone != null) btnDone.setOnClickListener(v -> bottomSheetDialog.dismiss());
+
+        bottomSheetDialog.show();
     }
 }

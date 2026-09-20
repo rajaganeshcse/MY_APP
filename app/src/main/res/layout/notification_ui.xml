@@ -1,33 +1,45 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:padding="1dp"
-    android:gravity="center_vertical">
+    android:padding="8dp"
+    android:gravity="center_vertical"
+    android:background="#FFFFFF">
 
+    <!-- App Logo Icon -->
+    <ImageView
+        android:id="@+id/imgLeft"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:padding="2dp"
+        android:scaleType="centerCrop"
+        android:background="@drawable/bg_profile_circle"
+        android:src="@drawable/logo"
+        android:contentDescription="Notification Icon" />
 
-
-    <!-- Text Section -->
+    <!-- Text Content -->
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:orientation="vertical"
-        android:layout_marginStart="10dp"
-        android:paddingEnd="6dp">
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp">
 
         <!-- Title -->
         <TextView
             android:id="@+id/txtTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:maxLines="2"
+            android:maxLines="1"
             android:ellipsize="end"
             android:text="Reward Added 🎯"
             android:textSize="15sp"
+            android:fontFamily="sans-serif-medium"
             android:textStyle="bold"
-            android:textColor="@color/black"
-             />
+            android:textColor="#0F172A" />
 
         <!-- Message -->
         <TextView
@@ -35,34 +47,27 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:textColor="@color/black"
-            android:maxLines="5"
+            android:textColor="#334155"
+            android:maxLines="2"
             android:ellipsize="end"
             android:text="₹200 credited to your wallet 💰"
-            android:textSize="13sp" />
+            android:textSize="13sp"
+            android:fontFamily="sans-serif" />
 
-        <!-- Message 2 -->
+        <!-- Extra Message -->
         <TextView
             android:id="@+id/txtMessage1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
-            android:maxLines="5"
+            android:textColor="#64748B"
+            android:maxLines="2"
             android:ellipsize="end"
             android:text=""
-            android:textSize="13sp" />
+            android:textSize="12sp"
+            android:fontFamily="sans-serif"
+            android:visibility="gone" />
 
     </LinearLayout>
-
-    <!-- Left Icon -->
-    <ImageView
-        android:id="@+id/imgLeft"
-        android:layout_width="39dp"
-        android:layout_height="35dp"
-        android:background="@drawable/bg_circle_light"
-        android:padding="1dp"
-        android:layout_marginTop="4dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/logo" />
 
 </LinearLayout>
