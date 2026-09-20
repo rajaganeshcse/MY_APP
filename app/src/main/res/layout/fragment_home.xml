@@ -61,7 +61,7 @@
                 android:background="#FFFFFF"
                 android:elevation="4dp"
                 android:paddingStart="16dp"
-                android:paddingTop="1dp"
+                android:paddingTop="30dp"
                 android:paddingEnd="16dp"
                 android:paddingBottom="1dp">
 
