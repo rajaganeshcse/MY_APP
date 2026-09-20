@@ -394,12 +394,21 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
             txtWeeklyStatusTitle.setText("⏳ Checking Weekly Status...");
             txtWeeklyStatusTitle.setTextColor(Color.parseColor("#CBD5E1"));
         }
+        if (txtWeeklyResetSubtitle != null) {
+            txtWeeklyResetSubtitle.setText("Connecting to server... Please wait");
+        }
 
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null) {
-            user.getIdToken(true).addOnCompleteListener(task -> {
-                String token = (task.isSuccessful() && task.getResult() != null) ? task.getResult().getToken() : "";
-                requestWeeklyStatusApi(token);
+            user.getIdToken(false).addOnCompleteListener(task -> {
+                if (task.isSuccessful() && task.getResult() != null && task.getResult().getToken() != null && !task.getResult().getToken().isEmpty()) {
+                    requestWeeklyStatusApi(task.getResult().getToken());
+                } else {
+                    user.getIdToken(true).addOnCompleteListener(task2 -> {
+                        String token = (task2.isSuccessful() && task2.getResult() != null) ? task2.getResult().getToken() : "";
+                        requestWeeklyStatusApi(token);
+                    });
+                }
             });
         } else {
             requestWeeklyStatusApi("");
@@ -544,6 +553,7 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
 
         if (cardWeeklyStatus != null) {
             cardWeeklyStatus.setOnClickListener(null);
+            cardWeeklyStatus.setClickable(false);
         }
     }
 
@@ -553,14 +563,19 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
             txtWeeklyStatusTitle.setTextColor(Color.parseColor("#F87171"));
         }
         if (txtWeeklyResetSubtitle != null) {
-            txtWeeklyResetSubtitle.setText("Unable to verify weekly status. Tap here to retry.");
+            txtWeeklyResetSubtitle.setText("Unable to verify weekly status. Tap card to retry.");
         }
         if (layoutCountdownTimer != null) {
             layoutCountdownTimer.setVisibility(View.GONE);
         }
         stopCountdownTimer();
         if (cardWeeklyStatus != null) {
-            cardWeeklyStatus.setOnClickListener(v -> fetchWeeklyStatus());
+            cardWeeklyStatus.setClickable(true);
+            cardWeeklyStatus.setFocusable(true);
+            cardWeeklyStatus.setOnClickListener(v -> {
+                Toast.makeText(HitRewardzActivity.this, "Checking connection... Please wait", Toast.LENGTH_SHORT).show();
+                fetchWeeklyStatus();
+            });
         }
     }
 
