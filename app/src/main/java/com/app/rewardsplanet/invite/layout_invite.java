@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,19 +41,17 @@ import retrofit2.Response;
 public class layout_invite extends Fragment {
 
     // ================= UI =================
-    TextView txtCode;
-    EditText edtReferral;
-    View btnCopy, btnValidate;
-    ImageView btnWhatsapp, btnTelegram,
-            btnFacebook, btnMessenger, btnShareAll;
+    private TextView txtCode;
+    private EditText edtReferral;
+    private View btnCopy, btnValidate, btnShareAll;
 
     // ================= FIREBASE & BACKEND =================
-    FirebaseFirestore db;
-    String uid;
-    ApiService apiService;
+    private FirebaseFirestore db;
+    private String uid;
+    private ApiService apiService;
 
     // ================= LOCAL CACHE =================
-    UserPref userPref;
+    private UserPref userPref;
 
     @Nullable
     @Override
@@ -75,11 +72,6 @@ public class layout_invite extends Fragment {
         edtReferral = view.findViewById(com.app.rewardsplanet.R.id.edtReferral);
         btnCopy = view.findViewById(com.app.rewardsplanet.R.id.btnCopy);
         btnValidate = view.findViewById(com.app.rewardsplanet.R.id.btnValidate);
-
-        btnWhatsapp = view.findViewById(com.app.rewardsplanet.R.id.btnWhatsapp);
-        btnTelegram = view.findViewById(com.app.rewardsplanet.R.id.btnTelegram);
-        btnFacebook = view.findViewById(com.app.rewardsplanet.R.id.btnFacebook);
-        btnMessenger = view.findViewById(com.app.rewardsplanet.R.id.btnMessenger);
         btnShareAll = view.findViewById(R.id.btnShareAll);
 
         // Firebase & Network
@@ -97,14 +89,9 @@ public class layout_invite extends Fragment {
 
         loadReferralCode();
 
-        btnCopy.setOnClickListener(v -> copyCode());
-        btnValidate.setOnClickListener(v -> validateReferral());
-
-        btnWhatsapp.setOnClickListener(v -> shareToApp("com.whatsapp"));
-        btnTelegram.setOnClickListener(v -> shareToApp("org.telegram.messenger"));
-        btnFacebook.setOnClickListener(v -> shareToApp("com.facebook.katana"));
-        btnMessenger.setOnClickListener(v -> shareToApp("com.facebook.orca"));
-        btnShareAll.setOnClickListener(v -> shareAll());
+        if (btnCopy != null) btnCopy.setOnClickListener(v -> copyCode());
+        if (btnValidate != null) btnValidate.setOnClickListener(v -> validateReferral());
+        if (btnShareAll != null) btnShareAll.setOnClickListener(v -> shareAll());
 
         return view;
     }
@@ -193,7 +180,7 @@ public class layout_invite extends Fragment {
                 (ClipboardManager) context
                         .getSystemService(Context.CLIPBOARD_SERVICE);
 
-        if (cm != null) {
+        if (cm != null && txtCode != null) {
             cm.setPrimaryClip(
                     ClipData.newPlainText(
                             "referral",
@@ -207,6 +194,7 @@ public class layout_invite extends Fragment {
     // ================= VALIDATE & APPLY REFERRAL (BACKEND SERVER-SIDE VALIDATION) =================
 
     private void validateReferral() {
+        if (edtReferral == null) return;
         String code = edtReferral.getText().toString().trim();
 
         if (code.isEmpty()) {
@@ -237,8 +225,10 @@ public class layout_invite extends Fragment {
                             String msg = jsonObj.optString("message", "Referral applied successfully!");
                             int coinsEarned = jsonObj.optInt("coinsEarned", 250);
 
-                            long currentCoins = userPref.getCoins();
-                            userPref.setCoins(currentCoins + coinsEarned);
+                            if (userPref != null) {
+                                long currentCoins = userPref.getCoins();
+                                userPref.setCoins(currentCoins + coinsEarned);
+                            }
 
                             toast(msg);
                             btnValidate.setEnabled(false);
@@ -289,19 +279,6 @@ public class layout_invite extends Fragment {
                 + "\n\nDownload now 👇\n"
                 + "🔗 "+"https://play.google.com/store/apps/details?id="
                 + pkgName;
-    }
-
-    private void shareToApp(String packageName) {
-        Intent intent = new Intent(Intent.ACTION_SEND);
-        intent.setType("text/plain");
-        intent.putExtra(Intent.EXTRA_TEXT, getShareMessage());
-        intent.setPackage(packageName);
-
-        try {
-            startActivity(intent);
-        } catch (Exception e) {
-            toast("App not installed");
-        }
     }
 
     private void shareAll() {

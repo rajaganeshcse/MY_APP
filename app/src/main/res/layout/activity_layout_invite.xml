@@ -134,74 +134,33 @@
 
                 </LinearLayout>
 
-                <!-- SHARE SOCIAL ICONS ROW -->
+                <!-- SINGLE SHARE BUTTON -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="SHARE VIA"
+                    android:text="SHARE INVITE"
                     android:textColor="#64748B"
                     android:textSize="11sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.05" />
 
-                <LinearLayout
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnShareAll"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="48dp"
                     android:layout_marginTop="10dp"
-                    android:gravity="center"
-                    android:orientation="horizontal">
-
-                    <ImageView
-                        android:id="@+id/btnWhatsapp"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/bg_reward_chip"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_whatsapp"
-                        android:contentDescription="WhatsApp" />
-
-                    <ImageView
-                        android:id="@+id/btnTelegram"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/bg_reward_chip"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_telegram"
-                        android:contentDescription="Telegram" />
-
-                    <ImageView
-                        android:id="@+id/btnFacebook"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/bg_reward_chip"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_facebook"
-                        android:contentDescription="Facebook" />
-
-                    <ImageView
-                        android:id="@+id/btnMessenger"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:layout_marginEnd="12dp"
-                        android:background="@drawable/bg_reward_chip"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_messenger"
-                        android:contentDescription="Messenger" />
-
-                    <ImageView
-                        android:id="@+id/btnShareAll"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:background="@drawable/bg_reward_chip"
-                        android:padding="10dp"
-                        android:src="@drawable/ic_share"
-                        android:contentDescription="Share All" />
-
-                </LinearLayout>
+                    android:text="Share Invite Code &amp; Link 🚀"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold"
+                    app:icon="@drawable/ic_share"
+                    app:iconTint="#FFFFFF"
+                    app:iconGravity="textStart"
+                    app:backgroundTint="#4F46E5"
+                    app:cornerRadius="12dp"
+                    android:insetTop="0dp"
+                    android:insetBottom="0dp" />
 
             </LinearLayout>
 

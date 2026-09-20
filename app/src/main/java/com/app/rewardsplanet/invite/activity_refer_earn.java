@@ -8,13 +8,17 @@ import android.view.Window;
 import android.view.WindowInsetsController;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager2.adapter.FragmentStateAdapter;
+import androidx.viewpager2.widget.ViewPager2;
 
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.profile.MyEarningsFragment;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -22,6 +26,7 @@ import com.google.firebase.firestore.ListenerRegistration;
 public class activity_refer_earn extends AppCompatActivity {
 
     private TabLayout tabLayout;
+    private ViewPager2 viewPager;
     private View btnBack;
     private TextView txtCoins;
 
@@ -41,6 +46,7 @@ public class activity_refer_earn extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         txtCoins = findViewById(R.id.txtCoins);
         tabLayout = findViewById(R.id.tabLayout);
+        viewPager = findViewById(R.id.viewPager);
 
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
@@ -52,22 +58,43 @@ public class activity_refer_earn extends AppCompatActivity {
 
         listenUserData();
 
-        // Default tab
-        loadFragment(new layout_invite());
+        // Setup ViewPager2 with Adapter for smooth left/right drag gesture
+        ReferPagerAdapter adapter = new ReferPagerAdapter(this);
+        if (viewPager != null) {
+            viewPager.setAdapter(adapter);
 
-        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-            @Override
-            public void onTabSelected(TabLayout.Tab tab) {
-                if (tab.getPosition() == 0) {
-                    loadFragment(new layout_invite());
-                } else {
-                    loadFragment(new MyEarningsFragment());
-                }
+            // Connect TabLayout with ViewPager2
+            if (tabLayout != null) {
+                new TabLayoutMediator(tabLayout, viewPager, (tab, position) -> {
+                    if (position == 0) {
+                        tab.setText("INVITE FRIENDS");
+                    } else {
+                        tab.setText("MY EARNINGS");
+                    }
+                }).attach();
             }
+        }
+    }
 
-            @Override public void onTabUnselected(TabLayout.Tab tab) {}
-            @Override public void onTabReselected(TabLayout.Tab tab) {}
-        });
+    private static class ReferPagerAdapter extends FragmentStateAdapter {
+        public ReferPagerAdapter(@NonNull AppCompatActivity activity) {
+            super(activity);
+        }
+
+        @NonNull
+        @Override
+        public Fragment createFragment(int position) {
+            if (position == 0) {
+                return new layout_invite();
+            } else {
+                return new MyEarningsFragment();
+            }
+        }
+
+        @Override
+        public int getItemCount() {
+            return 2;
+        }
     }
 
     private void listenUserData() {
@@ -85,13 +112,6 @@ public class activity_refer_earn extends AppCompatActivity {
                         }
                     }
                 });
-    }
-
-    private void loadFragment(Fragment fragment) {
-        getSupportFragmentManager()
-                .beginTransaction()
-                .replace(R.id.container, fragment)
-                .commit();
     }
 
     private void makeFullScreen() {
