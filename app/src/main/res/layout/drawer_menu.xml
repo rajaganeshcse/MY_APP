@@ -55,8 +55,10 @@
                 android:layout_height="wrap_content"
                 android:text="Hi, User"
                 android:textColor="#FFFFFF"
-                android:textSize="17sp"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"
                 android:textStyle="bold"
+                android:letterSpacing="0.01"
                 android:ellipsize="end"
                 android:maxLines="1" />
 
@@ -75,7 +77,8 @@
                     android:text="9999999999"
                     android:textColor="#94A3B8"
                     android:textSize="13sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif"
+                    android:letterSpacing="0.02" />
 
                 <ImageView
                     android:id="@+id/btnCopy"
@@ -170,7 +173,9 @@
                         android:text="0"
                         android:textColor="#0F172A"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.02" />
 
                 </LinearLayout>
 
@@ -204,7 +209,9 @@
                         android:text="0"
                         android:textColor="#0F172A"
                         android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.02" />
 
                 </LinearLayout>
 
@@ -234,10 +241,11 @@
                 android:text="MY ACCOUNT"
                 android:textColor="#64748B"
                 android:textSize="11sp"
+                android:fontFamily="sans-serif-medium"
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
 
-            <!-- WALLET (NO TINT - ORIGINAL COLOR) -->
+            <!-- WALLET -->
             <LinearLayout
                 android:id="@+id/menuWallet"
                 android:layout_width="match_parent"
@@ -269,11 +277,12 @@
                     android:text="Wallet"
                     android:textColor="#1E293B"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
-            <!-- MY ACTIVITY (NO TINT - ORIGINAL COLOR) -->
+            <!-- MY ACTIVITY -->
             <LinearLayout
                 android:id="@+id/menuActivity"
                 android:layout_width="match_parent"
@@ -305,11 +314,12 @@
                     android:text="My Activity"
                     android:textColor="#1E293B"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
-            <!-- REFER AND EARN (TINTED EMERALD GREEN) -->
+            <!-- REFER AND EARN -->
             <LinearLayout
                 android:id="@+id/menuRefer"
                 android:layout_width="match_parent"
@@ -342,7 +352,8 @@
                     android:text="Refer &amp; Earn"
                     android:textColor="#1E293B"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
@@ -370,10 +381,11 @@
                 android:text="MORE"
                 android:textColor="#64748B"
                 android:textSize="11sp"
+                android:fontFamily="sans-serif-medium"
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
 
-            <!-- RATE US (TINTED AMBER) -->
+            <!-- RATE US -->
             <LinearLayout
                 android:id="@+id/menuRate"
                 android:layout_width="match_parent"
@@ -406,11 +418,12 @@
                     android:text="Rate Us"
                     android:textColor="#1E293B"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
-            <!-- FEEDBACK (TINTED SKY BLUE) -->
+            <!-- FEEDBACK -->
             <LinearLayout
                 android:id="@+id/menuFeedback"
                 android:layout_width="match_parent"
@@ -443,11 +456,12 @@
                     android:text="Feedback"
                     android:textColor="#1E293B"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
-            <!-- CONTACT US (TINTED VIOLET) -->
+            <!-- CONTACT US -->
             <LinearLayout
                 android:id="@+id/menuContact"
                 android:layout_width="match_parent"
@@ -480,11 +494,12 @@
                     android:text="Contact Us"
                     android:textColor="#1E293B"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
-            <!-- FAQ (TINTED INDIGO) -->
+            <!-- FAQ -->
             <LinearLayout
                 android:id="@+id/menuFaq"
                 android:layout_width="match_parent"
@@ -517,11 +532,12 @@
                     android:text="FAQ's"
                     android:textColor="#1E293B"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
-            <!-- PRIVACY POLICY (TINTED SLATE) -->
+            <!-- PRIVACY POLICY -->
             <LinearLayout
                 android:id="@+id/menuPrivacy"
                 android:layout_width="match_parent"
@@ -554,7 +570,8 @@
                     android:text="Privacy Policy"
                     android:textColor="#1E293B"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
@@ -570,7 +587,7 @@
                 android:background="#E2E8F0" />
 
 
-            <!-- LOGOUT (TINTED VIVID RED) -->
+            <!-- LOGOUT -->
             <LinearLayout
                 android:id="@+id/btnLogout1"
                 android:layout_width="match_parent"
@@ -603,7 +620,9 @@
                     android:text="Logout"
                     android:textColor="#EF4444"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif-medium"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.01" />
 
             </LinearLayout>
 
@@ -617,17 +636,21 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="4dp"
                 android:textColor="#94A3B8"
-                android:textSize="12sp" />
+                android:textSize="12sp"
+                android:fontFamily="sans-serif"
+                android:letterSpacing="0.03" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="14sp"
+                android:textSize="13sp"
+                android:fontFamily="sans-serif-medium"
                 android:textStyle="bold"
                 android:text="REWARDSPRO 💙 INDIA"
                 android:layout_marginBottom="24dp"
-                android:textColor="#2563EB" />
+                android:textColor="#2563EB"
+                android:letterSpacing="0.05" />
 
         </LinearLayout>
 
