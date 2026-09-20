@@ -44,8 +44,13 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.app.rewardsplanet.notifications.MyFirebaseMessagingService;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -234,14 +239,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // DEFAULT FRAGMENT
+        // DEFAULT FRAGMENT / NOTIFICATION NAV
         // =====================================================
 
         selectNav(navHome);
+        loadFragment(new HomeFragment());
 
-        loadFragment(
-                new HomeFragment()
-        );
+        handleNotificationNavigation(getIntent());
 
         // Check if redirected from ProfileActivity after saving changes
         checkProfileSuccessDialog(getIntent());
@@ -252,6 +256,55 @@ public class MainActivity extends AppCompatActivity {
         super.onNewIntent(intent);
         setIntent(intent);
         checkProfileSuccessDialog(intent);
+        handleNotificationNavigation(intent);
+    }
+
+    private void handleNotificationNavigation(Intent intent) {
+        if (intent == null) return;
+
+        String screen = intent.getStringExtra("screen");
+        if (screen == null || screen.trim().isEmpty()) {
+            return;
+        }
+
+        Log.d("NOTIFICATION_NAV", "Navigating to destination screen: " + screen);
+
+        switch (screen.toUpperCase()) {
+            case "DAILY_BONUS":
+                selectNav(navHome);
+                loadFragment(new HomeFragment());
+                break;
+            case "SPINNER":
+                startActivity(new Intent(this, com.app.rewardsplanet.lucky_draw.activity_daily_spin.class));
+                break;
+            case "SCRATCH_CARD":
+                startActivity(new Intent(this, com.app.rewardsplanet.lucky_draw.ScratchActivity.class));
+                break;
+            case "GAMES":
+                selectNav(navGame);
+                loadFragment(new GameFragment());
+                break;
+            case "REDEEM":
+                selectNav(navReward);
+                loadFragment(new RewardFragment());
+                break;
+            case "LEADERBOARD":
+                selectNav(navLeaderboard);
+                loadFragment(new LeaderboardFragment());
+                break;
+            case "TASKS":
+                startActivity(new Intent(this, com.app.rewardsplanet.lucky_draw.HitRewardzActivity.class));
+                break;
+            case "PROFILE":
+                startActivity(new Intent(this, ProfileActivity.class));
+                break;
+            case "HOME":
+            default:
+                selectNav(navHome);
+                loadFragment(new HomeFragment());
+                break;
+        }
+        intent.removeExtra("screen");
     }
 
     private void checkProfileSuccessDialog(Intent intent) {
@@ -1049,16 +1102,21 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================
 
     private void logoutUser() {
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null && currentUser.getUid() != null) {
+            Map<String, Object> tokenRemove = new HashMap<>();
+            tokenRemove.put("fcmToken", FieldValue.delete());
+            FirebaseFirestore.getInstance().collection("users")
+                    .document(currentUser.getUid())
+                    .update(tokenRemove)
+                    .addOnFailureListener(e -> Log.e("LOGOUT", "Error removing FCM token", e));
+        }
 
         if (userPref != null) {
-
             userPref.logout();
         }
 
-
-        FirebaseAuth
-                .getInstance()
-                .signOut();
+        FirebaseAuth.getInstance().signOut();
 
 
         GoogleSignInOptions gso =
