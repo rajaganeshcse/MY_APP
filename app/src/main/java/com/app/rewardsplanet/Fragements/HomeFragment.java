@@ -18,6 +18,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
@@ -84,6 +90,8 @@ public class HomeFragment extends Fragment {
     private CardView card_surveys;
     private CardView cardInvite;
     private View card_watch;
+    private View cardWalletBalance;
+    private View cardDailyBonus;
 
     private TextView txtToken;
     private TextView txtAdCount;
@@ -390,6 +398,14 @@ public class HomeFragment extends Fragment {
 
         btnRedeemBalance = view.findViewById(
                 R.id.btnRedeemBalance
+        );
+
+        cardWalletBalance = view.findViewById(
+                R.id.cardWalletBalance
+        );
+
+        cardDailyBonus = view.findViewById(
+                R.id.card_daily_bonus
         );
     }
 
@@ -932,6 +948,7 @@ public class HomeFragment extends Fragment {
         }
 
         isDailyBonusAvailable = true;
+        showDailyBonusCard();
 
         if (btnClaimBonus != null) {
             btnClaimBonus.setEnabled(true);
@@ -960,6 +977,7 @@ public class HomeFragment extends Fragment {
         }
 
         isDailyBonusAvailable = false;
+        showWalletBalanceCard(false);
 
         if (btnClaimBonus != null) {
             btnClaimBonus.setEnabled(false);
@@ -974,6 +992,64 @@ public class HomeFragment extends Fragment {
         if (txtBonusInfo != null) {
             txtBonusInfo.setText("Come back tomorrow for your next bonus");
         }
+    }
+
+    private void showWalletBalanceCard(boolean animate) {
+        if (animate) {
+            flipDailyBonusToBalanceCard();
+        } else {
+            if (cardWalletBalance != null) {
+                cardWalletBalance.setVisibility(View.VISIBLE);
+                cardWalletBalance.setRotationY(0f);
+            }
+            if (cardDailyBonus != null) {
+                cardDailyBonus.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    private void showDailyBonusCard() {
+        if (cardDailyBonus != null) {
+            cardDailyBonus.setVisibility(View.VISIBLE);
+            cardDailyBonus.setRotationY(0f);
+        }
+        if (cardWalletBalance != null) {
+            cardWalletBalance.setVisibility(View.GONE);
+        }
+    }
+
+    private void flipDailyBonusToBalanceCard() {
+        if (!isAdded() || cardDailyBonus == null || cardWalletBalance == null) {
+            if (cardWalletBalance != null) cardWalletBalance.setVisibility(View.VISIBLE);
+            if (cardDailyBonus != null) cardDailyBonus.setVisibility(View.GONE);
+            return;
+        }
+
+        float scale = requireContext().getResources().getDisplayMetrics().density;
+        cardDailyBonus.setCameraDistance(8000 * scale);
+        cardWalletBalance.setCameraDistance(8000 * scale);
+
+        ObjectAnimator flipOut = ObjectAnimator.ofFloat(cardDailyBonus, "rotationY", 0f, 90f);
+        flipOut.setDuration(300);
+        flipOut.setInterpolator(new AccelerateInterpolator());
+
+        ObjectAnimator flipIn = ObjectAnimator.ofFloat(cardWalletBalance, "rotationY", -90f, 0f);
+        flipIn.setDuration(300);
+        flipIn.setInterpolator(new DecelerateInterpolator());
+
+        flipOut.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                cardDailyBonus.setVisibility(View.GONE);
+                cardDailyBonus.setRotationY(0f);
+
+                cardWalletBalance.setVisibility(View.VISIBLE);
+                cardWalletBalance.setRotationY(-90f);
+                flipIn.start();
+            }
+        });
+
+        flipOut.start();
     }
 
 
@@ -1593,6 +1669,7 @@ public class HomeFragment extends Fragment {
                                                     if (success) {
 
                                                         setDailyBonusClaimed();
+                                                        showWalletBalanceCard(true);
 
                                                         showRewardDialogOnly(
                                                                 reward,
