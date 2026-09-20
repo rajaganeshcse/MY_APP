@@ -10,15 +10,45 @@
     <!-- MAIN HOME SCREEN CONTAINER -->
     <!-- ================================================= -->
 
-    <FrameLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#F8FAFC">
+        android:background="#F8FAFF">
 
+        <!-- ============================================================
+             FULL GRADIENT BACKGROUND (MATCHING SCRATCH ACTIVITY)
+             ============================================================ -->
+        <View
+            android:id="@+id/bgGradient"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_scratch_gradient"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <!-- ============================================================
+             DECORATIVE GLOW CIRCLE - TOP RIGHT
+             ============================================================ -->
+        <View
+            android:id="@+id/glowCircle"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:alpha="0.28"
+            android:background="@drawable/bg_glow_circle"
+            android:translationX="70dp"
+            android:translationY="-70dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <!-- ============================================================
+             MAIN CONTENT COLUMN
+             ============================================================ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
 
             <!-- ================= HEADER ================= -->
 
@@ -342,7 +372,7 @@
 
         </LinearLayout>
 
-    </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
     <!-- ================================================= -->
