@@ -397,11 +397,18 @@ public class UserPref {
             editor.apply();
             return 0;
         }
-        return pref.getInt(KEY_HITZ_COUNT, 0);
+
+        int count = 0;
+        for (int i = 1; i <= 10; i++) {
+            if (pref.getBoolean("hitz_task_" + i, false)) {
+                count++;
+            }
+        }
+        return count;
     }
 
     public void increaseHitzCount() {
-        editor.putInt(KEY_HITZ_COUNT, getTodayHitzCount() + 1).apply();
+        // Retained for backward compatibility
     }
 
     public void setHitzTaskCompleted(int taskId) {
@@ -409,7 +416,6 @@ public class UserPref {
         editor.putString(KEY_HITZ_DATE, weekKey);
         editor.putBoolean("hitz_task_" + taskId, true);
         editor.apply();
-        increaseHitzCount();
     }
 
     public boolean isHitzTaskCompleted(int taskId) {
