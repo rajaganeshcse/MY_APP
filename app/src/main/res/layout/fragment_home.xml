@@ -500,7 +500,7 @@
 
     <FrameLayout
         android:id="@+id/navigationDrawer"
-        android:layout_width="260dp"
+        android:layout_width="280dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:background="#FFFFFF">

@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="250dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-
     android:orientation="vertical"
-    android:background="@color/base_color"
-   >
+    android:background="#F8FAFF">
 
     <!-- ================================================= -->
-    <!-- PROFILE -->
+    <!-- PROFILE HEADER (PREMIUM DARK GRADIENT) -->
     <!-- ================================================= -->
 
     <LinearLayout
@@ -18,24 +16,23 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
-        android:background="#FFFFFF"
-        android:paddingStart="16dp"
-
-        android:paddingEnd="10dp"
-        android:paddingTop="40dp"
-        android:paddingBottom="10dp">
+        android:background="@drawable/bg_drawer_header_gradient"
+        android:paddingStart="20dp"
+        android:paddingEnd="16dp"
+        android:paddingTop="48dp"
+        android:paddingBottom="20dp">
 
         <!-- PROFILE IMAGE -->
         <FrameLayout
-            android:layout_width="64dp"
-            android:layout_height="64dp">
+            android:layout_width="56dp"
+            android:layout_height="56dp">
 
             <ImageView
                 android:id="@+id/profileImage"
-                android:layout_width="54dp"
-                android:layout_height="53dp"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
                 android:layout_gravity="center"
-                android:padding="2.5dp"
+                android:padding="2dp"
                 android:contentDescription="Profile"
                 android:scaleType="centerCrop"
                 android:background="@drawable/bg_profile_circle"
@@ -48,7 +45,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="12dp"
+            android:layout_marginStart="14dp"
             android:orientation="vertical">
 
             <!-- USER NAME -->
@@ -57,16 +54,17 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Hi, User"
-                android:textColor="#222222"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textColor="#FFFFFF"
+                android:textSize="17sp"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:maxLines="1" />
 
             <!-- PHONE + COPY -->
             <LinearLayout
-
                 android:layout_width="wrap_content"
-                android:layout_height="36dp"
-                android:layout_marginTop="2dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -75,15 +73,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="9999999999"
-                    android:textColor="#777777"
-                    android:textSize="14sp" />
+                    android:textColor="#94A3B8"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
                 <ImageView
                     android:id="@+id/btnCopy"
-                    android:layout_width="23dp"
-                    android:layout_height="24dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_marginStart="8dp"
-                    android:tint="@color/color_blue"
+                    app:tint="#38BDF8"
                     android:clickable="true"
                     android:contentDescription="Copy phone number"
                     android:focusable="true"
@@ -94,17 +93,17 @@
 
         </LinearLayout>
 
-        <!-- EDIT -->
+        <!-- EDIT PROFILE -->
         <ImageView
             android:id="@+id/btnEditProfile"
-            android:layout_width="30dp"
-            android:layout_height="28dp"
-            android:layout_marginLeft="5dp"
+            android:layout_width="34dp"
+            android:layout_height="34dp"
+            android:layout_marginStart="8dp"
             android:background="@drawable/bg_edit_circle"
             android:contentDescription="Edit Profile"
-            android:padding="5dp"
-            android:layout_marginRight="10dp"
+            android:padding="7dp"
             android:scaleType="centerInside"
+
             android:src="@drawable/ic_edit" />
 
     </LinearLayout>
@@ -119,6 +118,7 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:fillViewport="true"
+        android:overScrollMode="never"
         android:scrollbars="none">
 
         <LinearLayout
@@ -126,145 +126,145 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-
             <!-- ================================================= -->
-            <!-- MAIN MENU -->
+            <!-- QUICK STATS (COINS & TICKETS) -->
             <!-- ================================================= -->
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                android:orientation="horizontal"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:paddingTop="14dp"
+                android:paddingBottom="10dp"
+                android:weightSum="2">
 
-
-                <!-- HOME -->
+                <!-- COIN HISTORY CHIP -->
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:id="@+id/coinhistory"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginEnd="6dp"
+                    android:background="@drawable/bg_drawer_stat_chip"
+                    android:elevation="1dp"
+                    android:gravity="center"
                     android:orientation="horizontal"
-                    android:weightSum="2">
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
-                    <LinearLayout
-                        android:id="@+id/coinhistory"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_marginEnd="8dp"
-                        android:background="@drawable/bg_dashboard_item"
-                        android:gravity="center"
-                        android:orientation="horizontal">
+                        android:src="@drawable/ic_coin"
+                        android:contentDescription="Coins" />
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="10dp"
-                            android:src="@drawable/ic_coin" />
-
-                        <TextView
-                            android:id="@+id/txtCoins"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textStyle="bold"
-                            android:textColor="#202124"
-                            android:textSize="18sp"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/tickethistory"
-                        android:layout_width="0dp"
+                    <TextView
+                        android:id="@+id/txtCoins"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:background="@drawable/bg_dashboard_item"
-                        android:gravity="center"
-                        android:orientation="horizontal">
-
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:layout_marginEnd="10dp"
-                            android:src="@drawable/ic_ticket"/>
-
-                        <TextView
-                            android:id="@+id/txtTickets"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="0"
-                            android:textStyle="bold"
-                            android:textColor="#202124"
-                            android:textSize="18sp"/>
-
-                    </LinearLayout>
+                        android:text="0"
+                        android:textColor="#0F172A"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
+                <!-- TICKET HISTORY CHIP -->
+                <LinearLayout
+                    android:id="@+id/tickethistory"
+                    android:layout_width="0dp"
+                    android:layout_height="48dp"
+                    android:layout_weight="1"
+                    android:layout_marginStart="6dp"
+                    android:background="@drawable/bg_drawer_stat_chip"
+                    android:elevation="1dp"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:clickable="true"
+                    android:focusable="true">
 
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:layout_marginEnd="8dp"
+                        android:src="@drawable/ic_ticket"
+                        android:contentDescription="Tickets" />
 
+                    <TextView
+                        android:id="@+id/txtTickets"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0"
+                        android:textColor="#0F172A"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-
-
-
-
+                </LinearLayout>
 
             </LinearLayout>
 
 
-            <!-- ================================================= -->
             <!-- DIVIDER -->
-            <!-- ================================================= -->
-
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
-                android:layout_marginTop="8dp"
-                android:background="#E0E0E0" />
-
-
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="4dp"
+                android:background="#E2E8F0" />
 
 
             <!-- ================================================= -->
-            <!-- MY ACCOUNT -->
+            <!-- SECTION: MY ACCOUNT -->
             <!-- ================================================= -->
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="28dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="8dp"
+                android:paddingStart="20dp"
+                android:paddingTop="14dp"
+                android:paddingBottom="6dp"
                 android:text="MY ACCOUNT"
-                android:textColor="#777777"
-                android:textSize="16sp" />
-
+                android:textColor="#64748B"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
 
             <!-- WALLET -->
             <LinearLayout
                 android:id="@+id/menuWallet"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:paddingStart="28dp"
-                android:paddingEnd="28dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_gift" />
+                        android:src="@drawable/ic_gift"
+                        android:contentDescription="Wallet" />
 
                 </FrameLayout>
 
@@ -272,45 +272,42 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="14dp"
                     android:text="Wallet"
-                    android:textColor="#303030"
-                    android:textSize="16sp"
+                    android:textColor="#1E293B"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginEnd="28dp"
-                android:background="#EEEEEE" />
-
 
             <!-- MY ACTIVITY -->
             <LinearLayout
                 android:id="@+id/menuActivity"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:paddingStart="28dp"
-                android:paddingEnd="28dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_history" />
+                        android:src="@drawable/ic_history"
+                        android:contentDescription="My Activity" />
 
                 </FrameLayout>
 
@@ -318,45 +315,42 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="14dp"
                     android:text="My Activity"
-                    android:textColor="#303030"
-                    android:textSize="16sp"
+                    android:textColor="#1E293B"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginEnd="28dp"
-                android:background="#EEEEEE" />
-
 
             <!-- REFER AND EARN -->
             <LinearLayout
                 android:id="@+id/menuRefer"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:paddingStart="28dp"
-                android:paddingEnd="28dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_invite" />
+                        android:src="@drawable/ic_invite"
+                        android:contentDescription="Refer and Earn" />
 
                 </FrameLayout>
 
@@ -364,63 +358,69 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="16dp"
-                    android:text="Refer and Earn"
-                    android:textColor="#303030"
-                    android:textSize="16sp"
+                    android:layout_marginStart="14dp"
+                    android:text="Refer &amp; Earn"
+                    android:textColor="#1E293B"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
 
-            <!-- ================================================= -->
             <!-- DIVIDER -->
-            <!-- ================================================= -->
-
             <View
                 android:layout_width="match_parent"
-                android:layout_height="2dp"
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
                 android:layout_marginTop="8dp"
-                android:background="#E0E0E0" />
+                android:background="#E2E8F0" />
 
 
             <!-- ================================================= -->
-            <!-- MORE -->
+            <!-- SECTION: MORE -->
             <!-- ================================================= -->
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="30dp"
-                android:paddingTop="10dp"
-                android:paddingBottom="8dp"
+                android:paddingStart="20dp"
+                android:paddingTop="14dp"
+                android:paddingBottom="6dp"
                 android:text="MORE"
-                android:textColor="#777777"
-                android:textSize="16sp" />
-
+                android:textColor="#64748B"
+                android:textSize="11sp"
+                android:textStyle="bold"
+                android:letterSpacing="0.08" />
 
             <!-- RATE US -->
             <LinearLayout
                 android:id="@+id/menuRate"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:paddingStart="28dp"
-                android:paddingEnd="28dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/rate_us" />
+                        android:src="@drawable/rate_us"
+                        android:contentDescription="Rate Us" />
 
                 </FrameLayout>
 
@@ -428,45 +428,42 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="14dp"
                     android:text="Rate Us"
-                    android:textColor="#303030"
-                    android:textSize="16sp"
+                    android:textColor="#1E293B"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginEnd="28dp"
-                android:background="#EEEEEE" />
-
 
             <!-- FEEDBACK -->
             <LinearLayout
                 android:id="@+id/menuFeedback"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:paddingStart="28dp"
-                android:paddingEnd="28dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_privacy" />
+                        android:src="@drawable/ic_privacy"
+                        android:contentDescription="Feedback" />
 
                 </FrameLayout>
 
@@ -474,45 +471,42 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="14dp"
                     android:text="Feedback"
-                    android:textColor="#303030"
-                    android:textSize="16sp"
+                    android:textColor="#1E293B"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginEnd="28dp"
-                android:background="#EEEEEE" />
-
 
             <!-- CONTACT US -->
             <LinearLayout
                 android:id="@+id/menuContact"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:paddingStart="28dp"
-                android:paddingEnd="28dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_help" />
+                        android:src="@drawable/ic_help"
+                        android:contentDescription="Contact Us" />
 
                 </FrameLayout>
 
@@ -520,45 +514,42 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="14dp"
                     android:text="Contact Us"
-                    android:textColor="#303030"
-                    android:textSize="16sp"
+                    android:textColor="#1E293B"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginEnd="28dp"
-                android:background="#EEEEEE" />
-
 
             <!-- FAQ -->
             <LinearLayout
                 android:id="@+id/menuFaq"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:paddingStart="28dp"
-                android:paddingEnd="28dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_terms" />
+                        android:src="@drawable/ic_terms"
+                        android:contentDescription="FAQ" />
 
                 </FrameLayout>
 
@@ -566,45 +557,42 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="14dp"
                     android:text="FAQ's"
-                    android:textColor="#303030"
-                    android:textSize="16sp"
+                    android:textColor="#1E293B"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
-
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:layout_marginStart="28dp"
-                android:layout_marginEnd="28dp"
-                android:background="#EEEEEE" />
-
 
             <!-- PRIVACY POLICY -->
             <LinearLayout
                 android:id="@+id/menuPrivacy"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:paddingStart="28dp"
-                android:paddingEnd="28dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_privacy" />
+                        android:src="@drawable/ic_privacy"
+                        android:contentDescription="Privacy Policy" />
 
                 </FrameLayout>
 
@@ -612,36 +600,55 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="14dp"
                     android:text="Privacy Policy"
-                    android:textColor="#303030"
-                    android:textSize="16sp"
+                    android:textColor="#1E293B"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
 
+            <!-- DIVIDER BEFORE LOGOUT -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="6dp"
+                android:layout_marginBottom="4dp"
+                android:background="#E2E8F0" />
+
+
+            <!-- LOGOUT -->
             <LinearLayout
                 android:id="@+id/btnLogout1"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
-                android:paddingStart="28dp"
-                android:paddingEnd="28dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:clickable="true"
                 android:focusable="true">
 
                 <FrameLayout
-                    android:layout_width="40dp"
-                    android:layout_height="40dp">
+                    android:layout_width="34dp"
+                    android:layout_height="34dp"
+                    android:layout_gravity="center">
 
                     <ImageView
-                        android:layout_width="32dp"
-                        android:layout_height="32dp"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
                         android:layout_gravity="center"
                         android:scaleType="centerInside"
-                        android:src="@drawable/ic_logout" />
+                        android:src="@drawable/ic_logout"
+                        app:tint="#EF4444"
+                        android:contentDescription="Logout" />
 
                 </FrameLayout>
 
@@ -649,51 +656,37 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="14dp"
                     android:text="Logout"
-                    android:textColor="#A80707"
-                    android:textSize="16sp"
+                    android:textColor="#EF4444"
+                    android:textSize="14sp"
                     android:textStyle="bold" />
 
             </LinearLayout>
 
 
-            <!-- BOTTOM SPACE -->
-            <Space
-                android:layout_width="match_parent"
-                android:layout_height="15dp" />
+            <!-- BOTTOM FOOTER IN DRAWER -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:gravity="center"
-                android:text="version 1.0"
-                android:layout_marginBottom="25dp"
-                android:textColor="@color/black"/>
+                android:text="version 1.0.0"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="4dp"
+                android:textColor="#94A3B8"
+                android:textSize="12sp" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
                 android:gravity="center"
-                android:textSize="20dp"
+                android:textSize="14sp"
                 android:textStyle="bold"
-                android:alpha="0.7"
-
-                android:text="REWARDHUB 💖 INDIA "
-                android:layout_marginBottom="25dp"
-                android:textColor="@color/black"/>
-
-
+                android:text="REWARDSPRO 💙 INDIA"
+                android:layout_marginBottom="24dp"
+                android:textColor="#2563EB" />
 
         </LinearLayout>
-
-
-
-
-
-        <!-- PRIVACY POLICY -->
-
-
 
     </ScrollView>
 
