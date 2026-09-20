@@ -607,6 +607,8 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
 
             TextView txtTitle = d.findViewById(R.id.txtTitle);
             TextView txtWinAmount = d.findViewById(R.id.txtWinAmount);
+            View layoutWinTicket = d.findViewById(R.id.layoutWinTicket);
+            TextView txtWinTicketAmount = d.findViewById(R.id.txtWinTicketAmount);
             TextView txtCurrentBalance = d.findViewById(R.id.txtCurrentBalance);
             MaterialButton btnOk = d.findViewById(R.id.btnOk);
 
@@ -614,8 +616,14 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
                 txtTitle.setText("Hitz Offer Completed! ⚡");
             }
             if (txtWinAmount != null) {
-                txtWinAmount.setText("+" + rewardCoins + " Coins & +" + rewardTickets + " Tickets");
+                txtWinAmount.setText("+" + rewardCoins + " Coins");
             }
+
+            if (rewardTickets > 0 && layoutWinTicket != null && txtWinTicketAmount != null) {
+                txtWinTicketAmount.setText("+" + rewardTickets + " Ticket" + (rewardTickets > 1 ? "s" : ""));
+                layoutWinTicket.setVisibility(View.VISIBLE);
+            }
+
             if (txtCurrentBalance != null) {
                 txtCurrentBalance.setText("Balance: " + userPref.getCoins() + " Coins");
             }
