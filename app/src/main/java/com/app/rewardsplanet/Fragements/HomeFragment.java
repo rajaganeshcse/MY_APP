@@ -101,6 +101,8 @@ public class HomeFragment extends Fragment {
     private TextView txtUserCoins;
 
     private ImageView imgRewardCoin;
+    private ImageView imgDailyBonus;
+    private ObjectAnimator giftVibrationAnimator;
     private ImageView strikeIcon;
     private ImageView menuIcon;
     private ImageView notificationIcon;
@@ -377,6 +379,10 @@ public class HomeFragment extends Fragment {
 
         progressHoldBonus = view.findViewById(
                 R.id.progressHoldBonus
+        );
+
+        imgDailyBonus = view.findViewById(
+                R.id.imgDailyBonus
         );
 
 
@@ -862,6 +868,7 @@ public class HomeFragment extends Fragment {
         holdStartTime = System.currentTimeMillis();
 
         triggerHaptic(100);
+        startFastGiftVibrationAnimation();
 
         if (btnClaimBonus != null) {
             btnClaimBonus.setTextColor(Color.parseColor("#FFFFFF"));
@@ -893,6 +900,7 @@ public class HomeFragment extends Fragment {
                     isHolding = false;
                     isDailyBonusAvailable = false;
                     triggerHaptic(250);
+                    stopGiftVibrationAnimation();
 
                     if (btnClaimBonus != null) {
                         btnClaimBonus.setText("CLAIMING...");
@@ -919,6 +927,8 @@ public class HomeFragment extends Fragment {
 
         if (isDailyBonusAvailable) {
             setDailyBonusAvailable();
+        } else {
+            stopGiftVibrationAnimation();
         }
     }
 
@@ -938,6 +948,44 @@ public class HomeFragment extends Fragment {
     }
 
     // =========================================================
+    // GIFT BOX VIBRATION ANIMATION
+    // =========================================================
+
+    private void startGiftVibrationAnimation() {
+        if (!isAdded() || imgDailyBonus == null) return;
+        stopGiftVibrationAnimation();
+
+        giftVibrationAnimator = ObjectAnimator.ofFloat(imgDailyBonus, "rotation", -8f, 8f);
+        giftVibrationAnimator.setDuration(160);
+        giftVibrationAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        giftVibrationAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+        giftVibrationAnimator.start();
+    }
+
+    private void startFastGiftVibrationAnimation() {
+        if (!isAdded() || imgDailyBonus == null) return;
+        stopGiftVibrationAnimation();
+
+        giftVibrationAnimator = ObjectAnimator.ofFloat(imgDailyBonus, "rotation", -14f, 14f);
+        giftVibrationAnimator.setDuration(80);
+        giftVibrationAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        giftVibrationAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+        giftVibrationAnimator.start();
+    }
+
+    private void stopGiftVibrationAnimation() {
+        if (giftVibrationAnimator != null) {
+            giftVibrationAnimator.cancel();
+            giftVibrationAnimator = null;
+        }
+        if (imgDailyBonus != null) {
+            imgDailyBonus.setRotation(0f);
+            imgDailyBonus.setTranslationX(0f);
+            imgDailyBonus.clearAnimation();
+        }
+    }
+
+    // =========================================================
     // DAILY BONUS AVAILABLE
     // =========================================================
 
@@ -949,6 +997,7 @@ public class HomeFragment extends Fragment {
 
         isDailyBonusAvailable = true;
         showDailyBonusCard();
+        startGiftVibrationAnimation();
 
         if (btnClaimBonus != null) {
             btnClaimBonus.setEnabled(true);
@@ -977,6 +1026,7 @@ public class HomeFragment extends Fragment {
         }
 
         isDailyBonusAvailable = false;
+        stopGiftVibrationAnimation();
         showWalletBalanceCard(false);
 
         if (btnClaimBonus != null) {
@@ -2026,6 +2076,8 @@ public class HomeFragment extends Fragment {
         btnWatchNow = null;
 
         // DAILY BONUS
+        stopGiftVibrationAnimation();
+        imgDailyBonus = null;
         btnClaimBonus = null;
 
         txtBonusInfo = null;
