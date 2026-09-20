@@ -19,7 +19,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_hit_rewardz_gradient"
+        android:background="@drawable/bg_card_spinner_gradient"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="12dp">
