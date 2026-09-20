@@ -4,14 +4,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0D0D1A">
+    android:background="#F8FAFF">
 
-    <!-- GRADIENT BACKGROUND -->
+    <!-- ============================================================
+         FULL GRADIENT BACKGROUND (MATCHING SCRATCH ACTIVITY)
+         ============================================================ -->
     <View
         android:id="@+id/bgGradient"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_dark_activity_gradient"
+        android:background="@drawable/bg_scratch_gradient"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -20,7 +22,7 @@
         android:id="@+id/glowCircle"
         android:layout_width="200dp"
         android:layout_height="200dp"
-        android:alpha="0.15"
+        android:alpha="0.30"
         android:background="@drawable/bg_glow_circle"
         android:translationX="60dp"
         android:translationY="-60dp"
@@ -44,8 +46,8 @@
             android:orientation="horizontal"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:paddingTop="32dp"
-            android:paddingBottom="12dp">
+            android:paddingTop="30dp"
+            android:paddingBottom="10dp">
 
             <!-- Back Button -->
             <ImageView
@@ -54,8 +56,8 @@
                 android:layout_height="44dp"
                 android:padding="11dp"
                 android:src="@drawable/back_arrow"
-                android:background="@drawable/bg_back_dark"
-                app:tint="#FFFFFF"
+                app:tint="#1E293B"
+                android:background="@drawable/bg_delete_back"
                 android:contentDescription="Back" />
 
             <!-- Title Block -->
@@ -71,7 +73,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Watch &amp; Earn 📺"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#0F172A"
                     android:textSize="20sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.01" />
@@ -81,7 +83,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Watch 10 videos daily to earn coins"
-                    android:textColor="#94A3B8"
+                    android:textColor="#64748B"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -93,7 +95,7 @@
                 android:layout_height="38dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
-                android:background="@drawable/bg_coin_chip_dark"
+                android:background="@drawable/bg_reward_chip"
                 android:paddingStart="10dp"
                 android:paddingEnd="12dp">
 
@@ -109,7 +111,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="5dp"
                     android:text="0"
-                    android:textColor="#FFD700"
+                    android:textColor="#92400E"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -117,7 +119,7 @@
 
         </LinearLayout>
 
-        <!-- DAILY PROGRESS CARD -->
+        <!-- DAILY PROGRESS CARD (LIGHT CARD) -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -125,10 +127,10 @@
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="12dp"
-            app:cardCornerRadius="16dp"
+            app:cardCornerRadius="18dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="#1E1E32"
-            app:strokeColor="#333352"
+            app:cardBackgroundColor="#FFFFFF"
+            app:strokeColor="#EEF2FF"
             app:strokeWidth="1.5dp">
 
             <LinearLayout
@@ -149,7 +151,7 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         android:text="Today's Video Bonus Progress"
-                        android:textColor="#FFFFFF"
+                        android:textColor="#0F172A"
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
