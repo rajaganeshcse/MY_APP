@@ -34,11 +34,11 @@
 
             <ImageView
                 android:id="@+id/ic_gift_box"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_gravity="center"
+                android:scaleType="fitCenter"
                 android:src="@drawable/ic_gift_box"
-                app:tint="#059669"
                 android:contentDescription="Scratch &amp; Win" />
         </FrameLayout>
 
