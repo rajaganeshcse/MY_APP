@@ -206,27 +206,25 @@ public class MainActivity extends AppCompatActivity {
                             token
                     );
 
-                    String uid =
-                            userPref.getUid();
+                    String uid = userPref.getUid();
+                    if (uid == null || uid.isEmpty()) {
+                        FirebaseUser fUser = FirebaseAuth.getInstance().getCurrentUser();
+                        if (fUser != null) uid = fUser.getUid();
+                    }
 
-                    if (uid != null &&
-                            !uid.isEmpty()) {
+                    if (uid != null && !uid.isEmpty()) {
+                        Map<String, Object> tokenData = new HashMap<>();
+                        tokenData.put("fcmToken", token);
+                        tokenData.put("token", token);
+                        tokenData.put("notificationEnabled", true);
+                        tokenData.put("updatedAt", FieldValue.serverTimestamp());
 
-                        FirebaseFirestore
-                                .getInstance()
+                        FirebaseFirestore.getInstance()
                                 .collection("users")
                                 .document(uid)
-                                .update(
-                                        "fcmToken",
-                                        token
-                                )
-                                .addOnFailureListener(e ->
-                                        Log.e(
-                                                "FCM_TOKEN",
-                                                "Failed to update token",
-                                                e
-                                        )
-                                );
+                                .set(tokenData, com.google.firebase.firestore.SetOptions.merge())
+                                .addOnSuccessListener(aVoid -> Log.d("FCM_TOKEN", "FCM token saved successfully: " + token))
+                                .addOnFailureListener(e -> Log.e("FCM_TOKEN", "Failed to update token", e));
                     }
                 });
 
