@@ -21,6 +21,7 @@ import android.widget.Toast;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.animation.ValueAnimator;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 
@@ -109,6 +110,11 @@ public class HomeFragment extends Fragment {
     private ImageView imgDailyBonus;
     private ObjectAnimator giftVibrationAnimator;
     private ImageView strikeIcon;
+    private TextView txtStreakCount;
+    private View streakContainer;
+    private ObjectAnimator flameWobbleAnimator;
+    private ObjectAnimator flameScaleXAnimator;
+    private ObjectAnimator flameScaleYAnimator;
     private ImageView menuIcon;
     private ImageView notificationIcon;
 
@@ -255,6 +261,8 @@ public class HomeFragment extends Fragment {
             }
         }
 
+        updateStreakDisplayAndAnimation();
+
         if (!isInternetAvailable()) {
 
             Intent intent = new Intent(
@@ -263,6 +271,62 @@ public class HomeFragment extends Fragment {
             );
 
             startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (flameWobbleAnimator != null && flameWobbleAnimator.isRunning()) flameWobbleAnimator.cancel();
+        if (flameScaleXAnimator != null && flameScaleXAnimator.isRunning()) flameScaleXAnimator.cancel();
+        if (flameScaleYAnimator != null && flameScaleYAnimator.isRunning()) flameScaleYAnimator.cancel();
+    }
+
+    private void updateStreakDisplayAndAnimation() {
+        if (userPref == null || !isAdded()) return;
+        int streakCount = userPref.getStreakCount();
+        if (txtStreakCount != null) {
+            txtStreakCount.setText(String.valueOf(streakCount));
+        }
+
+        if (strikeIcon == null) return;
+
+        if (streakCount > 0) {
+            if (flameWobbleAnimator == null) {
+                flameWobbleAnimator = ObjectAnimator.ofFloat(strikeIcon, "rotation", -8f, 8f);
+                flameWobbleAnimator.setDuration(400);
+                flameWobbleAnimator.setRepeatCount(ValueAnimator.INFINITE);
+                flameWobbleAnimator.setRepeatMode(ValueAnimator.REVERSE);
+            }
+
+            if (flameScaleXAnimator == null) {
+                flameScaleXAnimator = ObjectAnimator.ofFloat(strikeIcon, "scaleX", 1.0f, 1.18f);
+                flameScaleXAnimator.setDuration(500);
+                flameScaleXAnimator.setRepeatCount(ValueAnimator.INFINITE);
+                flameScaleXAnimator.setRepeatMode(ValueAnimator.REVERSE);
+            }
+
+            if (flameScaleYAnimator == null) {
+                flameScaleYAnimator = ObjectAnimator.ofFloat(strikeIcon, "scaleY", 1.0f, 1.18f);
+                flameScaleYAnimator.setDuration(500);
+                flameScaleYAnimator.setRepeatCount(ValueAnimator.INFINITE);
+                flameScaleYAnimator.setRepeatMode(ValueAnimator.REVERSE);
+            }
+
+            if (!flameWobbleAnimator.isRunning()) flameWobbleAnimator.start();
+            if (!flameScaleXAnimator.isRunning()) flameScaleXAnimator.start();
+            if (!flameScaleYAnimator.isRunning()) flameScaleYAnimator.start();
+
+            strikeIcon.setAlpha(1.0f);
+        } else {
+            if (flameWobbleAnimator != null && flameWobbleAnimator.isRunning()) flameWobbleAnimator.cancel();
+            if (flameScaleXAnimator != null && flameScaleXAnimator.isRunning()) flameScaleXAnimator.cancel();
+            if (flameScaleYAnimator != null && flameScaleYAnimator.isRunning()) flameScaleYAnimator.cancel();
+
+            strikeIcon.setRotation(0f);
+            strikeIcon.setScaleX(1.0f);
+            strikeIcon.setScaleY(1.0f);
+            strikeIcon.setAlpha(0.85f);
         }
     }
 
@@ -401,6 +465,14 @@ public class HomeFragment extends Fragment {
 
         strikeIcon = view.findViewById(
                 R.id.strikeIcon
+        );
+
+        txtStreakCount = view.findViewById(
+                R.id.txtStreakCount
+        );
+
+        streakContainer = view.findViewById(
+                R.id.streakContainer
         );
 
         notificationIcon = view.findViewById(
@@ -681,26 +753,15 @@ public class HomeFragment extends Fragment {
         // STREAK
         // =====================================================
 
-        if (strikeIcon != null) {
+        View.OnClickListener openStreak = v -> {
+            if (!isAdded()) return;
+            MainActivity activity = (MainActivity) requireActivity();
+            activity.selectNav(activity.navHome);
+            activity.loadFragment(new StreakFragment());
+        };
 
-            strikeIcon.setOnClickListener(v -> {
-
-                if (!isAdded()) {
-                    return;
-                }
-
-                MainActivity activity =
-                        (MainActivity) requireActivity();
-
-                activity.selectNav(
-                        activity.navHome
-                );
-
-                activity.loadFragment(
-                        new StreakFragment()
-                );
-            });
-        }
+        if (streakContainer != null) streakContainer.setOnClickListener(openStreak);
+        if (strikeIcon != null) strikeIcon.setOnClickListener(openStreak);
     }
 
     @SuppressLint("ClickableViewAccessibility")
