@@ -127,6 +127,13 @@ public class layout_invite extends Fragment {
     // ================= REFERRAL CODE (BACKEND GENERATED & FETCHED) =================
 
     private void loadReferralCode() {
+        // 1. Load instantly from local stored data (UserPref)
+        String localCode = userPref.getReferralCode();
+        if (localCode != null && !localCode.trim().isEmpty()) {
+            txtCode.setText(localCode);
+        }
+
+        // 2. Sync latest referral code from backend API
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             loadReferralCodeFallback();
@@ -146,6 +153,7 @@ public class layout_invite extends Fragment {
                                 String code = jsonObject.optString("referralCode", "");
                                 if (!code.isEmpty()) {
                                     txtCode.setText(code);
+                                    userPref.setReferralCode(code); // Save to local storage
                                     return;
                                 }
                             }
@@ -171,6 +179,7 @@ public class layout_invite extends Fragment {
                     UserModel user = doc.toObject(UserModel.class);
                     if (user != null && user.getReferralCode() != null && !user.getReferralCode().isEmpty()) {
                         txtCode.setText(user.getReferralCode());
+                        userPref.setReferralCode(user.getReferralCode()); // Save to local storage
                     }
                 });
     }
