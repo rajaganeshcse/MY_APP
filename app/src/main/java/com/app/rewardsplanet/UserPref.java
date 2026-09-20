@@ -362,18 +362,34 @@ public class UserPref {
     }
 
     /* ==================================================
-       HITZ REWARDZ
+       HITZ REWARDZ (WEEKLY RESET IST)
        ================================================== */
 
     private static final String KEY_HITZ_DATE = "hitz_date";
     private static final String KEY_HITZ_COUNT = "hitz_count";
 
-    public int getTodayHitzCount() {
-        String today = getTodayDate();
-        String savedDate = pref.getString(KEY_HITZ_DATE, "");
+    private String getWeeklyStartKey() {
+        java.util.TimeZone tz = java.util.TimeZone.getTimeZone("Asia/Kolkata");
+        java.util.Calendar cal = java.util.Calendar.getInstance(tz);
+        cal.setFirstDayOfWeek(java.util.Calendar.MONDAY);
+        cal.set(java.util.Calendar.HOUR_OF_DAY, 0);
+        cal.set(java.util.Calendar.MINUTE, 0);
+        cal.set(java.util.Calendar.SECOND, 0);
+        cal.set(java.util.Calendar.MILLISECOND, 0);
 
-        if (!today.equals(savedDate)) {
-            editor.putString(KEY_HITZ_DATE, today);
+        int dayOfWeek = cal.get(java.util.Calendar.DAY_OF_WEEK);
+        int daysFromMonday = (dayOfWeek - java.util.Calendar.MONDAY + 7) % 7;
+        cal.add(java.util.Calendar.DAY_OF_MONTH, -daysFromMonday);
+
+        return new SimpleDateFormat("yyyy-MM-dd", Locale.US).format(cal.getTime());
+    }
+
+    public int getTodayHitzCount() {
+        String weekKey = getWeeklyStartKey();
+        String savedWeekKey = pref.getString(KEY_HITZ_DATE, "");
+
+        if (!weekKey.equals(savedWeekKey)) {
+            editor.putString(KEY_HITZ_DATE, weekKey);
             editor.putInt(KEY_HITZ_COUNT, 0);
             for (int i = 1; i <= 10; i++) {
                 editor.putBoolean("hitz_task_" + i, false);
@@ -389,16 +405,17 @@ public class UserPref {
     }
 
     public void setHitzTaskCompleted(int taskId) {
-        editor.putString(KEY_HITZ_DATE, getTodayDate());
+        String weekKey = getWeeklyStartKey();
+        editor.putString(KEY_HITZ_DATE, weekKey);
         editor.putBoolean("hitz_task_" + taskId, true);
         editor.apply();
         increaseHitzCount();
     }
 
     public boolean isHitzTaskCompleted(int taskId) {
-        String today = getTodayDate();
-        String savedDate = pref.getString(KEY_HITZ_DATE, "");
-        if (!today.equals(savedDate)) {
+        String weekKey = getWeeklyStartKey();
+        String savedWeekKey = pref.getString(KEY_HITZ_DATE, "");
+        if (!weekKey.equals(savedWeekKey)) {
             return false;
         }
         return pref.getBoolean("hitz_task_" + taskId, false);

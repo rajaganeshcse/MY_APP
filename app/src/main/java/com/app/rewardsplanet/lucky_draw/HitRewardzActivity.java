@@ -38,10 +38,16 @@ import com.app.rewardsplanet.network.ApiService;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.UUID;
 
 import okhttp3.ResponseBody;
@@ -67,8 +73,13 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
     private TextView txtWeeklyStatusTitle;
     private TextView txtWeeklyResetSubtitle;
     private View cardWeeklyStatus;
+    private View layoutCountdownTimer;
+    private TextView txtCountdownTimer;
     private boolean isWeeklyClaimed = false;
     private boolean isBackendLoading = false;
+
+    private final Handler timerHandler = new Handler(Looper.getMainLooper());
+    private Runnable timerRunnable;
 
     private List<HitRewardzModel> hitzList = new ArrayList<>();
     private RewardedAd rewardedAd;
@@ -104,6 +115,8 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
         txtWeeklyStatusTitle = findViewById(R.id.txtWeeklyStatusTitle);
         txtWeeklyResetSubtitle = findViewById(R.id.txtWeeklyResetSubtitle);
         cardWeeklyStatus = findViewById(R.id.cardWeeklyStatus);
+        layoutCountdownTimer = findViewById(R.id.layoutCountdownTimer);
+        txtCountdownTimer = findViewById(R.id.txtCountdownTimer);
 
         if (txtCoins != null) {
             txtCoins.setText(String.valueOf(userPref.getCoins()));
@@ -217,12 +230,18 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
 
     private void updateProgressUI() {
         int completedCount = userPref.getTodayHitzCount();
+        if (completedCount >= 5) {
+            isWeeklyClaimed = true;
+        }
+
+        int displayCount = isWeeklyClaimed ? 5 : Math.min(completedCount, 5);
 
         if (txtProgressCount != null) {
-            txtProgressCount.setText(completedCount + " / 5");
+            txtProgressCount.setText(displayCount + " / 5");
         }
         if (progressHitzAds != null) {
-            progressHitzAds.setProgress(Math.min(completedCount, 5));
+            progressHitzAds.setMax(5);
+            progressHitzAds.setProgress(displayCount);
         }
         if (txtCoins != null) {
             txtCoins.setText(String.valueOf(userPref.getCoins()));
@@ -230,10 +249,10 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
 
         for (int i = 0; i < hitzList.size(); i++) {
             HitRewardzModel item = hitzList.get(i);
-            if (i < completedCount) {
+            if (isWeeklyClaimed || i < displayCount) {
                 item.setCompleted(true);
                 item.setLocked(false);
-            } else if (i == completedCount) {
+            } else if (i == displayCount) {
                 item.setCompleted(false);
                 item.setLocked(false);
             } else {
@@ -329,9 +348,9 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
                             String rawJson = response.body().string();
                             JSONObject json = new JSONObject(rawJson);
 
-                            boolean claimed = json.optBoolean("claimed", true);
-                            boolean eligible = json.optBoolean("eligible", false);
-                            String message = json.optString("message", "Weekly reward claimed successfully");
+                            boolean claimed = json.optBoolean("claimed", false);
+                            int completedTasksCount = json.optInt("completedTasksCount", item.getId());
+                            String message = json.optString("message", "Task completed successfully");
                             String nextReset = json.optString("nextReset", "Monday 12:00 AM");
 
                             int coinReward = json.optInt("coinReward", fallbackCoins);
@@ -343,7 +362,7 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
                             userPref.setTickets((int) totalTickets);
                             userPref.setHitzTaskCompleted(item.getId());
 
-                            isWeeklyClaimed = claimed || !eligible;
+                            isWeeklyClaimed = claimed || completedTasksCount >= 5 || userPref.getTodayHitzCount() >= 5;
                             updateWeeklyUIState(isWeeklyClaimed, message, nextReset);
 
                             UserRepository.getInstance(HitRewardzActivity.this).refreshCurrentUser();
@@ -404,11 +423,17 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
                         String rawJson = response.body().string();
                         JSONObject json = new JSONObject(rawJson);
                         boolean claimed = json.optBoolean("claimed", false);
-                        boolean eligible = json.optBoolean("eligible", !claimed);
+                        int completedTasksCount = json.optInt("completedTasksCount", 0);
                         String message = json.optString("message", "");
                         String nextReset = json.optString("nextReset", "Monday 12:00 AM");
 
-                        isWeeklyClaimed = claimed || !eligible;
+                        if (completedTasksCount > 0) {
+                            for (int i = 1; i <= completedTasksCount; i++) {
+                                userPref.setHitzTaskCompleted(i);
+                            }
+                        }
+
+                        isWeeklyClaimed = claimed || completedTasksCount >= 5 || userPref.getTodayHitzCount() >= 5;
                         updateWeeklyUIState(isWeeklyClaimed, message, nextReset);
                         return;
                     } catch (Exception e) {
@@ -427,23 +452,80 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
         });
     }
 
+    private long getNextMondayResetMillis() {
+        TimeZone tz = TimeZone.getTimeZone("Asia/Kolkata");
+        Calendar now = Calendar.getInstance(tz);
+        Calendar nextMonday = Calendar.getInstance(tz);
+        nextMonday.set(Calendar.HOUR_OF_DAY, 0);
+        nextMonday.set(Calendar.MINUTE, 0);
+        nextMonday.set(Calendar.SECOND, 0);
+        nextMonday.set(Calendar.MILLISECOND, 0);
+
+        int dayOfWeek = now.get(Calendar.DAY_OF_WEEK);
+        int daysUntilMonday = (Calendar.MONDAY - dayOfWeek + 7) % 7;
+        if (daysUntilMonday == 0) {
+            if (!now.before(nextMonday)) {
+                daysUntilMonday = 7;
+            }
+        }
+        nextMonday.add(Calendar.DAY_OF_MONTH, daysUntilMonday);
+        return nextMonday.getTimeInMillis();
+    }
+
+    private void startCountdownTimer() {
+        stopCountdownTimer();
+        timerRunnable = new Runnable() {
+            @Override
+            public void run() {
+                long targetMillis = getNextMondayResetMillis();
+                long nowMillis = System.currentTimeMillis();
+                long diffMillis = targetMillis - nowMillis;
+
+                if (diffMillis <= 0) {
+                    if (txtCountdownTimer != null) {
+                        txtCountdownTimer.setText("00d : 00h : 00m : 00s");
+                    }
+                    fetchWeeklyStatus();
+                    return;
+                }
+
+                long seconds = (diffMillis / 1000) % 60;
+                long minutes = (diffMillis / (1000 * 60)) % 60;
+                long hours = (diffMillis / (1000 * 60 * 60)) % 24;
+                long days = diffMillis / (1000 * 60 * 60 * 24);
+
+                String timeStr = String.format(Locale.US, "%02dd : %02dh : %02dm : %02ds", days, hours, minutes, seconds);
+                if (txtCountdownTimer != null) {
+                    txtCountdownTimer.setText(timeStr);
+                }
+
+                timerHandler.postDelayed(this, 1000);
+            }
+        };
+        timerHandler.post(timerRunnable);
+    }
+
+    private void stopCountdownTimer() {
+        if (timerHandler != null && timerRunnable != null) {
+            timerHandler.removeCallbacks(timerRunnable);
+            timerRunnable = null;
+        }
+    }
+
     private void updateWeeklyUIState(boolean claimed, String message, String nextReset) {
+        isWeeklyClaimed = claimed;
         if (claimed) {
             if (txtWeeklyStatusTitle != null) {
                 txtWeeklyStatusTitle.setText("✓ Reward Claimed");
                 txtWeeklyStatusTitle.setTextColor(Color.parseColor("#4ADE80"));
             }
             if (txtWeeklyResetSubtitle != null) {
-                txtWeeklyResetSubtitle.setText("Come back next week • Next reset: Monday 12:00 AM");
+                txtWeeklyResetSubtitle.setText("Come back next week • Reset every Monday 00:00 AM IST");
             }
-
-            for (HitRewardzModel item : hitzList) {
-                item.setCompleted(true);
-                item.setLocked(false);
+            if (layoutCountdownTimer != null) {
+                layoutCountdownTimer.setVisibility(View.VISIBLE);
             }
-            if (adapter != null) {
-                adapter.notifyDataSetChanged();
-            }
+            startCountdownTimer();
         } else {
             if (txtWeeklyStatusTitle != null) {
                 txtWeeklyStatusTitle.setText("🎁 Hit Reward - Weekly Available");
@@ -452,8 +534,13 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
             if (txtWeeklyResetSubtitle != null) {
                 txtWeeklyResetSubtitle.setText("Complete offers before Monday 12:00 AM reset!");
             }
-            updateProgressUI();
+            if (layoutCountdownTimer != null) {
+                layoutCountdownTimer.setVisibility(View.GONE);
+            }
+            stopCountdownTimer();
         }
+
+        updateProgressUI();
 
         if (cardWeeklyStatus != null) {
             cardWeeklyStatus.setOnClickListener(null);
@@ -468,6 +555,10 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
         if (txtWeeklyResetSubtitle != null) {
             txtWeeklyResetSubtitle.setText("Unable to verify weekly status. Tap here to retry.");
         }
+        if (layoutCountdownTimer != null) {
+            layoutCountdownTimer.setVisibility(View.GONE);
+        }
+        stopCountdownTimer();
         if (cardWeeklyStatus != null) {
             cardWeeklyStatus.setOnClickListener(v -> fetchWeeklyStatus());
         }
@@ -579,5 +670,20 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
         super.onResume();
         makeFullScreen();
         updateProgressUI();
+        if (isWeeklyClaimed) {
+            startCountdownTimer();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        stopCountdownTimer();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        stopCountdownTimer();
     }
 }

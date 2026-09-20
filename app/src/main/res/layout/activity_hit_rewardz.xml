@@ -188,6 +188,40 @@
                     android:textColor="#94A3B8"
                     android:textSize="11sp" />
 
+                <!-- LIVE COUNTDOWN TIMER (VISIBLE WHEN CLAIMED) -->
+                <LinearLayout
+                    android:id="@+id/layoutCountdownTimer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/bg_hitz_ribbon_light"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingTop="8dp"
+                    android:paddingBottom="8dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:visibility="gone">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="⏱️ Next Reset in: "
+                        android:textColor="#4338CA"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/txtCountdownTimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="06d : 00h : 00m : 00s"
+                        android:textColor="#1E1B4B"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.02" />
+                </LinearLayout>
+
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
