@@ -5,7 +5,7 @@
     android:id="@+id/card_hit_rewardz"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="4dp"
+    android:layout_marginBottom="6dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
@@ -53,9 +53,9 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="14dp"
-                android:paddingTop="7dp"
+                android:paddingTop="8dp"
                 android:paddingEnd="14dp"
-                android:paddingBottom="7dp">
+                android:paddingBottom="8dp">
 
                 <FrameLayout
                     android:layout_width="36dp"
@@ -76,13 +76,16 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:gravity="center"
                     android:orientation="vertical"
-                    android:layout_marginStart="12dp">
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp">
 
                     <TextView
                         android:id="@+id/txtRewardTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:gravity="center"
                         android:text="Hit Rewardz ⚡"
                         android:textColor="#FFFFFF"
                         android:textSize="15.5sp"
@@ -93,6 +96,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
+                        android:gravity="center"
                         android:text="High payout long ad tasks • Resets Monday"
                         android:textColor="#E9D5FF"
                         android:textSize="11sp" />
@@ -110,13 +114,6 @@
                     android:contentDescription="Open" />
 
             </LinearLayout>
-
-            <!-- BOTTOM GOLD ACCENT STRIP -->
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="2.5dp"
-                android:background="@drawable/bg_hitz_ribbon_gold"
-                android:alpha="0.85" />
 
         </LinearLayout>
 
