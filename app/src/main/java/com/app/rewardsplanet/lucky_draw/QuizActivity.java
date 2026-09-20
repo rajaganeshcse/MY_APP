@@ -56,6 +56,7 @@ public class QuizActivity extends AppCompatActivity {
     private ProgressBar quizProgressBar;
     private TextView txtTimer;
     private TextView txtQuestion;
+    private LinearLayout layoutCompletedBanner;
 
     private LinearLayout[] optionLayouts = new LinearLayout[4];
     private ImageView[] optionRadios = new ImageView[4];
@@ -100,12 +101,14 @@ public class QuizActivity extends AppCompatActivity {
         userPref = new UserPref(this);
         db = FirebaseFirestore.getInstance();
 
+        initViews();
+
         if (!userPref.canPlayDailyQuiz()) {
-            showAlreadyCompletedDialog();
-            return;
+            if (layoutCompletedBanner != null) {
+                layoutCompletedBanner.setVisibility(View.VISIBLE);
+            }
         }
 
-        initViews();
         setupQuestionBank();
         loadBannerAd();
         loadRewardedAd();
@@ -120,6 +123,7 @@ public class QuizActivity extends AppCompatActivity {
         quizProgressBar = findViewById(R.id.quizProgressBar);
         txtTimer = findViewById(R.id.txtTimer);
         txtQuestion = findViewById(R.id.txtQuestion);
+        layoutCompletedBanner = findViewById(R.id.layoutCompletedBanner);
 
         optionLayouts[0] = findViewById(R.id.layoutOption1);
         optionLayouts[1] = findViewById(R.id.layoutOption2);
@@ -288,25 +292,32 @@ public class QuizActivity extends AppCompatActivity {
             countDownTimer.cancel();
         }
 
-        // Credit 25 Coins and 10 Tickets as explicitly requested by user
-        String uid = userPref.getUid();
-        if (uid != null && !uid.isEmpty()) {
-            db.collection("users").document(uid).update(
-                    "coins", FieldValue.increment(REWARD_COINS),
-                    "tickets", FieldValue.increment(REWARD_TICKETS)
-            ).addOnFailureListener(e -> Log.e(TAG, "Error updating Firestore quiz reward", e));
+        boolean isFirstCompletionToday = userPref.canPlayDailyQuiz();
+
+        if (isFirstCompletionToday) {
+            // Credit 25 Coins and 10 Tickets on first daily completion
+            String uid = userPref.getUid();
+            if (uid != null && !uid.isEmpty()) {
+                db.collection("users").document(uid).update(
+                        "coins", FieldValue.increment(REWARD_COINS),
+                        "tickets", FieldValue.increment(REWARD_TICKETS)
+                ).addOnFailureListener(e -> Log.e(TAG, "Error updating Firestore quiz reward", e));
+            }
+
+            userPref.addCoins(REWARD_COINS);
+            userPref.setTickets(userPref.getTickets() + REWARD_TICKETS);
+            userPref.increaseQuizCount();
+
+            UserRepository.getInstance(this).refreshCurrentUser();
+
+            showRewardResultDialog(REWARD_COINS, REWARD_TICKETS, true);
+        } else {
+            // Already completed today - show completion dialog after quiz finishes without double crediting
+            showRewardResultDialog(0, 0, false);
         }
-
-        userPref.addCoins(REWARD_COINS);
-        userPref.setTickets(userPref.getTickets() + REWARD_TICKETS);
-        userPref.increaseQuizCount();
-
-        UserRepository.getInstance(this).refreshCurrentUser();
-
-        showRewardResultDialog(REWARD_COINS, REWARD_TICKETS);
     }
 
-    private void showRewardResultDialog(int coins, int tickets) {
+    private void showRewardResultDialog(int coins, int tickets, boolean isNewReward) {
         if (isFinishing() || isDestroyed()) return;
 
         try {
@@ -321,24 +332,38 @@ public class QuizActivity extends AppCompatActivity {
             TextView txtCurrentBalance = d.findViewById(R.id.txtCurrentBalance);
             MaterialButton btnOk = d.findViewById(R.id.btnOk);
 
-            if (txtTitle != null) {
-                txtTitle.setText("Daily Quiz Completed! 🎉");
-            }
-
-            if (txtWinAmount != null) {
-                txtWinAmount.setText("+" + coins + " Coins");
-            }
-
-            if (layoutWinTicket != null && txtWinTicketAmount != null) {
-                layoutWinTicket.setVisibility(View.VISIBLE);
-                txtWinTicketAmount.setText("+" + tickets + " Tickets");
-            }
-
-            if (txtCurrentBalance != null) {
-                txtCurrentBalance.setText("Balance: " + userPref.getCoins() + " Coins | " + userPref.getTickets() + " Tickets");
+            if (isNewReward) {
+                if (txtTitle != null) {
+                    txtTitle.setText("Daily Quiz Completed! 🎉");
+                }
+                if (txtWinAmount != null) {
+                    txtWinAmount.setText("+" + coins + " Coins");
+                }
+                if (layoutWinTicket != null && txtWinTicketAmount != null) {
+                    layoutWinTicket.setVisibility(View.VISIBLE);
+                    txtWinTicketAmount.setText("+" + tickets + " Tickets");
+                }
+                if (txtCurrentBalance != null) {
+                    txtCurrentBalance.setText("Balance: " + userPref.getCoins() + " Coins | " + userPref.getTickets() + " Tickets");
+                }
+            } else {
+                if (txtTitle != null) {
+                    txtTitle.setText("Quiz Completed Today! 🎉");
+                }
+                if (txtWinAmount != null) {
+                    txtWinAmount.setText("Daily Reward Claimed");
+                    txtWinAmount.setTextSize(18);
+                }
+                if (layoutWinTicket != null) {
+                    layoutWinTicket.setVisibility(View.GONE);
+                }
+                if (txtCurrentBalance != null) {
+                    txtCurrentBalance.setText("Come back tomorrow for more rewards!\nBalance: " + userPref.getCoins() + " Coins");
+                }
             }
 
             if (btnOk != null) {
+                btnOk.setText("GREAT");
                 btnOk.setOnClickListener(v -> {
                     try {
                         d.dismiss();
@@ -358,81 +383,6 @@ public class QuizActivity extends AppCompatActivity {
 
         } catch (Exception e) {
             Log.e(TAG, "Error showing quiz reward dialog: " + e.getMessage());
-            finish();
-        }
-    }
-
-    private void loadBannerAd() {
-        if (adView != null) {
-            AdRequest adRequest = new AdRequest.Builder().build();
-            adView.loadAd(adRequest);
-        }
-    }
-
-    private void loadRewardedAd() {
-        AdRequest adRequest = new AdRequest.Builder().build();
-        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917", adRequest, new RewardedAdLoadCallback() {
-            @Override
-            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
-                rewardedAd = null;
-            }
-
-            @Override
-            public void onAdLoaded(@NonNull RewardedAd ad) {
-                rewardedAd = ad;
-            }
-        });
-    }
-
-    private void showAlreadyCompletedDialog() {
-        if (isFinishing() || isDestroyed()) return;
-
-        try {
-            Dialog d = new Dialog(this);
-            d.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            d.setContentView(R.layout.dialog_spin_result);
-
-            TextView txtTitle = d.findViewById(R.id.txtTitle);
-            TextView txtWinAmount = d.findViewById(R.id.txtWinAmount);
-            LinearLayout layoutWinTicket = d.findViewById(R.id.layoutWinTicket);
-            TextView txtCurrentBalance = d.findViewById(R.id.txtCurrentBalance);
-            MaterialButton btnOk = d.findViewById(R.id.btnOk);
-
-            if (txtTitle != null) {
-                txtTitle.setText("Limit Reached 🎯");
-            }
-
-            if (txtWinAmount != null) {
-                txtWinAmount.setText("Already Completed Today!");
-                txtWinAmount.setTextSize(18);
-            }
-
-            if (layoutWinTicket != null) {
-                layoutWinTicket.setVisibility(View.GONE);
-            }
-
-            if (txtCurrentBalance != null) {
-                txtCurrentBalance.setText("Come back tomorrow to earn 25 Coins & 10 Tickets!");
-            }
-
-            if (btnOk != null) {
-                btnOk.setText("GOT IT");
-                btnOk.setOnClickListener(v -> {
-                    try { d.dismiss(); } catch (Exception ignored) {}
-                    finish();
-                });
-            }
-
-            d.setOnDismissListener(dialog -> finish());
-
-            if (d.getWindow() != null) {
-                d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-            }
-
-            d.show();
-
-        } catch (Exception e) {
-            Toast.makeText(this, "Daily Quiz already completed today! Come back tomorrow.", Toast.LENGTH_LONG).show();
             finish();
         }
     }
@@ -461,6 +411,28 @@ public class QuizActivity extends AppCompatActivity {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setNavigationBarColor(Color.TRANSPARENT);
         }
+    }
+
+    private void loadBannerAd() {
+        if (adView != null) {
+            AdRequest adRequest = new AdRequest.Builder().build();
+            adView.loadAd(adRequest);
+        }
+    }
+
+    private void loadRewardedAd() {
+        AdRequest adRequest = new AdRequest.Builder().build();
+        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917", adRequest, new RewardedAdLoadCallback() {
+            @Override
+            public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                rewardedAd = null;
+            }
+
+            @Override
+            public void onAdLoaded(@NonNull RewardedAd ad) {
+                rewardedAd = ad;
+            }
+        });
     }
 
     @Override

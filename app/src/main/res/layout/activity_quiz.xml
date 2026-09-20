@@ -108,6 +108,30 @@
 
             </LinearLayout>
 
+            <!-- COMPLETED TODAY STATUS BANNER -->
+            <LinearLayout
+                android:id="@+id/layoutCompletedBanner"
+                android:layout_width="wrap_content"
+                android:layout_height="32dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:background="@drawable/bg_quiz_completed_chip"
+                android:paddingStart="14dp"
+                android:paddingEnd="14dp"
+                android:visibility="gone">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="COMPLETED TODAY ✅"
+                    android:textColor="#4ADE80"
+                    android:textSize="12sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.04" />
+            </LinearLayout>
+
             <!-- PROGRESS BAR -->
             <ProgressBar
                 android:id="@+id/quizProgressBar"

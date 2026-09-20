@@ -86,6 +86,7 @@ public class HomeFragment extends Fragment {
 
     private TextView txtToken;
     private TextView txtAdCount;
+    private TextView txtDailyQuizSubtitle;
 
     private ImageView imgRewardCoin;
     private ImageView strikeIcon;
@@ -226,6 +227,16 @@ public class HomeFragment extends Fragment {
             return;
         }
 
+        if (txtDailyQuizSubtitle != null && userPref != null) {
+            if (!userPref.canPlayDailyQuiz()) {
+                txtDailyQuizSubtitle.setText("Completed Today ✅");
+                txtDailyQuizSubtitle.setTextColor(Color.parseColor("#4ADE80"));
+            } else {
+                txtDailyQuizSubtitle.setText("Answer & earn rewards");
+                txtDailyQuizSubtitle.setTextColor(Color.WHITE);
+            }
+        }
+
         if (!isInternetAvailable()) {
 
             Intent intent = new Intent(
@@ -272,6 +283,10 @@ public class HomeFragment extends Fragment {
 
         txtAdCount = view.findViewById(
                 R.id.txtAdCount
+        );
+
+        txtDailyQuizSubtitle = view.findViewById(
+                R.id.txtDailyQuizSubtitle
         );
 
 
@@ -412,15 +427,6 @@ public class HomeFragment extends Fragment {
         if (card_daily_quiz != null) {
 
             card_daily_quiz.setOnClickListener(v -> {
-
-                if (userPref != null && !userPref.canPlayDailyQuiz()) {
-                    Toast.makeText(
-                            requireContext(),
-                            "Daily Quiz completed today! Come back tomorrow 🎉",
-                            Toast.LENGTH_LONG
-                    ).show();
-                    return;
-                }
 
                 startActivity(
                         new Intent(
