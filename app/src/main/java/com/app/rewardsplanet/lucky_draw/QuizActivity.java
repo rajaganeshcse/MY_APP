@@ -50,7 +50,7 @@ public class QuizActivity extends AppCompatActivity {
     private static final int REWARD_TICKETS = 10;
 
     // UI
-    private ImageButton btnBack;
+    private ImageView btnBack;
     private TextView txtQuestionTitle;
     private TextView txtScore;
     private ProgressBar quizProgressBar;
