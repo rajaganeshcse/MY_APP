@@ -42,6 +42,8 @@ public class SplashActivity extends AppCompatActivity {
         userRepository = UserRepository.getInstance(this);
         makeFullScreen();
 
+        startSplashAnimations();
+
         // Create FCM Notification Channel early
         com.app.rewardsplanet.notifications.MyFirebaseMessagingService.createNotificationChannel(this);
 
@@ -133,6 +135,50 @@ public class SplashActivity extends AppCompatActivity {
                         }
                     }
                 });
+    }
+
+    private void startSplashAnimations() {
+        View splashLogo = findViewById(R.id.splashLogo);
+        View appTitle = findViewById(R.id.appTitle);
+        View progressBar = findViewById(R.id.progressBar);
+
+        if (splashLogo != null) {
+            splashLogo.setScaleX(0.5f);
+            splashLogo.setScaleY(0.5f);
+            splashLogo.setAlpha(0f);
+            splashLogo.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .alpha(1.0f)
+                    .setDuration(750)
+                    .setInterpolator(new android.view.animation.OvershootInterpolator(1.3f))
+                    .start();
+        }
+
+        if (appTitle != null) {
+            appTitle.setTranslationY(40f);
+            appTitle.setAlpha(0f);
+            appTitle.animate()
+                    .translationY(0f)
+                    .alpha(1.0f)
+                    .setDuration(600)
+                    .setStartDelay(200)
+                    .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                    .start();
+        }
+
+        if (progressBar != null) {
+            progressBar.setScaleX(0.5f);
+            progressBar.setScaleY(0.5f);
+            progressBar.setAlpha(0f);
+            progressBar.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .alpha(1.0f)
+                    .setDuration(500)
+                    .setStartDelay(350)
+                    .start();
+        }
     }
 
     private void cancelTimeout() {
