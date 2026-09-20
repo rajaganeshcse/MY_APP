@@ -184,18 +184,18 @@ public class HomeFragment extends Fragment {
 
     private boolean isInternetAvailable() {
 
-        if (!isAdded()) {
-            return false;
+        if (!isAdded() || getContext() == null) {
+            return true;
         }
 
         ConnectivityManager connectivityManager =
                 (ConnectivityManager)
-                        requireContext().getSystemService(
+                        getContext().getSystemService(
                                 Context.CONNECTIVITY_SERVICE
                         );
 
         if (connectivityManager == null) {
-            return false;
+            return true;
         }
 
         Network network =
@@ -214,9 +214,6 @@ public class HomeFragment extends Fragment {
 
         return capabilities.hasCapability(
                 NetworkCapabilities.NET_CAPABILITY_INTERNET
-        )
-                && capabilities.hasCapability(
-                NetworkCapabilities.NET_CAPABILITY_VALIDATED
         );
     }
 

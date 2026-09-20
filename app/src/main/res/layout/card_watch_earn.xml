@@ -71,7 +71,7 @@
             android:textSize="10sp"
             android:textStyle="bold"
             android:background="@drawable/bg_btn_quiz_watch_ad"
-            app:backgroundTint="@null"
+            app:backgroundTint="@android:color/transparent"
             app:cornerRadius="10dp"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
