@@ -120,6 +120,8 @@ public class MainActivity extends AppCompatActivity {
     private LinearLayout menuLeaderboard;
     private LinearLayout menuActivity;
     private LinearLayout menuRefer;
+    private LinearLayout coinhistory;
+    private LinearLayout tickethistory;
 
     private ImageView btnCopy;
 
@@ -369,14 +371,9 @@ public class MainActivity extends AppCompatActivity {
                 );
 
 
-        // =====================================================
-        // DRAWER MENU
-        // =====================================================
-
-        btnEditProfile =
-                findViewById(
-                        R.id.btnEditProfile
-                );
+        btnEditProfile = findViewById(R.id.btnEditProfile);
+        coinhistory = findViewById(R.id.coinhistory);
+        tickethistory = findViewById(R.id.tickethistory);
 
         menuWallet =
                 findViewById(
@@ -435,23 +432,25 @@ public class MainActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // ACCOUNT HISTORY (FORMERLY WALLET)
+        // ACCOUNT HISTORY & TRANSACTION HISTORY CLICKS
         // =====================================================
 
+        View.OnClickListener openHistoryListener = v -> {
+            closeDrawer();
+            Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
+            startActivity(intent);
+        };
+
         if (menuWallet != null) {
+            menuWallet.setOnClickListener(openHistoryListener);
+        }
 
-            menuWallet.setOnClickListener(v -> {
+        if (coinhistory != null) {
+            coinhistory.setOnClickListener(openHistoryListener);
+        }
 
-                closeDrawer();
-
-                Intent intent =
-                        new Intent(
-                                MainActivity.this,
-                                TransactionHistoryActivity.class
-                        );
-
-                startActivity(intent);
-            });
+        if (tickethistory != null) {
+            tickethistory.setOnClickListener(openHistoryListener);
         }
 
         // =====================================================
