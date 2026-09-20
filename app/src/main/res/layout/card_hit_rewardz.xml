@@ -94,7 +94,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="3dp"
                         android:text="High payout long ad tasks • Resets Monday"
-                        android:textColor="#FFE4E6"
+                        android:textColor="#E9D5FF"
                         android:textSize="12sp" />
 
                 </LinearLayout>
