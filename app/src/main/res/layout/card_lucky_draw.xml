@@ -5,73 +5,100 @@
     android:id="@+id/card_lucky_draw"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="20dp"
-    app:cardElevation="3dp"
-    app:cardBackgroundColor="#FFFFFF"
-    app:strokeColor="#E2E8F0"
-    app:strokeWidth="1.2dp">
+    app:cardElevation="5dp"
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@android:color/transparent">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
-        android:paddingStart="14dp"
-        android:paddingTop="10dp"
-        android:paddingEnd="14dp"
-        android:paddingBottom="10dp">
+        android:background="@drawable/bg_card_play_earn_gradient">
 
-        <FrameLayout
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_quiz_score_badge">
-
-            <ImageView
-                android:id="@+id/ic_lucky"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:src="@drawable/ic_lucky"
-                android:contentDescription="Lucky Draw" />
-        </FrameLayout>
+        <!-- TOP-RIGHT AMBIENT GLOW CIRCLE -->
+        <View
+            android:id="@+id/glowCirclePlayEarn"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_gravity="top|end"
+            android:alpha="0.25"
+            android:background="@drawable/bg_wallet_glow_circle"
+            android:translationX="25dp"
+            android:translationY="-25dp" />
 
         <LinearLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="14dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="14dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="14dp">
 
-            <TextView
-                android:id="@+id/txtLuckyDraw1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Esports &amp; Lucky Draw 🏆"
-                android:textColor="#0F172A"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+            <FrameLayout
+                android:layout_width="44dp"
+                android:layout_height="44dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_quiz_score_badge"
+                android:backgroundTint="#26FFFFFF"
+                android:gravity="center">
 
-            <TextView
-                android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/ic_lucky"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lucky"
+                    app:tint="#FFD700"
+                    android:contentDescription="Play &amp; Earn" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:text="Join free tournaments &amp; jackpot draws"
-                android:textColor="#64748B"
-                android:textSize="12sp" />
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="14dp"
+                android:layout_marginEnd="10dp">
+
+                <TextView
+                    android:id="@+id/txtLuckyDraw1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Esports &amp; Lucky Draw 🏆"
+                    android:textColor="#FFFFFF"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Join free tournaments &amp; jackpot draws"
+                    android:textColor="#E0E7FF"
+                    android:textSize="11.5sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/imgRewardArrow"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_back_dark"
+                android:contentDescription="Open"
+                android:padding="6dp"
+                android:src="@drawable/ic_arrow_right"
+                app:tint="#FFFFFF" />
 
         </LinearLayout>
 
-        <ImageView
-            android:id="@+id/imgRewardArrow"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:src="@drawable/ic_arrow_right"
-            app:tint="#64748B"
-            android:contentDescription="Open" />
-
-    </LinearLayout>
+    </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>

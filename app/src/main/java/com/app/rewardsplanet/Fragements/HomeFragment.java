@@ -622,6 +622,7 @@ public class HomeFragment extends Fragment {
         applyCardTouchAnimation(card_scratch);
         applyCardTouchAnimation(card_daily_quiz);
         applyCardTouchAnimation(card_hit_rewardz);
+        applyCardTouchAnimation(card_lucky_draw);
         applyCardTouchAnimation(card_tasks);
         applyCardTouchAnimation(card_surveys);
         applyCardTouchAnimation(cardInvite);
