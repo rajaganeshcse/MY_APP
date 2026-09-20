@@ -23,12 +23,21 @@ import androidx.fragment.app.Fragment;
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.models.UserModel;
-import com.app.rewardsplanet.profile.ReferralUtil;
+import com.app.rewardsplanet.network.ApiClient;
+import com.app.rewardsplanet.network.ApiService;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.*;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import okhttp3.ResponseBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class layout_invite extends Fragment {
 
@@ -39,20 +48,17 @@ public class layout_invite extends Fragment {
             btnFacebook, btnMessenger, btnShareAll;
     View btnValidate;
 
-    // ================= FIREBASE =================
+    // ================= FIREBASE & BACKEND =================
     FirebaseFirestore db;
     String uid;
+    ApiService apiService;
 
     // ================= LOCAL CACHE =================
     UserPref userPref;
 
-    private static final int REFERRAL_COIN_REWARD = 250;
-    private static final int REFERRAL_TICKET_REWARD = 10;
-
     @Nullable
     @Override
     public View onCreateView(
-
             @NonNull LayoutInflater inflater,
             @Nullable ViewGroup container,
             @Nullable Bundle savedInstanceState) {
@@ -63,6 +69,7 @@ public class layout_invite extends Fragment {
                 false
         );
         makeFullScreen();
+
         // UI
         txtCode = view.findViewById(com.app.rewardsplanet.R.id.txtReferralCode);
         edtReferral = view.findViewById(com.app.rewardsplanet.R.id.edtReferral);
@@ -75,9 +82,10 @@ public class layout_invite extends Fragment {
         btnMessenger = view.findViewById(com.app.rewardsplanet.R.id.btnMessenger);
         btnShareAll = view.findViewById(R.id.btnShareAll);
 
-        // Firebase
+        // Firebase & Network
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
+        apiService = ApiClient.getClient().create(ApiService.class);
 
         // Local
         userPref = new UserPref(requireContext());
@@ -100,15 +108,14 @@ public class layout_invite extends Fragment {
 
         return view;
     }
+
     private void makeFullScreen() {
+        if (getActivity() == null) return;
         Window window = getActivity().getWindow();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setStatusBarColor(Color.TRANSPARENT);
             window.setNavigationBarColor(Color.parseColor("#ffffff"));
-            window.setNavigationBarColor(Color.TRANSPARENT);
-            window.setNavigationBarColor(Color.parseColor("#ffffff"));
-
         }
 
         window.getDecorView().setSystemUiVisibility(
@@ -117,30 +124,52 @@ public class layout_invite extends Fragment {
         );
     }
 
-
-    // ================= REFERRAL CODE =================
+    // ================= REFERRAL CODE (BACKEND GENERATED & FETCHED) =================
 
     private void loadReferralCode() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            loadReferralCodeFallback();
+            return;
+        }
+
+        user.getIdToken(false).addOnSuccessListener(tokenResult -> {
+            String token = tokenResult.getToken();
+            apiService.getReferralCode("Bearer " + token).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        try {
+                            String json = response.body().string();
+                            JSONObject jsonObject = new JSONObject(json);
+                            if (jsonObject.optBoolean("success", false)) {
+                                String code = jsonObject.optString("referralCode", "");
+                                if (!code.isEmpty()) {
+                                    txtCode.setText(code);
+                                    return;
+                                }
+                            }
+                        } catch (Exception ignored) {}
+                    }
+                    loadReferralCodeFallback();
+                }
+
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
+                    loadReferralCodeFallback();
+                }
+            });
+        }).addOnFailureListener(e -> loadReferralCodeFallback());
+    }
+
+    private void loadReferralCodeFallback() {
+        if (uid == null) return;
         db.collection("users")
                 .document(uid)
                 .get()
                 .addOnSuccessListener(doc -> {
-
                     UserModel user = doc.toObject(UserModel.class);
-
-                    if (user == null || user.getReferralCode() == null) {
-
-                        String code = ReferralUtil.generateCode();
-
-                        Map<String, Object> map = new HashMap<>();
-                        map.put("referralCode", code);
-
-                        db.collection("users")
-                                .document(uid)
-                                .set(map, SetOptions.merge());
-
-                        txtCode.setText(code);
-                    } else {
+                    if (user != null && user.getReferralCode() != null && !user.getReferralCode().isEmpty()) {
                         txtCode.setText(user.getReferralCode());
                     }
                 });
@@ -149,12 +178,13 @@ public class layout_invite extends Fragment {
     // ================= COPY =================
 
     private void copyCode() {
+        if (getContext() == null) return;
         ClipboardManager cm =
                 (ClipboardManager) requireContext()
                         .getSystemService(Context.CLIPBOARD_SERVICE);
 
         cm.setPrimaryClip(
-     ClipData.newPlainText(
+                ClipData.newPlainText(
                         "referral",
                         txtCode.getText().toString()
                 )
@@ -163,10 +193,9 @@ public class layout_invite extends Fragment {
         toast("Code copied");
     }
 
-    // ================= VALIDATE =================
+    // ================= VALIDATE & APPLY REFERRAL (BACKEND SERVER-SIDE VALIDATION) =================
 
     private void validateReferral() {
-
         String code = edtReferral.getText().toString().trim();
 
         if (code.isEmpty()) {
@@ -174,106 +203,71 @@ public class layout_invite extends Fragment {
             return;
         }
 
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user == null) {
+            toast("User not logged in");
+            return;
+        }
+
         btnValidate.setEnabled(false);
 
-        db.collection("users")
-                .whereEqualTo("referralCode", code)
-                .limit(1)
-                .get()
-                .addOnSuccessListener(qs -> {
+        user.getIdToken(false).addOnSuccessListener(tokenResult -> {
+            String token = tokenResult.getToken();
+            Map<String, String> body = new HashMap<>();
+            body.put("referralCode", code);
 
-                    if (qs.isEmpty()) {
+            apiService.applyReferralCode("Bearer " + token, body).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        try {
+                            String jsonStr = response.body().string();
+                            JSONObject jsonObj = new JSONObject(jsonStr);
+                            String msg = jsonObj.optString("message", "Referral applied successfully!");
+                            int coinsEarned = jsonObj.optInt("coinsEarned", 250);
+
+                            long currentCoins = userPref.getCoins();
+                            userPref.setCoins(currentCoins + coinsEarned);
+
+                            toast(msg);
+                            btnValidate.setEnabled(false);
+                            edtReferral.setText("");
+                        } catch (Exception e) {
+                            btnValidate.setEnabled(true);
+                            toast("Referral applied successfully!");
+                        }
+                    } else {
                         btnValidate.setEnabled(true);
-                        toast("Invalid referral code");
-                        return;
+                        String errMsg = "Failed to apply referral code";
+                        try {
+                            if (response.errorBody() != null) {
+                                String errStr = response.errorBody().string();
+                                JSONObject errObj = new JSONObject(errStr);
+                                if (errObj.has("message")) {
+                                    errMsg = errObj.getString("message");
+                                }
+                            }
+                        } catch (Exception ignored) {}
+                        toast(errMsg);
                     }
+                }
 
-                    DocumentSnapshot refDoc = qs.getDocuments().get(0);
-                    String refUid = refDoc.getId();
-
-                    if (refUid.equals(uid)) {
-                        btnValidate.setEnabled(true);
-                        toast("Can't use your own code");
-                        return;
-                    }
-
-                    applyReferral(refUid);
-                })
-                .addOnFailureListener(e -> {
+                @Override
+                public void onFailure(Call<ResponseBody> call, Throwable t) {
                     btnValidate.setEnabled(true);
-                    toast("Something went wrong");
-                });
-    }
-
-    // ================= APPLY REFERRAL =================
-
-    private void applyReferral(String refUid) {
-
-        DocumentReference userRef =
-                db.collection("users").document(uid);
-
-        DocumentReference referrerRef =
-                db.collection("users").document(refUid);
-
-        userRef.get().addOnSuccessListener(doc -> {
-
-            UserModel user = doc.toObject(UserModel.class);
-
-            if (user == null) {
-                btnValidate.setEnabled(true);
-                return;
-            }
-
-            if (user.isReferralUsed()) {
-                btnValidate.setEnabled(true);
-                toast("Referral already used");
-                return;
-            }
-
-            WriteBatch batch = db.batch();
-
-            // -------- NEW USER --------
-            batch.update(userRef,
-                    "referredBy", refUid,
-                    "referralUsed", true,
-                    "coins", FieldValue.increment(REFERRAL_COIN_REWARD),
-                    "tickets", FieldValue.increment(REFERRAL_TICKET_REWARD)
-            );
-
-            // -------- REFERRER --------
-            Map<String, Object> referralUser = new HashMap<>();
-            referralUser.put("userId", uid);
-            referralUser.put("joinedAt", System.currentTimeMillis());
-
-            batch.update(referrerRef,
-                    "totalReferralCoins",
-                    FieldValue.increment(REFERRAL_COIN_REWARD),
-                    "totalReferralTickets",
-                    FieldValue.increment(REFERRAL_TICKET_REWARD),
-                    "referralUsers." + uid,
-                    referralUser
-            );
-
-            batch.commit()
-                    .addOnSuccessListener(unused -> {
-
-                        // Update local cache
-                        long currentCoins = userPref.getCoins();
-                        userPref.setCoins(currentCoins + REFERRAL_COIN_REWARD);
-
-                        toast("Referral applied 🎉");
-                        btnValidate.setEnabled(false);
-                    })
-                    .addOnFailureListener(e -> {
-                        btnValidate.setEnabled(true);
-                        toast("Failed to apply referral");
-                    });
+                    toast("Network error: " + t.getMessage());
+                }
+            });
+        }).addOnFailureListener(e -> {
+            btnValidate.setEnabled(true);
+            toast("Authentication failed: " + e.getMessage());
         });
     }
 
     // ================= SHARE =================
 
     private String getShareMessage() {
+        String pkgName = getContext() != null ? requireContext().getPackageName() : "com.app.rewardsplanet";
         return "🎮 Join Gamex play & earn FREE coins!\n\n"+
                 "🎁 Get ₹20 bonus instantly when you sign up with my link\n\n"+
                 "⚡ Play games, complete simple tasks & earn real cash\n\n"+
@@ -281,7 +275,7 @@ public class layout_invite extends Fragment {
                 + "Use my referral code: " + txtCode.getText().toString()
                 + "\n\nDownload now 👇\n"
                 + "🔗 "+"https://play.google.com/store/apps/details?id="
-                + requireContext().getPackageName();
+                + pkgName;
     }
 
     private void shareToApp(String packageName) {

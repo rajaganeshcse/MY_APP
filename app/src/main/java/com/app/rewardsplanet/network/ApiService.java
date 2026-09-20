@@ -123,4 +123,17 @@ public interface ApiService {
     Call<ResponseBody> cancelDeleteAccount(
             @Body Map<String, String> body
     );
+
+    /* ================= REFERRAL ================= */
+
+    @GET("api/referral/code")
+    Call<ResponseBody> getReferralCode(
+            @Header("Authorization") String token
+    );
+
+    @POST("api/referral/apply")
+    Call<ResponseBody> applyReferralCode(
+            @Header("Authorization") String token,
+            @Body Map<String, String> body
+    );
 }
