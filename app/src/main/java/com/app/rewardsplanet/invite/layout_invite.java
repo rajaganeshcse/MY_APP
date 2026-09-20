@@ -1,5 +1,6 @@
 package com.app.rewardsplanet.invite;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -315,13 +316,11 @@ public class layout_invite extends Fragment {
     }
 
     private void showRewardResultDialog(int coins, int tickets, String titleText) {
-        if (!isAdded() || getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
+        Activity act = getActivity();
+        if (!isAdded() || act == null || act.isFinishing() || act.isDestroyed()) return;
 
         try {
-            Context ctx = getContext();
-            if (ctx == null) return;
-
-            android.app.Dialog d = new android.app.Dialog(ctx);
+            android.app.Dialog d = new android.app.Dialog(act);
             d.requestWindowFeature(Window.FEATURE_NO_TITLE);
             d.setContentView(R.layout.dialog_spin_result);
 
@@ -347,7 +346,7 @@ public class layout_invite extends Fragment {
                 layoutTicket.setVisibility(View.GONE);
             }
 
-            UserPref pref = new UserPref(ctx);
+            UserPref pref = new UserPref(act);
             if (txtBal != null) {
                 txtBal.setText("Balance: " + pref.getCoins() + " Coins");
             }

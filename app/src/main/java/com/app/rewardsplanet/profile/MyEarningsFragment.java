@@ -1,5 +1,6 @@
 package com.app.rewardsplanet.profile;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
@@ -156,18 +157,18 @@ public class MyEarningsFragment extends Fragment {
                         "totalReferralTickets", 0
                 )
                 .addOnSuccessListener(unused -> {
-                    if (isAdded() && getContext() != null) {
-                        Context ctx = getContext();
-                        UserPref pref = new UserPref(ctx);
+                    Activity act = getActivity();
+                    if (isAdded() && act != null && !act.isFinishing() && !act.isDestroyed()) {
+                        UserPref pref = new UserPref(act);
                         pref.setCoins(pref.getCoins() + coinsClaimed);
                         pref.setTickets((int) (pref.getTickets() + ticketsClaimed));
-                        com.app.rewardsplanet.repository.UserRepository.getInstance(ctx).refreshCurrentUser();
 
                         showRewardResultDialog((int) coinsClaimed, (int) ticketsClaimed, "Referral Reward Collected! 🎉");
                     }
                 })
                 .addOnFailureListener(e -> {
-                    if (isAdded()) {
+                    Activity act = getActivity();
+                    if (isAdded() && act != null) {
                         btnClaim.setEnabled(true);
                         btnClaim.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#10B981")));
                         toast("Claim failed");
@@ -176,13 +177,11 @@ public class MyEarningsFragment extends Fragment {
     }
 
     private void showRewardResultDialog(int coins, int tickets, String titleText) {
-        if (!isAdded() || getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
+        Activity act = getActivity();
+        if (!isAdded() || act == null || act.isFinishing() || act.isDestroyed()) return;
 
         try {
-            Context ctx = getContext();
-            if (ctx == null) return;
-
-            android.app.Dialog d = new android.app.Dialog(ctx);
+            android.app.Dialog d = new android.app.Dialog(act);
             d.requestWindowFeature(Window.FEATURE_NO_TITLE);
             d.setContentView(R.layout.dialog_spin_result);
 
@@ -208,7 +207,7 @@ public class MyEarningsFragment extends Fragment {
                 layoutTicket.setVisibility(View.GONE);
             }
 
-            UserPref pref = new UserPref(ctx);
+            UserPref pref = new UserPref(act);
             if (txtBal != null) {
                 txtBal.setText("Balance: " + pref.getCoins() + " Coins");
             }
