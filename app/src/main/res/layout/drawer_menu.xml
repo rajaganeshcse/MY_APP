@@ -103,7 +103,7 @@
             android:contentDescription="Edit Profile"
             android:padding="7dp"
             android:scaleType="centerInside"
-
+            app:tint="#FFFFFF"
             android:src="@drawable/ic_edit" />
 
     </LinearLayout>
@@ -237,11 +237,11 @@
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
 
-            <!-- WALLET -->
+            <!-- WALLET (NO TINT - ORIGINAL COLOR) -->
             <LinearLayout
                 android:id="@+id/menuWallet"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -253,20 +253,13 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
+                <ImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_gift"
-                        android:contentDescription="Wallet" />
-
-                </FrameLayout>
+                    android:background="@drawable/bg_icon_circle_blue"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_gift"
+                    android:contentDescription="Wallet" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -280,11 +273,11 @@
 
             </LinearLayout>
 
-            <!-- MY ACTIVITY -->
+            <!-- MY ACTIVITY (NO TINT - ORIGINAL COLOR) -->
             <LinearLayout
                 android:id="@+id/menuActivity"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -296,20 +289,13 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
+                <ImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_history"
-                        android:contentDescription="My Activity" />
-
-                </FrameLayout>
+                    android:background="@drawable/bg_icon_circle_purple"
+                    android:padding="6dp"
+                    android:src="@drawable/ic_history"
+                    android:contentDescription="My Activity" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -323,11 +309,11 @@
 
             </LinearLayout>
 
-            <!-- REFER AND EARN -->
+            <!-- REFER AND EARN (TINTED EMERALD GREEN) -->
             <LinearLayout
                 android:id="@+id/menuRefer"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -339,20 +325,14 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
+                <ImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_invite"
-                        android:contentDescription="Refer and Earn" />
-
-                </FrameLayout>
+                    android:background="@drawable/bg_icon_circle_green"
+                    android:padding="6dp"
+                    app:tint="#16A34A"
+                    android:src="@drawable/ic_invite"
+                    android:contentDescription="Refer and Earn" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -393,11 +373,11 @@
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
 
-            <!-- RATE US -->
+            <!-- RATE US (TINTED AMBER) -->
             <LinearLayout
                 android:id="@+id/menuRate"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -409,20 +389,14 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
+                <ImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/rate_us"
-                        android:contentDescription="Rate Us" />
-
-                </FrameLayout>
+                    android:background="@drawable/bg_icon_circle_amber"
+                    android:padding="6dp"
+                    app:tint="#D97706"
+                    android:src="@drawable/rate_us"
+                    android:contentDescription="Rate Us" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -436,11 +410,11 @@
 
             </LinearLayout>
 
-            <!-- FEEDBACK -->
+            <!-- FEEDBACK (TINTED SKY BLUE) -->
             <LinearLayout
                 android:id="@+id/menuFeedback"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -452,20 +426,14 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
+                <ImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_privacy"
-                        android:contentDescription="Feedback" />
-
-                </FrameLayout>
+                    android:background="@drawable/bg_icon_circle_sky"
+                    android:padding="6dp"
+                    app:tint="#0284C7"
+                    android:src="@drawable/ic_privacy"
+                    android:contentDescription="Feedback" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -479,11 +447,11 @@
 
             </LinearLayout>
 
-            <!-- CONTACT US -->
+            <!-- CONTACT US (TINTED VIOLET) -->
             <LinearLayout
                 android:id="@+id/menuContact"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -495,20 +463,14 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
+                <ImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_help"
-                        android:contentDescription="Contact Us" />
-
-                </FrameLayout>
+                    android:background="@drawable/bg_icon_circle_violet"
+                    android:padding="6dp"
+                    app:tint="#7C3AED"
+                    android:src="@drawable/ic_help"
+                    android:contentDescription="Contact Us" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -522,11 +484,11 @@
 
             </LinearLayout>
 
-            <!-- FAQ -->
+            <!-- FAQ (TINTED INDIGO) -->
             <LinearLayout
                 android:id="@+id/menuFaq"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -538,20 +500,14 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
+                <ImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_terms"
-                        android:contentDescription="FAQ" />
-
-                </FrameLayout>
+                    android:background="@drawable/bg_icon_circle_blue"
+                    android:padding="6dp"
+                    app:tint="#4F46E5"
+                    android:src="@drawable/ic_terms"
+                    android:contentDescription="FAQ" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -565,11 +521,11 @@
 
             </LinearLayout>
 
-            <!-- PRIVACY POLICY -->
+            <!-- PRIVACY POLICY (TINTED SLATE) -->
             <LinearLayout
                 android:id="@+id/menuPrivacy"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -581,20 +537,14 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
+                <ImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_privacy"
-                        android:contentDescription="Privacy Policy" />
-
-                </FrameLayout>
+                    android:background="@drawable/bg_icon_circle_slate"
+                    android:padding="6dp"
+                    app:tint="#475569"
+                    android:src="@drawable/ic_privacy"
+                    android:contentDescription="Privacy Policy" />
 
                 <TextView
                     android:layout_width="0dp"
@@ -620,11 +570,11 @@
                 android:background="#E2E8F0" />
 
 
-            <!-- LOGOUT -->
+            <!-- LOGOUT (TINTED VIVID RED) -->
             <LinearLayout
                 android:id="@+id/btnLogout1"
                 android:layout_width="match_parent"
-                android:layout_height="48dp"
+                android:layout_height="50dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -636,21 +586,14 @@
                 android:clickable="true"
                 android:focusable="true">
 
-                <FrameLayout
+                <ImageView
                     android:layout_width="34dp"
                     android:layout_height="34dp"
-                    android:layout_gravity="center">
-
-                    <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_gravity="center"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/ic_logout"
-                        app:tint="#EF4444"
-                        android:contentDescription="Logout" />
-
-                </FrameLayout>
+                    android:background="@drawable/bg_icon_circle_red"
+                    android:padding="6dp"
+                    app:tint="#EF4444"
+                    android:src="@drawable/ic_logout"
+                    android:contentDescription="Logout" />
 
                 <TextView
                     android:layout_width="0dp"
