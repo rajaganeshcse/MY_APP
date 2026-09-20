@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_scratch"
     android:layout_width="0dp"
-    android:layout_height="120dp"
+    android:layout_height="136dp"
     android:layout_weight="1"
     android:layout_marginStart="5dp"
     android:layout_marginBottom="10dp"
@@ -12,24 +12,24 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="18dp"
-    app:cardElevation="3dp"
-    app:cardBackgroundColor="#FFFFFF"
-    app:strokeColor="#A7F3D0"
-    app:strokeWidth="1.2dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#ECFDF5"
+    app:strokeColor="#6EE7B7"
+    app:strokeWidth="1.5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="12dp">
 
         <FrameLayout
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_bonus_icon"
-            android:backgroundTint="#ECFDF5"
+            android:backgroundTint="#D1FAE5"
             android:gravity="center">
 
             <ImageView
@@ -46,11 +46,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="Scratch Card 🎫"
             android:textColor="#064E3B"
-            android:textSize="14sp"
+            android:textSize="14.5sp"
             android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end" />
@@ -59,11 +59,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="2dp"
             android:gravity="center"
             android:text="Scratch for rewards"
             android:textColor="#059669"
-            android:textSize="11sp"
+            android:textSize="11.5sp"
             android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end" />

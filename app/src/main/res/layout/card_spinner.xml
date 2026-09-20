@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_spinner"
     android:layout_width="0dp"
-    android:layout_height="120dp"
+    android:layout_height="136dp"
     android:layout_weight="1"
     android:layout_marginEnd="5dp"
     android:layout_marginBottom="10dp"
@@ -12,23 +12,24 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="18dp"
-    app:cardElevation="3dp"
-    app:cardBackgroundColor="#FFFFFF"
-    app:strokeColor="#C7D2FE"
-    app:strokeWidth="1.2dp">
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#EEF2FF"
+    app:strokeColor="#A5B4FC"
+    app:strokeWidth="1.5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
         android:orientation="vertical"
-        android:padding="10dp">
+        android:padding="12dp">
 
         <FrameLayout
-            android:layout_width="44dp"
-            android:layout_height="44dp"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_quiz_score_badge"
+            android:backgroundTint="#E0E7FF"
             android:gravity="center">
 
             <ImageView
@@ -45,11 +46,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="6dp"
+            android:layout_marginTop="8dp"
             android:gravity="center"
             android:text="Spin &amp; Win 🎡"
             android:textColor="#1E1B4B"
-            android:textSize="14sp"
+            android:textSize="14.5sp"
             android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end" />
@@ -58,11 +59,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="1dp"
+            android:layout_marginTop="2dp"
             android:gravity="center"
             android:text="Daily lucky wheel"
-            android:textColor="#6366F1"
-            android:textSize="11sp"
+            android:textColor="#4F46E5"
+            android:textSize="11.5sp"
             android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end" />
