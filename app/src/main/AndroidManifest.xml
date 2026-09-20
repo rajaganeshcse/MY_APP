@@ -30,6 +30,14 @@
             android:resource="@xml/gma_ad_services_config"
             tools:replace="android:resource" />
 
+        <!-- FCM DEFAULT NOTIFICATION METADATA -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_notification" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="earning_notifications" />
+
         <service
             android:name=".notifications.MyFirebaseMessagingService"
             android:exported="false">
