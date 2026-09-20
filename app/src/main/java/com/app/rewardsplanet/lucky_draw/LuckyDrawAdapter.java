@@ -9,13 +9,23 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.rewardsplanet.R;
+import com.app.rewardsplanet.ads.AdsManager;
 import com.app.rewardsplanet.models.LuckyDrawModel;
+import com.google.android.gms.ads.AdListener;
+import com.google.android.gms.ads.AdLoader;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.LoadAdError;
+import com.google.android.gms.ads.nativead.NativeAd;
+import com.google.android.gms.ads.nativead.NativeAdView;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.*;
 
 public class LuckyDrawAdapter
-        extends RecyclerView.Adapter<LuckyDrawAdapter.ViewHolder> {
+        extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+
+    private static final int TYPE_DRAW = 0;
+    private static final int TYPE_AD = 1;
 
     public interface Listener {
         void onJoin(LuckyDrawModel model);
@@ -27,6 +37,7 @@ public class LuckyDrawAdapter
     private final List<LuckyDrawModel> list;
     private final Listener listener;
     private final Set<String> loadingIds = new HashSet<>();
+    private final Map<Integer, NativeAd> nativeAdMap = new HashMap<>();
     private int userTickets;
 
     public LuckyDrawAdapter(List<LuckyDrawModel> list,
@@ -37,17 +48,56 @@ public class LuckyDrawAdapter
         this.userTickets = userTickets;
     }
 
+    @Override
+    public int getItemViewType(int position) {
+        if ((position + 1) % 4 == 0) {
+            return TYPE_AD;
+        }
+        return TYPE_DRAW;
+    }
+
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_lucky_draw, parent, false));
+    public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        if (viewType == TYPE_AD) {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.native_ad_layout, parent, false);
+            return new NativeAdViewHolder(view);
+        } else {
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.item_lucky_draw, parent, false);
+            return new DrawViewHolder(view);
+        }
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder h, int position) {
+    public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
+        if (getItemViewType(position) == TYPE_AD) {
+            NativeAdViewHolder adHolder = (NativeAdViewHolder) holder;
+            bindNativeAd(adHolder, position);
+        } else {
+            DrawViewHolder h = (DrawViewHolder) holder;
+            int drawIndex = getDrawIndex(position);
+            if (drawIndex < 0 || drawIndex >= list.size()) return;
+            LuckyDrawModel model = list.get(drawIndex);
+            bindDrawItem(h, model);
+        }
+    }
 
-        LuckyDrawModel model = list.get(position);
+    private int getDrawIndex(int adapterPosition) {
+        return adapterPosition - (adapterPosition / 4);
+    }
+
+    @Override
+    public int getItemCount() {
+        int drawCount = list.size();
+        if (drawCount == 0) return 0;
+        return drawCount + (drawCount / 3);
+    }
+
+    /* ================= BIND DRAW ITEM ================= */
+
+    private void bindDrawItem(DrawViewHolder h, LuckyDrawModel model) {
         String id = model.getId();
 
         int total = Math.max(model.getTotalSlots(), 1);
@@ -155,9 +205,80 @@ public class LuckyDrawAdapter
         });
     }
 
-    @Override
-    public int getItemCount() {
-        return list.size();
+    /* ================= BIND NATIVE AD ================= */
+
+    private void bindNativeAd(NativeAdViewHolder holder, int position) {
+        if (nativeAdMap.containsKey(position)) {
+            NativeAd nativeAd = nativeAdMap.get(position);
+            if (nativeAd != null) {
+                populateNativeAd(nativeAd, holder.nativeAdView);
+            }
+            return;
+        }
+
+        try {
+            AdLoader adLoader = new AdLoader.Builder(holder.itemView.getContext(), AdsManager.NATIVE_AD_ID)
+                    .forNativeAd(nativeAd -> {
+                        nativeAdMap.put(position, nativeAd);
+                        populateNativeAd(nativeAd, holder.nativeAdView);
+                    })
+                    .withAdListener(new AdListener() {
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError adError) {
+                            // Silently handle ad load failure
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        } catch (Exception ignored) {}
+    }
+
+    private void populateNativeAd(NativeAd nativeAd, NativeAdView adView) {
+        if (nativeAd == null || adView == null) return;
+
+        adView.setHeadlineView(adView.findViewById(R.id.ad_headline));
+        adView.setBodyView(adView.findViewById(R.id.ad_body));
+        adView.setCallToActionView(adView.findViewById(R.id.ad_call_to_action));
+        adView.setIconView(adView.findViewById(R.id.ad_app_icon));
+        adView.setMediaView(adView.findViewById(R.id.ad_media));
+
+        TextView headline = (TextView) adView.getHeadlineView();
+        if (headline != null) {
+            headline.setText(nativeAd.getHeadline());
+        }
+
+        TextView body = (TextView) adView.getBodyView();
+        if (body != null) {
+            if (nativeAd.getBody() != null && !nativeAd.getBody().isEmpty()) {
+                body.setText(nativeAd.getBody());
+                body.setVisibility(View.VISIBLE);
+            } else {
+                body.setVisibility(View.GONE);
+            }
+        }
+
+        Button cta = (Button) adView.getCallToActionView();
+        if (cta != null) {
+            if (nativeAd.getCallToAction() != null && !nativeAd.getCallToAction().isEmpty()) {
+                cta.setText(nativeAd.getCallToAction());
+                cta.setVisibility(View.VISIBLE);
+            } else {
+                cta.setVisibility(View.GONE);
+            }
+        }
+
+        ImageView icon = (ImageView) adView.getIconView();
+        if (icon != null) {
+            if (nativeAd.getIcon() != null && nativeAd.getIcon().getDrawable() != null) {
+                icon.setImageDrawable(nativeAd.getIcon().getDrawable());
+                icon.setVisibility(View.VISIBLE);
+            } else {
+                icon.setVisibility(View.GONE);
+            }
+        }
+
+        adView.setNativeAd(nativeAd);
     }
 
     public void setLoading(String id, boolean value) {
@@ -174,7 +295,9 @@ public class LuckyDrawAdapter
         notifyDataSetChanged();
     }
 
-    static class ViewHolder extends RecyclerView.ViewHolder {
+    /* ================= VIEW HOLDERS ================= */
+
+    static class DrawViewHolder extends RecyclerView.ViewHolder {
 
         com.google.android.material.card.MaterialCardView cardRoot;
         TextView txtReward, txtSlots, txtPercent, token;
@@ -182,7 +305,7 @@ public class LuckyDrawAdapter
         LinearLayout joined;
         MaterialButton btnJoin, btnticket;
 
-        ViewHolder(@NonNull View itemView) {
+        DrawViewHolder(@NonNull View itemView) {
             super(itemView);
 
             cardRoot = itemView.findViewById(R.id.cardLuckyDrawRoot);
@@ -194,6 +317,16 @@ public class LuckyDrawAdapter
             btnJoin = itemView.findViewById(R.id.btnFreeEntry);
             token = itemView.findViewById(R.id.token);
             btnticket = itemView.findViewById(R.id.btnticketEntry);
+        }
+    }
+
+    static class NativeAdViewHolder extends RecyclerView.ViewHolder {
+
+        NativeAdView nativeAdView;
+
+        NativeAdViewHolder(@NonNull View itemView) {
+            super(itemView);
+            nativeAdView = itemView.findViewById(R.id.nativeAdView);
         }
     }
 }
