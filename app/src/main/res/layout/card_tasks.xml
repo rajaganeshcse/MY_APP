@@ -6,15 +6,15 @@
     android:layout_width="0dp"
     android:layout_height="120dp"
     android:layout_weight="1"
-    android:layout_marginEnd="4dp"
-    android:layout_marginBottom="8dp"
+    android:layout_marginEnd="5dp"
+    android:layout_marginBottom="10dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="18dp"
     app:cardElevation="3dp"
     app:cardBackgroundColor="#FFFFFF"
-    app:strokeColor="#E2E8F0"
+    app:strokeColor="#FDE68A"
     app:strokeWidth="1.2dp">
 
     <LinearLayout
@@ -27,7 +27,9 @@
         <FrameLayout
             android:layout_width="44dp"
             android:layout_height="44dp"
-            android:background="@drawable/bg_quiz_score_badge"
+            android:layout_gravity="center"
+            android:background="@drawable/bg_bonus_icon"
+            android:backgroundTint="#FFFBEB"
             android:gravity="center">
 
             <ImageView
@@ -36,17 +38,19 @@
                 android:layout_height="26dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_lightning"
-                app:tint="#F59E0B"
+                app:tint="#D97706"
                 android:contentDescription="Tasks Offers" />
         </FrameLayout>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="6dp"
+            android:gravity="center"
             android:text="Task Offers 🎯"
-            android:textColor="#0F172A"
-            android:textSize="13.5sp"
+            android:textColor="#78350F"
+            android:textSize="14sp"
             android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end" />
@@ -54,10 +58,13 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
             android:layout_marginTop="1dp"
+            android:gravity="center"
             android:text="Complete &amp; earn"
-            android:textColor="#64748B"
-            android:textSize="10.5sp"
+            android:textColor="#D97706"
+            android:textSize="11sp"
+            android:textStyle="bold"
             android:maxLines="1"
             android:ellipsize="end" />
 
