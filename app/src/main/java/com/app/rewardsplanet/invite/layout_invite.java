@@ -266,10 +266,10 @@ public class layout_invite extends Fragment {
     }
 
     private void showRewardResultDialog(int coins, int tickets, String titleText) {
-        if (getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
+        if (!isAdded() || getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
 
         try {
-            android.app.Dialog d = new android.app.Dialog(requireContext());
+            android.app.Dialog d = new android.app.Dialog(getContext());
             d.requestWindowFeature(Window.FEATURE_NO_TITLE);
             d.setContentView(R.layout.dialog_spin_result);
 

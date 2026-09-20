@@ -1,5 +1,6 @@
 package com.app.rewardsplanet.profile;
 
+import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -130,20 +131,24 @@ public class MyEarningsFragment extends Fragment {
                         "totalReferralTickets", 0
                 )
                 .addOnSuccessListener(unused -> {
-                    showRewardResultDialog((int) coinsClaimed, (int) ticketsClaimed, "Referral Reward Collected! 🎉");
+                    if (isAdded() && getContext() != null) {
+                        showRewardResultDialog((int) coinsClaimed, (int) ticketsClaimed, "Referral Reward Collected! 🎉");
+                    }
                 })
                 .addOnFailureListener(e -> {
-                    btnClaim.setEnabled(true);
-                    btnClaim.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#10B981")));
-                    toast("Claim failed");
+                    if (isAdded()) {
+                        btnClaim.setEnabled(true);
+                        btnClaim.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#10B981")));
+                        toast("Claim failed");
+                    }
                 });
     }
 
     private void showRewardResultDialog(int coins, int tickets, String titleText) {
-        if (getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
+        if (!isAdded() || getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
 
         try {
-            android.app.Dialog d = new android.app.Dialog(requireContext());
+            android.app.Dialog d = new android.app.Dialog(getContext());
             d.requestWindowFeature(Window.FEATURE_NO_TITLE);
             d.setContentView(R.layout.dialog_spin_result);
 
@@ -169,11 +174,14 @@ public class MyEarningsFragment extends Fragment {
                 layoutTicket.setVisibility(View.GONE);
             }
 
-            UserPref userPref = new UserPref(requireContext());
-            userPref.setCoins(userPref.getCoins() + coins);
+            Context ctx = getContext();
+            if (ctx != null) {
+                UserPref userPref = new UserPref(ctx);
+                userPref.setCoins(userPref.getCoins() + coins);
 
-            if (txtBal != null) {
-                txtBal.setText("Balance: " + userPref.getCoins() + " Coins");
+                if (txtBal != null) {
+                    txtBal.setText("Balance: " + userPref.getCoins() + " Coins");
+                }
             }
 
             if (ok != null) {

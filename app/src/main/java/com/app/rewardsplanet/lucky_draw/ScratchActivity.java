@@ -407,44 +407,48 @@ public class ScratchActivity extends AppCompatActivity {
     private void showWinDialog(int reward, int currentBalance) {
         if (isFinishing() || isDestroyed()) return;
 
-        Dialog dialog = new Dialog(this);
-        dialog.setContentView(R.layout.dialog_spin_result);
+        try {
+            Dialog dialog = new Dialog(this);
+            dialog.setContentView(R.layout.dialog_spin_result);
 
-        Window window = dialog.getWindow();
-        if (window != null) {
-            window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-        }
+            Window window = dialog.getWindow();
+            if (window != null) {
+                window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            }
 
-        TextView       txtTitle          = dialog.findViewById(R.id.txtTitle);
-        TextView       txtWinAmount      = dialog.findViewById(R.id.txtWinAmount);
-        TextView       txtCurrentBalance = dialog.findViewById(R.id.txtCurrentBalance);
-        MaterialButton btnOk             = dialog.findViewById(R.id.btnOk);
+            TextView       txtTitle          = dialog.findViewById(R.id.txtTitle);
+            TextView       txtWinAmount      = dialog.findViewById(R.id.txtWinAmount);
+            TextView       txtCurrentBalance = dialog.findViewById(R.id.txtCurrentBalance);
+            MaterialButton btnOk             = dialog.findViewById(R.id.btnOk);
 
-        if (txtTitle != null)          txtTitle.setText("YOU WON! 🎉");
-        if (txtWinAmount != null)      txtWinAmount.setText("+" + reward + " COINS");
-        if (txtCurrentBalance != null) txtCurrentBalance.setText("Balance: " + currentBalance + " coins");
+            if (txtTitle != null)          txtTitle.setText("YOU WON! 🎉");
+            if (txtWinAmount != null)      txtWinAmount.setText("+" + reward + " COINS");
+            if (txtCurrentBalance != null) txtCurrentBalance.setText("Balance: " + currentBalance + " coins");
 
-        if (btnOk != null) {
-            btnOk.setOnClickListener(v -> {
-                dialog.dismiss();
-                if (remaining > 0) {
-                    scratchView.setLimitReached(false);
-                    scratchView.resetScratch();
-                    scratchView.setScratchEnabled(true);
-                } else {
-                    scratchView.setLimitReached(true);
-                }
-            });
-        }
+            if (btnOk != null) {
+                btnOk.setOnClickListener(v -> {
+                    try { dialog.dismiss(); } catch (Exception ignored) {}
+                    if (remaining > 0) {
+                        scratchView.setLimitReached(false);
+                        scratchView.resetScratch();
+                        scratchView.setScratchEnabled(true);
+                    } else {
+                        scratchView.setLimitReached(true);
+                    }
+                });
+            }
 
-        SuccessAnimationHelper.animate(dialog);
+            SuccessAnimationHelper.animate(dialog);
 
-        dialog.show();
-        if (window != null) {
-            window.setLayout(
-                    WindowManager.LayoutParams.MATCH_PARENT,
-                    WindowManager.LayoutParams.WRAP_CONTENT
-            );
+            dialog.show();
+            if (window != null) {
+                window.setLayout(
+                        WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.WRAP_CONTENT
+                );
+            }
+        } catch (Exception e) {
+            Toast.makeText(this, "🎉 +" + reward + " Coins Claimed!", Toast.LENGTH_SHORT).show();
         }
     }
 
