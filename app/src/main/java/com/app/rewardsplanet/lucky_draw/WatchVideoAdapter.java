@@ -128,20 +128,29 @@ public class WatchVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             holder.btnWatchVideoItem.setEnabled(false);
             holder.btnWatchVideoItem.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#334155")));
             holder.btnWatchVideoItem.setTextColor(Color.parseColor("#94A3B8"));
+            if (holder.cardRoot != null) holder.cardRoot.setAlpha(0.85f);
         } else if (model.isLoading()) {
             holder.btnWatchVideoItem.setText("Loading...");
             holder.btnWatchVideoItem.setEnabled(false);
             holder.btnWatchVideoItem.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#64748B")));
             holder.btnWatchVideoItem.setTextColor(Color.WHITE);
+            if (holder.cardRoot != null) holder.cardRoot.setAlpha(1.0f);
+        } else if (model.isLocked()) {
+            holder.btnWatchVideoItem.setText("Locked 🔒");
+            holder.btnWatchVideoItem.setEnabled(false);
+            holder.btnWatchVideoItem.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#E2E8F0")));
+            holder.btnWatchVideoItem.setTextColor(Color.parseColor("#64748B"));
+            if (holder.cardRoot != null) holder.cardRoot.setAlpha(0.7f);
         } else {
             holder.btnWatchVideoItem.setText("Watch 📺");
             holder.btnWatchVideoItem.setEnabled(true);
             holder.btnWatchVideoItem.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#10B981")));
             holder.btnWatchVideoItem.setTextColor(Color.WHITE);
+            if (holder.cardRoot != null) holder.cardRoot.setAlpha(1.0f);
         }
 
         holder.btnWatchVideoItem.setOnClickListener(v -> {
-            if (!model.isCompleted() && !model.isLoading() && listener != null) {
+            if (!model.isCompleted() && !model.isLocked() && !model.isLoading() && listener != null) {
                 listener.onWatchClick(model, adapterPosition);
             }
         });

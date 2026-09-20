@@ -181,11 +181,32 @@ public class WatchVideoActivity extends AppCompatActivity implements WatchVideoA
             progressDailyAds.setProgress(Math.min(watchedCount, 10));
         }
 
+        int activeAdapterPosition = -1;
         for (int i = 0; i < videoList.size(); i++) {
-            videoList.get(i).setCompleted(i < watchedCount);
+            WatchVideoModel item = videoList.get(i);
+            if (i < watchedCount) {
+                item.setCompleted(true);
+                item.setLocked(false);
+            } else if (i == watchedCount) {
+                item.setCompleted(false);
+                item.setLocked(false);
+                activeAdapterPosition = i + (i / 3);
+            } else {
+                item.setCompleted(false);
+                item.setLocked(true);
+            }
         }
         if (adapter != null) {
             adapter.notifyDataSetChanged();
+        }
+
+        if (activeAdapterPosition >= 0 && recyclerView != null) {
+            final int pos = activeAdapterPosition;
+            recyclerView.post(() -> {
+                try {
+                    recyclerView.smoothScrollToPosition(pos);
+                } catch (Exception ignored) {}
+            });
         }
     }
 
@@ -193,6 +214,12 @@ public class WatchVideoActivity extends AppCompatActivity implements WatchVideoA
     public void onWatchClick(WatchVideoModel item, int position) {
         if (watchedCount >= 10) {
             Toast.makeText(this, "Daily video limit reached (10/10)", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int taskIndex = item.getId() - 1;
+        if (taskIndex > watchedCount) {
+            Toast.makeText(this, "Please watch the previous video first!", Toast.LENGTH_SHORT).show();
             return;
         }
 

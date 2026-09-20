@@ -7,6 +7,7 @@ public class WatchVideoModel {
     private int ticketReward;
     private boolean isCompleted;
     private boolean isLoading;
+    private boolean isLocked;
 
     public WatchVideoModel(int id, String title, int coinReward, int ticketReward, boolean isCompleted) {
         this.id = id;
@@ -15,6 +16,7 @@ public class WatchVideoModel {
         this.ticketReward = ticketReward;
         this.isCompleted = isCompleted;
         this.isLoading = false;
+        this.isLocked = false;
     }
 
     public int getId() {
@@ -63,5 +65,13 @@ public class WatchVideoModel {
 
     public void setLoading(boolean loading) {
         isLoading = loading;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }
