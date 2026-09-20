@@ -19,20 +19,20 @@
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
         android:orientation="horizontal"
-        android:paddingStart="16dp"
-        android:paddingTop="14dp"
-        android:paddingEnd="16dp"
-        android:paddingBottom="14dp">
+        android:paddingStart="14dp"
+        android:paddingTop="10dp"
+        android:paddingEnd="14dp"
+        android:paddingBottom="10dp">
 
         <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:background="@drawable/bg_quiz_score_badge">
 
             <ImageView
                 android:id="@+id/ic_lucky"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_lucky"
                 android:contentDescription="Lucky Draw" />

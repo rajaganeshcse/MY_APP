@@ -34,10 +34,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:paddingStart="20dp"
-            android:paddingTop="16dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="14dp">
+            android:paddingStart="18dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="18dp"
+            android:paddingBottom="10dp">
 
         <!-- TITLE + GIFT BADGE -->
         <LinearLayout
@@ -60,7 +60,7 @@
                     android:layout_height="wrap_content"
                     android:text="🎁 Daily Bonus Reward"
                     android:textColor="#FFFFFF"
-                    android:textSize="19sp"
+                    android:textSize="17sp"
                     android:textStyle="bold"
                     android:letterSpacing="0.01" />
 
@@ -68,23 +68,23 @@
                     android:id="@+id/txtDailyBonusSubtitle"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="3dp"
+                    android:layout_marginTop="2dp"
                     android:text="Hold for 5 seconds to claim your daily bonus"
                     android:textColor="#E9D5FF"
-                    android:textSize="12sp" />
+                    android:textSize="11.5sp" />
 
             </LinearLayout>
 
             <!-- GIFT BADGE -->
             <FrameLayout
-                android:layout_width="52dp"
-                android:layout_height="52dp"
+                android:layout_width="44dp"
+                android:layout_height="44dp"
                 android:background="@drawable/bg_bonus_icon">
 
                 <ImageView
                     android:id="@+id/imgDailyBonus"
-                    android:layout_width="34dp"
-                    android:layout_height="36dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_gravity="center"
                     android:scaleType="centerInside"
                     android:src="@drawable/ic_gift1"
@@ -97,9 +97,9 @@
         <!-- HOLD PROGRESS CONTAINER -->
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="52dp"
-            android:layout_marginTop="14dp"
-            android:layout_marginBottom="4dp">
+            android:layout_height="44dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="2dp">
 
             <!-- PROGRESS BAR BACKGROUND FILL -->
             <ProgressBar
@@ -118,11 +118,11 @@
                 android:layout_height="match_parent"
                 android:text="HOLD TO CLAIM 0%"
                 android:textColor="#FFFFFF"
-                android:textSize="15sp"
+                android:textSize="14sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.02"
                 app:backgroundTint="@android:color/transparent"
-                app:cornerRadius="24dp"
+                app:cornerRadius="22dp"
                 app:elevation="0dp"
                 app:strokeWidth="0dp" />
 
@@ -132,13 +132,13 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
             android:gravity="center"
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="15dp"
-                android:layout_height="15dp"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
                 android:src="@drawable/ic_info"
                 app:tint="#FFD700"
                 android:contentDescription="Info Icon" />
@@ -147,10 +147,10 @@
                 android:id="@+id/txtBonusInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
+                android:layout_marginStart="5dp"
                 android:text="Hold for 5 seconds to claim"
                 android:textColor="#F3E8FF"
-                android:textSize="12sp"
+                android:textSize="11.5sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
