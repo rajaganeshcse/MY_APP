@@ -36,9 +36,10 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:text="Reward Added 🎯"
-            android:textSize="15sp"
+            android:textSize="16sp"
             android:fontFamily="sans-serif-medium"
             android:textStyle="bold"
+            android:letterSpacing="0.01"
             android:textColor="#0F172A" />
 
         <!-- Message -->
@@ -46,10 +47,11 @@
             android:id="@+id/txtMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="2dp"
+            android:layout_marginTop="3dp"
             android:textColor="#334155"
             android:maxLines="2"
             android:ellipsize="end"
+            android:lineSpacingExtra="2dp"
             android:text="₹200 credited to your wallet 💰"
             android:textSize="13sp"
             android:fontFamily="sans-serif" />
@@ -63,6 +65,7 @@
             android:textColor="#64748B"
             android:maxLines="2"
             android:ellipsize="end"
+            android:lineSpacingExtra="2dp"
             android:text=""
             android:textSize="12sp"
             android:fontFamily="sans-serif"

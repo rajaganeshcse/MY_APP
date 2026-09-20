@@ -92,8 +92,8 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_icon_circle_amber"
                     android:padding="8dp"
                     android:src="@drawable/ic_gift"
@@ -111,17 +111,19 @@
                         android:layout_height="wrap_content"
                         android:text="Daily Bonus Unlocked 🎉"
                         android:textColor="#0F172A"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:fontFamily="sans-serif-medium"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:text="Hold button for 5 seconds on home screen to claim your bonus coins!"
-                        android:textColor="#475569"
-                        android:textSize="12sp"
+                        android:textColor="#334155"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="2dp"
                         android:fontFamily="sans-serif" />
 
                     <TextView
@@ -130,8 +132,8 @@
                         android:layout_marginTop="4dp"
                         android:text="Just now"
                         android:textColor="#94A3B8"
-                        android:textSize="11sp"
-                        android:fontFamily="sans-serif" />
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium" />
 
                 </LinearLayout>
 
@@ -149,8 +151,8 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_icon_circle_blue"
                     android:padding="8dp"
                     android:src="@drawable/ic_spinner"
@@ -168,17 +170,19 @@
                         android:layout_height="wrap_content"
                         android:text="Free Spin Available 🎡"
                         android:textColor="#0F172A"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:fontFamily="sans-serif-medium"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:text="Spin the wheel now to reveal guaranteed coins and prizes."
-                        android:textColor="#475569"
-                        android:textSize="12sp"
+                        android:textColor="#334155"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="2dp"
                         android:fontFamily="sans-serif" />
 
                     <TextView
@@ -187,8 +191,8 @@
                         android:layout_marginTop="4dp"
                         android:text="1 hour ago"
                         android:textColor="#94A3B8"
-                        android:textSize="11sp"
-                        android:fontFamily="sans-serif" />
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium" />
 
                 </LinearLayout>
 
@@ -206,8 +210,8 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_icon_circle_purple"
                     android:padding="8dp"
                     android:src="@drawable/ic_leaderboard"
@@ -225,17 +229,19 @@
                         android:layout_height="wrap_content"
                         android:text="Leaderboard Rankings Updated 🏆"
                         android:textColor="#0F172A"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:fontFamily="sans-serif-medium"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:text="New top players announced! Check your current rank on the leaderboard."
-                        android:textColor="#475569"
-                        android:textSize="12sp"
+                        android:textColor="#334155"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="2dp"
                         android:fontFamily="sans-serif" />
 
                     <TextView
@@ -244,8 +250,8 @@
                         android:layout_marginTop="4dp"
                         android:text="3 hours ago"
                         android:textColor="#94A3B8"
-                        android:textSize="11sp"
-                        android:fontFamily="sans-serif" />
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium" />
 
                 </LinearLayout>
 
@@ -263,8 +269,8 @@
                 android:gravity="center_vertical">
 
                 <ImageView
-                    android:layout_width="38dp"
-                    android:layout_height="38dp"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
                     android:background="@drawable/bg_icon_circle_green"
                     android:padding="8dp"
                     android:src="@drawable/ic_quiz"
@@ -282,17 +288,19 @@
                         android:layout_height="wrap_content"
                         android:text="Daily Quiz Ready 🧠"
                         android:textColor="#0F172A"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:fontFamily="sans-serif-medium"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="3dp"
                         android:text="Test your knowledge today and win instant bonus reward coins."
-                        android:textColor="#475569"
-                        android:textSize="12sp"
+                        android:textColor="#334155"
+                        android:textSize="13sp"
+                        android:lineSpacingExtra="2dp"
                         android:fontFamily="sans-serif" />
 
                     <TextView
@@ -301,8 +309,8 @@
                         android:layout_marginTop="4dp"
                         android:text="5 hours ago"
                         android:textColor="#94A3B8"
-                        android:textSize="11sp"
-                        android:fontFamily="sans-serif" />
+                        android:textSize="12sp"
+                        android:fontFamily="sans-serif-medium" />
 
                 </LinearLayout>
 
