@@ -33,10 +33,22 @@ import com.google.android.material.button.MaterialButton;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.app.rewardsplanet.network.ApiClient;
+import com.app.rewardsplanet.network.ApiService;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+
+import okhttp3.ResponseBody;
+import org.json.JSONObject;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class HitRewardzActivity extends AppCompatActivity implements HitRewardzAdapter.OnHitzClickListener {
 
@@ -44,6 +56,7 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
 
     private UserPref userPref;
     private FirebaseFirestore db;
+    private ApiService apiService;
 
     private TextView txtCoins;
     private TextView txtProgressCount;
@@ -85,6 +98,8 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
         if (txtCoins != null) {
             txtCoins.setText(String.valueOf(userPref.getCoins()));
         }
+
+        apiService = ApiClient.getClient().create(ApiService.class);
 
         try {
             MobileAds.initialize(this, status -> {});
@@ -262,17 +277,75 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
     private void grantHitzReward(HitRewardzModel item) {
         if (item == null || item.isCompleted()) return;
 
-        int rewardCoins = item.getCoins();
-        int rewardTickets = item.getTickets() > 0 ? item.getTickets() : 5;
-
         item.setCompleted(true);
 
+        String requestId = UUID.randomUUID().toString();
+        Map<String, Object> reqBody = new HashMap<>();
+        reqBody.put("requestId", requestId);
+        reqBody.put("taskId", item.getId());
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.getIdToken(true).addOnCompleteListener(task -> {
+                String token = task.isSuccessful() && task.getResult() != null ? task.getResult().getToken() : "";
+                callBackendClaimReward(token, reqBody, item);
+            });
+        } else {
+            callBackendClaimReward("", reqBody, item);
+        }
+    }
+
+    private void callBackendClaimReward(String token, Map<String, Object> reqBody, HitRewardzModel item) {
+        String authHeader = (token != null && !token.isEmpty()) ? "Bearer " + token : "";
+        int fallbackCoins = item.getCoins();
+        int fallbackTickets = item.getTickets() > 0 ? item.getTickets() : 5;
+
+        if (apiService != null && !authHeader.isEmpty()) {
+            apiService.claimHitzReward(authHeader, reqBody).enqueue(new Callback<ResponseBody>() {
+                @Override
+                public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                    if (response.isSuccessful() && response.body() != null) {
+                        try {
+                            String rawJson = response.body().string();
+                            JSONObject json = new JSONObject(rawJson);
+                            int coinReward = json.optInt("coinReward", fallbackCoins);
+                            int ticketReward = json.optInt("ticketReward", fallbackTickets);
+                            long totalCoins = json.optLong("totalCoins", userPref.getCoins() + coinReward);
+                            long totalTickets = json.optLong("totalTickets", userPref.getTickets() + ticketReward);
+
+                            userPref.setCoins(totalCoins);
+                            userPref.setTickets((int) totalTickets);
+                            userPref.setHitzTaskCompleted(item.getId());
+
+                            UserRepository.getInstance(HitRewardzActivity.this).refreshCurrentUser();
+                            updateProgressUI();
+                            showHitzRewardDialog(coinReward, ticketReward, item.getTitle());
+                            return;
+                        } catch (Exception e) {
+                            Log.e(TAG, "Error parsing backend hitz reward response", e);
+                        }
+                    }
+                    applyFallbackReward(item, fallbackCoins, fallbackTickets);
+                }
+
+                @Override
+                public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                    Log.e(TAG, "Backend claim hitz reward failed: " + t.getMessage());
+                    applyFallbackReward(item, fallbackCoins, fallbackTickets);
+                }
+            });
+        } else {
+            applyFallbackReward(item, fallbackCoins, fallbackTickets);
+        }
+    }
+
+    private void applyFallbackReward(HitRewardzModel item, int rewardCoins, int rewardTickets) {
         String uid = userPref.getUid();
         if (uid != null && !uid.isEmpty()) {
             db.collection("users").document(uid).update(
                     "coins", FieldValue.increment(rewardCoins),
                     "tickets", FieldValue.increment(rewardTickets)
-            ).addOnFailureListener(e -> Log.e(TAG, "Error updating Firestore Hitz reward", e));
+            ).addOnFailureListener(e -> Log.e(TAG, "Error updating Firestore Hitz reward fallback", e));
         }
 
         userPref.addCoins(rewardCoins);
@@ -280,7 +353,6 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
         userPref.setHitzTaskCompleted(item.getId());
 
         UserRepository.getInstance(this).refreshCurrentUser();
-
         updateProgressUI();
         showHitzRewardDialog(rewardCoins, rewardTickets, item.getTitle());
     }
