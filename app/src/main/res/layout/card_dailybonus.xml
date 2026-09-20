@@ -14,15 +14,30 @@
     app:cardElevation="6dp"
     app:cardBackgroundColor="@android:color/transparent">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_daily_bonus"
-        android:orientation="vertical"
-        android:paddingStart="20dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="20dp"
-        android:paddingBottom="14dp">
+        android:background="@drawable/bg_daily_bonus">
+
+        <!-- DECORATIVE CORNER CIRCLE GLOW ACCENT (MATCHING REWARD CARD) -->
+        <View
+            android:id="@+id/glowCircleBonus"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="top|end"
+            android:alpha="0.22"
+            android:background="@drawable/bg_wallet_glow_circle"
+            android:translationX="30dp"
+            android:translationY="-30dp" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingStart="20dp"
+            android:paddingTop="16dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="14dp">
 
         <!-- TITLE + GIFT BADGE -->
         <LinearLayout
@@ -141,5 +156,7 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    </FrameLayout>
 
 </androidx.cardview.widget.CardView>
