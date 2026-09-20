@@ -1842,52 +1842,88 @@ public class HomeFragment extends Fragment {
     }
 
 
-    // =========================================================
-    // LOAD NATIVE AD
-    // =========================================================
+    private void loadNativeAd(View rootView) {
+        if (rootView == null || getContext() == null) return;
 
-    private void loadNativeAd(
-            View rootView) {
+        android.widget.FrameLayout nativeAdContainer = rootView.findViewById(R.id.nativeAdContainer);
+        if (nativeAdContainer == null) return;
 
-        AdLoader adLoader =
-                new AdLoader.Builder(
-                        requireContext(),
-                        AdsManager.NATIVE_AD_ID
-                )
-                        .forNativeAd(ad -> {
+        try {
+            AdLoader adLoader = new AdLoader.Builder(requireContext(), AdsManager.NATIVE_AD_ID)
+                    .forNativeAd(ad -> {
+                        if (!isAdded() || getContext() == null) return;
 
-                            NativeAdView adView =
-                                    rootView.findViewById(
-                                            R.id.nativeAdView
-                                    );
+                        View adLayoutView = LayoutInflater.from(getContext())
+                                .inflate(R.layout.native_ad_layout, nativeAdContainer, false);
 
-                            if (adView == null) {
-                                return;
+                        NativeAdView adView = adLayoutView.findViewById(R.id.nativeAdView);
+                        if (adView == null) return;
+
+                        TextView headline = adView.findViewById(R.id.ad_headline);
+                        TextView body = adView.findViewById(R.id.ad_body);
+                        ImageView icon = adView.findViewById(R.id.ad_app_icon);
+                        com.google.android.gms.ads.nativead.MediaView mediaView = adView.findViewById(R.id.ad_media);
+                        MaterialButton cta = adView.findViewById(R.id.ad_call_to_action);
+
+                        if (headline != null) {
+                            headline.setText(ad.getHeadline());
+                            adView.setHeadlineView(headline);
+                        }
+
+                        if (body != null) {
+                            if (ad.getBody() != null) {
+                                body.setText(ad.getBody());
+                                body.setVisibility(View.VISIBLE);
+                            } else {
+                                body.setVisibility(View.GONE);
                             }
+                            adView.setBodyView(body);
+                        }
 
-
-                            TextView headline =
-                                    adView.findViewById(
-                                            R.id.ad_headline
-                                    );
-
-                            if (headline != null) {
-
-                                headline.setText(
-                                        ad.getHeadline()
-                                );
+                        if (icon != null) {
+                            if (ad.getIcon() != null && ad.getIcon().getDrawable() != null) {
+                                icon.setImageDrawable(ad.getIcon().getDrawable());
+                                icon.setVisibility(View.VISIBLE);
+                            } else {
+                                icon.setVisibility(View.GONE);
                             }
+                            adView.setIconView(icon);
+                        }
 
+                        if (mediaView != null) {
+                            adView.setMediaView(mediaView);
+                        }
 
-                            adView.setNativeAd(ad);
-                        })
-                        .build();
+                        if (cta != null) {
+                            if (ad.getCallToAction() != null) {
+                                cta.setText(ad.getCallToAction());
+                                cta.setVisibility(View.VISIBLE);
+                            } else {
+                                cta.setVisibility(View.GONE);
+                            }
+                            adView.setCallToActionView(cta);
+                        }
 
+                        adView.setNativeAd(ad);
 
-        adLoader.loadAd(
-                new AdRequest.Builder()
-                        .build()
-        );
+                        nativeAdContainer.removeAllViews();
+                        nativeAdContainer.addView(adLayoutView);
+                    })
+                    .withAdListener(new com.google.android.gms.ads.AdListener() {
+                        @Override
+                        public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
+                            super.onAdFailedToLoad(loadAdError);
+                            if (nativeAdContainer != null) {
+                                nativeAdContainer.setVisibility(View.GONE);
+                            }
+                        }
+                    })
+                    .build();
+
+            adLoader.loadAd(new AdRequest.Builder().build());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
