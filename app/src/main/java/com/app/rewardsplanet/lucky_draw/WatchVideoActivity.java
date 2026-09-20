@@ -324,6 +324,8 @@ public class WatchVideoActivity extends AppCompatActivity implements WatchVideoA
 
             TextView txtTitle = d.findViewById(R.id.txtTitle);
             TextView txtWin = d.findViewById(R.id.txtWinAmount);
+            View layoutTicket = d.findViewById(R.id.layoutWinTicket);
+            TextView txtTicketAmount = d.findViewById(R.id.txtWinTicketAmount);
             TextView txtBal = d.findViewById(R.id.txtCurrentBalance);
             MaterialButton ok = d.findViewById(R.id.btnOk);
 
@@ -331,8 +333,17 @@ public class WatchVideoActivity extends AppCompatActivity implements WatchVideoA
                 txtTitle.setText("Video Bonus Claimed! 🎉");
             }
             if (txtWin != null) {
-                txtWin.setText("+" + coins + " Coins  •  +" + tickets + " Ticket" + (tickets > 1 ? "s" : ""));
+                txtWin.setText("+" + coins + " Coins");
             }
+            if (tickets > 0) {
+                if (layoutTicket != null) layoutTicket.setVisibility(View.VISIBLE);
+                if (txtTicketAmount != null) {
+                    txtTicketAmount.setText("+" + tickets + " Ticket" + (tickets > 1 ? "s" : ""));
+                }
+            } else if (layoutTicket != null) {
+                layoutTicket.setVisibility(View.GONE);
+            }
+
             if (txtBal != null) {
                 txtBal.setText("Balance: " + userCoins + " Coins");
             }

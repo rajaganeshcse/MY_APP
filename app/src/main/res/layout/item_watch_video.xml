@@ -119,11 +119,18 @@
                         android:paddingStart="10dp"
                         android:paddingEnd="10dp">
 
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:src="@drawable/ic_ticket"
+                            android:contentDescription="Ticket" />
+
                         <TextView
                             android:id="@+id/txtVideoRewardTickets"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="🎟️ +1 Ticket"
+                            android:layout_marginStart="4dp"
+                            android:text="+1 Ticket"
                             android:textColor="#047857"
                             android:textSize="12sp"
                             android:textStyle="bold" />

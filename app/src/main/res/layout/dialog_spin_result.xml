@@ -98,6 +98,36 @@
 
         </LinearLayout>
 
+        <!-- TICKET REWARD ROW (OPTIONAL - GONE BY DEFAULT) -->
+        <LinearLayout
+            android:id="@+id/layoutWinTicket"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/imgWinTicket"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:layout_marginEnd="6dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_ticket"
+                android:contentDescription="Ticket Icon" />
+
+            <TextView
+                android:id="@+id/txtWinTicketAmount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="1 Ticket"
+                android:textColor="#4F46E5"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
         <TextView
             android:id="@+id/txtCurrentBalance"
             android:layout_width="match_parent"
