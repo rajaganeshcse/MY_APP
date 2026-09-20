@@ -42,6 +42,9 @@ public class SplashActivity extends AppCompatActivity {
         userRepository = UserRepository.getInstance(this);
         makeFullScreen();
 
+        // Create FCM Notification Channel early
+        com.app.rewardsplanet.notifications.MyFirebaseMessagingService.createNotificationChannel(this);
+
         // Enable Firestore network mode
         try {
             FirebaseFirestore.getInstance().enableNetwork();

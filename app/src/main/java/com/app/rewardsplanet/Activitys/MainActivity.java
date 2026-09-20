@@ -164,12 +164,10 @@ public class MainActivity extends AppCompatActivity {
         setupNavigation();
 
 
-        // =====================================================
-        // NOTIFICATION PERMISSION
-        // =====================================================
+        // Ensure notification channel is registered
+        MyFirebaseMessagingService.createNotificationChannel(this);
 
         if (Build.VERSION.SDK_INT >= 33) {
-
             requestPermissions(
                     new String[]{
                             Manifest.permission.POST_NOTIFICATIONS

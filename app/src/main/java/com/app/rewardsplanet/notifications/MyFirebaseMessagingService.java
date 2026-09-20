@@ -46,11 +46,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     public static void updateUserFcmToken(String token) {
-        if (token == null || token.isEmpty()) return;
+        if (token == null || token.trim().isEmpty()) return;
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user != null && user.getUid() != null && !user.getUid().isEmpty()) {
             Map<String, Object> updates = new HashMap<>();
             updates.put("fcmToken", token);
+            updates.put("token", token);
+            updates.put("fcm_token", token);
+            updates.put("deviceToken", token);
             updates.put("notificationEnabled", true);
             updates.put("updatedAt", FieldValue.serverTimestamp());
 
@@ -100,8 +103,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                                   String notificationType, String screen, String deepLink,
                                   String notificationId, String customData, String amount, String requestId) {
 
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        createChannel(manager);
+        createNotificationChannel(this);
 
         Intent intent;
         if ("withdraw".equalsIgnoreCase(notificationType) && amount != null && !amount.isEmpty()) {
@@ -131,12 +133,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         int iconRes = R.drawable.ic_notification;
 
+        String fullMessage = body;
+        if (body1 != null && !body1.trim().isEmpty()) {
+            fullMessage = body + "\n" + body1;
+        }
+
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(iconRes)
                 .setContentTitle(title)
                 .setContentText(body)
                 .setAutoCancel(true)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setDefaults(NotificationCompat.DEFAULT_ALL)
                 .setContentIntent(pi);
 
         Bitmap imageBitmap = downloadImageSafely(imageUrl);
@@ -147,32 +155,27 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setBigContentTitle(title)
                     .setSummaryText(body));
         } else {
-            RemoteViews views = new RemoteViews(getPackageName(), R.layout.notification_ui);
-            views.setTextViewText(R.id.txtTitle, title);
-            views.setTextViewText(R.id.txtMessage, body);
-            if (body1 != null && !body1.isEmpty()) {
-                views.setTextViewText(R.id.txtMessage1, body1);
-                views.setViewVisibility(R.id.txtMessage1, android.view.View.VISIBLE);
-            } else {
-                views.setViewVisibility(R.id.txtMessage1, android.view.View.GONE);
-            }
-            builder.setCustomContentView(views);
-            builder.setStyle(new NotificationCompat.DecoratedCustomViewStyle());
+            builder.setStyle(new NotificationCompat.BigTextStyle()
+                    .bigText(fullMessage)
+                    .setBigContentTitle(title));
         }
 
-        manager.notify(new Random().nextInt(100000), builder.build());
+        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (manager != null) {
+            manager.notify(new Random().nextInt(100000), builder.build());
+        }
     }
 
     private Bitmap downloadImageSafely(String urlString) {
-        if (urlString == null || urlString.trim().isEmpty()) {
+        if (urlString == null || urlString.trim().isEmpty() || urlString.startsWith("blob:")) {
             return null;
         }
         try {
             URL url = new URL(urlString);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setDoInput(true);
-            connection.setConnectTimeout(5000);
-            connection.setReadTimeout(5000);
+            connection.setConnectTimeout(4000);
+            connection.setReadTimeout(4000);
             connection.connect();
             InputStream input = connection.getInputStream();
             return BitmapFactory.decodeStream(input);
@@ -182,18 +185,20 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         }
     }
 
-    private void createChannel(NotificationManager manager) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    CHANNEL_NAME,
-                    NotificationManager.IMPORTANCE_HIGH
-            );
-            channel.setDescription("Earning and reward notifications");
-            channel.enableVibration(true);
-            channel.setShowBadge(true);
-
-            manager.createNotificationChannel(channel);
+    public static void createNotificationChannel(Context context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && context != null) {
+            NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+            if (manager != null) {
+                NotificationChannel channel = new NotificationChannel(
+                        CHANNEL_ID,
+                        CHANNEL_NAME,
+                        NotificationManager.IMPORTANCE_HIGH
+                );
+                channel.setDescription("Earning and reward notifications");
+                channel.enableVibration(true);
+                channel.setShowBadge(true);
+                manager.createNotificationChannel(channel);
+            }
         }
     }
 }
