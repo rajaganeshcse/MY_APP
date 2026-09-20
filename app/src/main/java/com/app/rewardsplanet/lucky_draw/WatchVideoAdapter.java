@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.models.WatchVideoModel;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.button.MaterialButton;
 
 import java.util.List;
@@ -43,8 +44,33 @@ public class WatchVideoAdapter extends RecyclerView.Adapter<WatchVideoAdapter.Vi
         WatchVideoModel model = list.get(position);
 
         holder.txtVideoTitle.setText(model.getTitle());
-        holder.txtVideoRewardCoins.setText("🪙 +" + model.getCoinReward() + " Coins");
+        holder.txtVideoRewardCoins.setText("+" + model.getCoinReward() + " Coins");
         holder.txtVideoRewardTickets.setText("🎟️ +" + model.getTicketReward() + " Ticket" + (model.getTicketReward() > 1 ? "s" : ""));
+
+        // SUPER BONUS BADGE FOR ITEM 10
+        if (model.getId() == 10) {
+            holder.badgeSuperBonus.setVisibility(View.VISIBLE);
+            if (holder.cardRoot != null) {
+                holder.cardRoot.setStrokeColor(ColorStateList.valueOf(Color.parseColor("#F59E0B")));
+                holder.cardRoot.setStrokeWidth(4);
+            }
+        } else {
+            holder.badgeSuperBonus.setVisibility(View.GONE);
+            if (holder.cardRoot != null) {
+                int strokeColor;
+                if (model.getId() <= 3) {
+                    strokeColor = Color.parseColor("#2E2E4A");
+                } else if (model.getId() <= 5) {
+                    strokeColor = Color.parseColor("#4C1D95");
+                } else if (model.getId() <= 7) {
+                    strokeColor = Color.parseColor("#BE185D");
+                } else {
+                    strokeColor = Color.parseColor("#B45309");
+                }
+                holder.cardRoot.setStrokeColor(ColorStateList.valueOf(strokeColor));
+                holder.cardRoot.setStrokeWidth(2);
+            }
+        }
 
         if (model.isCompleted()) {
             holder.btnWatchVideoItem.setText("✓ Claimed");
@@ -76,14 +102,17 @@ public class WatchVideoAdapter extends RecyclerView.Adapter<WatchVideoAdapter.Vi
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        TextView txtVideoTitle, txtVideoRewardCoins, txtVideoRewardTickets;
+        MaterialCardView cardRoot;
+        TextView txtVideoTitle, txtVideoRewardCoins, txtVideoRewardTickets, badgeSuperBonus;
         MaterialButton btnWatchVideoItem;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
+            cardRoot = itemView.findViewById(R.id.cardWatchVideoRoot);
             txtVideoTitle = itemView.findViewById(R.id.txtVideoTitle);
             txtVideoRewardCoins = itemView.findViewById(R.id.txtVideoRewardCoins);
             txtVideoRewardTickets = itemView.findViewById(R.id.txtVideoRewardTickets);
+            badgeSuperBonus = itemView.findViewById(R.id.badgeSuperBonus);
             btnWatchVideoItem = itemView.findViewById(R.id.btnWatchVideoItem);
         }
     }

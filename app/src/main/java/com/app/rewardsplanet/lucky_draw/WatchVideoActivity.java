@@ -1,5 +1,6 @@
 package com.app.rewardsplanet.lucky_draw;
 
+import android.app.Dialog;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -7,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +24,7 @@ import com.app.rewardsplanet.ads.AdsManager;
 import com.app.rewardsplanet.models.WatchVideoModel;
 import com.app.rewardsplanet.network.ApiClient;
 import com.app.rewardsplanet.network.ApiService;
+import com.app.rewardsplanet.utils.SuccessAnimationHelper;
 import com.google.android.gms.ads.AdError;
 import com.google.android.gms.ads.AdRequest;
 import com.google.android.gms.ads.FullScreenContentCallback;
@@ -31,9 +32,9 @@ import com.google.android.gms.ads.LoadAdError;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.rewarded.RewardedAd;
 import com.google.android.gms.ads.rewarded.RewardedAdLoadCallback;
+import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
@@ -43,6 +44,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import okhttp3.ResponseBody;
+import org.json.JSONObject;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -136,15 +138,15 @@ public class WatchVideoActivity extends AppCompatActivity implements WatchVideoA
 
     private void setupVideoList() {
         videoList.clear();
-        videoList.add(new WatchVideoModel(1, "Daily Video Bonus #1", 10, 1, false));
-        videoList.add(new WatchVideoModel(2, "Daily Video Bonus #2", 10, 1, false));
-        videoList.add(new WatchVideoModel(3, "Daily Video Bonus #3", 10, 1, false));
-        videoList.add(new WatchVideoModel(4, "Quick Reward Video #4", 15, 1, false));
-        videoList.add(new WatchVideoModel(5, "Quick Reward Video #5", 15, 1, false));
-        videoList.add(new WatchVideoModel(6, "Silver Video Bonus #6", 20, 1, false));
-        videoList.add(new WatchVideoModel(7, "Silver Video Bonus #7", 20, 1, false));
-        videoList.add(new WatchVideoModel(8, "Gold Video Bonus #8", 25, 1, false));
-        videoList.add(new WatchVideoModel(9, "Gold Video Bonus #9", 25, 1, false));
+        videoList.add(new WatchVideoModel(1, "Video Reward #1", 10, 1, false));
+        videoList.add(new WatchVideoModel(2, "Video Reward #2", 10, 1, false));
+        videoList.add(new WatchVideoModel(3, "Video Reward #3", 10, 1, false));
+        videoList.add(new WatchVideoModel(4, "Video Reward #4", 15, 1, false));
+        videoList.add(new WatchVideoModel(5, "Video Reward #5", 15, 1, false));
+        videoList.add(new WatchVideoModel(6, "Video Reward #6", 20, 1, false));
+        videoList.add(new WatchVideoModel(7, "Video Reward #7", 20, 1, false));
+        videoList.add(new WatchVideoModel(8, "Video Reward #8", 25, 1, false));
+        videoList.add(new WatchVideoModel(9, "Video Reward #9", 25, 1, false));
         videoList.add(new WatchVideoModel(10, "Super Mega Bonus #10", 50, 2, false));
     }
 
@@ -266,10 +268,26 @@ public class WatchVideoActivity extends AppCompatActivity implements WatchVideoA
                     item.setLoading(false);
 
                     if (response.isSuccessful()) {
+                        int coinsEarned = item.getCoinReward();
+                        int ticketsEarned = item.getTicketReward();
+
+                        try {
+                            if (response.body() != null) {
+                                String jsonStr = response.body().string();
+                                if (jsonStr.contains("coinReward")) {
+                                    JSONObject obj = new JSONObject(jsonStr);
+                                    if (obj.has("coinReward")) coinsEarned = obj.getInt("coinReward");
+                                    if (obj.has("ticketReward")) ticketsEarned = obj.getInt("ticketReward");
+                                }
+                            }
+                        } catch (Exception ignored) {}
+
                         item.setCompleted(true);
                         watchedCount++;
                         updateProgressUI();
-                        Toast.makeText(WatchVideoActivity.this, "🎉 Reward Claimed! +" + item.getCoinReward() + " Coins Added!", Toast.LENGTH_LONG).show();
+
+                        showRewardResultDialog(coinsEarned, ticketsEarned);
+
                     } else {
                         String err = "Claim failed";
                         try {
@@ -294,6 +312,48 @@ public class WatchVideoActivity extends AppCompatActivity implements WatchVideoA
             if (adapter != null) adapter.notifyItemChanged(position);
             Toast.makeText(this, "Auth error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         });
+    }
+
+    private void showRewardResultDialog(int coins, int tickets) {
+        if (isFinishing() || isDestroyed()) return;
+
+        try {
+            Dialog d = new Dialog(this);
+            d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            d.setContentView(R.layout.dialog_spin_result);
+
+            TextView txtTitle = d.findViewById(R.id.txtTitle);
+            TextView txtWin = d.findViewById(R.id.txtWinAmount);
+            TextView txtBal = d.findViewById(R.id.txtCurrentBalance);
+            MaterialButton ok = d.findViewById(R.id.btnOk);
+
+            if (txtTitle != null) {
+                txtTitle.setText("Video Bonus Claimed! 🎉");
+            }
+            if (txtWin != null) {
+                txtWin.setText("+" + coins + " Coins  •  +" + tickets + " Ticket" + (tickets > 1 ? "s" : ""));
+            }
+            if (txtBal != null) {
+                txtBal.setText("Balance: " + userCoins + " Coins");
+            }
+
+            if (ok != null) {
+                ok.setText("COLLECT REWARD 🎁");
+                ok.setOnClickListener(v -> {
+                    try { d.dismiss(); } catch (Exception ignored) {}
+                });
+            }
+
+            if (d.getWindow() != null) {
+                d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+
+            SuccessAnimationHelper.animate(d);
+            d.show();
+
+        } catch (Exception e) {
+            Toast.makeText(this, "🎉 +" + coins + " Coins & +" + tickets + " Ticket Added!", Toast.LENGTH_LONG).show();
+        }
     }
 
     private void showLoading() {
