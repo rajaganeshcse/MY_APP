@@ -413,6 +413,15 @@ public class HomeFragment extends Fragment {
 
             card_daily_quiz.setOnClickListener(v -> {
 
+                if (userPref != null && !userPref.canPlayDailyQuiz()) {
+                    Toast.makeText(
+                            requireContext(),
+                            "Daily Quiz completed today! Come back tomorrow 🎉",
+                            Toast.LENGTH_LONG
+                    ).show();
+                    return;
+                }
+
                 startActivity(
                         new Intent(
                                 requireContext(),

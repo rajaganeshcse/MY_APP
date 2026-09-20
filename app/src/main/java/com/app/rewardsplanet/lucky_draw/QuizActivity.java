@@ -2,11 +2,14 @@ package com.app.rewardsplanet.lucky_draw;
 
 import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.view.WindowInsetsController;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -92,8 +95,15 @@ public class QuizActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
+        makeFullScreen();
+
         userPref = new UserPref(this);
         db = FirebaseFirestore.getInstance();
+
+        if (!userPref.canPlayDailyQuiz()) {
+            showAlreadyCompletedDialog();
+            return;
+        }
 
         initViews();
         setupQuestionBank();
@@ -372,6 +382,91 @@ public class QuizActivity extends AppCompatActivity {
                 rewardedAd = ad;
             }
         });
+    }
+
+    private void showAlreadyCompletedDialog() {
+        if (isFinishing() || isDestroyed()) return;
+
+        try {
+            Dialog d = new Dialog(this);
+            d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            d.setContentView(R.layout.dialog_spin_result);
+
+            TextView txtTitle = d.findViewById(R.id.txtTitle);
+            TextView txtWinAmount = d.findViewById(R.id.txtWinAmount);
+            LinearLayout layoutWinTicket = d.findViewById(R.id.layoutWinTicket);
+            TextView txtCurrentBalance = d.findViewById(R.id.txtCurrentBalance);
+            MaterialButton btnOk = d.findViewById(R.id.btnOk);
+
+            if (txtTitle != null) {
+                txtTitle.setText("Limit Reached 🎯");
+            }
+
+            if (txtWinAmount != null) {
+                txtWinAmount.setText("Already Completed Today!");
+                txtWinAmount.setTextSize(18);
+            }
+
+            if (layoutWinTicket != null) {
+                layoutWinTicket.setVisibility(View.GONE);
+            }
+
+            if (txtCurrentBalance != null) {
+                txtCurrentBalance.setText("Come back tomorrow to earn 25 Coins & 10 Tickets!");
+            }
+
+            if (btnOk != null) {
+                btnOk.setText("GOT IT");
+                btnOk.setOnClickListener(v -> {
+                    try { d.dismiss(); } catch (Exception ignored) {}
+                    finish();
+                });
+            }
+
+            d.setOnDismissListener(dialog -> finish());
+
+            if (d.getWindow() != null) {
+                d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+
+            d.show();
+
+        } catch (Exception e) {
+            Toast.makeText(this, "Daily Quiz already completed today! Come back tomorrow.", Toast.LENGTH_LONG).show();
+            finish();
+        }
+    }
+
+    private void makeFullScreen() {
+        Window window = getWindow();
+        if (window == null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false);
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsBehavior(
+                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                );
+            }
+        } else {
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+            );
+        }
+
+        window.setStatusBarColor(Color.TRANSPARENT);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        makeFullScreen();
     }
 
     @Override

@@ -357,6 +357,10 @@ public class UserPref {
         editor.putInt(KEY_QUIZ_COUNT, getTodayQuizCount() + 1).apply();
     }
 
+    public boolean canPlayDailyQuiz() {
+        return getTodayQuizCount() < 1;
+    }
+
     /* ==================================================
        HELPERS
        ================================================== */
