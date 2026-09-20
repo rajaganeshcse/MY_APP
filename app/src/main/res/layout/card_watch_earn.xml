@@ -16,76 +16,92 @@
     app:strokeWidth="0dp"
     app:cardBackgroundColor="@android:color/transparent">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_card_watch_gradient"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="10dp">
+        android:background="@drawable/bg_card_watch_gradient">
 
-        <FrameLayout
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_bonus_icon"
-            android:backgroundTint="#26FFFFFF"
-            android:gravity="center">
+        <!-- TOP-RIGHT AMBIENT GLOW CIRCLE -->
+        <View
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="top|end"
+            android:alpha="0.25"
+            android:background="@drawable/bg_wallet_glow_circle"
+            android:translationX="18dp"
+            android:translationY="-18dp" />
 
-            <ImageView
-                android:id="@+id/ic_watch"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_watch"
-                android:contentDescription="Watch &amp; Earn" />
-        </FrameLayout>
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="4dp"
-            android:gravity="center"
-            android:text="Watch &amp; Earn 🎬"
-            android:textColor="#FFFFFF"
-            android:textSize="14sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end" />
-
-        <TextView
-            android:id="@+id/txtAdCount"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="1dp"
-            android:gravity="center"
-            android:text="0/10 Ads Watched"
-            android:textColor="#FFD700"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnWatchNow"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="28dp"
-            android:layout_marginTop="5dp"
-            android:text="WATCH NOW"
-            android:textAllCaps="false"
-            android:textColor="#0F172A"
-            android:textSize="10sp"
-            android:textStyle="bold"
-            app:backgroundTint="#FFD700"
-            app:cornerRadius="10dp"
-            android:paddingStart="4dp"
-            android:paddingEnd="4dp"
-            android:insetTop="0dp"
-            android:insetBottom="0dp" />
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="10dp">
 
-    </LinearLayout>
+            <FrameLayout
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center"
+                android:background="@drawable/bg_bonus_icon"
+                android:backgroundTint="#26FFFFFF"
+                android:gravity="center">
+
+                <ImageView
+                    android:id="@+id/ic_watch"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_watch"
+                    android:contentDescription="Watch &amp; Earn" />
+            </FrameLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="4dp"
+                android:gravity="center"
+                android:text="Watch &amp; Earn 🎬"
+                android:textColor="#FFFFFF"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <TextView
+                android:id="@+id/txtAdCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="1dp"
+                android:gravity="center"
+                android:text="0/10 Ads Watched"
+                android:textColor="#FFD700"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnWatchNow"
+                android:layout_width="match_parent"
+                android:layout_height="28dp"
+                android:layout_marginTop="5dp"
+                android:text="WATCH NOW"
+                android:textAllCaps="false"
+                android:textColor="#0F172A"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                app:backgroundTint="#FFD700"
+                app:cornerRadius="10dp"
+                android:paddingStart="4dp"
+                android:paddingEnd="4dp"
+                android:insetTop="0dp"
+                android:insetBottom="0dp" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>

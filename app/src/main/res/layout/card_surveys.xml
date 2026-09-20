@@ -16,58 +16,74 @@
     app:strokeWidth="0dp"
     app:cardBackgroundColor="@android:color/transparent">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_card_surveys_gradient"
-        android:gravity="center"
-        android:orientation="vertical"
-        android:padding="12dp">
+        android:background="@drawable/bg_card_surveys_gradient">
 
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_bonus_icon"
-            android:backgroundTint="#26FFFFFF"
-            android:gravity="center">
+        <!-- TOP-RIGHT AMBIENT GLOW CIRCLE -->
+        <View
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_gravity="top|end"
+            android:alpha="0.25"
+            android:background="@drawable/bg_wallet_glow_circle"
+            android:translationX="18dp"
+            android:translationY="-18dp" />
 
-            <ImageView
-                android:id="@+id/ic_survey"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="12dp">
+
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_info"
-                android:contentDescription="Surveys" />
-        </FrameLayout>
+                android:background="@drawable/bg_bonus_icon"
+                android:backgroundTint="#26FFFFFF"
+                android:gravity="center">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="Surveys 📋"
-            android:textColor="#FFFFFF"
-            android:textSize="14.5sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end" />
+                <ImageView
+                    android:id="@+id/ic_survey"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_info"
+                    android:contentDescription="Surveys" />
+            </FrameLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="2dp"
-            android:gravity="center"
-            android:text="Share opinion"
-            android:textColor="#E9D5FF"
-            android:textSize="11.5sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Surveys 📋"
+                android:textColor="#FFFFFF"
+                android:textSize="14.5sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:text="Share opinion"
+                android:textColor="#E9D5FF"
+                android:textSize="11.5sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
+
+    </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>

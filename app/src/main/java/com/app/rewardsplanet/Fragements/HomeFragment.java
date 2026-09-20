@@ -612,10 +612,19 @@ public class HomeFragment extends Fragment {
         }
 
         if (card_watch != null) {
+            applyCardTouchAnimation(card_watch);
             card_watch.setOnClickListener(v -> {
                 startActivity(new Intent(requireContext(), com.app.rewardsplanet.lucky_draw.WatchVideoActivity.class));
             });
         }
+
+        applyCardTouchAnimation(card_spinner);
+        applyCardTouchAnimation(card_scratch);
+        applyCardTouchAnimation(card_daily_quiz);
+        applyCardTouchAnimation(card_hit_rewardz);
+        applyCardTouchAnimation(card_tasks);
+        applyCardTouchAnimation(card_surveys);
+        applyCardTouchAnimation(cardInvite);
 
 
         // =====================================================
@@ -649,6 +658,23 @@ public class HomeFragment extends Fragment {
                 );
             });
         }
+    }
+
+    @SuppressLint("ClickableViewAccessibility")
+    private void applyCardTouchAnimation(View cardView) {
+        if (cardView == null) return;
+        cardView.setOnTouchListener((v, event) -> {
+            switch (event.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    v.animate().scaleX(0.96f).scaleY(0.96f).setDuration(100).start();
+                    break;
+                case MotionEvent.ACTION_UP:
+                case MotionEvent.ACTION_CANCEL:
+                    v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150).setInterpolator(new android.view.animation.OvershootInterpolator(1.2f)).start();
+                    break;
+            }
+            return false;
+        });
     }
 
 
