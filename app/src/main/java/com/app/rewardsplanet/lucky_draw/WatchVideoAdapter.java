@@ -96,7 +96,7 @@ public class WatchVideoAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private void bindTaskItem(TaskViewHolder holder, WatchVideoModel model, int adapterPosition) {
         holder.txtVideoTitle.setText(model.getTitle());
         holder.txtVideoRewardCoins.setText("+" + model.getCoinReward() + " Coins");
-        holder.txtVideoRewardTickets.setText("🎟️ +" + model.getTicketReward() + " Ticket" + (model.getTicketReward() > 1 ? "s" : ""));
+        holder.txtVideoRewardTickets.setText("+" + model.getTicketReward() + " Ticket" + (model.getTicketReward() > 1 ? "s" : ""));
 
         // SUPER BONUS BADGE FOR ITEM 10
         if (model.getId() == 10) {
