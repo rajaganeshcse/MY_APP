@@ -82,7 +82,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Daily Quiz"
-                        android:textColor="#FFFFFF"
+                        android:textColor="@color/black"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.02" />
@@ -167,31 +167,31 @@
                 android:progressBackgroundTint="#261D45" />
 
             <!-- ======================================================
-                 QUESTION CARD (RESPONSIVE MATCH_PARENT & WRAP_CONTENT)
+                 QUESTION CARD (COMPACT & SLEEK HEIGHT)
                  ====================================================== -->
             <RelativeLayout
                 android:id="@+id/layoutQuestionCard"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:minHeight="140dp"
+                android:minHeight="92dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginTop="18dp"
+                android:layout_marginTop="14dp"
                 android:background="@drawable/bg_quiz_question_card"
-                android:padding="18dp">
+                android:padding="12dp">
 
                 <!-- Left Document Icon Badge -->
                 <FrameLayout
                     android:id="@+id/iconContainer"
-                    android:layout_width="44dp"
-                    android:layout_height="44dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
                     android:background="@drawable/bg_quiz_score_badge">
 
                     <ImageView
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:contentDescription="Quiz Icon"
                         android:src="@drawable/ic_quiz"
@@ -201,8 +201,8 @@
                 <!-- Top Right Timer Badge -->
                 <FrameLayout
                     android:id="@+id/timerBadge"
-                    android:layout_width="42dp"
-                    android:layout_height="42dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:layout_alignParentTop="true"
                     android:layout_alignParentEnd="true"
                     android:background="@drawable/bg_quiz_timer_badge">
@@ -214,7 +214,7 @@
                         android:layout_gravity="center"
                         android:text="15"
                         android:textColor="#EF4444"
-                        android:textSize="15sp"
+                        android:textSize="14sp"
                         android:textStyle="bold" />
                 </FrameLayout>
 
@@ -224,12 +224,12 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_below="@id/iconContainer"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginBottom="4dp"
                     android:gravity="center"
                     android:text="10 - 5 = ?"
                     android:textColor="#FFFFFF"
-                    android:textSize="24sp"
+                    android:textSize="22sp"
                     android:textStyle="bold" />
 
             </RelativeLayout>
