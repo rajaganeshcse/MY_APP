@@ -55,11 +55,13 @@
             <RelativeLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="72dp"
+                android:layout_height="95dp"
                 android:background="#FFFFFF"
                 android:elevation="4dp"
                 android:paddingStart="16dp"
-                android:paddingEnd="16dp">
+                android:paddingTop="30dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="10dp">
 
                 <!-- Drawer Menu Button -->
                 <ImageView
