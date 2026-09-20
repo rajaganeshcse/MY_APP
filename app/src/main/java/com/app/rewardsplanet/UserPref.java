@@ -362,6 +362,49 @@ public class UserPref {
     }
 
     /* ==================================================
+       HITZ REWARDZ
+       ================================================== */
+
+    private static final String KEY_HITZ_DATE = "hitz_date";
+    private static final String KEY_HITZ_COUNT = "hitz_count";
+
+    public int getTodayHitzCount() {
+        String today = getTodayDate();
+        String savedDate = pref.getString(KEY_HITZ_DATE, "");
+
+        if (!today.equals(savedDate)) {
+            editor.putString(KEY_HITZ_DATE, today);
+            editor.putInt(KEY_HITZ_COUNT, 0);
+            for (int i = 1; i <= 10; i++) {
+                editor.putBoolean("hitz_task_" + i, false);
+            }
+            editor.apply();
+            return 0;
+        }
+        return pref.getInt(KEY_HITZ_COUNT, 0);
+    }
+
+    public void increaseHitzCount() {
+        editor.putInt(KEY_HITZ_COUNT, getTodayHitzCount() + 1).apply();
+    }
+
+    public void setHitzTaskCompleted(int taskId) {
+        editor.putString(KEY_HITZ_DATE, getTodayDate());
+        editor.putBoolean("hitz_task_" + taskId, true);
+        editor.apply();
+        increaseHitzCount();
+    }
+
+    public boolean isHitzTaskCompleted(int taskId) {
+        String today = getTodayDate();
+        String savedDate = pref.getString(KEY_HITZ_DATE, "");
+        if (!today.equals(savedDate)) {
+            return false;
+        }
+        return pref.getBoolean("hitz_task_" + taskId, false);
+    }
+
+    /* ==================================================
        HELPERS
        ================================================== */
 
