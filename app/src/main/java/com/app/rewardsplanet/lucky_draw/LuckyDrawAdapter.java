@@ -86,11 +86,7 @@ public class LuckyDrawAdapter
         h.btnticket.setEnabled(true);
 
         /* TICKET ENTRY BUTTON TEXT */
-        if (model.getMyTicketsCount() > 0) {
-            h.btnticket.setText("🎟️ Submitted (" + model.getMyTicketsCount() + ")");
-        } else {
-            h.btnticket.setText("🎟️ Ticket Entry");
-        }
+        h.btnticket.setText("🎟️ Ticket Entry");
         h.btnticket.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#4F46E5")));
 
         /* AD STATE */
