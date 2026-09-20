@@ -93,18 +93,27 @@
             android:focusable="true">
 
             <ImageView
+                android:id="@+id/imgGoogle"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_google"
                 android:layout_marginEnd="10dp" />
 
             <TextView
+                android:id="@+id/txtGoogle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Continue with Google"
                 android:textSize="16sp"
                 android:textColor="#000000"
                 android:textStyle="bold" />
+
+            <ProgressBar
+                android:id="@+id/loginProgressBar"
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:visibility="gone"
+                android:indeterminateTint="#000000" />
         </LinearLayout>
 
 

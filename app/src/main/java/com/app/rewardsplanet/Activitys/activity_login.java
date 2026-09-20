@@ -12,7 +12,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +43,11 @@ public class activity_login extends AppCompatActivity {
     private UserPref userPref;
 
     private LinearLayout btnGoogle;
+    private ImageView imgGoogle;
+    private TextView txtGoogle;
+    private ProgressBar loginProgressBar;
+    private TextView txtPrivacy;
+    private boolean isLoading = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,6 +59,10 @@ public class activity_login extends AppCompatActivity {
         userPref = new UserPref(this);
 
         btnGoogle = findViewById(R.id.btnGoogle);
+        imgGoogle = findViewById(R.id.imgGoogle);
+        txtGoogle = findViewById(R.id.txtGoogle);
+        loginProgressBar = findViewById(R.id.loginProgressBar);
+        txtPrivacy = findViewById(R.id.txtPrivacy);
 
         GoogleSignInOptions gso =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -62,9 +73,41 @@ public class activity_login extends AppCompatActivity {
         googleSignInClient = GoogleSignIn.getClient(this, gso);
 
         btnGoogle.setOnClickListener(v -> signIn());
+
+        if (txtPrivacy != null) {
+            txtPrivacy.setOnClickListener(v -> {
+                try {
+                    Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://rewardsplanet.app/privacy-policy"));
+                    startActivity(browserIntent);
+                } catch (Exception e) {
+                    Toast.makeText(activity_login.this, "Privacy Policy: https://rewardsplanet.app/privacy-policy", Toast.LENGTH_LONG).show();
+                }
+            });
+        }
+
+        // Check if passed account status from intent
+        String accountStatus = getIntent().getStringExtra("account_status");
+        if ("Pending".equals(accountStatus)) {
+            showAccountPendingDialog();
+        } else if ("Deleted".equals(accountStatus)) {
+            showAccountDeletedDialog();
+        }
+    }
+
+    private void showLoading(boolean show) {
+        isLoading = show;
+        if (btnGoogle != null) {
+            btnGoogle.setEnabled(!show);
+            btnGoogle.setClickable(!show);
+        }
+        if (imgGoogle != null) imgGoogle.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (txtGoogle != null) txtGoogle.setVisibility(show ? View.GONE : View.VISIBLE);
+        if (loginProgressBar != null) loginProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     private void signIn() {
+        if (isLoading) return;
+        showLoading(true);
         startActivityForResult(googleSignInClient.getSignInIntent(), 100);
     }
 
@@ -82,11 +125,14 @@ public class activity_login extends AppCompatActivity {
                     firebaseAuth(account);
                 } else {
                     Log.e("LOGIN_DEBUG", "Google account is NULL");
+                    showLoading(false);
+                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();
                 }
 
             } catch (Exception e) {
                 Log.e("LOGIN_DEBUG", "Google Sign-In failed: " + e.getMessage());
-                Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();
+                showLoading(false);
+                Toast.makeText(this, "Login canceled or failed", Toast.LENGTH_SHORT).show();
             }
         }
     }
@@ -106,6 +152,8 @@ public class activity_login extends AppCompatActivity {
                     FirebaseUser user = auth.getCurrentUser();
                     if (user == null) {
                         Log.e("LOGIN_DEBUG", "Firebase user NULL");
+                        showLoading(false);
+                        Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -115,10 +163,15 @@ public class activity_login extends AppCompatActivity {
                         Log.d("LOGIN_DEBUG", "Firebase Token: " + token);
 
                         sendToBackend(token);
+                    }).addOnFailureListener(e -> {
+                        showLoading(false);
+                        Toast.makeText(this, "Failed to retrieve auth token", Toast.LENGTH_SHORT).show();
                     });
                 })
                 .addOnFailureListener(e -> {
                     Log.e("LOGIN_DEBUG", "Firebase Auth FAILED: " + e.getMessage());
+                    showLoading(false);
+                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
                 });
     }
 
@@ -139,6 +192,7 @@ public class activity_login extends AppCompatActivity {
                     fetchUser(token);
 
                 } else if (response.code() == 403) {
+                    showLoading(false);
 
                     // Read the body to determine which 403 case
                     String errorBody = "";
@@ -163,6 +217,7 @@ public class activity_login extends AppCompatActivity {
 
                 } else {
                     Log.e("API_DEBUG", "Auth FAILED: " + response.message());
+                    showLoading(false);
                     Toast.makeText(activity_login.this, "Auth Failed", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -170,6 +225,7 @@ public class activity_login extends AppCompatActivity {
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 Log.e("API_DEBUG", "Auth ERROR: " + t.getMessage());
+                showLoading(false);
                 Toast.makeText(activity_login.this, "Server Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -309,17 +365,20 @@ public class activity_login extends AppCompatActivity {
                             .loadCurrentUser(user.getUid(), new com.app.rewardsplanet.repository.UserRepository.UserLoadCallback() {
                                 @Override
                                 public void onSuccess(UserModel userModel) {
+                                    showLoading(false);
                                     openMain();
                                 }
 
                                 @Override
                                 public void onError(String errorMessage) {
+                                    showLoading(false);
                                     openMain();
                                 }
                             });
 
                 } else {
                     Log.e("API_DEBUG", "User fetch failed");
+                    showLoading(false);
                     Toast.makeText(activity_login.this, "User setup failed", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -327,6 +386,7 @@ public class activity_login extends AppCompatActivity {
             @Override
             public void onFailure(Call<UserModel> call, Throwable t) {
                 Log.e("API_DEBUG", "User API ERROR: " + t.getMessage());
+                showLoading(false);
                 Toast.makeText(activity_login.this, "Server Error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -364,4 +424,4 @@ public class activity_login extends AppCompatActivity {
         startActivity(new Intent(this, MainActivity.class));
         finish();
     }
-}
+}

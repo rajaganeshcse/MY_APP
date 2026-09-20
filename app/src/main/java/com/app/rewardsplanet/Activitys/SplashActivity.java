@@ -53,8 +53,8 @@ public class SplashActivity extends AppCompatActivity {
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (firebaseUser == null) {
-            // No authenticated user → Navigate to OnBoarding / Login
-            navigateToLogin();
+            // No authenticated user → Navigate to OnBoarding after brief splash display
+            timeoutHandler.postDelayed(this::navigateToLogin, 1000);
             return;
         }
 
@@ -155,6 +155,13 @@ public class SplashActivity extends AppCompatActivity {
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        cancelTimeout();
+        timeoutHandler.removeCallbacksAndMessages(null);
     }
 
     // Full sign-out: Firebase Auth + Google session + UserRepository + UserPref
