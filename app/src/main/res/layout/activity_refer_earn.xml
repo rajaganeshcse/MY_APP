@@ -4,52 +4,41 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/base_color">
+    android:background="#F8FAFF">
 
-    <!-- Toolbar -->
-
-    <!-- Tabs -->
+    <!-- HEADER TOOLBAR -->
     <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
         android:layout_width="match_parent"
-        android:layout_height="88dp"
-        android:layout_gravity="center"
-        android:background="#6A1BFF"
-        android:gravity="center"
-        app:title="Refer and Earn"
-        app:titleTextColor="@color/white" />
+        android:layout_height="64dp"
+        android:background="#0F172A"
+        app:title="Refer &amp; Earn 🎁"
+        app:titleTextColor="#FFFFFF" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_top_white"
-        android:orientation="vertical"
-        >
-
+    <!-- TABS -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:tabIndicatorColor="#6A1BFF"
-        app:tabSelectedTextColor="#6A1BFF"
-        android:background="@drawable/rounded_top_white"
-        app:tabBackground="@drawable/rounded_top_white"
-        app:tabTextColor="@color/black">
+        android:layout_height="48dp"
+        android:background="#FFFFFF"
+        app:tabIndicatorColor="#4F46E5"
+        app:tabIndicatorHeight="3dp"
+        app:tabSelectedTextColor="#4F46E5"
+        app:tabTextColor="#64748B"
+        app:tabRippleColor="#204F46E5">
 
         <com.google.android.material.tabs.TabItem
-            android:text="INVITE"
-            android:background="@color/base_color"
+            android:text="INVITE FRIENDS"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/>
+            android:layout_width="wrap_content" />
 
         <com.google.android.material.tabs.TabItem
             android:text="MY EARNINGS"
-            android:background="@color/base_color"
             android:layout_height="wrap_content"
-            android:layout_width="wrap_content"/>
+            android:layout_width="wrap_content" />
     </com.google.android.material.tabs.TabLayout>
-    </LinearLayout>
 
-    <!-- Content -->
+    <!-- CONTENT CONTAINER -->
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"

@@ -1,127 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginTop="24dp"
-    android:orientation="vertical"
-    android:padding="16dp"
-    android:background="#F7F8FF">
+    android:layout_marginTop="16dp"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:strokeColor="#EEF2FF"
+    app:strokeWidth="1.5dp">
 
-    <!-- Title -->
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="How it works?"
-        android:layout_gravity="center"
-        android:textSize="18sp"
-        android:layout_marginBottom="10dp"
-        android:textStyle="bold"
-        android:textColor="#000000" />
-
-    <!-- Step 1 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:gravity="center"
-            android:text="1"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bg_step_circle" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:text="Invite your friends using your referral code"
-            android:textColor="#333333" />
-    </LinearLayout>
-
-    <!-- Step 2 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:gravity="center"
-            android:text="2"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bg_step_circle" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:text="Your friend signs up using your referral code"
-            android:textColor="#333333" />
-    </LinearLayout>
-
-    <!-- Step 3 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:gravity="center"
-            android:text="3"
-            android:textStyle="bold"
-            android:textColor="#FFFFFF"
-            android:background="@drawable/bg_step_circle" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="12dp"
-            android:layout_weight="1"
-            android:text="You both get instant rewards"
-            android:textColor="#333333" />
-    </LinearLayout>
-
-    <!-- Rewards Box -->
-    <LinearLayout
-
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="50dp"
         android:orientation="vertical"
-        android:padding="12dp"
-        android:background="@drawable/bg_reward_info">
+        android:padding="16dp">
 
+        <!-- Title -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="🎁 Rewards"
+            android:text="How it Works 💡"
+            android:textSize="16sp"
             android:textStyle="bold"
-            android:textColor="#000000" />
+            android:textColor="#0F172A" />
 
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- Step 1 -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="6dp"
-            android:text="• You earn 500 coins + 10 tickets instantly"
-            android:textColor="#444444" />
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-        <TextView
-            android:layout_width="wrap_content"
+            <TextView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:gravity="center"
+                android:text="1"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_step_circle" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Invite your friends using your unique referral code"
+                android:textColor="#334155"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Step 2 -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="• Earn 10% lifetime commission from referrals"
-            android:textColor="#444444" />
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:gravity="center"
+                android:text="2"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_step_circle" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Your friend registers &amp; applies your referral code"
+                android:textColor="#334155"
+                android:textSize="13sp" />
+        </LinearLayout>
+
+        <!-- Step 3 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:gravity="center"
+                android:text="3"
+                android:textStyle="bold"
+                android:textSize="12sp"
+                android:textColor="#FFFFFF"
+                android:background="@drawable/bg_step_circle" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_weight="1"
+                android:text="Both of you get instant +250 Coins &amp; +10 Tickets!"
+                android:textColor="#334155"
+                android:textSize="13sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Rewards Box -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:background="@drawable/bg_reward_chip">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="🎁 Reward Guarantee"
+                android:textStyle="bold"
+                android:textSize="13sp"
+                android:textColor="#92400E" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="• Instant +250 Coins &amp; +10 Tickets credited to your wallet"
+                android:textColor="#B45309"
+                android:textSize="12sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
+                android:text="• No referral limits — invite unlimited friends!"
+                android:textColor="#B45309"
+                android:textSize="12sp" />
+        </LinearLayout>
+
     </LinearLayout>
 
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>
