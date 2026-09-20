@@ -44,7 +44,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Invite Friends &amp; Earn! 🎁"
-                            android:textColor="#FFFFFF"
+                            android:textColor="#FFD700"
                             android:textSize="20sp"
                             android:textStyle="bold" />
 

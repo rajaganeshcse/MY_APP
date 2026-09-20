@@ -7,12 +7,13 @@
 
     <!-- Background gradient -->
     <gradient
-        android:startColor="#E3F2FD"
-        android:endColor="#BBDEFB"
+        android:startColor="#1E1B4B"
+        android:centerColor="#312E81"
+        android:endColor="#4338CA"
         android:angle="135"/>
 
     <!-- Border -->
     <stroke
-        android:width="3dp"
-        android:color="#1E88E5"/>
+        android:width="1.5dp"
+        android:color="#6366F1"/>
 </shape>
