@@ -25,8 +25,8 @@
         android:padding="10dp">
 
         <FrameLayout
-            android:layout_width="42dp"
-            android:layout_height="42dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_bonus_icon"
             android:backgroundTint="#26FFFFFF"
@@ -34,8 +34,8 @@
 
             <ImageView
                 android:id="@+id/ic_watch"
-                android:layout_width="26dp"
-                android:layout_height="26dp"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
                 android:layout_gravity="center"
                 android:scaleType="fitCenter"
                 android:src="@drawable/ic_watch"
@@ -46,7 +46,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="4dp"
             android:gravity="center"
             android:text="Watch &amp; Earn 🎬"
             android:textColor="#FFFFFF"
