@@ -230,12 +230,12 @@ public class layout_invite extends Fragment {
                                 userPref.setCoins(currentCoins + coinsEarned);
                             }
 
-                            toast(msg);
                             btnValidate.setEnabled(false);
                             edtReferral.setText("");
+                            showRewardResultDialog(coinsEarned, 10, "Referral Bonus Claimed! 🎉");
                         } catch (Exception e) {
                             btnValidate.setEnabled(true);
-                            toast("Referral applied successfully!");
+                            showRewardResultDialog(250, 10, "Referral Bonus Claimed! 🎉");
                         }
                     } else {
                         btnValidate.setEnabled(true);
@@ -263,6 +263,59 @@ public class layout_invite extends Fragment {
             btnValidate.setEnabled(true);
             toast("Authentication failed: " + e.getMessage());
         });
+    }
+
+    private void showRewardResultDialog(int coins, int tickets, String titleText) {
+        if (getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
+
+        try {
+            android.app.Dialog d = new android.app.Dialog(requireContext());
+            d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            d.setContentView(R.layout.dialog_spin_result);
+
+            TextView txtTitle = d.findViewById(R.id.txtTitle);
+            TextView txtWin = d.findViewById(R.id.txtWinAmount);
+            View layoutTicket = d.findViewById(R.id.layoutWinTicket);
+            TextView txtTicketAmount = d.findViewById(R.id.txtWinTicketAmount);
+            TextView txtBal = d.findViewById(R.id.txtCurrentBalance);
+            com.google.android.material.button.MaterialButton ok = d.findViewById(R.id.btnOk);
+
+            if (txtTitle != null) {
+                txtTitle.setText(titleText);
+            }
+            if (txtWin != null) {
+                txtWin.setText("+" + coins + " Coins");
+            }
+            if (tickets > 0) {
+                if (layoutTicket != null) layoutTicket.setVisibility(View.VISIBLE);
+                if (txtTicketAmount != null) {
+                    txtTicketAmount.setText("+" + tickets + " Ticket" + (tickets > 1 ? "s" : ""));
+                }
+            } else if (layoutTicket != null) {
+                layoutTicket.setVisibility(View.GONE);
+            }
+
+            if (txtBal != null && userPref != null) {
+                txtBal.setText("Balance: " + userPref.getCoins() + " Coins");
+            }
+
+            if (ok != null) {
+                ok.setText("COLLECT REWARD 🎁");
+                ok.setOnClickListener(v -> {
+                    try { d.dismiss(); } catch (Exception ignored) {}
+                });
+            }
+
+            if (d.getWindow() != null) {
+                d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+
+            com.app.rewardsplanet.utils.SuccessAnimationHelper.animate(d);
+            d.show();
+
+        } catch (Exception e) {
+            toast("🎉 +" + coins + " Coins & +" + tickets + " Tickets Added!");
+        }
     }
 
     // ================= SHARE =================

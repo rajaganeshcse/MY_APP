@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,7 +15,9 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.app.rewardsplanet.R;
+import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.models.UserModel;
+import com.app.rewardsplanet.utils.SuccessAnimationHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FieldValue;
@@ -126,13 +129,70 @@ public class MyEarningsFragment extends Fragment {
                         "totalReferralCoins", 0,
                         "totalReferralTickets", 0
                 )
-                .addOnSuccessListener(unused ->
-                        toast("🎉 Claimed +" + coinsClaimed + " Coins & +" + ticketsClaimed + " Tickets!"))
+                .addOnSuccessListener(unused -> {
+                    showRewardResultDialog((int) coinsClaimed, (int) ticketsClaimed, "Referral Reward Collected! 🎉");
+                })
                 .addOnFailureListener(e -> {
                     btnClaim.setEnabled(true);
                     btnClaim.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor("#10B981")));
                     toast("Claim failed");
                 });
+    }
+
+    private void showRewardResultDialog(int coins, int tickets, String titleText) {
+        if (getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
+
+        try {
+            android.app.Dialog d = new android.app.Dialog(requireContext());
+            d.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            d.setContentView(R.layout.dialog_spin_result);
+
+            TextView txtTitle = d.findViewById(R.id.txtTitle);
+            TextView txtWin = d.findViewById(R.id.txtWinAmount);
+            View layoutTicket = d.findViewById(R.id.layoutWinTicket);
+            TextView txtTicketAmount = d.findViewById(R.id.txtWinTicketAmount);
+            TextView txtBal = d.findViewById(R.id.txtCurrentBalance);
+            MaterialButton ok = d.findViewById(R.id.btnOk);
+
+            if (txtTitle != null) {
+                txtTitle.setText(titleText);
+            }
+            if (txtWin != null) {
+                txtWin.setText("+" + coins + " Coins");
+            }
+            if (tickets > 0) {
+                if (layoutTicket != null) layoutTicket.setVisibility(View.VISIBLE);
+                if (txtTicketAmount != null) {
+                    txtTicketAmount.setText("+" + tickets + " Ticket" + (tickets > 1 ? "s" : ""));
+                }
+            } else if (layoutTicket != null) {
+                layoutTicket.setVisibility(View.GONE);
+            }
+
+            UserPref userPref = new UserPref(requireContext());
+            userPref.setCoins(userPref.getCoins() + coins);
+
+            if (txtBal != null) {
+                txtBal.setText("Balance: " + userPref.getCoins() + " Coins");
+            }
+
+            if (ok != null) {
+                ok.setText("COLLECT REWARD 🎁");
+                ok.setOnClickListener(v -> {
+                    try { d.dismiss(); } catch (Exception ignored) {}
+                });
+            }
+
+            if (d.getWindow() != null) {
+                d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+            }
+
+            SuccessAnimationHelper.animate(d);
+            d.show();
+
+        } catch (Exception e) {
+            toast("🎉 +" + coins + " Coins & +" + tickets + " Tickets Claimed!");
+        }
     }
 
     // ================= HELPERS =================
