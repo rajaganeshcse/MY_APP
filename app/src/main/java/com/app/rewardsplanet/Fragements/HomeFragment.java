@@ -88,12 +88,17 @@ public class HomeFragment extends Fragment {
     private TextView txtToken;
     private TextView txtAdCount;
     private TextView txtDailyQuizSubtitle;
+    private TextView txtGreetingTitle;
+    private TextView txtUserName;
+    private TextView txtUserCoins;
 
     private ImageView imgRewardCoin;
     private ImageView strikeIcon;
     private ImageView menuIcon;
+    private ImageView notificationIcon;
 
     private MaterialButton btnWatchNow;
+    private MaterialButton btnRedeemBalance;
 
     // DAILY BONUS HOLD-TO-CLAIM
     private MaterialButton btnClaimBonus;
@@ -282,6 +287,18 @@ public class HomeFragment extends Fragment {
                 R.id.txtToken
         );
 
+        txtUserCoins = view.findViewById(
+                R.id.txtUserCoins
+        );
+
+        txtUserName = view.findViewById(
+                R.id.txtUserName
+        );
+
+        txtGreetingTitle = view.findViewById(
+                R.id.txtGreetingTitle
+        );
+
         txtAdCount = view.findViewById(
                 R.id.txtAdCount
         );
@@ -369,6 +386,14 @@ public class HomeFragment extends Fragment {
         strikeIcon = view.findViewById(
                 R.id.strikeIcon
         );
+
+        notificationIcon = view.findViewById(
+                R.id.notification
+        );
+
+        btnRedeemBalance = view.findViewById(
+                R.id.btnRedeemBalance
+        );
     }
 
 
@@ -379,10 +404,28 @@ public class HomeFragment extends Fragment {
     private void setupClickListeners() {
 
         // =====================================================
-        // MENU DRAWER
+        // MENU DRAWER & NOTIFICATIONS
         // =====================================================
 
         setupMenuDrawer();
+
+        if (notificationIcon != null) {
+            notificationIcon.setOnClickListener(v -> {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "No new notifications", Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        if (btnRedeemBalance != null) {
+            btnRedeemBalance.setOnClickListener(v -> {
+                if (!isAdded()) return;
+                MainActivity activity = (MainActivity) requireActivity();
+                if (activity.navReward != null) {
+                    activity.selectNav(activity.navReward);
+                    activity.loadFragment(new com.app.rewardsplanet.Fragements.RewardFragment());
+                }
+            });
+        }
 
 
         // =====================================================
@@ -1081,10 +1124,28 @@ public class HomeFragment extends Fragment {
                     }
 
                     long tickets = user.getTickets();
+                    long coins = user.getCoins();
+                    String name = user.getName();
                     currentAds = (int) user.getDaily_ads_count();
 
                     if (txtToken != null) {
                         txtToken.setText(String.valueOf(tickets));
+                    }
+
+                    if (txtUserCoins != null) {
+                        txtUserCoins.setText(String.valueOf(coins));
+                    }
+
+                    if (txtUserName != null) {
+                        if (name != null && !name.trim().isEmpty()) {
+                            txtUserName.setText(name);
+                        } else {
+                            txtUserName.setText("Gamer");
+                        }
+                    }
+
+                    if (txtGreetingTitle != null) {
+                        txtGreetingTitle.setText(getDynamicGreeting());
                     }
 
                     if (txtAdCount != null) {
@@ -1093,6 +1154,24 @@ public class HomeFragment extends Fragment {
 
                     updateButtonState();
                 });
+    }
+
+    private String getDynamicGreeting() {
+        try {
+            java.time.LocalTime now = java.time.LocalTime.now(APP_ZONE);
+            int hour = now.getHour();
+            if (hour >= 5 && hour < 12) {
+                return "Good Morning 👋";
+            } else if (hour >= 12 && hour < 17) {
+                return "Good Afternoon 👋";
+            } else if (hour >= 17 && hour < 22) {
+                return "Good Evening 👋";
+            } else {
+                return "Night Owl Gaming 🌙";
+            }
+        } catch (Exception e) {
+            return "Welcome Back 👋";
+        }
     }
 
 

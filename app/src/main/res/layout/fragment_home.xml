@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -8,84 +7,116 @@
     android:layout_height="match_parent">
 
     <!-- ================================================= -->
-    <!-- MAIN HOME SCREEN -->
+    <!-- MAIN HOME SCREEN CONTAINER -->
     <!-- ================================================= -->
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/base_color">
+        android:background="#0D0D1A">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:paddingBottom="1dp">
+            android:orientation="vertical">
 
             <!-- ================= HEADER ================= -->
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/header"
                 android:layout_width="match_parent"
-                android:layout_height="93dp"
-                android:background="@color/white"
-                android:elevation="8dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="8dp"
-                android:paddingTop="20dp"
-                android:paddingEnd="8dp">
+                android:layout_height="72dp"
+                android:background="#16162C"
+                android:elevation="6dp"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp">
 
-                <!-- MENU -->
+                <!-- Drawer Menu Button -->
                 <ImageView
                     android:id="@+id/menuIcon"
-                    android:layout_width="36dp"
-                    android:layout_height="38dp"
-                    android:layout_marginStart="10dp"
-                    android:clickable="true"
-                    android:focusable="true"
+                    android:layout_width="40dp"
+                    android:layout_height="40dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/bg_back_dark"
+                    android:padding="9dp"
+                    android:src="@drawable/menu_bar_icon"
                     android:contentDescription="Menu"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/menu_bar_icon" />
+                    android:clickable="true"
+                    android:focusable="true"/>
 
-                <!-- TITLE -->
-                <TextView
-                    android:id="@+id/appTitle"
-                    android:layout_width="0dp"
+                <!-- User Greeting Info -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginStart="20dp"
-                    android:ellipsize="end"
-                    android:maxLines="1"
-                    android:text="@string/app_name"
-                    android:textColor="@color/Primary2"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:layout_toEndOf="@id/menuIcon"
+                    android:layout_toStartOf="@id/rightHeaderActions"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="14dp"
+                    android:layout_marginEnd="8dp"
+                    android:orientation="vertical">
 
-                <!-- FLAME -->
-                <ImageView
-                    android:id="@+id/strikeIcon"
-                    android:layout_width="43dp"
-                    android:layout_height="54dp"
-                    android:contentDescription="Strike"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/flame" />
+                    <TextView
+                        android:id="@+id/txtGreetingTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Welcome Back 👋"
+                        android:textColor="#99FFFFFF"
+                        android:textSize="12sp"/>
 
-                <!-- NOTIFICATION -->
-                <ImageView
-                    android:id="@+id/notification"
-                    android:layout_width="44dp"
-                    android:layout_height="53dp"
-                    android:layout_marginStart="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:contentDescription="Notifications"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/notification_icon" />
+                    <TextView
+                        android:id="@+id/txtUserName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Gamer"
+                        android:textColor="#FFFFFF"
+                        android:textSize="17sp"
+                        android:textStyle="bold"
+                        android:maxLines="1"
+                        android:ellipsize="end"/>
 
-            </LinearLayout>
+                </LinearLayout>
+
+                <!-- Right Actions: Streak & Notification -->
+                <LinearLayout
+                    android:id="@+id/rightHeaderActions"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Flame / Streak -->
+                    <ImageView
+                        android:id="@+id/strikeIcon"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/bg_back_dark"
+                        android:padding="7dp"
+                        android:src="@drawable/flame"
+                        android:contentDescription="Streak"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                    <!-- Notification -->
+                    <ImageView
+                        android:id="@+id/notification"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_marginStart="8dp"
+                        android:background="@drawable/bg_back_dark"
+                        android:padding="8dp"
+                        android:src="@drawable/notification_icon"
+                        android:contentDescription="Notification"
+                        android:clickable="true"
+                        android:focusable="true"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
 
-            <!-- ================= EXISTING HOME CONTENT ================= -->
+            <!-- ================= DASHBOARD SCROLL CONTENT ================= -->
 
             <ScrollView
                 android:layout_width="match_parent"
@@ -99,66 +130,209 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
-                    android:paddingTop="20dp"
-                    android:paddingBottom="20dp">
+                    android:paddingStart="12dp"
+                    android:paddingEnd="12dp"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="24dp">
 
-                    <!-- YOUR EXISTING CARDS -->
-                    <include
-                        layout="@layout/card_dailybonus"/>
+                    <!-- ================= PRIMARY WALLET / BALANCE CARD ================= -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cardWalletBalance"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="14dp"
+                        app:cardCornerRadius="20dp"
+                        app:cardElevation="8dp"
+                        app:strokeWidth="0dp"
+                        app:cardBackgroundColor="@android:color/transparent">
 
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_card_gradient_1"
+                            android:padding="16dp">
+
+                            <TextView
+                                android:id="@+id/lblTotalBalance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="TOTAL BALANCE"
+                                android:textColor="#99FFFFFF"
+                                android:textSize="11sp"
+                                android:textStyle="bold"
+                                android:letterSpacing="0.08"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"/>
+
+                            <!-- Coin Balance -->
+                            <LinearLayout
+                                android:id="@+id/coinBalanceGroup"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal"
+                                android:layout_marginTop="4dp"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/lblTotalBalance">
+
+                                <ImageView
+                                    android:id="@+id/coin"
+                                    android:layout_width="32dp"
+                                    android:layout_height="32dp"
+                                    android:src="@drawable/ic_coin"
+                                    android:contentDescription="Coins"/>
+
+                                <TextView
+                                    android:id="@+id/txtUserCoins"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="8dp"
+                                    android:text="0"
+                                    android:textColor="#FFD700"
+                                    android:textSize="26sp"
+                                    android:textStyle="bold"/>
+
+                            </LinearLayout>
+
+                            <!-- Redeem Action Button -->
+                            <com.google.android.material.button.MaterialButton
+                                android:id="@+id/btnRedeemBalance"
+                                android:layout_width="wrap_content"
+                                android:layout_height="38dp"
+                                android:text="Redeem ➔"
+                                android:textColor="#FFFFFF"
+                                android:textSize="13sp"
+                                android:textStyle="bold"
+                                app:cornerRadius="19dp"
+                                app:backgroundTint="#8B5CF6"
+                                android:paddingStart="16dp"
+                                android:paddingEnd="16dp"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                app:layout_constraintBottom_toBottomOf="parent"/>
+
+                            <View
+                                android:id="@+id/dividerWallet"
+                                android:layout_width="match_parent"
+                                android:layout_height="1dp"
+                                android:background="#20FFFFFF"
+                                android:layout_marginTop="12dp"
+                                app:layout_constraintTop_toBottomOf="@id/coinBalanceGroup"/>
+
+                            <!-- Secondary Stats: Tournament Tickets -->
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="10dp"
+                                android:orientation="horizontal"
+                                android:gravity="center_vertical"
+                                app:layout_constraintTop_toBottomOf="@id/dividerWallet">
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="🎟️ Tournament Tickets:"
+                                    android:textColor="#CCFFFFFF"
+                                    android:textSize="13sp"/>
+
+                                <TextView
+                                    android:id="@+id/txtToken"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginStart="6dp"
+                                    android:text="0"
+                                    android:textColor="#38BDF8"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold"/>
+
+                            </LinearLayout>
+
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- ================= DAILY BONUS ================= -->
+                    <include layout="@layout/card_dailybonus"/>
+
+                    <!-- ================= HIGHLIGHT OFFER (HIT REWARDZ) ================= -->
+                    <include layout="@layout/card_hit_rewardz"/>
+
+                    <!-- ================= QUICK REWARDS GRID (2 COLUMNS) ================= -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="4dp"
+                        android:text="Quick Rewards"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01"/>
+
+                    <!-- Row 1: Spin & Scratch -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:gravity="center_horizontal"
-                        android:layout_gravity="center_horizontal"
-                        android:paddingLeft="3dp"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
-                        <include
-                            layout="@layout/card_spinner" />
+                        <include layout="@layout/card_spinner" />
 
-                        <include
-                            layout="@layout/card_scratch"/>
+                        <include layout="@layout/card_scratch" />
 
                     </LinearLayout>
 
+                    <!-- Row 2: Watch & Earn + Daily Quiz -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_gravity="center_horizontal"
-                    android:paddingLeft="3dp"
-                    android:layout_height="wrap_content">
+                        <include layout="@layout/card_watch_earn" />
 
-                    <include
-                        layout="@layout/card_lucky_draw" />
+                        <include layout="@layout/card_daily_quiz" />
 
-                    <include
-                        layout="@layout/card_watch_earn" />
-                </LinearLayout>
+                    </LinearLayout>
 
+                    <!-- Row 3: Tasks & Surveys -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="2">
 
+                        <include layout="@layout/card_tasks" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:gravity="center_horizontal"
-                    android:layout_gravity="center_horizontal"
-                    android:paddingLeft="3dp"
-                    android:layout_height="wrap_content">
+                        <include layout="@layout/card_surveys" />
 
-                    <include
-                        layout="@layout/card_tasks" />
+                    </LinearLayout>
 
-                    <include
-                        layout="@layout/card_surveys" />
+                    <!-- ================= PLAY & EARN (GAMES / TOURNAMENTS) ================= -->
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:layout_marginBottom="8dp"
+                        android:layout_marginStart="4dp"
+                        android:text="Play &amp; Earn"
+                        android:textColor="#FFFFFF"
+                        android:textSize="16sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01"/>
 
-                </LinearLayout>
+                    <include layout="@layout/card_lucky_draw" />
 
-                    <include layout="@layout/card_hit_rewardz"/>
+                    <!-- ================= REFERRAL BANNER ================= -->
+                    <include layout="@layout/card_invite" />
 
-                    <include layout="@layout/card_daily_quiz"/>
-
-                    <include
-                        layout="@layout/card_invite" />
+                    <!-- ================= AD CONTAINER ================= -->
+                    <FrameLayout
+                        android:id="@+id/nativeAdView"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"/>
 
                 </LinearLayout>
 
@@ -178,7 +352,7 @@
         android:layout_width="260dp"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        android:background="@android:color/white">
+        android:background="#16162C">
 
         <include
             layout="@layout/drawer_menu"

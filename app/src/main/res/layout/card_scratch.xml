@@ -1,91 +1,63 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<LinearLayout
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_scratch"
+    android:layout_width="0dp"
+    android:layout_height="148dp"
+    android:layout_weight="1"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="18dp"
+    app:cardElevation="4dp"
+    app:cardBackgroundColor="#16132D"
+    app:strokeColor="#2E2856"
+    app:strokeWidth="1.2dp">
 
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:paddingStart="8dp"
-    android:paddingEnd="8dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:padding="12dp">
 
-    <!-- ================= SCRATCH CARD ================= -->
+        <FrameLayout
+            android:layout_width="52dp"
+            android:layout_height="52dp"
+            android:background="@drawable/bg_quiz_score_badge"
+            android:gravity="center">
 
-    <androidx.cardview.widget.CardView
-        android:id="@+id/card_scratch"
-
-        android:layout_width="150dp"
-        android:layout_height="184dp"
-
-        android:layout_marginStart="6dp"
-        android:layout_marginEnd="6dp"
-        android:clickable="true"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="12dp"
-
-        app:cardCornerRadius="20dp"
-        app:cardElevation="6dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-
-            android:background="@drawable/bg_card_gradient"
-
-            android:gravity="center"
-            android:orientation="vertical"
-            android:padding="10dp">
-
-            <!-- TITLE -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:text="Scratch &amp; Win"
-                android:textColor="@color/black"
-                android:textSize="17sp"
-                android:textStyle="bold"
-
-                android:layout_marginBottom="2dp" />
-
-            <!-- GIFT IMAGE -->
             <ImageView
                 android:id="@+id/ic_gift_box"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_gravity="center"
+                android:src="@drawable/ic_gift_box"
+                android:contentDescription="Scratch &amp; Win" />
+        </FrameLayout>
 
-                android:layout_width="90dp"
-                android:layout_height="90dp"
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Scratch Card 🎫"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
-                android:contentDescription="Scratch"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_gift_box" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Scratch for rewards"
+            android:textColor="#94A3B8"
+            android:textSize="11sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
 
-            <!-- SCRATCH BUTTON -->
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnscratch"
+    </LinearLayout>
 
-                android:layout_width="wrap_content"
-                android:layout_height="38dp"
-
-                android:layout_marginTop="4dp"
-
-                android:background="@drawable/bg_button_ripple"
-
-                android:paddingStart="16dp"
-                android:paddingEnd="16dp"
-                android:paddingTop="0dp"
-                android:paddingBottom="0dp"
-
-                android:text="GO"
-                android:textColor="#000000"
-                android:textSize="12sp"
-                android:textStyle="bold"
-                android:clickable="false"
-                app:backgroundTint="@null"
-                app:rippleColor="@null" />
-
-        </LinearLayout>
-
-    </androidx.cardview.widget.CardView>
-
-</LinearLayout>
+</com.google.android.material.card.MaterialCardView>

@@ -1,104 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
     android:id="@+id/card_hit_rewardz"
-
     android:layout_width="match_parent"
-    android:layout_height="82dp"
-
-    android:layout_marginStart="12dp"
-    android:background="@drawable/bg_edittext_gray"
-    android:layout_marginEnd="12dp"
-    android:layout_marginTop="8dp"
-    android:layout_marginBottom="8dp"
-
-    app:cardCornerRadius="22dp"
-    app:cardElevation="0dp"
-    app:cardBackgroundColor="@color/white">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:foreground="?android:attr/selectableItemBackground"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="5dp"
+    app:cardBackgroundColor="#1A153A"
+    app:strokeColor="#4338CA"
+    app:strokeWidth="1.5dp">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="82dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        android:gravity="center_vertical"
-        android:orientation="horizontal"
+        <!-- RIBBON BADGE -->
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="24dp"
+            android:background="@drawable/bg_hitz_ribbon_light"
+            android:gravity="center"
+            android:text="⚡ HIGH PAYOUT WEEKLY OFFER ⚡"
+            android:textColor="#4338CA"
+            android:textSize="10sp"
+            android:textStyle="bold"
+            android:letterSpacing="0.04" />
 
-        android:paddingStart="16dp"
-        android:paddingEnd="14dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingStart="16dp"
+            android:paddingTop="12dp"
+            android:paddingEnd="16dp"
+            android:paddingBottom="12dp">
 
-        <!-- ICON BOX -->
-        <androidx.cardview.widget.CardView
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="@drawable/bg_hitz_icon_light">
 
-            app:cardBackgroundColor="#5d00ff"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="0dp">
+                <ImageView
+                    android:id="@+id/imgRewardIcon"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/ic_lightning"
+                    app:tint="#D97706"
+                    android:contentDescription="Hit Rewardz" />
+            </FrameLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="14dp">
+
+                <TextView
+                    android:id="@+id/txtRewardTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hit Rewardz ⚡"
+                    android:textColor="#FFFFFF"
+                    android:textSize="17sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/txtRewardSubtitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="High payout long ad tasks • Resets Monday"
+                    android:textColor="#94A3B8"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
 
             <ImageView
-                android:id="@+id/imgRewardIcon"
-
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-
-                android:contentDescription="Hit Rewardz"
-
-                android:padding="10dp"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_lightning" />
-
-        </androidx.cardview.widget.CardView>
-
-        <!-- TEXT CONTENT -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-
-            android:layout_marginStart="16dp"
-            android:layout_weight="1"
-
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txtRewardTitle"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:text="Hit Rewardz"
-                android:textColor="@color/black"
-                android:textSize="20sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txtRewardSubtitle"
-
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-
-                android:layout_marginTop="2dp"
-
-                android:text="High payout quick tasks"
-                android:textColor="@color/black"
-                android:textSize="14sp" />
+                android:id="@+id/imgRewardArrow"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_arrow_right"
+                app:tint="#CBD5E1"
+                android:contentDescription="Open" />
 
         </LinearLayout>
 
-        <!-- ARROW -->
-        <ImageView
-            android:id="@+id/imgRewardArrow"
-
-            android:layout_width="31dp"
-            android:layout_height="54dp"
-
-            android:contentDescription="Open"
-            android:scaleType="centerInside"
-            android:src="@drawable/ic_arrow_right"
-            android:tint="@color/white" />
-
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
