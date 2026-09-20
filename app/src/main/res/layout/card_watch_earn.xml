@@ -13,13 +13,13 @@
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="18dp"
     app:cardElevation="4dp"
-    app:cardBackgroundColor="#EFF6FF"
-    app:strokeColor="#93C5FD"
-    app:strokeWidth="1.5dp">
+    app:strokeWidth="0dp"
+    app:cardBackgroundColor="@android:color/transparent">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/bg_hit_rewardz_gradient"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="10dp">
@@ -29,7 +29,7 @@
             android:layout_height="42dp"
             android:layout_gravity="center"
             android:background="@drawable/bg_bonus_icon"
-            android:backgroundTint="#DBEAFE"
+            android:backgroundTint="#26FFFFFF"
             android:gravity="center">
 
             <ImageView
@@ -49,7 +49,7 @@
             android:layout_marginTop="5dp"
             android:gravity="center"
             android:text="Watch &amp; Earn 🎬"
-            android:textColor="#1E3A8A"
+            android:textColor="#FFFFFF"
             android:textSize="14sp"
             android:textStyle="bold"
             android:maxLines="1"
@@ -63,7 +63,7 @@
             android:layout_marginTop="1dp"
             android:gravity="center"
             android:text="0/10 Ads Watched"
-            android:textColor="#D97706"
+            android:textColor="#FFD700"
             android:textSize="10sp"
             android:textStyle="bold"
             android:maxLines="1"
@@ -76,10 +76,10 @@
             android:layout_marginTop="5dp"
             android:text="WATCH NOW"
             android:textAllCaps="false"
-            android:textColor="#FFFFFF"
+            android:textColor="#0F172A"
             android:textSize="10sp"
             android:textStyle="bold"
-            app:backgroundTint="#2563EB"
+            app:backgroundTint="#FFD700"
             app:cornerRadius="10dp"
             android:paddingStart="4dp"
             android:paddingEnd="4dp"
