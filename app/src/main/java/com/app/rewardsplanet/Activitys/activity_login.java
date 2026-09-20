@@ -361,8 +361,10 @@ public class activity_login extends AppCompatActivity {
                     userPref.setLogin(true);
 
                     // Initialize Centralized UserRepository snapshot listener
+                    String uid = user.getUid().isEmpty() && auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : user.getUid();
+
                     com.app.rewardsplanet.repository.UserRepository.getInstance(activity_login.this)
-                            .loadCurrentUser(user.getUid(), new com.app.rewardsplanet.repository.UserRepository.UserLoadCallback() {
+                            .loadCurrentUser(uid, new com.app.rewardsplanet.repository.UserRepository.UserLoadCallback() {
                                 @Override
                                 public void onSuccess(UserModel userModel) {
                                     showLoading(false);
@@ -377,19 +379,47 @@ public class activity_login extends AppCompatActivity {
                             });
 
                 } else {
-                    Log.e("API_DEBUG", "User fetch failed");
-                    showLoading(false);
-                    Toast.makeText(activity_login.this, "User setup failed", Toast.LENGTH_SHORT).show();
+                    Log.e("API_DEBUG", "User fetch API returned non-200. Falling back to direct Firestore loading.");
+                    fallbackDirectUserLoad();
                 }
             }
 
             @Override
             public void onFailure(Call<UserModel> call, Throwable t) {
-                Log.e("API_DEBUG", "User API ERROR: " + t.getMessage());
-                showLoading(false);
-                Toast.makeText(activity_login.this, "Server Error", Toast.LENGTH_SHORT).show();
+                Log.e("API_DEBUG", "User API ERROR: " + t.getMessage() + ". Falling back to direct Firestore loading.");
+                fallbackDirectUserLoad();
             }
         });
+    }
+
+    private void fallbackDirectUserLoad() {
+        FirebaseUser currentUser = auth.getCurrentUser();
+        if (currentUser != null) {
+            String uid = currentUser.getUid();
+            userPref.setUid(uid);
+            userPref.setEmail(currentUser.getEmail() != null ? currentUser.getEmail() : "");
+            userPref.setName(currentUser.getDisplayName() != null ? currentUser.getDisplayName() : "");
+            userPref.setProfileImage(currentUser.getPhotoUrl() != null ? currentUser.getPhotoUrl().toString() : "");
+            userPref.setLogin(true);
+
+            com.app.rewardsplanet.repository.UserRepository.getInstance(activity_login.this)
+                    .loadCurrentUser(uid, new com.app.rewardsplanet.repository.UserRepository.UserLoadCallback() {
+                        @Override
+                        public void onSuccess(UserModel userModel) {
+                            showLoading(false);
+                            openMain();
+                        }
+
+                        @Override
+                        public void onError(String errorMessage) {
+                            showLoading(false);
+                            openMain();
+                        }
+                    });
+        } else {
+            showLoading(false);
+            Toast.makeText(activity_login.this, "Authentication Failed", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void makeFullScreen() {
