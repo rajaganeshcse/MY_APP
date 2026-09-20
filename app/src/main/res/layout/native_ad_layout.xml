@@ -9,8 +9,8 @@
     app:cardCornerRadius="18dp"
     app:cardElevation="4dp"
     app:cardBackgroundColor="#FFFFFF"
-    app:strokeColor="#EEF2FF"
-    app:strokeWidth="1.5dp">
+    app:strokeColor="#E2E8F0"
+    app:strokeWidth="1.2dp">
 
     <com.google.android.gms.ads.nativead.NativeAdView
         android:id="@+id/nativeAdView"

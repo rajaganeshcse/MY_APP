@@ -10,9 +10,9 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="18dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="#16132D"
-    app:strokeColor="#2E2856"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:strokeColor="#E2E8F0"
     app:strokeWidth="1.2dp">
 
     <LinearLayout
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:text="Task Offers 🎯"
-            android:textColor="#FFFFFF"
+            android:textColor="#0F172A"
             android:textSize="14sp"
             android:textStyle="bold"
             android:maxLines="1"
@@ -54,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:text="Complete &amp; earn"
-            android:textColor="#94A3B8"
+            android:textColor="#64748B"
             android:textSize="11sp"
             android:maxLines="1"
             android:ellipsize="end" />

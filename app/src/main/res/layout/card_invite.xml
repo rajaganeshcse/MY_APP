@@ -10,14 +10,14 @@
     android:layout_marginTop="8dp"
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="18dp"
-    app:cardElevation="6dp"
-    app:strokeWidth="0dp"
-    app:cardBackgroundColor="@android:color/transparent">
+    app:cardElevation="3dp"
+    app:strokeColor="#E2E8F0"
+    app:strokeWidth="1.2dp"
+    app:cardBackgroundColor="#FFFFFF">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/bg_card_gradient_3"
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingTop="12dp"
@@ -51,7 +51,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Invite &amp; Earn"
-                android:textColor="#FFFFFF"
+                android:textColor="#0F172A"
                 android:textSize="17sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.01"/>
@@ -61,7 +61,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="Share with friends to get bonus coins"
-                android:textColor="#B3FFFFFF"
+                android:textColor="#64748B"
                 android:textSize="12sp"
                 android:maxLines="1"
                 android:ellipsize="end"/>
@@ -74,7 +74,7 @@
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:src="@drawable/ic_arrow_right"
-            android:tint="#FFFFFF"
+            app:tint="#64748B"
             android:contentDescription="Open"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -9,9 +9,9 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="20dp"
-    app:cardElevation="5dp"
-    app:cardBackgroundColor="#1A153A"
-    app:strokeColor="#4338CA"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:strokeColor="#C7D2FE"
     app:strokeWidth="1.5dp">
 
     <LinearLayout
@@ -68,7 +68,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="Hit Rewardz ⚡"
-                    android:textColor="#FFFFFF"
+                    android:textColor="#0F172A"
                     android:textSize="17sp"
                     android:textStyle="bold" />
 
@@ -78,7 +78,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="High payout long ad tasks • Resets Monday"
-                    android:textColor="#94A3B8"
+                    android:textColor="#64748B"
                     android:textSize="12sp" />
 
             </LinearLayout>
@@ -88,7 +88,7 @@
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:src="@drawable/ic_arrow_right"
-                app:tint="#CBD5E1"
+                app:tint="#64748B"
                 android:contentDescription="Open" />
 
         </LinearLayout>
