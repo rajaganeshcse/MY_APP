@@ -55,6 +55,10 @@ public class UserPref {
     private static final String KEY_STREAK_DATE   = "streak_date";
     private static final String KEY_STREAK_COUNT  = "streak_count";
 
+    /* ================= DAILY QUIZ ================= */
+    private static final String KEY_QUIZ_DATE     = "quiz_date";
+    private static final String KEY_QUIZ_COUNT    = "quiz_count";
+
     private final SharedPreferences pref;
     private final SharedPreferences.Editor editor;
 
@@ -330,6 +334,27 @@ public class UserPref {
 
     public long getReferralTickets() {
         return pref.getLong(KEY_REF_TICKETS, 0);
+    }
+
+    /* ==================================================
+       DAILY QUIZ
+       ================================================== */
+
+    public int getTodayQuizCount() {
+        String today = getTodayDate();
+        String savedDate = pref.getString(KEY_QUIZ_DATE, "");
+
+        if (!today.equals(savedDate)) {
+            editor.putString(KEY_QUIZ_DATE, today);
+            editor.putInt(KEY_QUIZ_COUNT, 0);
+            editor.apply();
+            return 0;
+        }
+        return pref.getInt(KEY_QUIZ_COUNT, 0);
+    }
+
+    public void increaseQuizCount() {
+        editor.putInt(KEY_QUIZ_COUNT, getTodayQuizCount() + 1).apply();
     }
 
     /* ==================================================

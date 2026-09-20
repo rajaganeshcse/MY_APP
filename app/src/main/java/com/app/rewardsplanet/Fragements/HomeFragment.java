@@ -78,6 +78,7 @@ public class HomeFragment extends Fragment {
     private CardView card_spinner;
     private CardView card_lucky_draw;
     private CardView card_scratch;
+    private CardView card_daily_quiz;
     private CardView card_tasks;
     private CardView card_surveys;
     private CardView cardInvite;
@@ -286,6 +287,10 @@ public class HomeFragment extends Fragment {
                 R.id.card_scratch
         );
 
+        card_daily_quiz = view.findViewById(
+                R.id.card_daily_quiz
+        );
+
         card_spinner = view.findViewById(
                 R.id.card_spinner
         );
@@ -394,6 +399,26 @@ public class HomeFragment extends Fragment {
                                 com.app.rewardsplanet
                                         .lucky_draw
                                         .ScratchActivity.class
+                        )
+                );
+            });
+        }
+
+
+        // =====================================================
+        // DAILY QUIZ
+        // =====================================================
+
+        if (card_daily_quiz != null) {
+
+            card_daily_quiz.setOnClickListener(v -> {
+
+                startActivity(
+                        new Intent(
+                                requireContext(),
+                                com.app.rewardsplanet
+                                        .lucky_draw
+                                        .QuizActivity.class
                         )
                 );
             });
