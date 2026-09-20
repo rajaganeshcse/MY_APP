@@ -17,26 +17,29 @@
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@drawable/bg_drawer_header_gradient"
-        android:paddingStart="20dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="48dp"
-        android:paddingBottom="20dp">
+        android:paddingStart="16dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="44dp"
+        android:paddingBottom="18dp">
 
         <!-- PROFILE IMAGE -->
         <FrameLayout
-            android:layout_width="60dp"
-            android:layout_height="60dp">
+            android:layout_width="54dp"
+            android:layout_height="54dp"
+            android:layout_gravity="center_vertical">
 
             <ImageView
                 android:id="@+id/profileImage"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
                 android:layout_gravity="center"
                 android:padding="2dp"
                 android:contentDescription="Profile"
                 android:scaleType="centerCrop"
                 android:background="@drawable/bg_profile_circle"
-                android:src="@drawable/ic_profile" />
+                android:src="@drawable/ic_profile"
+                android:clickable="true"
+                android:focusable="true" />
 
         </FrameLayout>
 
@@ -45,7 +48,8 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:layout_marginStart="14dp"
+            android:layout_marginStart="12dp"
+            android:gravity="center_vertical"
             android:orientation="vertical">
 
             <!-- USER NAME -->
@@ -55,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:text="Hi, User"
                 android:textColor="#FFFFFF"
-                android:textSize="18sp"
+                android:textSize="17sp"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="bold"
                 android:letterSpacing="0.01"
@@ -70,16 +74,16 @@
                 android:layout_marginTop="2dp"
                 android:text="user@gmail.com"
                 android:textColor="#CBD5E1"
-                android:textSize="13sp"
+                android:textSize="12sp"
                 android:fontFamily="sans-serif"
                 android:ellipsize="end"
                 android:maxLines="1" />
 
-            <!-- PHONE + COPY -->
+            <!-- PHONE / REFERRAL CODE + COPY -->
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="3dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
 
@@ -89,15 +93,15 @@
                     android:layout_height="wrap_content"
                     android:text="9999999999"
                     android:textColor="#94A3B8"
-                    android:textSize="14sp"
+                    android:textSize="12sp"
                     android:fontFamily="sans-serif"
                     android:letterSpacing="0.02" />
 
                 <ImageView
                     android:id="@+id/btnCopy"
-                    android:layout_width="22dp"
-                    android:layout_height="22dp"
-                    android:layout_marginStart="8dp"
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:layout_marginStart="6dp"
                     app:tint="#38BDF8"
                     android:clickable="true"
                     android:contentDescription="Copy phone number"
@@ -112,15 +116,18 @@
         <!-- EDIT PROFILE -->
         <ImageView
             android:id="@+id/btnEditProfile"
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:layout_marginStart="8dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginStart="6dp"
             android:background="@drawable/bg_edit_circle"
             android:contentDescription="Edit Profile"
-            android:padding="7dp"
+            android:padding="6dp"
             android:scaleType="centerInside"
-
-            android:src="@drawable/ic_edit" />
+            app:tint="#FFFFFF"
+            android:src="@drawable/ic_edit"
+            android:clickable="true"
+            android:focusable="true" />
 
     </LinearLayout>
 
