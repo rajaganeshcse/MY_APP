@@ -120,8 +120,9 @@
 
         </LinearLayout>
 
-        <!-- DAILY PROGRESS CARD -->
+        <!-- WEEKLY REWARD PROGRESS CARD -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardWeeklyStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -147,12 +148,13 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/txtWeeklyStatusTitle"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Daily Hitz Offers Completed"
+                        android:text="🎁 Weekly Hit Reward Available"
                         android:textColor="#FFFFFF"
-                        android:textSize="14sp"
+                        android:textSize="15sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -178,10 +180,11 @@
                     android:progressBackgroundTint="#2E2856" />
 
                 <TextView
+                    android:id="@+id/txtWeeklyResetSubtitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="⚡ Complete 30-second long ads to earn up to 1000 Mega Coins daily!"
+                    android:text="⚡ Complete weekly offers to earn coins and tickets! Resets every Monday 00:00 AM"
                     android:textColor="#94A3B8"
                     android:textSize="11sp" />
 

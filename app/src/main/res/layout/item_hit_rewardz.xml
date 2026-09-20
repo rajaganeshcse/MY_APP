@@ -84,15 +84,18 @@
                     <!-- COIN PAYOUT CHIP -->
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="22dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="24dp"
                         android:background="@drawable/bg_hitz_coin_chip_light"
                         android:gravity="center_vertical"
                         android:paddingStart="8dp"
-                        android:paddingEnd="8dp">
+                        android:paddingEnd="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp">
 
                         <ImageView
-                            android:layout_width="12dp"
-                            android:layout_height="12dp"
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
                             android:src="@drawable/ic_coin"
                             android:contentDescription="Coins" />
 
@@ -104,22 +107,29 @@
                             android:text="+10 Coins"
                             android:textColor="#B45309"
                             android:textSize="11sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:ellipsize="none" />
                     </LinearLayout>
 
                     <!-- TICKET REWARD CHIP -->
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="22dp"
+                        android:layout_height="wrap_content"
+                        android:minHeight="24dp"
                         android:layout_marginStart="6dp"
                         android:background="@drawable/bg_hitz_duration_chip_light"
                         android:gravity="center_vertical"
                         android:paddingStart="8dp"
-                        android:paddingEnd="8dp">
+                        android:paddingEnd="8dp"
+                        android:paddingTop="2dp"
+                        android:paddingBottom="2dp">
 
                         <ImageView
-                            android:layout_width="12dp"
-                            android:layout_height="12dp"
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
                             android:src="@drawable/ic_ticket"
                             android:contentDescription="Tickets" />
 
@@ -131,7 +141,11 @@
                             android:text="+5 Tickets"
                             android:textColor="#15803D"
                             android:textSize="11sp"
-                            android:textStyle="bold" />
+                            android:textStyle="bold"
+                            android:includeFontPadding="false"
+                            android:singleLine="true"
+                            android:maxLines="1"
+                            android:ellipsize="none" />
                     </LinearLayout>
 
                 </LinearLayout>

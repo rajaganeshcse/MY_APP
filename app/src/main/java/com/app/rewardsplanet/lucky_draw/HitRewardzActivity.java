@@ -64,6 +64,12 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
     private RecyclerView recyclerView;
     private HitRewardzAdapter adapter;
 
+    private TextView txtWeeklyStatusTitle;
+    private TextView txtWeeklyResetSubtitle;
+    private View cardWeeklyStatus;
+    private boolean isWeeklyClaimed = false;
+    private boolean isBackendLoading = false;
+
     private List<HitRewardzModel> hitzList = new ArrayList<>();
     private RewardedAd rewardedAd;
     private HitRewardzModel pendingItem;
@@ -82,6 +88,7 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
         loadRewardedAd();
 
         updateProgressUI();
+        fetchWeeklyStatus();
     }
 
     private void initViews() {
@@ -94,6 +101,9 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
         txtProgressCount = findViewById(R.id.txtProgressCount);
         progressHitzAds = findViewById(R.id.progressHitzAds);
         recyclerView = findViewById(R.id.recyclerViewHitRewardz);
+        txtWeeklyStatusTitle = findViewById(R.id.txtWeeklyStatusTitle);
+        txtWeeklyResetSubtitle = findViewById(R.id.txtWeeklyResetSubtitle);
+        cardWeeklyStatus = findViewById(R.id.cardWeeklyStatus);
 
         if (txtCoins != null) {
             txtCoins.setText(String.valueOf(userPref.getCoins()));
@@ -239,8 +249,18 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
 
     @Override
     public void onHitzClick(HitRewardzModel item) {
+        if (isWeeklyClaimed) {
+            Toast.makeText(this, "✓ Weekly reward already claimed! Come back next Monday.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (isBackendLoading) {
+            Toast.makeText(this, "Checking weekly reward status... Please wait", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (item.isCompleted()) {
-            Toast.makeText(this, "Task already completed today!", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Task already completed!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -308,6 +328,12 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
                         try {
                             String rawJson = response.body().string();
                             JSONObject json = new JSONObject(rawJson);
+
+                            boolean claimed = json.optBoolean("claimed", true);
+                            boolean eligible = json.optBoolean("eligible", false);
+                            String message = json.optString("message", "Weekly reward claimed successfully");
+                            String nextReset = json.optString("nextReset", "Monday 12:00 AM");
+
                             int coinReward = json.optInt("coinReward", fallbackCoins);
                             int ticketReward = json.optInt("ticketReward", fallbackTickets);
                             long totalCoins = json.optLong("totalCoins", userPref.getCoins() + coinReward);
@@ -317,8 +343,10 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
                             userPref.setTickets((int) totalTickets);
                             userPref.setHitzTaskCompleted(item.getId());
 
+                            isWeeklyClaimed = claimed || !eligible;
+                            updateWeeklyUIState(isWeeklyClaimed, message, nextReset);
+
                             UserRepository.getInstance(HitRewardzActivity.this).refreshCurrentUser();
-                            updateProgressUI();
                             showHitzRewardDialog(coinReward, ticketReward, item.getTitle());
                             return;
                         } catch (Exception e) {
@@ -336,6 +364,112 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
             });
         } else {
             applyFallbackReward(item, fallbackCoins, fallbackTickets);
+        }
+    }
+
+    private void fetchWeeklyStatus() {
+        if (apiService == null) return;
+
+        isBackendLoading = true;
+        if (txtWeeklyStatusTitle != null) {
+            txtWeeklyStatusTitle.setText("⏳ Checking Weekly Status...");
+            txtWeeklyStatusTitle.setTextColor(Color.parseColor("#CBD5E1"));
+        }
+
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            user.getIdToken(true).addOnCompleteListener(task -> {
+                String token = (task.isSuccessful() && task.getResult() != null) ? task.getResult().getToken() : "";
+                requestWeeklyStatusApi(token);
+            });
+        } else {
+            requestWeeklyStatusApi("");
+        }
+    }
+
+    private void requestWeeklyStatusApi(String token) {
+        String authHeader = (token != null && !token.isEmpty()) ? "Bearer " + token : "";
+        if (authHeader.isEmpty()) {
+            isBackendLoading = false;
+            updateWeeklyUIError();
+            return;
+        }
+
+        apiService.getHitzRewardsStatus(authHeader).enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(@NonNull Call<ResponseBody> call, @NonNull Response<ResponseBody> response) {
+                isBackendLoading = false;
+                if (response.isSuccessful() && response.body() != null) {
+                    try {
+                        String rawJson = response.body().string();
+                        JSONObject json = new JSONObject(rawJson);
+                        boolean claimed = json.optBoolean("claimed", false);
+                        boolean eligible = json.optBoolean("eligible", !claimed);
+                        String message = json.optString("message", "");
+                        String nextReset = json.optString("nextReset", "Monday 12:00 AM");
+
+                        isWeeklyClaimed = claimed || !eligible;
+                        updateWeeklyUIState(isWeeklyClaimed, message, nextReset);
+                        return;
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing weekly status response", e);
+                    }
+                }
+                updateWeeklyUIError();
+            }
+
+            @Override
+            public void onFailure(@NonNull Call<ResponseBody> call, @NonNull Throwable t) {
+                isBackendLoading = false;
+                Log.e(TAG, "Failed to fetch weekly status: " + t.getMessage());
+                updateWeeklyUIError();
+            }
+        });
+    }
+
+    private void updateWeeklyUIState(boolean claimed, String message, String nextReset) {
+        if (claimed) {
+            if (txtWeeklyStatusTitle != null) {
+                txtWeeklyStatusTitle.setText("✓ Reward Claimed");
+                txtWeeklyStatusTitle.setTextColor(Color.parseColor("#4ADE80"));
+            }
+            if (txtWeeklyResetSubtitle != null) {
+                txtWeeklyResetSubtitle.setText("Come back next week • Next reset: Monday 12:00 AM");
+            }
+
+            for (HitRewardzModel item : hitzList) {
+                item.setCompleted(true);
+                item.setLocked(false);
+            }
+            if (adapter != null) {
+                adapter.notifyDataSetChanged();
+            }
+        } else {
+            if (txtWeeklyStatusTitle != null) {
+                txtWeeklyStatusTitle.setText("🎁 Hit Reward - Weekly Available");
+                txtWeeklyStatusTitle.setTextColor(Color.WHITE);
+            }
+            if (txtWeeklyResetSubtitle != null) {
+                txtWeeklyResetSubtitle.setText("Complete offers before Monday 12:00 AM reset!");
+            }
+            updateProgressUI();
+        }
+
+        if (cardWeeklyStatus != null) {
+            cardWeeklyStatus.setOnClickListener(null);
+        }
+    }
+
+    private void updateWeeklyUIError() {
+        if (txtWeeklyStatusTitle != null) {
+            txtWeeklyStatusTitle.setText("⚠️ Connection Error");
+            txtWeeklyStatusTitle.setTextColor(Color.parseColor("#F87171"));
+        }
+        if (txtWeeklyResetSubtitle != null) {
+            txtWeeklyResetSubtitle.setText("Unable to verify weekly status. Tap here to retry.");
+        }
+        if (cardWeeklyStatus != null) {
+            cardWeeklyStatus.setOnClickListener(v -> fetchWeeklyStatus());
         }
     }
 
