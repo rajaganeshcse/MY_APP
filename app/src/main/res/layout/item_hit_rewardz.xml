@@ -5,8 +5,8 @@
     android:id="@+id/cardHitRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="14dp"
-    app:cardCornerRadius="16dp"
+    android:layout_marginBottom="10dp"
+    app:cardCornerRadius="14dp"
     app:cardElevation="3dp"
     app:cardBackgroundColor="#FFFFFF"
     app:strokeColor="#E2E8F0"
@@ -21,12 +21,12 @@
         <TextView
             android:id="@+id/badgeHitzRibbon"
             android:layout_width="match_parent"
-            android:layout_height="28dp"
+            android:layout_height="22dp"
             android:background="@drawable/bg_hitz_ribbon_light"
             android:gravity="center"
             android:text="⚡ HIGH PAYOUT LONG AD OFFER ⚡"
             android:textColor="#4338CA"
-            android:textSize="11sp"
+            android:textSize="10sp"
             android:textStyle="bold"
             android:letterSpacing="0.04" />
 
@@ -35,19 +35,22 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="14dp">
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="12dp"
+            android:paddingBottom="8dp">
 
             <!-- ICON BADGE CONTAINER -->
             <FrameLayout
                 android:id="@+id/iconContainer"
-                android:layout_width="46dp"
-                android:layout_height="46dp"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
                 android:background="@drawable/bg_hitz_icon_light">
 
                 <ImageView
                     android:id="@+id/imgHitzIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_lightning"
                     app:tint="#D97706"
@@ -156,16 +159,16 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnWatchHitzItem"
                 android:layout_width="wrap_content"
-                android:layout_height="38dp"
-                android:minWidth="92dp"
+                android:layout_height="32dp"
+                android:minWidth="86dp"
                 android:text="WATCH AD ⚡"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 android:background="@drawable/bg_btn_quiz_watch_ad"
                 app:backgroundTint="@null"
-                app:cornerRadius="14dp"
+                app:cornerRadius="12dp"
                 android:paddingStart="10dp"
                 android:paddingEnd="10dp"
                 android:insetTop="0dp"

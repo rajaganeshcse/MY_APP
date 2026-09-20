@@ -5,7 +5,7 @@
     android:id="@+id/card_hit_rewardz"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="10dp"
+    android:layout_marginBottom="8dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
@@ -38,12 +38,12 @@
             <!-- RIBBON BADGE -->
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="17dp"
+                android:layout_height="18dp"
                 android:background="@drawable/bg_hitz_ribbon_gold"
                 android:gravity="center"
                 android:text="⚡ HIGH PAYOUT WEEKLY OFFER ⚡"
                 android:textColor="#0F172A"
-                android:textSize="9sp"
+                android:textSize="9.5sp"
                 android:textStyle="bold"
                 android:letterSpacing="0.04" />
 
@@ -53,19 +53,19 @@
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="14dp"
-                android:paddingTop="6dp"
+                android:paddingTop="8dp"
                 android:paddingEnd="14dp"
-                android:paddingBottom="6dp">
+                android:paddingBottom="9dp">
 
                 <FrameLayout
-                    android:layout_width="34dp"
-                    android:layout_height="34dp"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
                     android:background="@drawable/bg_bonus_icon">
 
                     <ImageView
                         android:id="@+id/imgRewardIcon"
-                        android:layout_width="18dp"
-                        android:layout_height="18dp"
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
                         android:layout_gravity="center"
                         android:src="@drawable/ic_lightning"
                         app:tint="#FFD700"
@@ -77,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical"
-                    android:layout_marginStart="10dp">
+                    android:layout_marginStart="12dp">
 
                     <TextView
                         android:id="@+id/txtRewardTitle"
@@ -85,7 +85,7 @@
                         android:layout_height="wrap_content"
                         android:text="Hit Rewardz ⚡"
                         android:textColor="#FFFFFF"
-                        android:textSize="15sp"
+                        android:textSize="15.5sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -101,8 +101,8 @@
 
                 <ImageView
                     android:id="@+id/imgRewardArrow"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
+                    android:layout_width="26dp"
+                    android:layout_height="26dp"
                     android:background="@drawable/bg_back_dark"
                     android:padding="5dp"
                     android:src="@drawable/ic_arrow_right"
