@@ -116,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================
 
     private LinearLayout menuWallet;
+    private LinearLayout menuLeaderboard;
     private LinearLayout menuActivity;
     private LinearLayout menuRefer;
 
@@ -376,6 +377,11 @@ public class MainActivity extends AppCompatActivity {
                         R.id.menuWallet
                 );
 
+        menuLeaderboard =
+                findViewById(
+                        R.id.menuLeaderboard
+                );
+
         menuActivity =
                 findViewById(
                         R.id.menuActivity
@@ -423,7 +429,7 @@ public class MainActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // WALLET
+        // ACCOUNT HISTORY (FORMERLY WALLET)
         // =====================================================
 
         if (menuWallet != null) {
@@ -432,10 +438,30 @@ public class MainActivity extends AppCompatActivity {
 
                 closeDrawer();
 
-                selectNav(navReward);
+                Intent intent =
+                        new Intent(
+                                MainActivity.this,
+                                TransactionHistoryActivity.class
+                        );
+
+                startActivity(intent);
+            });
+        }
+
+        // =====================================================
+        // LEADERBOARD
+        // =====================================================
+
+        if (menuLeaderboard != null) {
+
+            menuLeaderboard.setOnClickListener(v -> {
+
+                closeDrawer();
+
+                selectNavTab(3);
 
                 loadFragment(
-                        new RewardFragment()
+                        new LeaderboardFragment()
                 );
             });
         }
