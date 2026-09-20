@@ -425,8 +425,6 @@ public class MainActivity extends AppCompatActivity {
 
 
         btnEditProfile = findViewById(R.id.btnEditProfile);
-        coinhistory = findViewById(R.id.coinhistory);
-        tickethistory = findViewById(R.id.tickethistory);
 
         menuWallet =
                 findViewById(
@@ -496,14 +494,6 @@ public class MainActivity extends AppCompatActivity {
 
         if (menuWallet != null) {
             menuWallet.setOnClickListener(openHistoryListener);
-        }
-
-        if (coinhistory != null) {
-            coinhistory.setOnClickListener(openHistoryListener);
-        }
-
-        if (tickethistory != null) {
-            tickethistory.setOnClickListener(openHistoryListener);
         }
 
         // =====================================================
