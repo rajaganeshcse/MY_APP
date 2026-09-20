@@ -14,21 +14,34 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.UserPref;
+import com.app.rewardsplanet.invite.ReferredUserAdapter;
+import com.app.rewardsplanet.models.ReferredUserModel;
 import com.app.rewardsplanet.models.UserModel;
 import com.app.rewardsplanet.utils.SuccessAnimationHelper;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class MyEarningsFragment extends Fragment {
 
-    TextView txtCoins, txtTickets;
+    TextView txtCoins, txtTickets, txtReferredCount;
     MaterialButton btnClaim;
+    View cardEmptyReferred;
+    RecyclerView recyclerViewReferredUsers;
+
+    ReferredUserAdapter adapter;
+    List<ReferredUserModel> referredUsersList = new ArrayList<>();
 
     FirebaseFirestore db;
     String uid;
@@ -37,6 +50,7 @@ public class MyEarningsFragment extends Fragment {
     long referralTickets = 0;
 
     ListenerRegistration listener;
+    ListenerRegistration referredUsersListener;
 
     @Nullable
     @Override
@@ -55,6 +69,16 @@ public class MyEarningsFragment extends Fragment {
         txtTickets = view.findViewById(R.id.txtTickets);
         btnClaim = view.findViewById(R.id.btnClaim);
 
+        txtReferredCount = view.findViewById(R.id.txtReferredCount);
+        cardEmptyReferred = view.findViewById(R.id.cardEmptyReferred);
+        recyclerViewReferredUsers = view.findViewById(R.id.recyclerViewReferredUsers);
+
+        if (recyclerViewReferredUsers != null) {
+            recyclerViewReferredUsers.setLayoutManager(new LinearLayoutManager(getContext()));
+            adapter = new ReferredUserAdapter(referredUsersList);
+            recyclerViewReferredUsers.setAdapter(adapter);
+        }
+
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
 
@@ -64,6 +88,7 @@ public class MyEarningsFragment extends Fragment {
         }
 
         listenEarningsRealtime();
+        listenReferredUsersRealtime();
 
         btnClaim.setOnClickListener(v -> claimReward());
 
@@ -207,6 +232,52 @@ public class MyEarningsFragment extends Fragment {
         }
     }
 
+    private void listenReferredUsersRealtime() {
+        if (uid == null || uid.isEmpty()) return;
+
+        referredUsersListener = db.collection("users")
+                .whereEqualTo("referredBy", uid)
+                .addSnapshotListener((snapshots, error) -> {
+                    if (!isAdded() || error != null) return;
+
+                    referredUsersList.clear();
+
+                    if (snapshots != null && !snapshots.isEmpty()) {
+                        for (DocumentSnapshot doc : snapshots.getDocuments()) {
+                            String uId = doc.getId();
+                            String name = doc.getString("name");
+                            String email = doc.getString("email");
+                            String pic = doc.getString("profile_pic");
+
+                            long joinedAt = 0;
+                            com.google.firebase.Timestamp ts = doc.getTimestamp("created_at");
+                            if (ts != null) {
+                                joinedAt = ts.toDate().getTime();
+                            }
+
+                            referredUsersList.add(new ReferredUserModel(uId, name, email, pic, joinedAt));
+                        }
+                    }
+
+                    int count = referredUsersList.size();
+                    if (txtReferredCount != null) {
+                        txtReferredCount.setText(count + " Friend" + (count == 1 ? "" : "s"));
+                    }
+
+                    if (cardEmptyReferred != null) {
+                        cardEmptyReferred.setVisibility(count == 0 ? View.VISIBLE : View.GONE);
+                    }
+
+                    if (recyclerViewReferredUsers != null) {
+                        recyclerViewReferredUsers.setVisibility(count > 0 ? View.VISIBLE : View.GONE);
+                    }
+
+                    if (adapter != null) {
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+    }
+
     // ================= HELPERS =================
 
     private void setZero() {
@@ -227,5 +298,6 @@ public class MyEarningsFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         if (listener != null) listener.remove();
+        if (referredUsersListener != null) referredUsersListener.remove();
     }
 }

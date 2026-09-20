@@ -41,9 +41,10 @@ import retrofit2.Response;
 public class layout_invite extends Fragment {
 
     // ================= UI =================
-    private TextView txtCode;
+    private TextView txtCode, txtReferredByName;
     private EditText edtReferral;
     private View btnCopy, btnValidate, btnShareAll;
+    private View cardEnterReferral, cardReferralApplied;
 
     // ================= FIREBASE & BACKEND =================
     private FirebaseFirestore db;
@@ -74,6 +75,10 @@ public class layout_invite extends Fragment {
         btnValidate = view.findViewById(com.app.rewardsplanet.R.id.btnValidate);
         btnShareAll = view.findViewById(R.id.btnShareAll);
 
+        cardEnterReferral = view.findViewById(R.id.cardEnterReferral);
+        cardReferralApplied = view.findViewById(R.id.cardReferralApplied);
+        txtReferredByName = view.findViewById(R.id.txtReferredByName);
+
         // Firebase & Network
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
@@ -88,6 +93,7 @@ public class layout_invite extends Fragment {
         }
 
         loadReferralCode();
+        listenUserReferralStatus();
 
         if (btnCopy != null) btnCopy.setOnClickListener(v -> copyCode());
         if (btnValidate != null) btnValidate.setOnClickListener(v -> validateReferral());
@@ -167,6 +173,45 @@ public class layout_invite extends Fragment {
                     if (user != null && user.getReferralCode() != null && !user.getReferralCode().isEmpty()) {
                         txtCode.setText(user.getReferralCode());
                         if (userPref != null) userPref.setReferralCode(user.getReferralCode());
+                    }
+                });
+    }
+
+    private void listenUserReferralStatus() {
+        if (uid == null || uid.isEmpty()) return;
+
+        db.collection("users")
+                .document(uid)
+                .addSnapshotListener((snapshot, error) -> {
+                    if (!isAdded() || error != null || snapshot == null || !snapshot.exists()) return;
+
+                    Boolean referralUsed = snapshot.getBoolean("referralUsed");
+                    String referredBy = snapshot.getString("referredBy");
+                    String referredByName = snapshot.getString("referredByName");
+
+                    boolean isReferred = Boolean.TRUE.equals(referralUsed) || (referredBy != null && !referredBy.trim().isEmpty());
+
+                    if (isReferred) {
+                        if (cardEnterReferral != null) cardEnterReferral.setVisibility(View.GONE);
+                        if (cardReferralApplied != null) cardReferralApplied.setVisibility(View.VISIBLE);
+
+                        if (txtReferredByName != null) {
+                            if (referredByName != null && !referredByName.trim().isEmpty()) {
+                                txtReferredByName.setText("You were referred by: " + referredByName);
+                            } else if (referredBy != null && !referredBy.trim().isEmpty()) {
+                                db.collection("users").document(referredBy).get().addOnSuccessListener(refDoc -> {
+                                    if (!isAdded() || refDoc == null || !refDoc.exists()) return;
+                                    String name = refDoc.getString("name");
+                                    if (name == null || name.trim().isEmpty()) name = "Friend";
+                                    txtReferredByName.setText("You were referred by: " + name);
+                                });
+                            } else {
+                                txtReferredByName.setText("You were referred by a friend ✅");
+                            }
+                        }
+                    } else {
+                        if (cardEnterReferral != null) cardEnterReferral.setVisibility(View.VISIBLE);
+                        if (cardReferralApplied != null) cardReferralApplied.setVisibility(View.GONE);
                     }
                 });
     }

@@ -166,8 +166,9 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- ENTER REFERRAL CODE CARD -->
+        <!-- ENTER REFERRAL CODE CARD (SHOWN WHEN NOT REFERRED) -->
         <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardEnterReferral"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
@@ -238,6 +239,72 @@
                         android:insetBottom="0dp" />
 
                 </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- REFERRAL APPLIED CARD (SHOWN WHEN USER ALREADY USED REFERRAL CODE) -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardReferralApplied"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="4dp"
+            app:strokeColor="#D1FAE5"
+            app:strokeWidth="1.5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/bg_success"
+                        app:tint="#10B981"
+                        android:contentDescription="Applied" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="REFERRAL CODE APPLIED"
+                        android:textColor="#065F46"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.04" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/txtReferredByName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:text="You were referred by: --"
+                    android:textColor="#0F172A"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="🎉 Bonus +250 Coins &amp; +10 Tickets credited to your wallet!"
+                    android:textColor="#047857"
+                    android:textSize="12sp" />
 
             </LinearLayout>
 

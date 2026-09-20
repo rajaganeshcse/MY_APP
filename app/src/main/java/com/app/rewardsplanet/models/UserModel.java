@@ -19,6 +19,7 @@ public class UserModel {
     private String profile_pic;
     private String referralCode;
     private String referredBy;
+    private String referredByName;
     private boolean referralUsed;
     private String fcmToken;
 
@@ -108,6 +109,7 @@ public class UserModel {
     public String getProfile_pic() { return profile_pic != null ? profile_pic : ""; }
     public String getReferralCode() { return referralCode != null ? referralCode : ""; }
     public String getReferredBy() { return referredBy != null ? referredBy : ""; }
+    public String getReferredByName() { return referredByName != null ? referredByName : ""; }
     public boolean isReferralUsed() { return referralUsed; }
     public String getFcmToken() { return fcmToken != null ? fcmToken : ""; }
 
@@ -149,6 +151,7 @@ public class UserModel {
     public void setProfile_pic(String profile_pic) { this.profile_pic = profile_pic; }
     public void setReferralCode(String referralCode) { this.referralCode = referralCode; }
     public void setReferredBy(String referredBy) { this.referredBy = referredBy; }
+    public void setReferredByName(String referredByName) { this.referredByName = referredByName; }
     public void setReferralUsed(boolean referralUsed) { this.referralUsed = referralUsed; }
     public void setFcmToken(String fcmToken) { this.fcmToken = fcmToken; }
 
