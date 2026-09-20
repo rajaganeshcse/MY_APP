@@ -167,12 +167,14 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
 
     private void populateOffersFromConfig(int[] payouts, String[] titles, String duration) {
         hitzList.clear();
+        int completedCount = userPref.getTodayHitzCount();
 
         for (int i = 0; i < payouts.length; i++) {
             int taskId = i + 1;
-            boolean completed = userPref.isHitzTaskCompleted(taskId);
+            boolean completed = i < completedCount;
+            boolean locked = i > completedCount;
             String title = (titles != null && i < titles.length) ? titles[i] : "Hitz Task #" + taskId;
-            hitzList.add(new HitRewardzModel(taskId, title, payouts[i], duration, completed));
+            hitzList.add(new HitRewardzModel(taskId, title, payouts[i], 5, completed, locked));
         }
 
         if (recyclerView != null) {
@@ -184,10 +186,13 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
                 adapter.notifyDataSetChanged();
             }
         }
+
+        updateProgressUI();
     }
 
     private void updateProgressUI() {
         int completedCount = userPref.getTodayHitzCount();
+
         if (txtProgressCount != null) {
             txtProgressCount.setText(completedCount + " / 5");
         }
@@ -197,12 +202,35 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
         if (txtCoins != null) {
             txtCoins.setText(String.valueOf(userPref.getCoins()));
         }
+
+        for (int i = 0; i < hitzList.size(); i++) {
+            HitRewardzModel item = hitzList.get(i);
+            if (i < completedCount) {
+                item.setCompleted(true);
+                item.setLocked(false);
+            } else if (i == completedCount) {
+                item.setCompleted(false);
+                item.setLocked(false);
+            } else {
+                item.setCompleted(false);
+                item.setLocked(true);
+            }
+        }
+
+        if (adapter != null) {
+            adapter.notifyDataSetChanged();
+        }
     }
 
     @Override
     public void onHitzClick(HitRewardzModel item) {
         if (item.isCompleted()) {
             Toast.makeText(this, "Task already completed today!", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        if (item.isLocked()) {
+            Toast.makeText(this, "Task is locked 🔒 Watch previous tasks first!", Toast.LENGTH_SHORT).show();
             return;
         }
 
@@ -223,9 +251,9 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
                 }
             });
 
-            rewardedAd.show(this, rewardItem -> Log.d(TAG, "User completed 30s Long Ad!"));
+            rewardedAd.show(this, rewardItem -> Log.d(TAG, "User completed Rewarded Ad!"));
         } else {
-            Toast.makeText(this, "Loading 30s Long Ad... Please try again in a moment", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Loading Rewarded Ad... Please try again in a moment", Toast.LENGTH_SHORT).show();
             loadRewardedAd();
             grantHitzReward(item);
         }
@@ -234,30 +262,30 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
     private void grantHitzReward(HitRewardzModel item) {
         if (item == null || item.isCompleted()) return;
 
-        int reward = item.getCoins();
+        int rewardCoins = item.getCoins();
+        int rewardTickets = item.getTickets() > 0 ? item.getTickets() : 5;
+
         item.setCompleted(true);
 
         String uid = userPref.getUid();
         if (uid != null && !uid.isEmpty()) {
             db.collection("users").document(uid).update(
-                    "coins", FieldValue.increment(reward)
+                    "coins", FieldValue.increment(rewardCoins),
+                    "tickets", FieldValue.increment(rewardTickets)
             ).addOnFailureListener(e -> Log.e(TAG, "Error updating Firestore Hitz reward", e));
         }
 
-        userPref.addCoins(reward);
+        userPref.addCoins(rewardCoins);
+        userPref.setTickets(userPref.getTickets() + rewardTickets);
         userPref.setHitzTaskCompleted(item.getId());
 
         UserRepository.getInstance(this).refreshCurrentUser();
 
-        if (adapter != null) {
-            adapter.notifyDataSetChanged();
-        }
-
         updateProgressUI();
-        showHitzRewardDialog(reward, item.getTitle());
+        showHitzRewardDialog(rewardCoins, rewardTickets, item.getTitle());
     }
 
-    private void showHitzRewardDialog(int rewardCoins, String offerTitle) {
+    private void showHitzRewardDialog(int rewardCoins, int rewardTickets, String offerTitle) {
         if (isFinishing() || isDestroyed()) return;
 
         try {
@@ -274,7 +302,7 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
                 txtTitle.setText("Hitz Offer Completed! ⚡");
             }
             if (txtWinAmount != null) {
-                txtWinAmount.setText("+" + rewardCoins + " Coins");
+                txtWinAmount.setText("+" + rewardCoins + " Coins & +" + rewardTickets + " Tickets");
             }
             if (txtCurrentBalance != null) {
                 txtCurrentBalance.setText("Balance: " + userPref.getCoins() + " Coins");

@@ -107,7 +107,7 @@
                             android:textStyle="bold" />
                     </LinearLayout>
 
-                    <!-- DURATION CHIP -->
+                    <!-- TICKET REWARD CHIP -->
                     <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="22dp"
@@ -117,13 +117,20 @@
                         android:paddingStart="8dp"
                         android:paddingEnd="8dp">
 
+                        <ImageView
+                            android:layout_width="12dp"
+                            android:layout_height="12dp"
+                            android:src="@drawable/ic_ticket"
+                            android:contentDescription="Tickets" />
+
                         <TextView
-                            android:id="@+id/txtHitzDuration"
+                            android:id="@+id/txtHitzRewardTickets"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="30s Long Ad"
+                            android:layout_marginStart="4dp"
+                            android:text="+5 Tickets"
                             android:textColor="#15803D"
-                            android:textSize="10sp"
+                            android:textSize="11sp"
                             android:textStyle="bold" />
                     </LinearLayout>
 

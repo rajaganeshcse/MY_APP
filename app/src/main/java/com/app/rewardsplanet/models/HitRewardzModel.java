@@ -5,15 +5,17 @@ public class HitRewardzModel {
     private int id;
     private String title;
     private int coins;
-    private String durationText;
+    private int tickets;
     private boolean isCompleted;
+    private boolean isLocked;
 
-    public HitRewardzModel(int id, String title, int coins, String durationText, boolean isCompleted) {
+    public HitRewardzModel(int id, String title, int coins, int tickets, boolean isCompleted, boolean isLocked) {
         this.id = id;
         this.title = title;
         this.coins = coins;
-        this.durationText = durationText;
+        this.tickets = tickets;
         this.isCompleted = isCompleted;
+        this.isLocked = isLocked;
     }
 
     public int getId() {
@@ -28,8 +30,8 @@ public class HitRewardzModel {
         return coins;
     }
 
-    public String getDurationText() {
-        return durationText;
+    public int getTickets() {
+        return tickets;
     }
 
     public boolean isCompleted() {
@@ -38,5 +40,13 @@ public class HitRewardzModel {
 
     public void setCompleted(boolean completed) {
         isCompleted = completed;
+    }
+
+    public boolean isLocked() {
+        return isLocked;
+    }
+
+    public void setLocked(boolean locked) {
+        isLocked = locked;
     }
 }

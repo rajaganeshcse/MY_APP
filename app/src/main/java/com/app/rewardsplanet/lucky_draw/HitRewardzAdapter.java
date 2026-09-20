@@ -94,21 +94,31 @@ public class HitRewardzAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     private void bindTaskItem(TaskViewHolder holder, HitRewardzModel item) {
         holder.txtTitle.setText(item.getTitle());
         holder.txtCoins.setText("+" + item.getCoins() + " Coins");
-        holder.txtDuration.setText(item.getDurationText());
+        if (holder.txtTickets != null) {
+            holder.txtTickets.setText("+" + item.getTickets() + " Ticket" + (item.getTickets() > 1 ? "s" : ""));
+        }
 
         if (item.isCompleted()) {
             holder.btnWatch.setText("COMPLETED ✅");
             holder.btnWatch.setEnabled(false);
             holder.btnWatch.setBackgroundColor(Color.parseColor("#E2E8F0"));
             holder.btnWatch.setTextColor(Color.parseColor("#64748B"));
+            holder.itemView.setAlpha(0.85f);
+        } else if (item.isLocked()) {
+            holder.btnWatch.setText("Locked 🔒");
+            holder.btnWatch.setEnabled(false);
+            holder.btnWatch.setBackgroundColor(Color.parseColor("#F1F5F9"));
+            holder.btnWatch.setTextColor(Color.parseColor("#94A3B8"));
+            holder.itemView.setAlpha(0.65f);
         } else {
             holder.btnWatch.setText("WATCH AD ⚡");
             holder.btnWatch.setEnabled(true);
             holder.btnWatch.setBackgroundResource(R.drawable.bg_btn_quiz_watch_ad);
             holder.btnWatch.setTextColor(Color.WHITE);
+            holder.itemView.setAlpha(1.0f);
 
             holder.btnWatch.setOnClickListener(v -> {
-                if (listener != null) {
+                if (!item.isCompleted() && !item.isLocked() && listener != null) {
                     listener.onHitzClick(item);
                 }
             });
@@ -194,14 +204,14 @@ public class HitRewardzAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
     /* ================= VIEW HOLDERS ================= */
 
     static class TaskViewHolder extends RecyclerView.ViewHolder {
-        TextView txtTitle, txtCoins, txtDuration;
+        TextView txtTitle, txtCoins, txtTickets;
         MaterialButton btnWatch;
 
         TaskViewHolder(@NonNull View itemView) {
             super(itemView);
             txtTitle = itemView.findViewById(R.id.txtHitzTitle);
             txtCoins = itemView.findViewById(R.id.txtHitzRewardCoins);
-            txtDuration = itemView.findViewById(R.id.txtHitzDuration);
+            txtTickets = itemView.findViewById(R.id.txtHitzRewardTickets);
             btnWatch = itemView.findViewById(R.id.btnWatchHitzItem);
         }
     }
