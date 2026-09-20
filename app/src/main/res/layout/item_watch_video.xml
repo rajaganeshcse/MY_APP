@@ -5,11 +5,11 @@
     android:id="@+id/cardWatchVideoRoot"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="14dp"
+    android:layout_marginBottom="16dp"
     app:cardCornerRadius="18dp"
-    app:cardElevation="5dp"
-    app:cardBackgroundColor="#1A1A2E"
-    app:strokeColor="#2E2E4A"
+    app:cardElevation="6dp"
+    app:cardBackgroundColor="#13132B"
+    app:strokeColor="#2A2A4A"
     app:strokeWidth="1.5dp">
 
     <LinearLayout
@@ -17,17 +17,18 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- SUPER BONUS BADGE BAR (Shown only for item 10) -->
+        <!-- SUPER BONUS BADGE BANNER (Shown for Super Bonus Item 10) -->
         <TextView
             android:id="@+id/badgeSuperBonus"
             android:layout_width="match_parent"
-            android:layout_height="24dp"
+            android:layout_height="28dp"
             android:background="@drawable/bg_token_gradient"
             android:gravity="center"
-            android:text="🔥 2X SUPER MEGA BONUS — +50 COINS &amp; +2 TICKETS"
+            android:text="🔥 2X SUPER MEGA BONUS — +50 COINS &amp; +2 TICKETS 🔥"
             android:textColor="#FFFFFF"
             android:textSize="11sp"
             android:textStyle="bold"
+            android:letterSpacing="0.03"
             android:visibility="gone" />
 
         <LinearLayout
@@ -35,33 +36,33 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:gravity="center_vertical"
-            android:padding="14dp">
+            android:padding="16dp">
 
-            <!-- ICON CONTAINER WITH GLOW BACKGROUND -->
+            <!-- METALLIC ICON CONTAINER -->
             <FrameLayout
                 android:id="@+id/iconContainer"
-                android:layout_width="52dp"
-                android:layout_height="52dp"
+                android:layout_width="54dp"
+                android:layout_height="54dp"
                 android:background="@drawable/bg_token_block">
 
                 <ImageView
                     android:id="@+id/imgVideoIcon"
-                    android:layout_width="28dp"
-                    android:layout_height="28dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:src="@drawable/ic_watch"
-                    android:contentDescription="Watch Video" />
+                    android:contentDescription="Watch Video Task" />
 
             </FrameLayout>
 
-            <!-- TITLE & REWARD DETAILS -->
+            <!-- TITLE & REWARD BADGES -->
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical"
                 android:layout_marginStart="14dp"
-                android:layout_marginEnd="8dp">
+                android:layout_marginEnd="10dp">
 
                 <TextView
                     android:id="@+id/txtVideoTitle"
@@ -69,31 +70,32 @@
                     android:layout_height="wrap_content"
                     android:text="Watch Video #1"
                     android:textColor="#FFFFFF"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:letterSpacing="0.01" />
 
-                <!-- BADGE ROW -->
+                <!-- REWARD BADGES ROW -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
+                    android:layout_marginTop="6dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <!-- COIN BADGE -->
+                    <!-- COIN CHIP -->
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="22dp"
+                        android:layout_height="24dp"
                         android:background="@drawable/bg_coin_chip_dark"
                         android:gravity="center_vertical"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp">
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp">
 
                         <ImageView
                             android:layout_width="14dp"
                             android:layout_height="14dp"
                             android:src="@drawable/ic_coin"
-                            android:contentDescription="Coin" />
+                            android:contentDescription="Coins" />
 
                         <TextView
                             android:id="@+id/txtVideoRewardCoins"
@@ -102,20 +104,20 @@
                             android:layout_marginStart="4dp"
                             android:text="+10 Coins"
                             android:textColor="#FFD700"
-                            android:textSize="11sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
 
-                    <!-- TICKET BADGE -->
+                    <!-- TICKET CHIP -->
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="22dp"
-                        android:layout_marginStart="6dp"
+                        android:layout_height="24dp"
+                        android:layout_marginStart="8dp"
                         android:background="@drawable/bg_scratch_count_chip"
                         android:gravity="center_vertical"
-                        android:paddingStart="8dp"
-                        android:paddingEnd="8dp">
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp">
 
                         <TextView
                             android:id="@+id/txtVideoRewardTickets"
@@ -123,7 +125,7 @@
                             android:layout_height="wrap_content"
                             android:text="🎟️ +1 Ticket"
                             android:textColor="#A5B4FC"
-                            android:textSize="11sp"
+                            android:textSize="12sp"
                             android:textStyle="bold" />
 
                     </LinearLayout>
@@ -132,17 +134,17 @@
 
             </LinearLayout>
 
-            <!-- ACTION BUTTON -->
+            <!-- WATCH / CLAIM ACTION BUTTON -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnWatchVideoItem"
-                android:layout_width="102dp"
-                android:layout_height="42dp"
+                android:layout_width="106dp"
+                android:layout_height="44dp"
                 android:text="Watch 📺"
                 android:textColor="#FFFFFF"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
                 app:backgroundTint="#10B981"
-                app:cornerRadius="12dp"
+                app:cornerRadius="14dp"
                 android:paddingStart="2dp"
                 android:paddingEnd="2dp" />
 
