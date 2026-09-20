@@ -9,9 +9,12 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -85,12 +88,62 @@ public class activity_login extends AppCompatActivity {
             });
         }
 
+        // Start premium entrance and interactive spring animations
+        startLoginAnimations();
+
         // Check if passed account status from intent
         String accountStatus = getIntent().getStringExtra("account_status");
         if ("Pending".equals(accountStatus)) {
             showAccountPendingDialog();
         } else if ("Deleted".equals(accountStatus)) {
             showAccountDeletedDialog();
+        }
+    }
+
+    private void startLoginAnimations() {
+        View logo = findViewById(R.id.logo);
+        View bottomSheet = findViewById(R.id.bottom_sheet);
+
+        if (logo != null) {
+            logo.setScaleX(0.6f);
+            logo.setScaleY(0.6f);
+            logo.setAlpha(0f);
+            logo.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .alpha(1.0f)
+                    .setDuration(700)
+                    .setInterpolator(new OvershootInterpolator(1.2f))
+                    .start();
+        }
+
+        if (bottomSheet != null) {
+            bottomSheet.setTranslationY(200f);
+            bottomSheet.setAlpha(0f);
+            bottomSheet.animate()
+                    .translationY(0f)
+                    .alpha(1.0f)
+                    .setDuration(600)
+                    .setStartDelay(150)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
+        }
+
+        if (btnGoogle != null) {
+            btnGoogle.setOnTouchListener((v, event) -> {
+                if (isLoading) return false;
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+                        v.animate().scaleX(0.96f).scaleY(0.96f).setDuration(100).start();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                    case MotionEvent.ACTION_CANCEL:
+                        v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150)
+                                .setInterpolator(new OvershootInterpolator(2.0f)).start();
+                        break;
+                }
+                return false;
+            });
         }
     }
 
