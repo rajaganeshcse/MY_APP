@@ -48,8 +48,8 @@ public class HitRewardzAdapter extends RecyclerView.Adapter<HitRewardzAdapter.Vi
         if (item.isCompleted()) {
             holder.btnWatch.setText("COMPLETED ✅");
             holder.btnWatch.setEnabled(false);
-            holder.btnWatch.setBackgroundColor(Color.parseColor("#332A52"));
-            holder.btnWatch.setTextColor(Color.parseColor("#94A3B8"));
+            holder.btnWatch.setBackgroundColor(Color.parseColor("#E2E8F0"));
+            holder.btnWatch.setTextColor(Color.parseColor("#64748B"));
         } else {
             holder.btnWatch.setText("WATCH AD ⚡");
             holder.btnWatch.setEnabled(true);

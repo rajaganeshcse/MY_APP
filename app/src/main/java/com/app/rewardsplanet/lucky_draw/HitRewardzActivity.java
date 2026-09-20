@@ -92,7 +92,7 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
     private void setupHitzOffers() {
         hitzList.clear();
 
-        int[] payouts = {100, 150, 200, 250, 300};
+        int[] payouts = {10, 25, 25, 25, 50};
         String[] titles = {
                 "Mega Hitz Offer #1",
                 "Super Video Task #2",
