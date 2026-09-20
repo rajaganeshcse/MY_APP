@@ -44,9 +44,9 @@ public class layout_invite extends Fragment {
     // ================= UI =================
     TextView txtCode;
     EditText edtReferral;
-    ImageView btnCopy, btnWhatsapp, btnTelegram,
+    View btnCopy, btnValidate;
+    ImageView btnWhatsapp, btnTelegram,
             btnFacebook, btnMessenger, btnShareAll;
-    View btnValidate;
 
     // ================= FIREBASE & BACKEND =================
     FirebaseFirestore db;
@@ -88,7 +88,7 @@ public class layout_invite extends Fragment {
         apiService = ApiClient.getClient().create(ApiService.class);
 
         // Local
-        userPref = new UserPref(requireContext());
+        userPref = new UserPref(view.getContext());
 
         if (uid == null) {
             toast("User not logged in");
@@ -127,13 +127,13 @@ public class layout_invite extends Fragment {
     // ================= REFERRAL CODE (BACKEND GENERATED & FETCHED) =================
 
     private void loadReferralCode() {
-        // 1. Load instantly from local stored data (UserPref)
-        String localCode = userPref.getReferralCode();
-        if (localCode != null && !localCode.trim().isEmpty()) {
-            txtCode.setText(localCode);
+        if (userPref != null) {
+            String localCode = userPref.getReferralCode();
+            if (localCode != null && !localCode.trim().isEmpty()) {
+                txtCode.setText(localCode);
+            }
         }
 
-        // 2. Sync latest referral code from backend API
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             loadReferralCodeFallback();
@@ -153,7 +153,7 @@ public class layout_invite extends Fragment {
                                 String code = jsonObject.optString("referralCode", "");
                                 if (!code.isEmpty()) {
                                     txtCode.setText(code);
-                                    userPref.setReferralCode(code); // Save to local storage
+                                    if (userPref != null) userPref.setReferralCode(code);
                                     return;
                                 }
                             }
@@ -179,7 +179,7 @@ public class layout_invite extends Fragment {
                     UserModel user = doc.toObject(UserModel.class);
                     if (user != null && user.getReferralCode() != null && !user.getReferralCode().isEmpty()) {
                         txtCode.setText(user.getReferralCode());
-                        userPref.setReferralCode(user.getReferralCode()); // Save to local storage
+                        if (userPref != null) userPref.setReferralCode(user.getReferralCode());
                     }
                 });
     }
@@ -187,19 +187,21 @@ public class layout_invite extends Fragment {
     // ================= COPY =================
 
     private void copyCode() {
-        if (getContext() == null) return;
+        Context context = getContext();
+        if (context == null) return;
         ClipboardManager cm =
-                (ClipboardManager) requireContext()
+                (ClipboardManager) context
                         .getSystemService(Context.CLIPBOARD_SERVICE);
 
-        cm.setPrimaryClip(
-                ClipData.newPlainText(
-                        "referral",
-                        txtCode.getText().toString()
-                )
-        );
-
-        toast("Code copied");
+        if (cm != null) {
+            cm.setPrimaryClip(
+                    ClipData.newPlainText(
+                            "referral",
+                            txtCode.getText().toString()
+                    )
+            );
+            toast("Code copied");
+        }
     }
 
     // ================= VALIDATE & APPLY REFERRAL (BACKEND SERVER-SIDE VALIDATION) =================
@@ -276,12 +278,14 @@ public class layout_invite extends Fragment {
     // ================= SHARE =================
 
     private String getShareMessage() {
-        String pkgName = getContext() != null ? requireContext().getPackageName() : "com.app.rewardsplanet";
+        Context ctx = getContext();
+        String pkgName = ctx != null ? ctx.getPackageName() : "com.app.rewardsplanet";
+        String code = txtCode != null ? txtCode.getText().toString() : "";
         return "🎮 Join Gamex play & earn FREE coins!\n\n"+
                 "🎁 Get ₹20 bonus instantly when you sign up with my link\n\n"+
                 "⚡ Play games, complete simple tasks & earn real cash\n\n"+
                 "✅ Withdraw easily once your wallet hits just ₹60.0\n\n"
-                + "Use my referral code: " + txtCode.getText().toString()
+                + "Use my referral code: " + code
                 + "\n\nDownload now 👇\n"
                 + "🔗 "+"https://play.google.com/store/apps/details?id="
                 + pkgName;
