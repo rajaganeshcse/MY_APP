@@ -474,23 +474,21 @@ public class MainActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // EDIT PROFILE
+        // EDIT PROFILE / PROFILE IMAGE CLICK
         // =====================================================
 
+        View.OnClickListener openProfileListener = v -> {
+            closeDrawer();
+            Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
+            startActivity(intent);
+        };
+
         if (btnEditProfile != null) {
+            btnEditProfile.setOnClickListener(openProfileListener);
+        }
 
-            btnEditProfile.setOnClickListener(v -> {
-
-                closeDrawer();
-
-                Intent intent =
-                        new Intent(
-                                MainActivity.this,
-                                ProfileActivity.class
-                        );
-
-                startActivity(intent);
-            });
+        if (imgProfile != null) {
+            imgProfile.setOnClickListener(openProfileListener);
         }
 
 

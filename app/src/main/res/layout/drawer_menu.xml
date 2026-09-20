@@ -119,7 +119,7 @@
             android:contentDescription="Edit Profile"
             android:padding="7dp"
             android:scaleType="centerInside"
-            
+
             android:src="@drawable/ic_edit" />
 
     </LinearLayout>
