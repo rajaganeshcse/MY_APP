@@ -33,33 +33,36 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical">
 
             <!-- RIBBON BADGE -->
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="17dp"
+                android:layout_height="19dp"
                 android:background="@drawable/bg_hitz_ribbon_gold"
                 android:gravity="center"
+                android:letterSpacing="0.04"
                 android:text="⚡ HIGH PAYOUT WEEKLY OFFER ⚡"
                 android:textColor="#0F172A"
                 android:textSize="9.5sp"
-                android:textStyle="bold"
-                android:letterSpacing="0.04" />
+                android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_vertical"
+                android:gravity="center"
                 android:orientation="horizontal"
                 android:paddingStart="14dp"
                 android:paddingTop="8dp"
                 android:paddingEnd="14dp"
+                android:layout_marginTop="15dp"
                 android:paddingBottom="8dp">
 
                 <FrameLayout
                     android:layout_width="36dp"
                     android:layout_height="36dp"
+                    android:layout_gravity="center"
                     android:background="@drawable/bg_bonus_icon">
 
                     <ImageView
@@ -76,6 +79,7 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
+                    android:layout_gravity="center"
                     android:gravity="center"
                     android:orientation="vertical"
                     android:layout_marginStart="10dp"
@@ -85,6 +89,7 @@
                         android:id="@+id/txtRewardTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
                         android:gravity="center"
                         android:text="Hit Rewardz ⚡"
                         android:textColor="#FFFFFF"
@@ -96,6 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="1dp"
+                        android:layout_gravity="center_horizontal"
                         android:gravity="center"
                         android:text="High payout long ad tasks • Resets Monday"
                         android:textColor="#E9D5FF"
@@ -105,13 +111,14 @@
 
                 <ImageView
                     android:id="@+id/imgRewardArrow"
-                    android:layout_width="26dp"
-                    android:layout_height="26dp"
+                    android:layout_width="29dp"
+                    android:layout_height="31dp"
+                    android:layout_gravity="center"
                     android:background="@drawable/bg_back_dark"
+                    android:contentDescription="Open"
                     android:padding="5dp"
                     android:src="@drawable/ic_arrow_right"
-                    app:tint="#FFFFFF"
-                    android:contentDescription="Open" />
+                    app:tint="#FFFFFF" />
 
             </LinearLayout>
 
