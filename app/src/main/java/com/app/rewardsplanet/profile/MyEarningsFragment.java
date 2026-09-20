@@ -132,6 +132,12 @@ public class MyEarningsFragment extends Fragment {
                 )
                 .addOnSuccessListener(unused -> {
                     if (isAdded() && getContext() != null) {
+                        Context ctx = getContext();
+                        UserPref pref = new UserPref(ctx);
+                        pref.setCoins(pref.getCoins() + coinsClaimed);
+                        pref.setTickets((int) (pref.getTickets() + ticketsClaimed));
+                        com.app.rewardsplanet.repository.UserRepository.getInstance(ctx).refreshCurrentUser();
+
                         showRewardResultDialog((int) coinsClaimed, (int) ticketsClaimed, "Referral Reward Collected! 🎉");
                     }
                 })
@@ -148,7 +154,10 @@ public class MyEarningsFragment extends Fragment {
         if (!isAdded() || getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
 
         try {
-            android.app.Dialog d = new android.app.Dialog(getContext());
+            Context ctx = getContext();
+            if (ctx == null) return;
+
+            android.app.Dialog d = new android.app.Dialog(ctx);
             d.requestWindowFeature(Window.FEATURE_NO_TITLE);
             d.setContentView(R.layout.dialog_spin_result);
 
@@ -174,14 +183,9 @@ public class MyEarningsFragment extends Fragment {
                 layoutTicket.setVisibility(View.GONE);
             }
 
-            Context ctx = getContext();
-            if (ctx != null) {
-                UserPref userPref = new UserPref(ctx);
-                userPref.setCoins(userPref.getCoins() + coins);
-
-                if (txtBal != null) {
-                    txtBal.setText("Balance: " + userPref.getCoins() + " Coins");
-                }
+            UserPref pref = new UserPref(ctx);
+            if (txtBal != null) {
+                txtBal.setText("Balance: " + pref.getCoins() + " Coins");
             }
 
             if (ok != null) {
@@ -195,8 +199,8 @@ public class MyEarningsFragment extends Fragment {
                 d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
 
-            SuccessAnimationHelper.animate(d);
             d.show();
+            SuccessAnimationHelper.animate(d);
 
         } catch (Exception e) {
             toast("🎉 +" + coins + " Coins & +" + tickets + " Tickets Claimed!");

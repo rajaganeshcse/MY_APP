@@ -73,11 +73,15 @@ public class SuccessAnimationHelper {
                                                 .scaleY(1.0f)
                                                 .setDuration(160)
                                                 .withEndAction(() -> {
-                                                    Drawable drawable = checkIcon.getDrawable();
-                                                    if (drawable instanceof AnimatedVectorDrawable) {
-                                                        ((AnimatedVectorDrawable) drawable).start();
-                                                    } else if (drawable instanceof AnimatedVectorDrawableCompat) {
-                                                        ((AnimatedVectorDrawableCompat) drawable).start();
+                                                    try {
+                                                        Drawable drawable = checkIcon.getDrawable();
+                                                        if (drawable instanceof AnimatedVectorDrawable) {
+                                                            ((AnimatedVectorDrawable) drawable).start();
+                                                        } else if (drawable instanceof AnimatedVectorDrawableCompat) {
+                                                            ((AnimatedVectorDrawableCompat) drawable).start();
+                                                        }
+                                                    } catch (Exception e) {
+                                                        Log.w(TAG, "AnimatedVectorDrawable start failed: " + e.getMessage());
                                                     }
                                                 })
                                                 .start();

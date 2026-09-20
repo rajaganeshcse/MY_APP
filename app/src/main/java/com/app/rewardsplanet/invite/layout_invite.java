@@ -224,21 +224,25 @@ public class layout_invite extends Fragment {
                             JSONObject jsonObj = new JSONObject(jsonStr);
                             String msg = jsonObj.optString("message", "Referral applied successfully!");
                             int coinsEarned = jsonObj.optInt("coinsEarned", 250);
+                            int ticketsEarned = jsonObj.optInt("ticketsEarned", 10);
 
-                            if (userPref != null) {
-                                long currentCoins = userPref.getCoins();
-                                userPref.setCoins(currentCoins + coinsEarned);
+                            Context ctx = getContext();
+                            if (ctx != null) {
+                                UserPref pref = new UserPref(ctx);
+                                pref.setCoins(pref.getCoins() + coinsEarned);
+                                pref.setTickets(pref.getTickets() + ticketsEarned);
+                                com.app.rewardsplanet.repository.UserRepository.getInstance(ctx).refreshCurrentUser();
                             }
 
-                            btnValidate.setEnabled(false);
-                            edtReferral.setText("");
-                            showRewardResultDialog(coinsEarned, 10, "Referral Bonus Claimed! 🎉");
+                            if (btnValidate != null) btnValidate.setEnabled(false);
+                            if (edtReferral != null) edtReferral.setText("");
+                            showRewardResultDialog(coinsEarned, ticketsEarned, "Referral Bonus Claimed! 🎉");
                         } catch (Exception e) {
-                            btnValidate.setEnabled(true);
+                            if (btnValidate != null) btnValidate.setEnabled(true);
                             showRewardResultDialog(250, 10, "Referral Bonus Claimed! 🎉");
                         }
                     } else {
-                        btnValidate.setEnabled(true);
+                        if (btnValidate != null) btnValidate.setEnabled(true);
                         String errMsg = "Failed to apply referral code";
                         try {
                             if (response.errorBody() != null) {
@@ -255,12 +259,12 @@ public class layout_invite extends Fragment {
 
                 @Override
                 public void onFailure(Call<ResponseBody> call, Throwable t) {
-                    btnValidate.setEnabled(true);
+                    if (btnValidate != null) btnValidate.setEnabled(true);
                     toast("Network error: " + t.getMessage());
                 }
             });
         }).addOnFailureListener(e -> {
-            btnValidate.setEnabled(true);
+            if (btnValidate != null) btnValidate.setEnabled(true);
             toast("Authentication failed: " + e.getMessage());
         });
     }
@@ -269,7 +273,10 @@ public class layout_invite extends Fragment {
         if (!isAdded() || getContext() == null || getActivity() == null || getActivity().isFinishing() || getActivity().isDestroyed()) return;
 
         try {
-            android.app.Dialog d = new android.app.Dialog(getContext());
+            Context ctx = getContext();
+            if (ctx == null) return;
+
+            android.app.Dialog d = new android.app.Dialog(ctx);
             d.requestWindowFeature(Window.FEATURE_NO_TITLE);
             d.setContentView(R.layout.dialog_spin_result);
 
@@ -295,8 +302,9 @@ public class layout_invite extends Fragment {
                 layoutTicket.setVisibility(View.GONE);
             }
 
-            if (txtBal != null && userPref != null) {
-                txtBal.setText("Balance: " + userPref.getCoins() + " Coins");
+            UserPref pref = new UserPref(ctx);
+            if (txtBal != null) {
+                txtBal.setText("Balance: " + pref.getCoins() + " Coins");
             }
 
             if (ok != null) {
@@ -310,8 +318,8 @@ public class layout_invite extends Fragment {
                 d.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
             }
 
-            com.app.rewardsplanet.utils.SuccessAnimationHelper.animate(d);
             d.show();
+            com.app.rewardsplanet.utils.SuccessAnimationHelper.animate(d);
 
         } catch (Exception e) {
             toast("🎉 +" + coins + " Coins & +" + tickets + " Tickets Added!");
