@@ -100,6 +100,11 @@ public class HomeFragment extends Fragment {
     private TextView txtUserName;
     private TextView txtUserCoins;
 
+    private TextView btnFooterAboutUs;
+    private TextView btnFooterSupport;
+    private TextView btnFooterTerms;
+    private TextView btnFooterPrivacy;
+
     private ImageView imgRewardCoin;
     private ImageView imgDailyBonus;
     private ObjectAnimator giftVibrationAnimator;
@@ -413,6 +418,11 @@ public class HomeFragment extends Fragment {
         cardDailyBonus = view.findViewById(
                 R.id.card_daily_bonus
         );
+
+        btnFooterAboutUs = view.findViewById(R.id.btnFooterAboutUs);
+        btnFooterSupport = view.findViewById(R.id.btnFooterSupport);
+        btnFooterTerms = view.findViewById(R.id.btnFooterTerms);
+        btnFooterPrivacy = view.findViewById(R.id.btnFooterPrivacy);
     }
 
 
@@ -626,6 +636,38 @@ public class HomeFragment extends Fragment {
         applyCardTouchAnimation(card_tasks);
         applyCardTouchAnimation(card_surveys);
         applyCardTouchAnimation(cardInvite);
+
+        // =====================================================
+        // FOOTER LINKS
+        // =====================================================
+
+        if (btnFooterAboutUs != null) {
+            btnFooterAboutUs.setOnClickListener(v -> {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "RewardsPro • India's #1 Rewards Platform", Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        if (btnFooterSupport != null) {
+            btnFooterSupport.setOnClickListener(v -> {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "Support Email: support@rewardspro.in", Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        if (btnFooterTerms != null) {
+            btnFooterTerms.setOnClickListener(v -> {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "Terms & Conditions", Toast.LENGTH_SHORT).show();
+            });
+        }
+
+        if (btnFooterPrivacy != null) {
+            btnFooterPrivacy.setOnClickListener(v -> {
+                if (!isAdded()) return;
+                Toast.makeText(getContext(), "Privacy Policy", Toast.LENGTH_SHORT).show();
+            });
+        }
 
 
         // =====================================================

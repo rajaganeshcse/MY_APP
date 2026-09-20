@@ -461,6 +461,9 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"/>
 
+                    <!-- ================= TRUSTED FOOTER SECTION ================= -->
+                    <include layout="@layout/footer_home" />
+
                 </LinearLayout>
 
             </ScrollView>
