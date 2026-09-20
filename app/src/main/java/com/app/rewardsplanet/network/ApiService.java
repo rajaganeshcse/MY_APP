@@ -58,6 +58,11 @@ public interface ApiService {
             @Body Map<String, String> body
     );
 
+    @GET("api/hitz-rewards/config")
+    Call<ResponseBody> getHitzRewardsConfig(
+            @Header("Authorization") String token
+    );
+
     /* ================= DAILY BONUS ================= */
 
     @POST("/api/daily-bonus")

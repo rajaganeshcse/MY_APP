@@ -34,7 +34,9 @@ import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class HitRewardzActivity extends AppCompatActivity implements HitRewardzAdapter.OnHitzClickListener {
 
@@ -90,27 +92,97 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
     }
 
     private void setupHitzOffers() {
+        // Default initial setup
+        populateOffersFromConfig(
+                new int[]{10, 25, 25, 25, 50},
+                new String[]{
+                        "Mega Hitz Offer #1",
+                        "Super Video Task #2",
+                        "Ultra Hitz Offer #3",
+                        "Premium Ad Task #4",
+                        "Jackpot Hitz Task #5"
+                },
+                "30s Long Ad"
+        );
+
+        // Fetch dynamic rewards configuration from Backend Firestore
+        fetchBackendRewardsConfig();
+    }
+
+    private void fetchBackendRewardsConfig() {
+        if (db == null) return;
+
+        db.collection("settings").document("hitz_rewards")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (documentSnapshot != null && documentSnapshot.exists()) {
+                        List<Long> backendPayouts = (List<Long>) documentSnapshot.get("payouts");
+                        List<String> backendTitles = (List<String>) documentSnapshot.get("titles");
+                        String duration = documentSnapshot.getString("duration");
+                        if (duration == null) duration = "30s Long Ad";
+
+                        if (backendPayouts != null && !backendPayouts.isEmpty()) {
+                            int[] payouts = new int[backendPayouts.size()];
+                            for (int i = 0; i < backendPayouts.size(); i++) {
+                                payouts[i] = backendPayouts.get(i).intValue();
+                            }
+
+                            String[] titles;
+                            if (backendTitles != null && backendTitles.size() >= payouts.length) {
+                                titles = backendTitles.toArray(new String[0]);
+                            } else {
+                                titles = new String[payouts.length];
+                                for (int i = 0; i < payouts.length; i++) {
+                                    titles[i] = "Hitz Task #" + (i + 1);
+                                }
+                            }
+
+                            populateOffersFromConfig(payouts, titles, duration);
+                        }
+                    } else {
+                        // Seed Firestore config document if not present
+                        Map<String, Object> config = new HashMap<>();
+                        List<Integer> defaultPayouts = new ArrayList<>();
+                        defaultPayouts.add(10);
+                        defaultPayouts.add(25);
+                        defaultPayouts.add(25);
+                        defaultPayouts.add(25);
+                        defaultPayouts.add(50);
+                        config.put("payouts", defaultPayouts);
+
+                        List<String> defaultTitles = new ArrayList<>();
+                        defaultTitles.add("Mega Hitz Offer #1");
+                        defaultTitles.add("Super Video Task #2");
+                        defaultTitles.add("Ultra Hitz Offer #3");
+                        defaultTitles.add("Premium Ad Task #4");
+                        defaultTitles.add("Jackpot Hitz Task #5");
+                        config.put("titles", defaultTitles);
+
+                        config.put("duration", "30s Long Ad");
+                        db.collection("settings").document("hitz_rewards").set(config);
+                    }
+                })
+                .addOnFailureListener(e -> Log.e(TAG, "Failed to load backend hitz config: " + e.getMessage()));
+    }
+
+    private void populateOffersFromConfig(int[] payouts, String[] titles, String duration) {
         hitzList.clear();
 
-        int[] payouts = {10, 25, 25, 25, 50};
-        String[] titles = {
-                "Mega Hitz Offer #1",
-                "Super Video Task #2",
-                "Ultra Hitz Offer #3",
-                "Premium Ad Task #4",
-                "Jackpot Hitz Task #5"
-        };
-
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < payouts.length; i++) {
             int taskId = i + 1;
             boolean completed = userPref.isHitzTaskCompleted(taskId);
-            hitzList.add(new HitRewardzModel(taskId, titles[i], payouts[i], "30s Long Ad", completed));
+            String title = (titles != null && i < titles.length) ? titles[i] : "Hitz Task #" + taskId;
+            hitzList.add(new HitRewardzModel(taskId, title, payouts[i], duration, completed));
         }
 
         if (recyclerView != null) {
-            recyclerView.setLayoutManager(new LinearLayoutManager(this));
-            adapter = new HitRewardzAdapter(hitzList, this);
-            recyclerView.setAdapter(adapter);
+            if (adapter == null) {
+                recyclerView.setLayoutManager(new LinearLayoutManager(this));
+                adapter = new HitRewardzAdapter(hitzList, this);
+                recyclerView.setAdapter(adapter);
+            } else {
+                adapter.notifyDataSetChanged();
+            }
         }
     }
 
