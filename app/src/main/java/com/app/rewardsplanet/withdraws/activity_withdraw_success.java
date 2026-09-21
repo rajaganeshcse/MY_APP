@@ -119,6 +119,8 @@ public class activity_withdraw_success extends AppCompatActivity {
         switch (type.toLowerCase()) {
 
             case RedeemFragment.GOOGLE:
+            case "google_play":
+            case "googleplay":
                 imgMethod.setImageResource(R.drawable.ic_google_play);
                 txtRewardType.setText("Reward: Google Play Voucher");
                 break;
@@ -219,9 +221,13 @@ public class activity_withdraw_success extends AppCompatActivity {
 
     /* ================= HELPERS ================= */
     private boolean isVoucherType(String type) {
-        return RedeemFragment.GOOGLE.equals(type)
-                || RedeemFragment.AMAZON.equals(type)
-                || RedeemFragment.PHONEPE.equals(type);
+        if (type == null) return false;
+        String t = type.toLowerCase().trim();
+        return RedeemFragment.GOOGLE.equals(t)
+                || "google_play".equals(t)
+                || "googleplay".equals(t)
+                || RedeemFragment.AMAZON.equals(t)
+                || RedeemFragment.PHONEPE.equals(t);
     }
 
     private void showWithdrawDetailsIfNeeded(String type, String details) {

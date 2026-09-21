@@ -109,7 +109,10 @@ public class WithdrawHistoryAdapter
     private String formatTypeTitle(String type) {
         if (type == null) return "Reward Payout";
         switch (type.toLowerCase()) {
-            case "google": return "Google Play Voucher";
+            case "google":
+            case "google_play":
+            case "googleplay":
+                return "Google Play Voucher";
             case "amazon": return "Amazon Gift Voucher";
             case "phonepe": return "PhonePe Voucher";
             case "upi": return "UPI Cash Transfer";
@@ -127,6 +130,8 @@ public class WithdrawHistoryAdapter
 
         switch (type.toLowerCase()) {
             case "google":
+            case "google_play":
+            case "googleplay":
                 img.setImageResource(R.drawable.ic_google_play);
                 break;
             case "amazon":
