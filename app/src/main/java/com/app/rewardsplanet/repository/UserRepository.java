@@ -94,13 +94,20 @@ public class UserRepository {
 
         DocumentReference userDocRef = db.collection("users").document(uid);
 
+        // One-shot guard: the snapshot listener fires multiple times (cache then network).
+        // We only want to call the provided callback once so callers don't double-navigate.
+        final boolean[] callbackFired = {false};
+
         // Attach centralized single Firestore snapshot listener
         snapshotListener = userDocRef.addSnapshotListener((documentSnapshot, error) -> {
             loadingLiveData.postValue(false);
 
             if (error != null) {
                 errorLiveData.postValue(error.getMessage());
-                if (callback != null) callback.onError(error.getMessage());
+                if (!callbackFired[0]) {
+                    callbackFired[0] = true;
+                    if (callback != null) callback.onError(error.getMessage());
+                }
                 return;
             }
 
@@ -112,16 +119,26 @@ public class UserRepository {
                         userLiveData.postValue(userModel);
                         syncUserPref(userModel);
 
-                        if (callback != null) callback.onSuccess(userModel);
+                        // Only fire the one-shot callback on first delivery
+                        if (!callbackFired[0]) {
+                            callbackFired[0] = true;
+                            if (callback != null) callback.onSuccess(userModel);
+                        }
                     }
                 } catch (Exception e) {
                     errorLiveData.postValue(e.getMessage());
-                    if (callback != null) callback.onError(e.getMessage());
+                    if (!callbackFired[0]) {
+                        callbackFired[0] = true;
+                        if (callback != null) callback.onError(e.getMessage());
+                    }
                 }
             } else {
                 String msg = "User document does not exist in Firestore";
                 errorLiveData.postValue(msg);
-                if (callback != null) callback.onError(msg);
+                if (!callbackFired[0]) {
+                    callbackFired[0] = true;
+                    if (callback != null) callback.onError(msg);
+                }
             }
         });
     }

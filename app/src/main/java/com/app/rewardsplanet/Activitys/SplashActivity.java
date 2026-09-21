@@ -11,6 +11,9 @@ import android.os.Looper;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.OvershootInterpolator;
 import android.widget.Toast;
 
 import com.app.rewardsplanet.R;
@@ -56,15 +59,16 @@ public class SplashActivity extends AppCompatActivity {
 
         if (firebaseUser == null) {
             // No authenticated user → Navigate to OnBoarding after brief splash display
-            timeoutHandler.postDelayed(this::navigateToLogin, 1000);
+            timeoutHandler.postDelayed(this::navigateToLogin, 1200);
             return;
         }
 
         String uid = firebaseUser.getUid();
 
-        // Safety timeout: If Firestore network takes longer than 5 seconds, fall back to cached user or continue
+        // Safety timeout: If Firestore takes longer than 6 seconds, fall back to cached local data
         timeoutRunnable = () -> {
             if (!isNavigated) {
+                android.util.Log.w("SplashActivity", "Firestore timeout — falling back to local cache");
                 if (userPref.isUserValid()) {
                     navigateToMain();
                 } else {
@@ -72,9 +76,11 @@ public class SplashActivity extends AppCompatActivity {
                 }
             }
         };
-        timeoutHandler.postDelayed(timeoutRunnable, 5000);
+        timeoutHandler.postDelayed(timeoutRunnable, 6000);
 
-        // Check account status in Firestore BEFORE loading into UserRepository
+        // Fetch Firestore user document to:
+        //  1. Check account status (Pending / Deleted)
+        //  2. Pre-populate UserPref so MainActivity has local data IMMEDIATELY on first render
         FirebaseFirestore.getInstance()
                 .collection("users")
                 .document(uid)
@@ -104,7 +110,40 @@ public class SplashActivity extends AppCompatActivity {
                         return;
                     }
 
-                    // Normal user — load into UserRepository and go to Main
+                    // ─── PRE-POPULATE UserPref FROM FIRESTORE ────────────────────────
+                    // This ensures MainActivity.loadUserFromPref() has real data immediately
+                    // when the activity renders — no empty-drawer flash on first open.
+                    try {
+                        userPref.setUid(uid);
+                        userPref.setLogin(true);
+                        String name = doc.getString("name");
+                        if (name != null && !name.isEmpty()) userPref.setName(name);
+                        String email = doc.getString("email");
+                        if (email != null && !email.isEmpty()) userPref.setEmail(email);
+                        String phone = doc.getString("phone");
+                        if (phone != null && !phone.isEmpty()) userPref.setPhone(phone);
+                        String pic = doc.getString("profile_pic");
+                        if (pic == null) pic = doc.getString("profilePic");
+                        if (pic == null) pic = doc.getString("photoUrl");
+                        if (pic != null && !pic.isEmpty()) userPref.setProfileImage(pic);
+                        String refCode = doc.getString("referralCode");
+                        if (refCode != null && !refCode.isEmpty()) userPref.setReferralCode(refCode);
+                        Object coinsObj = doc.get("coins");
+                        if (coinsObj instanceof Long) userPref.setCoins((Long) coinsObj);
+                        else if (coinsObj instanceof Double) userPref.setCoins(((Double) coinsObj).longValue());
+                        Object ticketsObj = doc.get("tickets");
+                        if (ticketsObj instanceof Long) userPref.setTickets(((Long) ticketsObj).intValue());
+                        else if (ticketsObj instanceof Double) userPref.setTickets(((Double) ticketsObj).intValue());
+                        String gender = doc.getString("gender");
+                        if (gender != null && !gender.isEmpty()) userPref.setGender(gender);
+                        String dob = doc.getString("dob");
+                        if (dob != null && !dob.isEmpty()) userPref.setDob(dob);
+                    } catch (Exception ex) {
+                        android.util.Log.w("SplashActivity", "UserPref pre-populate partial failure: " + ex.getMessage());
+                    }
+                    // ─────────────────────────────────────────────────────────────────
+
+                    // Start the Firestore realtime listener in UserRepository
                     userRepository.loadCurrentUser(uid, new UserRepository.UserLoadCallback() {
                         @Override
                         public void onSuccess(UserModel user) {
@@ -114,6 +153,7 @@ public class SplashActivity extends AppCompatActivity {
                         @Override
                         public void onError(String errorMessage) {
                             if (!isNavigated) {
+                                // UserPref is already populated above — safe to proceed
                                 if (userPref.isUserValid()) {
                                     navigateToMain();
                                 } else {
@@ -127,7 +167,8 @@ public class SplashActivity extends AppCompatActivity {
                 .addOnFailureListener(e -> {
                     cancelTimeout();
                     if (!isNavigated) {
-                        // Network issue — fall back to cached data
+                        // Network issue — fall back to cached local data
+                        android.util.Log.w("SplashActivity", "Firestore fetch failed: " + e.getMessage());
                         if (userPref.isUserValid()) {
                             navigateToMain();
                         } else {
@@ -140,21 +181,149 @@ public class SplashActivity extends AppCompatActivity {
     private void startSplashAnimations() {
         View splashLogo = findViewById(R.id.splashLogo);
         View appTitle = findViewById(R.id.appTitle);
+        View appSubtitle = findViewById(R.id.appSubtitle);
+        View tagContainer = findViewById(R.id.tagContainer);
         View progressBar = findViewById(R.id.progressBar);
+        View txtLoadingStatus = findViewById(R.id.txtLoadingStatus);
+        View glowCircleTop = findViewById(R.id.glowCircleTop);
+        View glowCircleBottom = findViewById(R.id.glowCircleBottom);
+        View floatingCoin1 = findViewById(R.id.floatingCoin1);
+        View floatingCoin2 = findViewById(R.id.floatingCoin2);
 
+        // 1. Ambient Glow Pulse Animations
+        if (glowCircleTop != null) {
+            glowCircleTop.setAlpha(0.08f);
+            glowCircleTop.animate()
+                    .alpha(0.22f)
+                    .setDuration(2800)
+                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                    .withEndAction(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            glowCircleTop.animate().alpha(0.08f).setDuration(2800).start();
+                        }
+                    })
+                    .start();
+        }
+
+        if (glowCircleBottom != null) {
+            glowCircleBottom.setAlpha(0.05f);
+            glowCircleBottom.animate()
+                    .alpha(0.18f)
+                    .setDuration(3200)
+                    .setStartDelay(350)
+                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                    .start();
+        }
+
+        // 2. Floating Background Coins Animations
+        if (floatingCoin1 != null) {
+            floatingCoin1.setTranslationY(-20f);
+            floatingCoin1.setAlpha(0f);
+            floatingCoin1.animate()
+                    .translationY(0f)
+                    .alpha(0.85f)
+                    .setDuration(800)
+                    .setInterpolator(new OvershootInterpolator(1.3f))
+                    .withEndAction(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            floatingCoin1.animate()
+                                    .translationY(-14f)
+                                    .rotation(12f)
+                                    .setDuration(2200)
+                                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                    .withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isFinishing() && !isDestroyed()) {
+                                                floatingCoin1.animate()
+                                                        .translationY(0f)
+                                                        .rotation(0f)
+                                                        .setDuration(2200)
+                                                        .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                                        .withEndAction(this)
+                                                        .start();
+                                            }
+                                        }
+                                    })
+                                    .start();
+                        }
+                    })
+                    .start();
+        }
+
+        if (floatingCoin2 != null) {
+            floatingCoin2.setTranslationY(20f);
+            floatingCoin2.setAlpha(0f);
+            floatingCoin2.animate()
+                    .translationY(0f)
+                    .alpha(0.80f)
+                    .setDuration(800)
+                    .setStartDelay(200)
+                    .setInterpolator(new OvershootInterpolator(1.3f))
+                    .withEndAction(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            floatingCoin2.animate()
+                                    .translationY(14f)
+                                    .rotation(-15f)
+                                    .setDuration(2600)
+                                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                    .withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isFinishing() && !isDestroyed()) {
+                                                floatingCoin2.animate()
+                                                        .translationY(0f)
+                                                        .rotation(0f)
+                                                        .setDuration(2600)
+                                                        .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                                        .withEndAction(this)
+                                                        .start();
+                                            }
+                                        }
+                                    })
+                                    .start();
+                        }
+                    })
+                    .start();
+        }
+
+        // 3. Logo Entrance & Breathing Motion
         if (splashLogo != null) {
-            splashLogo.setScaleX(0.5f);
-            splashLogo.setScaleY(0.5f);
+            splashLogo.setScaleX(0.4f);
+            splashLogo.setScaleY(0.4f);
             splashLogo.setAlpha(0f);
             splashLogo.animate()
                     .scaleX(1.0f)
                     .scaleY(1.0f)
                     .alpha(1.0f)
                     .setDuration(750)
-                    .setInterpolator(new android.view.animation.OvershootInterpolator(1.3f))
+                    .setInterpolator(new OvershootInterpolator(1.4f))
+                    .withEndAction(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            splashLogo.animate()
+                                    .translationY(-10f)
+                                    .setDuration(1800)
+                                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                    .withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isFinishing() && !isDestroyed()) {
+                                                splashLogo.animate()
+                                                        .translationY(0f)
+                                                        .setDuration(1800)
+                                                        .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                                        .withEndAction(this)
+                                                        .start();
+                                            }
+                                        }
+                                    })
+                                    .start();
+                        }
+                    })
                     .start();
         }
 
+        // 4. Staggered Text Slide-Up
         if (appTitle != null) {
             appTitle.setTranslationY(40f);
             appTitle.setAlpha(0f);
@@ -162,11 +331,38 @@ public class SplashActivity extends AppCompatActivity {
                     .translationY(0f)
                     .alpha(1.0f)
                     .setDuration(600)
-                    .setStartDelay(200)
+                    .setStartDelay(120)
                     .setInterpolator(new android.view.animation.DecelerateInterpolator())
                     .start();
         }
 
+        if (appSubtitle != null) {
+            appSubtitle.setTranslationY(30f);
+            appSubtitle.setAlpha(0f);
+            appSubtitle.animate()
+                    .translationY(0f)
+                    .alpha(1.0f)
+                    .setDuration(600)
+                    .setStartDelay(220)
+                    .setInterpolator(new android.view.animation.DecelerateInterpolator())
+                    .start();
+        }
+
+        if (tagContainer != null) {
+            tagContainer.setScaleX(0.7f);
+            tagContainer.setScaleY(0.7f);
+            tagContainer.setAlpha(0f);
+            tagContainer.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .alpha(1.0f)
+                    .setDuration(650)
+                    .setStartDelay(300)
+                    .setInterpolator(new OvershootInterpolator(1.2f))
+                    .start();
+        }
+
+        // 5. Loading Progress Bar & Status Text Fade-In
         if (progressBar != null) {
             progressBar.setScaleX(0.5f);
             progressBar.setScaleY(0.5f);
@@ -176,7 +372,16 @@ public class SplashActivity extends AppCompatActivity {
                     .scaleY(1.0f)
                     .alpha(1.0f)
                     .setDuration(500)
-                    .setStartDelay(350)
+                    .setStartDelay(400)
+                    .start();
+        }
+
+        if (txtLoadingStatus != null) {
+            txtLoadingStatus.setAlpha(0f);
+            txtLoadingStatus.animate()
+                    .alpha(1.0f)
+                    .setDuration(500)
+                    .setStartDelay(450)
                     .start();
         }
     }

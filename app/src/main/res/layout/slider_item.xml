@@ -1,43 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="30dp"
-    android:background="#DBD7D2">
+    android:paddingStart="32dp"
+    android:paddingEnd="32dp"
+    android:paddingTop="20dp"
+    android:paddingBottom="40dp">
 
-    <!-- Slide Image -->
-    <ImageView
-        android:id="@+id/img"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_marginTop="40dp"
-        android:scaleType="centerInside" />
+    <!-- Slide Illustration Card Frame -->
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="32dp">
 
-    <!-- Slide Title -->
+        <!-- Glowing Backdrop Circle -->
+        <View
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            android:layout_gravity="center"
+            android:alpha="0.25"
+            android:background="@drawable/bg_glow_circle" />
+
+        <!-- Curved Light Illustration Card -->
+        <androidx.cardview.widget.CardView
+            android:layout_width="230dp"
+            android:layout_height="230dp"
+            android:layout_gravity="center"
+            app:cardBackgroundColor="#FFFFFF"
+            app:cardCornerRadius="28dp"
+            app:cardElevation="10dp">
+
+            <ImageView
+                android:id="@+id/img"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Onboarding Slide"
+                android:padding="20dp"
+                android:scaleType="fitCenter" />
+
+        </androidx.cardview.widget.CardView>
+
+    </FrameLayout>
+
+    <!-- Slide Title (Deep Slate Navy) -->
     <TextView
         android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Title"
-        android:textSize="26sp"
-        android:textStyle="bold"
-        android:textColor="@color/black"
+        android:layout_gravity="center"
         android:gravity="center"
-        android:layout_marginTop="40dp" />
+        android:letterSpacing="0.02"
+        android:text="Title"
+        android:textColor="#0F172A"
+        android:textSize="26sp"
+        android:textStyle="bold" />
 
-    <!-- Slide Description -->
+    <!-- Slide Description (Slate Grey) -->
     <TextView
         android:id="@+id/desc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Description text goes here."
-        android:textSize="16sp"
-        android:textColor="@color/black"
+        android:layout_gravity="center"
+        android:layout_marginTop="12dp"
         android:gravity="center"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp" />
+        android:lineSpacingExtra="4dp"
+        android:text="Description text goes here."
+        android:textColor="#475569"
+        android:textSize="15sp" />
 
 </LinearLayout>

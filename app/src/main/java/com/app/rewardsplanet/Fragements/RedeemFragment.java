@@ -104,28 +104,77 @@ public class RedeemFragment extends Fragment {
     }
 
     private void setupCards() {
+        if (gridLayout == null) return;
+        gridLayout.removeAllViews();
 
+        int defaultIcon = UPI.equals(redeemType)
+                ? R.drawable.ic_upi
+                : BANK.equals(redeemType)
+                ? R.drawable.ic_bank
+                : AMAZON.equals(redeemType)
+                ? R.drawable.ic_amazon
+                : PHONEPE.equals(redeemType)
+                ? R.drawable.ic_phonepe
+                : R.drawable.ic_google_play;
+
+        // Fetch dynamic reward options from Firestore settings/reward_config
+        com.google.firebase.firestore.FirebaseFirestore.getInstance()
+                .collection("settings")
+                .document("reward_config")
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    if (!isAdded() || gridLayout == null) return;
+
+                    boolean addedDynamic = false;
+                    if (documentSnapshot.exists()) {
+                        java.util.List<java.util.Map<String, Object>> tiers =
+                                (java.util.List<java.util.Map<String, Object>>) documentSnapshot.get("tiers");
+
+                        if (tiers != null && !tiers.isEmpty()) {
+                            gridLayout.removeAllViews();
+                            for (java.util.Map<String, Object> tier : tiers) {
+                                String type = (String) tier.get("type");
+                                Boolean enabled = (Boolean) tier.get("enabled");
+
+                                if (redeemType.equalsIgnoreCase(type) && !Boolean.FALSE.equals(enabled)) {
+                                    Number coinsNum = (Number) tier.get("coins");
+                                    Number amountNum = (Number) tier.get("amount");
+
+                                    if (coinsNum != null && amountNum != null) {
+                                        addCard(defaultIcon, coinsNum.longValue(), amountNum.longValue());
+                                        addedDynamic = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (!addedDynamic) {
+                        populateDefaultCards(defaultIcon);
+                    }
+                })
+                .addOnFailureListener(e -> {
+                    if (isAdded() && gridLayout != null) {
+                        populateDefaultCards(defaultIcon);
+                    }
+                });
+    }
+
+    private void populateDefaultCards(int icon) {
+        if (gridLayout == null) return;
         gridLayout.removeAllViews();
 
         if (UPI.equals(redeemType)) {
-            addCard(R.drawable.ic_upi, 200, 2);
-            addCard(R.drawable.ic_upi, 500, 5);
-            addCard(R.drawable.ic_upi, 1174, 10);
-            addCard(R.drawable.ic_upi, 2674, 25);
-            addCard(R.drawable.ic_upi, 10000, 100);
-
+            addCard(icon, 200, 2);
+            addCard(icon, 500, 5);
+            addCard(icon, 1174, 10);
+            addCard(icon, 2674, 25);
+            addCard(icon, 10000, 100);
         } else if (BANK.equals(redeemType)) {
-            addCard(R.drawable.ic_bank, 5000, 50);
-            addCard(R.drawable.ic_bank, 10000, 100);
-            addCard(R.drawable.ic_bank, 20000, 200);
-
+            addCard(icon, 5000, 50);
+            addCard(icon, 10000, 100);
+            addCard(icon, 20000, 200);
         } else {
-            int icon = AMAZON.equals(redeemType)
-                    ? R.drawable.ic_amazon
-                    : PHONEPE.equals(redeemType)
-                    ? R.drawable.ic_phonepe
-                    : R.drawable.ic_google_play;
-
             addCard(icon, 1000, 10);
             addCard(icon, 3500, 35);
             addCard(icon, 5000, 50);

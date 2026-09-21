@@ -51,6 +51,8 @@ public class activity_login extends AppCompatActivity {
     private ProgressBar loginProgressBar;
     private TextView txtPrivacy;
     private boolean isLoading = false;
+    // Guard against double-navigation (snapshot listener fires multiple times)
+    private volatile boolean isNavigating = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -102,44 +104,214 @@ public class activity_login extends AppCompatActivity {
 
     private void startLoginAnimations() {
         View logo = findViewById(R.id.logo);
+        View heroTitle = findViewById(R.id.heroTitle);
+        View heroSubtitle = findViewById(R.id.heroSubtitle);
+        View tagContainer = findViewById(R.id.tagContainer);
         View bottomSheet = findViewById(R.id.bottom_sheet);
+        View glowCircleTop = findViewById(R.id.glowCircleTop);
+        View glowCircleBottom = findViewById(R.id.glowCircleBottom);
+        View floatingCoin1 = findViewById(R.id.floatingCoin1);
+        View floatingCoin2 = findViewById(R.id.floatingCoin2);
 
+        // 0. Floating Background Coins Animations (2 Coins)
+        if (floatingCoin1 != null) {
+            floatingCoin1.setTranslationY(-20f);
+            floatingCoin1.setAlpha(0f);
+            floatingCoin1.animate()
+                    .translationY(0f)
+                    .alpha(0.85f)
+                    .setDuration(800)
+                    .setInterpolator(new OvershootInterpolator(1.3f))
+                    .withEndAction(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            floatingCoin1.animate()
+                                    .translationY(-14f)
+                                    .rotation(12f)
+                                    .setDuration(2200)
+                                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                    .withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isFinishing() && !isDestroyed()) {
+                                                floatingCoin1.animate()
+                                                        .translationY(0f)
+                                                        .rotation(0f)
+                                                        .setDuration(2200)
+                                                        .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                                        .withEndAction(this)
+                                                        .start();
+                                            }
+                                        }
+                                    })
+                                    .start();
+                        }
+                    })
+                    .start();
+        }
+
+        if (floatingCoin2 != null) {
+            floatingCoin2.setTranslationY(20f);
+            floatingCoin2.setAlpha(0f);
+            floatingCoin2.animate()
+                    .translationY(0f)
+                    .alpha(0.80f)
+                    .setDuration(800)
+                    .setStartDelay(200)
+                    .setInterpolator(new OvershootInterpolator(1.3f))
+                    .withEndAction(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            floatingCoin2.animate()
+                                    .translationY(14f)
+                                    .rotation(-15f)
+                                    .setDuration(2600)
+                                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                    .withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isFinishing() && !isDestroyed()) {
+                                                floatingCoin2.animate()
+                                                        .translationY(0f)
+                                                        .rotation(0f)
+                                                        .setDuration(2600)
+                                                        .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                                        .withEndAction(this)
+                                                        .start();
+                                            }
+                                        }
+                                    })
+                                    .start();
+                        }
+                    })
+                    .start();
+        }
+
+        // 1. Ambient Glow Pulse Animations
+        if (glowCircleTop != null) {
+            glowCircleTop.setAlpha(0.08f);
+            glowCircleTop.animate()
+                    .alpha(0.20f)
+                    .setDuration(2800)
+                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                    .withEndAction(() -> {
+                        if (!isFinishing() && !isDestroyed()) {
+                            glowCircleTop.animate().alpha(0.08f).setDuration(2800).start();
+                        }
+                    })
+                    .start();
+        }
+
+        if (glowCircleBottom != null) {
+            glowCircleBottom.setAlpha(0.05f);
+            glowCircleBottom.animate()
+                    .alpha(0.18f)
+                    .setDuration(3200)
+                    .setStartDelay(400)
+                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                    .start();
+        }
+
+        // 2. App Logo Entrance + Continuous Breathing Floating Effect
         if (logo != null) {
-            logo.setScaleX(0.6f);
-            logo.setScaleY(0.6f);
+            logo.setScaleX(0.4f);
+            logo.setScaleY(0.4f);
             logo.setAlpha(0f);
             logo.animate()
                     .scaleX(1.0f)
                     .scaleY(1.0f)
                     .alpha(1.0f)
-                    .setDuration(700)
-                    .setInterpolator(new OvershootInterpolator(1.2f))
+                    .setDuration(750)
+                    .setInterpolator(new OvershootInterpolator(1.4f))
+                    .withEndAction(() -> {
+                        // Start gentle floating breathing animation
+                        if (!isFinishing() && !isDestroyed()) {
+                            logo.animate()
+                                    .translationY(-10f)
+                                    .setDuration(1800)
+                                    .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                    .withEndAction(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            if (!isFinishing() && !isDestroyed()) {
+                                                logo.animate()
+                                                        .translationY(0f)
+                                                        .setDuration(1800)
+                                                        .setInterpolator(new android.view.animation.AccelerateDecelerateInterpolator())
+                                                        .withEndAction(this)
+                                                        .start();
+                                            }
+                                        }
+                                    })
+                                    .start();
+                        }
+                    })
                     .start();
         }
 
-        if (bottomSheet != null) {
-            bottomSheet.setTranslationY(200f);
-            bottomSheet.setAlpha(0f);
-            bottomSheet.animate()
+        // 3. Hero Text & Subtitle Slide Up
+        if (heroTitle != null) {
+            heroTitle.setTranslationY(40f);
+            heroTitle.setAlpha(0f);
+            heroTitle.animate()
                     .translationY(0f)
                     .alpha(1.0f)
                     .setDuration(600)
-                    .setStartDelay(150)
+                    .setStartDelay(120)
                     .setInterpolator(new DecelerateInterpolator())
                     .start();
         }
 
+        if (heroSubtitle != null) {
+            heroSubtitle.setTranslationY(30f);
+            heroSubtitle.setAlpha(0f);
+            heroSubtitle.animate()
+                    .translationY(0f)
+                    .alpha(1.0f)
+                    .setDuration(600)
+                    .setStartDelay(200)
+                    .setInterpolator(new DecelerateInterpolator())
+                    .start();
+        }
+
+        // 4. Feature Badges Pop In
+        if (tagContainer != null) {
+            tagContainer.setScaleX(0.7f);
+            tagContainer.setScaleY(0.7f);
+            tagContainer.setAlpha(0f);
+            tagContainer.animate()
+                    .scaleX(1.0f)
+                    .scaleY(1.0f)
+                    .alpha(1.0f)
+                    .setDuration(650)
+                    .setStartDelay(280)
+                    .setInterpolator(new OvershootInterpolator(1.2f))
+                    .start();
+        }
+
+        // 5. Bottom Sheet Card Slide Up
+        if (bottomSheet != null) {
+            bottomSheet.setTranslationY(300f);
+            bottomSheet.setAlpha(0f);
+            bottomSheet.animate()
+                    .translationY(0f)
+                    .alpha(1.0f)
+                    .setDuration(700)
+                    .setStartDelay(150)
+                    .setInterpolator(new DecelerateInterpolator(2.0f))
+                    .start();
+        }
+
+        // 6. Google Button Interactive Spring Touch Feedback
         if (btnGoogle != null) {
             btnGoogle.setOnTouchListener((v, event) -> {
                 if (isLoading) return false;
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
-                        v.animate().scaleX(0.96f).scaleY(0.96f).setDuration(100).start();
+                        v.animate().scaleX(0.95f).scaleY(0.95f).setDuration(100).start();
                         break;
                     case MotionEvent.ACTION_UP:
                     case MotionEvent.ACTION_CANCEL:
-                        v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(150)
-                                .setInterpolator(new OvershootInterpolator(2.0f)).start();
+                        v.animate().scaleX(1.0f).scaleY(1.0f).setDuration(160)
+                                .setInterpolator(new OvershootInterpolator(2.2f)).start();
                         break;
                 }
                 return false;
@@ -153,9 +325,43 @@ public class activity_login extends AppCompatActivity {
             btnGoogle.setEnabled(!show);
             btnGoogle.setClickable(!show);
         }
-        if (imgGoogle != null) imgGoogle.setVisibility(show ? View.GONE : View.VISIBLE);
-        if (txtGoogle != null) txtGoogle.setVisibility(show ? View.GONE : View.VISIBLE);
-        if (loginProgressBar != null) loginProgressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+
+        if (show) {
+            // Fade out Google Icon & Text, Fade in Progress Bar
+            if (imgGoogle != null) {
+                imgGoogle.animate().alpha(0f).scaleX(0.6f).scaleY(0.6f).setDuration(180)
+                        .withEndAction(() -> imgGoogle.setVisibility(View.GONE)).start();
+            }
+            if (txtGoogle != null) {
+                txtGoogle.animate().alpha(0f).setDuration(180)
+                        .withEndAction(() -> txtGoogle.setVisibility(View.GONE)).start();
+            }
+            if (loginProgressBar != null) {
+                loginProgressBar.setVisibility(View.VISIBLE);
+                loginProgressBar.setAlpha(0f);
+                loginProgressBar.setScaleX(0.5f);
+                loginProgressBar.setScaleY(0.5f);
+                loginProgressBar.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(220).setStartDelay(100).start();
+            }
+        } else {
+            // Fade out Progress Bar, Fade in Google Icon & Text
+            if (loginProgressBar != null) {
+                loginProgressBar.animate().alpha(0f).setDuration(150)
+                        .withEndAction(() -> loginProgressBar.setVisibility(View.GONE)).start();
+            }
+            if (imgGoogle != null) {
+                imgGoogle.setVisibility(View.VISIBLE);
+                imgGoogle.setAlpha(0f);
+                imgGoogle.setScaleX(0.6f);
+                imgGoogle.setScaleY(0.6f);
+                imgGoogle.animate().alpha(1f).scaleX(1f).scaleY(1f).setDuration(200).setStartDelay(100).start();
+            }
+            if (txtGoogle != null) {
+                txtGoogle.setVisibility(View.VISIBLE);
+                txtGoogle.setAlpha(0f);
+                txtGoogle.animate().alpha(1f).setDuration(200).setStartDelay(100).start();
+            }
+        }
     }
 
     private void signIn() {
@@ -414,18 +620,34 @@ public class activity_login extends AppCompatActivity {
                     userPref.setLogin(true);
 
                     // Initialize Centralized UserRepository snapshot listener
-                    String uid = user.getUid().isEmpty() && auth.getCurrentUser() != null ? auth.getCurrentUser().getUid() : user.getUid();
+                    String uid = (user.getUid() == null || user.getUid().isEmpty()) && auth.getCurrentUser() != null
+                            ? auth.getCurrentUser().getUid() : user.getUid();
 
                     com.app.rewardsplanet.repository.UserRepository.getInstance(activity_login.this)
                             .loadCurrentUser(uid, new com.app.rewardsplanet.repository.UserRepository.UserLoadCallback() {
                                 @Override
                                 public void onSuccess(UserModel userModel) {
+                                    // Ensure local prefs are fully synced from Firestore user model
+                                    if (userModel != null) {
+                                        userPref.setUid(userModel.getUid());
+                                        userPref.setName(userModel.getName());
+                                        userPref.setEmail(userModel.getEmail());
+                                        userPref.setPhone(userModel.getPhone());
+                                        userPref.setProfileImage(userModel.getProfile_pic());
+                                        userPref.setReferralCode(userModel.getReferralCode());
+                                        userPref.setCoins(userModel.getCoins());
+                                        userPref.setTickets((int) userModel.getTickets());
+                                        userPref.setWalletToken((int) userModel.getTickets());
+                                        userPref.setLogin(true);
+                                    }
                                     showLoading(false);
                                     openMain();
                                 }
 
                                 @Override
                                 public void onError(String errorMessage) {
+                                    Log.w("LOGIN_DEBUG", "UserRepository load error (non-fatal): " + errorMessage);
+                                    // We already set UserPref above — safe to proceed
                                     showLoading(false);
                                     openMain();
                                 }
@@ -459,12 +681,25 @@ public class activity_login extends AppCompatActivity {
                     .loadCurrentUser(uid, new com.app.rewardsplanet.repository.UserRepository.UserLoadCallback() {
                         @Override
                         public void onSuccess(UserModel userModel) {
+                            if (userModel != null) {
+                                userPref.setUid(userModel.getUid());
+                                userPref.setName(userModel.getName());
+                                userPref.setEmail(userModel.getEmail());
+                                userPref.setPhone(userModel.getPhone());
+                                userPref.setProfileImage(userModel.getProfile_pic());
+                                userPref.setReferralCode(userModel.getReferralCode());
+                                userPref.setCoins(userModel.getCoins());
+                                userPref.setTickets((int) userModel.getTickets());
+                                userPref.setWalletToken((int) userModel.getTickets());
+                                userPref.setLogin(true);
+                            }
                             showLoading(false);
                             openMain();
                         }
 
                         @Override
                         public void onError(String errorMessage) {
+                            Log.w("LOGIN_DEBUG", "Fallback user load error: " + errorMessage);
                             showLoading(false);
                             openMain();
                         }
@@ -503,8 +738,16 @@ public class activity_login extends AppCompatActivity {
     }
 
     private void openMain() {
+        if (isNavigating) {
+            Log.d("LOGIN_DEBUG", "openMain() already called — ignoring duplicate");
+            return;
+        }
+        isNavigating = true;
         Log.d("LOGIN_DEBUG", "Opening MainActivity");
-        startActivity(new Intent(this, MainActivity.class));
+        Intent intent = new Intent(this, MainActivity.class);
+        // Clear the entire back stack so pressing Back exits the app, not returning to login
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
         finish();
     }
 }

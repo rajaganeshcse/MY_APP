@@ -1,49 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/base_color">
+    android:background="@drawable/bg_login_gradient">
 
+    <!-- ============================================================
+         BACKGROUND AMBIENT GLOW CIRCLE
+         ============================================================ -->
+
+    <View
+        android:id="@+id/glowCircleTop"
+        android:layout_width="366dp"
+        android:layout_height="347dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="-129dp"
+        android:layout_marginEnd="-121dp"
+        android:alpha="0.20"
+        android:background="@drawable/bg_glow_circle"
+        android:translationX="100dp"
+        android:translationY="-60dp" />
+
+    <View
+        android:id="@+id/glowCircleBottom"
+        android:layout_width="242dp"
+        android:layout_height="358dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="-120dp"
+        android:layout_marginBottom="40dp"
+        android:alpha="0.15"
+        android:background="@drawable/bg_glow_circle" />
+
+    <!-- ============================================================
+         TOP BAR: SKIP BUTTON
+         ============================================================ -->
+    <TextView
+        android:id="@+id/skipBtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/bg_login_chip"
+        android:clickable="true"
+        android:elevation="4dp"
+        android:focusable="true"
+        android:paddingStart="16dp"
+        android:paddingTop="8dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:text="Skip"
+        android:textColor="#0F172A"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
+    <!-- ============================================================
+         MAIN SLIDER VIEWPAGER2
+         ============================================================ -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/viewPager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:layout_above="@id/bottomBar"
+        android:layout_below="@id/skipBtn"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp" />
 
-    <!-- Dots -->
-    <LinearLayout
-        android:id="@+id/dotsLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+    <!-- ============================================================
+         BOTTOM CONTROLS BAR (DOTS + NEXT ACTION BUTTON)
+         ============================================================ -->
+    <RelativeLayout
+        android:id="@+id/bottomBar"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="120dp"
-        android:orientation="horizontal"/>
+        android:paddingStart="28dp"
+        android:paddingEnd="28dp"
+        android:paddingBottom="20dp">
 
-    <!-- NEXT button -->
-    <ImageView
-        android:id="@+id/nextBtn"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="20dp"
-        android:padding="20dp"
-        android:src="@drawable/next_arrow"
-        android:background="@drawable/circle_white"
-        android:layout_width="70dp"
-        android:layout_height="70dp"/>
+        <!-- Indicator Dots -->
+        <LinearLayout
+            android:id="@+id/dotsLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" />
 
-    <!-- Skip -->
-    <TextView
-        android:id="@+id/skipBtn"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="20dp"
-        android:text="Skip"
-        android:textColor="@color/black"
-        android:layout_marginRight="20dp"
-        android:textSize="25sp"
-        android:textStyle="bold"
-        android:paddingRight="20dp"
-        android:paddingTop="15dp"
-        android:layout_height="wrap_content"
-        android:layout_width="wrap_content"/>
+        <!-- Circular Action Button (Next / Done) -->
+        <ImageView
+            android:id="@+id/nextBtn"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_btn_primary"
+            android:clickable="true"
+            android:contentDescription="Next"
+            android:elevation="8dp"
+            android:focusable="true"
+            android:padding="16dp"
+            android:src="@drawable/next_arrow"
+            app:tint="#FFFFFF" />
+
+    </RelativeLayout>
 
 </RelativeLayout>
