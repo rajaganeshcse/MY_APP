@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -25,11 +25,11 @@ public class RewardFragment extends Fragment {
     private UserPref userPref;
     private ListenerRegistration configListener;
 
-    private LinearLayout upiOption;
-    private LinearLayout bankOption;
-    private LinearLayout googleOption;
-    private LinearLayout amazonOption;
-    private LinearLayout phonepeOption;
+    private View upiOption;
+    private View bankOption;
+    private View googleOption;
+    private View amazonOption;
+    private View phonepeOption;
 
     @Nullable
     @Override
@@ -48,7 +48,9 @@ public class RewardFragment extends Fragment {
         amazonOption = view.findViewById(R.id.amazonOption);
         phonepeOption = view.findViewById(R.id.phonepeOption);
 
-        userPref = new UserPref(requireContext());
+        if (getContext() != null) {
+            userPref = new UserPref(getContext());
+        }
 
         loadCoins();
         setupOptions(view);
@@ -60,8 +62,10 @@ public class RewardFragment extends Fragment {
 
     /* ================= LOAD COINS ================= */
     private void loadCoins() {
-        long coins = userPref.getCoins();
-        txtCoins.setText(String.valueOf(coins));
+        if (userPref != null && txtCoins != null) {
+            long coins = userPref.getCoins();
+            txtCoins.setText(String.valueOf(coins));
+        }
     }
 
     /* ================= DYNAMIC FIRESTORE REWARD CONFIG LISTENER ================= */
@@ -71,7 +75,7 @@ public class RewardFragment extends Fragment {
                     .collection("settings")
                     .document("reward_config")
                     .addSnapshotListener((snapshot, error) -> {
-                        if (error != null || snapshot == null || !snapshot.exists()) return;
+                        if (!isAdded() || error != null || snapshot == null || !snapshot.exists()) return;
 
                         Boolean upiEnabled = snapshot.getBoolean("upiEnabled");
                         Boolean bankEnabled = snapshot.getBoolean("bankEnabled");
@@ -125,12 +129,13 @@ public class RewardFragment extends Fragment {
     /* ================= HISTORY (ACTIVITY) ================= */
     private void setupHistory(View view) {
 
-        LinearLayout btnHistory = view.findViewById(R.id.btnHistory);
+        View btnHistory = view.findViewById(R.id.btnHistory);
 
         if (btnHistory != null) {
             btnHistory.setOnClickListener(v -> {
+                if (!isAdded() || getContext() == null) return;
                 Intent intent = new Intent(
-                        requireContext(),
+                        getContext(),
                         TransactionHistoryActivity.class
                 );
                 startActivity(intent);
@@ -142,7 +147,7 @@ public class RewardFragment extends Fragment {
     private void setupItem(View root, int id, int icon,
                            String title, String subtitle, String type) {
 
-        LinearLayout layout = root.findViewById(id);
+        View layout = root.findViewById(id);
         if (layout == null) return;
 
         ImageView img = layout.findViewById(R.id.icon);
@@ -158,8 +163,9 @@ public class RewardFragment extends Fragment {
 
     /* ================= OPEN REDEEM (FRAGMENT) ================= */
     private void openRedeem(String type) {
+        if (!isAdded() || getActivity() == null) return;
 
-        requireActivity()
+        getActivity()
                 .getSupportFragmentManager()
                 .beginTransaction()
                 .replace(
@@ -179,3 +185,4 @@ public class RewardFragment extends Fragment {
         }
     }
 }
+

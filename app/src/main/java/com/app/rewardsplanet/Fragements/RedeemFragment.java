@@ -74,7 +74,9 @@ public class RedeemFragment extends Fragment {
         txtCoins = view.findViewById(R.id.txtCoins);
         gridLayout = view.findViewById(R.id.gridLayout);
 
-        userPref = new UserPref(requireContext());
+        if (getContext() != null) {
+            userPref = new UserPref(getContext());
+        }
 
         if (getArguments() != null) {
             redeemType = getArguments().getString(TYPE, GOOGLE);
@@ -82,7 +84,14 @@ public class RedeemFragment extends Fragment {
 
         View btnBack = view.findViewById(R.id.btnBack);
         if (btnBack != null) {
-            btnBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+            btnBack.setOnClickListener(v -> {
+                if (!isAdded()) return;
+                if (getParentFragmentManager() != null && getParentFragmentManager().getBackStackEntryCount() > 0) {
+                    getParentFragmentManager().popBackStack();
+                } else if (getActivity() != null) {
+                    getActivity().onBackPressed();
+                }
+            });
         }
 
         setupHeader();
@@ -94,6 +103,7 @@ public class RedeemFragment extends Fragment {
     }
 
     private void setupHeader() {
+        if (txtTitle == null) return;
         switch (redeemType) {
             case GOOGLE: txtTitle.setText("Google Play Voucher"); break;
             case AMAZON: txtTitle.setText("Amazon Gift Voucher"); break;
@@ -104,8 +114,10 @@ public class RedeemFragment extends Fragment {
     }
 
     private void loadCoins() {
-        userCoins = userPref.getCoins();
-        txtCoins.setText(String.valueOf(userCoins));
+        if (userPref != null && txtCoins != null) {
+            userCoins = userPref.getCoins();
+            txtCoins.setText(String.valueOf(userCoins));
+        }
     }
 
     private void setupCards() {
@@ -166,7 +178,7 @@ public class RedeemFragment extends Fragment {
     }
 
     private void populateDefaultCards(int icon) {
-        if (gridLayout == null) return;
+        if (gridLayout == null || !isAdded()) return;
         gridLayout.removeAllViews();
 
         if (UPI.equals(redeemType)) {
@@ -188,6 +200,7 @@ public class RedeemFragment extends Fragment {
     }
 
     private void addCard(int icon, long cost, long amount) {
+        if (!isAdded() || getContext() == null || gridLayout == null) return;
 
         View card = LayoutInflater.from(getContext())
                 .inflate(R.layout.item_redeem_card, gridLayout, false);
@@ -197,10 +210,10 @@ public class RedeemFragment extends Fragment {
         TextView txtAmount = card.findViewById(R.id.txtAmount);
         TextView txtMethod = card.findViewById(R.id.methoddetail);
 
-        imgIcon.setImageResource(icon);
-        txtCoinCost.setText(String.valueOf(cost));
-        txtAmount.setText("₹" + amount);
-        txtMethod.setText(getMethodDetailText());
+        if (imgIcon != null) imgIcon.setImageResource(icon);
+        if (txtCoinCost != null) txtCoinCost.setText(String.valueOf(cost));
+        if (txtAmount != null) txtAmount.setText("₹" + amount);
+        if (txtMethod != null) txtMethod.setText(getMethodDetailText());
 
         card.setOnClickListener(v -> {
 
@@ -214,9 +227,11 @@ public class RedeemFragment extends Fragment {
                 pendingCoins = cost;
                 pendingAmount = amount;
 
-                bottomsheet_withdraw_details
-                        .newInstance(redeemType)
-                        .show(getParentFragmentManager(), "withdraw_sheet");
+                if (isAdded() && getParentFragmentManager() != null && !isStateSaved()) {
+                    bottomsheet_withdraw_details
+                            .newInstance(redeemType)
+                            .show(getParentFragmentManager(), "withdraw_sheet");
+                }
 
             } else {
                 showConfirmDialog(cost, amount);
@@ -227,12 +242,14 @@ public class RedeemFragment extends Fragment {
     }
 
     private void setupBottomSheetResult() {
+        if (!isAdded() || getParentFragmentManager() == null) return;
 
         getParentFragmentManager()
                 .setFragmentResultListener(
                         bottomsheet_withdraw_details.KEY_RESULT,
-                        this,
+                        getViewLifecycleOwner(),
                         (requestKey, bundle) -> {
+                            if (!isAdded()) return;
 
                             withdrawDetails = bundle.getString(
                                     bottomsheet_withdraw_details.KEY_RESULT, ""
@@ -243,8 +260,9 @@ public class RedeemFragment extends Fragment {
     }
 
     private void showConfirmDialog(long coins, long amount) {
+        if (!isAdded() || getContext() == null || getActivity() == null || getActivity().isFinishing()) return;
 
-        View view = LayoutInflater.from(requireContext())
+        View view = LayoutInflater.from(getContext())
                 .inflate(R.layout.layout_confirm_redeem, null, false);
 
         TextView txtAmount = view.findViewById(R.id.txtConfirmAmount);
@@ -253,41 +271,46 @@ public class RedeemFragment extends Fragment {
         TextView btnCancel = view.findViewById(R.id.btnCancel);
         TextView btnConfirm = view.findViewById(R.id.btnConfirm);
 
+        if (txtAmount != null) txtAmount.setText("Amount: ₹" + amount);
+        if (txtCoins != null) txtCoins.setText("Coins: " + coins);
 
-        txtAmount.setText("Amount: ₹" + amount);
-        txtCoins.setText("Coins: " + coins);
-
-        if (UPI.equals(redeemType)) {
-            txtDetails.setVisibility(View.VISIBLE);
-            txtDetails.setText("UPI ID:\n" + withdrawDetails);
-        } else if (BANK.equals(redeemType)) {
-            txtDetails.setVisibility(View.VISIBLE);
-            txtDetails.setText("Bank Details:\n" + withdrawDetails);
-        } else {
-            txtDetails.setVisibility(View.GONE);
+        if (txtDetails != null) {
+            if (UPI.equals(redeemType)) {
+                txtDetails.setVisibility(View.VISIBLE);
+                txtDetails.setText("UPI ID:\n" + withdrawDetails);
+            } else if (BANK.equals(redeemType)) {
+                txtDetails.setVisibility(View.VISIBLE);
+                txtDetails.setText("Bank Details:\n" + withdrawDetails);
+            } else {
+                txtDetails.setVisibility(View.GONE);
+            }
         }
 
-        AlertDialog dialog = new AlertDialog.Builder(requireContext())
+        AlertDialog dialog = new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setCancelable(false)
                 .create();
 
-        btnCancel.setOnClickListener(v -> dialog.dismiss());
+        if (btnCancel != null) btnCancel.setOnClickListener(v -> dialog.dismiss());
 
-        btnConfirm.setOnClickListener(v -> {
-            btnConfirm.setEnabled(false);
-            dialog.dismiss();
-            submitRedeem(coins, amount);
-        });
-        dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        dialog.show();
-
-
+        if (btnConfirm != null) {
+            btnConfirm.setOnClickListener(v -> {
+                btnConfirm.setEnabled(false);
+                dialog.dismiss();
+                submitRedeem(coins, amount);
+            });
+        }
+        if (dialog.getWindow() != null) {
+            dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
         dialog.setCanceledOnTouchOutside(false);
         dialog.setCancelable(false);
+
+        if (!getActivity().isFinishing() && !getActivity().isDestroyed()) {
+            dialog.show();
+        }
     }
 
-    /* ================= UPDATED TOKEN LOGIC ================= */
     private void submitRedeem(long coinsUsed, long amount) {
         showLoading();
 
@@ -305,10 +328,13 @@ public class RedeemFragment extends Fragment {
         isSubmitting = true;
         toast("Processing...");
 
-
         FirebaseAuth.getInstance().getCurrentUser()
                 .getIdToken(true)
                 .addOnCompleteListener(task -> {
+                    if (!isAdded()) {
+                        isSubmitting = false;
+                        return;
+                    }
 
                     if (!task.isSuccessful()) {
                         isSubmitting = false;
@@ -324,22 +350,29 @@ public class RedeemFragment extends Fragment {
                 });
     }
 
-    //
     private void showLoading() {
-        View view = LayoutInflater.from(requireContext()).inflate(R.layout.dialog_loading, null);
+        if (!isAdded() || getContext() == null || getActivity() == null || getActivity().isFinishing()) return;
 
-        loadingDialog = new AlertDialog.Builder(requireContext())
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.dialog_loading, null);
+
+        loadingDialog = new AlertDialog.Builder(getContext())
                 .setView(view)
                 .setCancelable(false)
                 .create();
 
-        loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
-        loadingDialog.show();
+        if (loadingDialog.getWindow() != null) {
+            loadingDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        }
+        if (!getActivity().isFinishing() && !getActivity().isDestroyed()) {
+            loadingDialog.show();
+        }
     }
 
     private void hideLoading() {
         if (loadingDialog != null && loadingDialog.isShowing()) {
-            loadingDialog.dismiss();
+            try {
+                loadingDialog.dismiss();
+            } catch (Exception ignored) {}
         }
     }
 
@@ -357,10 +390,9 @@ public class RedeemFragment extends Fragment {
 
             @Override
             public void onResponse(Call<RedeemResponse> call, Response<RedeemResponse> response) {
-
                 isSubmitting = false;
 
-                if (!isAdded()) return;
+                if (!isAdded() || getActivity() == null) return;
 
                 if (response.isSuccessful() && response.body() != null) {
 
@@ -368,12 +400,16 @@ public class RedeemFragment extends Fragment {
 
                     if (res.status) {
 
-                        userPref.setCoins(res.updatedCoins);
-                        txtCoins.setText(String.valueOf(res.updatedCoins));
+                        if (userPref != null) {
+                            userPref.setCoins(res.updatedCoins);
+                        }
+                        if (txtCoins != null) {
+                            txtCoins.setText(String.valueOf(res.updatedCoins));
+                        }
                         hideLoading();
                         toast("Success ✅");
 
-                        Intent i = new Intent(requireActivity(), activity_withdraw_success.class);
+                        Intent i = new Intent(getActivity(), activity_withdraw_success.class);
                         i.putExtra(activity_withdraw_success.EXTRA_TYPE, redeemType);
                         i.putExtra(activity_withdraw_success.EXTRA_AMOUNT, "₹" + amount);
                         i.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, res.requestId);
@@ -395,7 +431,9 @@ public class RedeemFragment extends Fragment {
             public void onFailure(Call<RedeemResponse> call, Throwable t) {
                 isSubmitting = false;
                 hideLoading();
-                toast("API Failed: " + t.getMessage());
+                if (isAdded()) {
+                    toast("API Failed: " + t.getMessage());
+                }
             }
         });
     }
@@ -409,6 +447,8 @@ public class RedeemFragment extends Fragment {
     }
 
     private void toast(String msg) {
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        if (getContext() != null) {
+            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        }
     }
-}
+}

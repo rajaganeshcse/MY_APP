@@ -102,8 +102,8 @@
                     </LinearLayout>
 
                     <ImageView
-                        android:layout_width="85dp"
-                        android:layout_height="85dp"
+                        android:layout_width="79dp"
+                        android:layout_height="77dp"
                         android:contentDescription="Coins Icon"
                         android:src="@drawable/ic_coin" />
 
