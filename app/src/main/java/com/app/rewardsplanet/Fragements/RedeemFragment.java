@@ -211,7 +211,7 @@ public class RedeemFragment extends Fragment {
         params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
         params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
 
-        int marginPx = (int) (6 * getContext().getResources().getDisplayMetrics().density);
+        int marginPx = (int) (5 * getContext().getResources().getDisplayMetrics().density);
         params.setMargins(marginPx, marginPx, marginPx, marginPx);
         card.setLayoutParams(params);
 
