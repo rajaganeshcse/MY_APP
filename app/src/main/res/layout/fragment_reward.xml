@@ -195,22 +195,42 @@
 
                 <include
                     android:id="@+id/upiOption"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
                     layout="@layout/item_reward_option" />
 
                 <include
                     android:id="@+id/bankOption"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
                     layout="@layout/item_reward_option" />
 
                 <include
                     android:id="@+id/googleOption"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
                     layout="@layout/item_reward_option" />
 
                 <include
                     android:id="@+id/amazonOption"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
                     layout="@layout/item_reward_option" />
 
                 <include
                     android:id="@+id/phonepeOption"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_rowWeight="1"
+                    android:layout_columnWeight="1"
                     layout="@layout/item_reward_option" />
 
             </GridLayout>

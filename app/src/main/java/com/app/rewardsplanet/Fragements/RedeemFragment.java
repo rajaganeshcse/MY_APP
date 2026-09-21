@@ -205,6 +205,16 @@ public class RedeemFragment extends Fragment {
         View card = LayoutInflater.from(getContext())
                 .inflate(R.layout.item_redeem_card, gridLayout, false);
 
+        GridLayout.LayoutParams params = new GridLayout.LayoutParams();
+        params.width = 0;
+        params.height = GridLayout.LayoutParams.WRAP_CONTENT;
+        params.columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+        params.rowSpec = GridLayout.spec(GridLayout.UNDEFINED, 1f);
+
+        int marginPx = (int) (6 * getContext().getResources().getDisplayMetrics().density);
+        params.setMargins(marginPx, marginPx, marginPx, marginPx);
+        card.setLayoutParams(params);
+
         ImageView imgIcon = card.findViewById(R.id.imgIcon);
         TextView txtCoinCost = card.findViewById(R.id.txtCoinCost);
         TextView txtAmount = card.findViewById(R.id.txtAmount);
