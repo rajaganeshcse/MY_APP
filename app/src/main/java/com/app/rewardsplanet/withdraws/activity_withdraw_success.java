@@ -19,6 +19,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.app.rewardsplanet.Fragements.RedeemFragment;
 import com.app.rewardsplanet.R;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -80,6 +82,17 @@ public class activity_withdraw_success extends AppCompatActivity {
 
         setMethodUI(type);
         observeRequestStatus(requestId);
+        loadBannerAd();
+    }
+
+    private void loadBannerAd() {
+        try {
+            AdView adView = findViewById(R.id.adViewSuccess);
+            if (adView != null) {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adView.loadAd(adRequest);
+            }
+        } catch (Exception ignored) {}
     }
 
     private void makeFullScreen() {

@@ -16,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.withdraws.TransactionHistoryActivity;
 import com.app.rewardsplanet.UserPref;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
 
@@ -56,8 +58,19 @@ public class RewardFragment extends Fragment {
         setupOptions(view);
         setupHistory(view);
         listenToRewardConfig();
+        loadBannerAd(view);
 
         return view;
+    }
+
+    private void loadBannerAd(View view) {
+        try {
+            AdView adView = view.findViewById(R.id.adViewReward);
+            if (adView != null) {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adView.loadAd(adRequest);
+            }
+        } catch (Exception ignored) {}
     }
 
     /* ================= LOAD COINS ================= */
