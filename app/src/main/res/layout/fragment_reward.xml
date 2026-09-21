@@ -49,65 +49,84 @@
                 android:textColor="#475569"
                 android:textSize="13sp" />
 
-            <!-- Coins Balance Card (Light Modern Container) -->
+            <!-- Coins Balance Card (Vibrant Indigo-Gold Container) -->
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
-                android:layout_height="125dp"
+                android:layout_height="130dp"
                 android:layout_marginTop="20dp"
-                app:cardBackgroundColor="#FFFFFF"
                 app:cardCornerRadius="24dp"
-                app:cardElevation="10dp">
+                app:cardElevation="8dp"
+                app:cardPreventCornerOverlap="false">
 
-                <LinearLayout
+                <RelativeLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal"
-                    android:paddingStart="20dp"
-                    android:paddingEnd="20dp">
+                    android:background="@drawable/bg_coins_balance_card"
+                    android:paddingStart="22dp"
+                    android:paddingTop="18dp"
+                    android:paddingEnd="22dp"
+                    android:paddingBottom="18dp">
+
+                    <!-- Decorative Light Accent Circle -->
+                    <View
+                        android:layout_width="140dp"
+                        android:layout_height="140dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerVertical="true"
+                        android:alpha="0.12"
+                        android:background="@drawable/bg_glow_circle"
+                        android:translationX="30dp" />
 
                     <LinearLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
 
-                        <TextView
-                            android:layout_width="wrap_content"
+                        <LinearLayout
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:letterSpacing="0.04"
-                            android:text="AVAILABLE COINS BALANCE"
-                            android:textColor="#64748B"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
+                            android:layout_weight="1"
+                            android:orientation="vertical">
 
-                        <TextView
-                            android:id="@+id/txtCoins"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="2dp"
-                            android:text="0"
-                            android:textColor="#D97706"
-                            android:textSize="36sp"
-                            android:textStyle="bold" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:letterSpacing="0.06"
+                                android:text="AVAILABLE COINS BALANCE"
+                                android:textColor="#E0E7FF"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Coins"
-                            android:textColor="#0F172A"
-                            android:textSize="14sp"
-                            android:textStyle="bold" />
+                            <TextView
+                                android:id="@+id/txtCoins"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="0"
+                                android:textColor="#FBBF24"
+                                android:textSize="36sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Coins"
+                                android:textColor="#FFFFFF"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <ImageView
+                            android:layout_width="76dp"
+                            android:layout_height="76dp"
+                            android:contentDescription="Coins Icon"
+                            android:src="@drawable/ic_coin" />
 
                     </LinearLayout>
 
-                    <ImageView
-                        android:layout_width="79dp"
-                        android:layout_height="77dp"
-                        android:contentDescription="Coins Icon"
-                        android:src="@drawable/ic_coin" />
-
-                </LinearLayout>
+                </RelativeLayout>
 
             </androidx.cardview.widget.CardView>
 
@@ -163,12 +182,15 @@
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <!-- 2-COLUMN GRID LAYOUT (2 CARDS PER ROW) -->
+            <!-- 2-COLUMN GRID LAYOUT (PERFECTLY ALIGNED WITH UNIFORM GAPS) -->
             <GridLayout
                 android:id="@+id/optionsGrid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginHorizontal="-6dp"
+                android:alignmentMode="alignMargins"
                 android:columnCount="2"
+                android:columnOrderPreserved="false"
                 android:useDefaultMargins="false">
 
                 <include

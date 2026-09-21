@@ -1,108 +1,136 @@
-<com.google.android.material.card.MaterialCardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="8dp"
-    app:cardBackgroundColor="@android:color/white">
+    android:layout_margin="16dp"
+    app:cardBackgroundColor="#FFFFFF"
+    app:cardCornerRadius="24dp"
+    app:cardElevation="12dp"
+    app:strokeWidth="0dp">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- 🔥 HEADER (Top, colored, no gap) -->
+        <!-- HEADER ROW (Indigo Gradient) -->
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#6A1BFF"
-            android:padding="16dp"
+            android:layout_height="64dp"
+            android:background="@drawable/bg_btn_primary_gradient"
+            android:gravity="center_vertical"
             android:orientation="horizontal"
-            android:gravity="center_vertical">
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
 
             <TextView
                 android:id="@+id/txtConfirmTitle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Confirm Redeem"
-                android:textSize="22sp"
-                android:textStyle="bold"
-                android:textColor="@color/white" />
+                android:letterSpacing="0.01"
+                android:text="Confirm Redemption 🎉"
+                android:textColor="#FFFFFF"
+                android:textSize="18sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 
-        <!-- 🔽 BODY -->
+        <!-- BODY CONTAINER -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:background="#F8FAFC"
             android:orientation="vertical"
-            android:background="#D8E1FF"
             android:padding="20dp">
 
-            <!-- AMOUNT -->
-            <TextView
-                android:id="@+id/txtConfirmAmount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Amount: ₹0"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#6A1BFF"
-                android:layout_marginBottom="6dp"/>
-
-            <!-- COINS -->
-            <TextView
-                android:id="@+id/txtConfirmCoins"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Coins: 0"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:layout_marginBottom="10dp"/>
-
-            <!-- DETAILS BOX -->
-            <TextView
-                android:id="@+id/txtConfirmDetails"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="Details here"
-                android:textSize="14sp"
-                android:textColor="@color/black"
-                android:background="@drawable/bg_light_border"
-                android:padding="12dp"
-                android:visibility="gone"
-                android:layout_marginBottom="16dp"/>
-
-            <!-- BUTTON ROW -->
+            <!-- SUMMARY CARD CONTAINER -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="end">
+                android:background="@drawable/bg_edit_text_light"
+                android:orientation="vertical"
+                android:padding="16dp">
 
+                <!-- AMOUNT -->
+                <TextView
+                    android:id="@+id/txtConfirmAmount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Amount: ₹0"
+                    android:textColor="#4F46E5"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <!-- COINS COST -->
+                <TextView
+                    android:id="@+id/txtConfirmCoins"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Coins: 0"
+                    android:textColor="#D97706"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <!-- DETAILS BOX (UPI ID / Bank details) -->
+                <TextView
+                    android:id="@+id/txtConfirmDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="#FFFFFF"
+                    android:padding="12dp"
+                    android:text="Details here"
+                    android:textColor="#0F172A"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
+
+            </LinearLayout>
+
+            <!-- ACTION BUTTON ROW -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:gravity="end"
+                android:orientation="horizontal">
+
+                <!-- CANCEL BUTTON -->
                 <TextView
                     android:id="@+id/btnCancel"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_height="44dp"
+                    android:layout_marginEnd="12dp"
+                    android:background="@drawable/bg_btn_cancel_light"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp"
                     android:text="CANCEL"
-                    android:textStyle="bold"
-                    android:textColor="@color/black"
-                    android:padding="10dp"
-                    android:layout_marginEnd="16dp"/>
+                    android:textColor="#64748B"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
 
+                <!-- CONFIRM BUTTON -->
                 <TextView
                     android:id="@+id/btnConfirm"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="CONFIRM"
-                    android:textStyle="bold"
-                    android:textColor="@color/white"
-                    android:background="@drawable/bg_btn_primary"
-                    android:padding="10dp"/>
+                    android:layout_height="44dp"
+                    android:background="@drawable/bg_btn_primary_gradient"
+                    android:clickable="true"
+                    android:elevation="4dp"
+                    android:focusable="true"
+                    android:gravity="center"
+                    android:paddingStart="22dp"
+                    android:paddingEnd="22dp"
+                    android:text="CONFIRM REDEEM"
+                    android:textColor="#FFFFFF"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+
             </LinearLayout>
 
         </LinearLayout>

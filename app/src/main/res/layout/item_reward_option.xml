@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_rowWeight="1"
     android:layout_columnWeight="1"
-    android:layout_margin="8dp"
+    android:layout_margin="6dp"
     app:cardBackgroundColor="#FFFFFF"
     app:cardCornerRadius="20dp"
     app:cardElevation="6dp"
@@ -14,6 +14,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:minHeight="172dp"
         android:gravity="center"
         android:orientation="vertical"
         android:padding="16dp">
@@ -36,9 +37,11 @@
             android:layout_marginTop="10dp"
             android:gravity="center"
             android:letterSpacing="0.01"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text="Title"
             android:textColor="#0F172A"
-            android:textSize="15sp"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <!-- Subtitle -->
@@ -48,6 +51,8 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:gravity="center"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:text="Subtitle"
             android:textColor="#64748B"
             android:textSize="11sp" />
@@ -58,9 +63,9 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:background="@drawable/bg_login_chip"
-            android:paddingStart="12dp"
+            android:paddingStart="14dp"
             android:paddingTop="5dp"
-            android:paddingEnd="12dp"
+            android:paddingEnd="14dp"
             android:paddingBottom="5dp"
             android:text="Redeem ➔"
             android:textColor="#4F46E5"

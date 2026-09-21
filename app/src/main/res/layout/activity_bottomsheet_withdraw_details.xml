@@ -2,86 +2,119 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:background="@drawable/bg_bottom_sheet_dialog"
     android:orientation="vertical"
-    android:background="@color/base_color"
-    android:padding="20dp">
+    android:paddingStart="24dp"
+    android:paddingTop="12dp"
+    android:paddingEnd="24dp"
+    android:paddingBottom="28dp">
 
-    <!-- TITLE -->
+    <!-- Top Drag Handle Pill -->
+    <View
+        android:layout_width="44dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/bg_btn_cancel_light" />
+
+    <!-- TITLE & SUBTITLE HEADER -->
     <TextView
         android:id="@+id/txtTitle"
-        android:text="Withdraw Details"
-        android:textSize="18sp"
-        android:textStyle="bold"
-
-        android:textColor="@color/black"
-        android:layout_marginBottom="12dp"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:letterSpacing="0.01"
+        android:text="Enter Payout Details"
+        android:textColor="#0F172A"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-    <!-- UPI ID -->
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:layout_marginBottom="16dp"
+        android:text="Provide accurate payout information to receive instant transfer"
+        android:textColor="#64748B"
+        android:textSize="12sp" />
+
+    <!-- UPI ID INPUT -->
     <EditText
         android:id="@+id/edtUpi"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Enter UPI ID"
-        android:visibility="gone"
-        android:textColorHint="@color/black"
-        android:textColor="@color/black"
+        android:layout_height="52dp"
+        android:background="@drawable/bg_edit_text_light"
+        android:hint="Enter UPI ID (e.g. 9876543210@upi)"
         android:inputType="textEmailAddress"
-        android:background="@drawable/bg_edit"
-        android:padding="12dp"/>
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#0F172A"
+        android:textColorHint="#94A3B8"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
-    <!-- BANK NAME -->
+    <!-- BANK NAME INPUT -->
     <EditText
         android:id="@+id/edtBankName"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Bank Name"
-        android:visibility="gone"
-        android:textColor="@color/black"
-        android:background="@drawable/bg_edit"
-        android:padding="12dp"
-        android:textColorHint="@color/black"
-        android:layout_marginTop="8dp"/>
+        android:layout_height="52dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_edit_text_light"
+        android:hint="Enter Bank Name (e.g. HDFC Bank)"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#0F172A"
+        android:textColorHint="#94A3B8"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
-    <!-- ACCOUNT NUMBER -->
+    <!-- ACCOUNT NUMBER INPUT -->
     <EditText
         android:id="@+id/edtAccount"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textColor="@color/black"
-        android:hint="Account Number"
-        android:visibility="gone"
+        android:layout_height="52dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_edit_text_light"
+        android:hint="Enter Account Number"
         android:inputType="number"
-        android:background="@drawable/bg_edit"
-        android:padding="12dp"
-        android:textColorHint="@color/black"
-        android:layout_marginTop="8dp"/>
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#0F172A"
+        android:textColorHint="#94A3B8"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
-    <!-- IFSC -->
+    <!-- IFSC CODE INPUT -->
     <EditText
         android:id="@+id/edtIfsc"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="IFSC Code"
-        android:visibility="gone"
-        android:textColor="@color/black"
-        android:textColorHint="@color/black"
+        android:layout_height="52dp"
+        android:layout_marginTop="10dp"
+        android:background="@drawable/bg_edit_text_light"
+        android:hint="Enter IFSC Code (e.g. HDFC0001234)"
         android:inputType="textCapCharacters"
-        android:background="@drawable/bg_edit"
-        android:padding="12dp"
-        android:layout_marginTop="8dp"/>
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:textColor="#0F172A"
+        android:textColorHint="#94A3B8"
+        android:textSize="14sp"
+        android:visibility="gone" />
 
-    <!-- SUBMIT -->
+    <!-- SUBMIT BUTTON -->
     <TextView
         android:id="@+id/btnSubmit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="SUBMIT"
-        android:textStyle="bold"
+        android:layout_height="52dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_btn_primary_gradient"
+        android:clickable="true"
+        android:elevation="4dp"
+        android:focusable="true"
         android:gravity="center"
-        android:padding="14dp"
-        android:layout_marginTop="16dp"
-        android:background="@drawable/bg_button_ripple"
-        android:textColor="@color/black"/>
+        android:letterSpacing="0.02"
+        android:text="PROCEED TO CONFIRM ➔"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold" />
+
 </LinearLayout>
