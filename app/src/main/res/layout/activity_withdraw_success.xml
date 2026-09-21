@@ -175,22 +175,43 @@
                             android:textColor="#64748B"
                             android:textSize="12sp" />
 
-                        <!-- VOUCHER CODE (COPYABLE BADGE) -->
-                        <TextView
-                            android:id="@+id/txtVoucherCode"
+                        <!-- VOUCHER CODE (COPYABLE BADGE WITH COPY ICON) -->
+                        <LinearLayout
+                            android:id="@+id/containerVoucherBadge"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp"
+                            android:layout_height="56dp"
                             android:layout_marginTop="14dp"
-                            android:background="@drawable/bg_edit_text_light"
+                            android:background="@drawable/bg_voucher_code"
                             android:clickable="true"
                             android:focusable="true"
-                            android:gravity="center"
-                            android:paddingHorizontal="16dp"
-                            android:text="CODE: XXXX-XXXX-XXXX 📋"
-                            android:textColor="#4F46E5"
-                            android:textSize="14sp"
-                            android:textStyle="bold"
-                            android:visibility="gone" />
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal"
+                            android:paddingStart="16dp"
+                            android:paddingEnd="16dp"
+                            android:visibility="gone">
+
+                            <TextView
+                                android:id="@+id/txtVoucherCode"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center_vertical"
+                                android:letterSpacing="0.02"
+                                android:text="CODE: XXXX-XXXX-XXXX"
+                                android:textColor="#4F46E5"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+
+                            <ImageView
+                                android:id="@+id/imgCopyIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginStart="8dp"
+                                android:contentDescription="Copy Voucher Code"
+                                android:src="@drawable/ic_copy"
+                                app:tint="#4F46E5" />
+
+                        </LinearLayout>
 
                         <!-- UPI / BANK DETAILS -->
                         <TextView

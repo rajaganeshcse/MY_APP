@@ -28,8 +28,8 @@ public class activity_withdraw_success extends AppCompatActivity {
     public static final String EXTRA_DATE = "created_at";
     public static final String EXTRA_REQUEST_ID = "request_id";
 
-    /* ================= UI ================= */
-    private ImageView btnBack, imgSuccess, imgMethod;
+    private View containerVoucherBadge;
+    private ImageView btnBack, imgSuccess, imgMethod, imgCopyIcon;
     private TextView txtTitle, txtMessage,txtDateTime;
     private TextView txtRewardType, txtAmount;
     private TextView txtVoucherCode, txtWithdrawDetails, btnDone;
@@ -53,7 +53,9 @@ public class activity_withdraw_success extends AppCompatActivity {
         btnBack = findViewById(R.id.btnBack);
         imgSuccess = findViewById(R.id.imgSuccess);
         imgMethod = findViewById(R.id.imgMethod);
+        imgCopyIcon = findViewById(R.id.imgCopyIcon);
 
+        containerVoucherBadge = findViewById(R.id.containerVoucherBadge);
         txtTitle = findViewById(R.id.txtTitle);
         txtMessage = findViewById(R.id.txtMessage);
         txtRewardType = findViewById(R.id.txtRewardType);
@@ -162,8 +164,11 @@ public class activity_withdraw_success extends AppCompatActivity {
                     if (e != null || doc == null || !doc.exists()) return;
 
                     /* 🔄 RESET UI EVERY TIME */
+                    if (containerVoucherBadge != null) containerVoucherBadge.setVisibility(View.GONE);
                     txtVoucherCode.setVisibility(View.GONE);
                     txtWithdrawDetails.setVisibility(View.GONE);
+                    if (containerVoucherBadge != null) containerVoucherBadge.setOnClickListener(null);
+                    if (imgCopyIcon != null) imgCopyIcon.setOnClickListener(null);
                     txtVoucherCode.setOnClickListener(null);
 
                     String status = doc.getString("status");
@@ -198,9 +203,10 @@ public class activity_withdraw_success extends AppCompatActivity {
                             txtMessage.setText("Your voucher code is ready below! Tap to copy.");
 
                             if (voucher != null && !voucher.trim().isEmpty()) {
+                                if (containerVoucherBadge != null) containerVoucherBadge.setVisibility(View.VISIBLE);
                                 txtVoucherCode.setVisibility(View.VISIBLE);
-                                txtVoucherCode.setText("CODE: " + voucher + "  📋");
-                                enableCopy(voucher);
+                                txtVoucherCode.setText("CODE: " + voucher.trim().toUpperCase());
+                                enableCopy(voucher.trim(), containerVoucherBadge, imgCopyIcon);
                             }
 
                         } else {
@@ -236,14 +242,14 @@ public class activity_withdraw_success extends AppCompatActivity {
 
     private void showWithdrawDetailsIfNeeded(String type, String details) {
 
-        if (!(RedeemFragment.UPI.equals(type) || RedeemFragment.BANK.equals(type)))
+        if (!(RedeemFragment.UPI.equalsIgnoreCase(type) || RedeemFragment.BANK.equalsIgnoreCase(type)))
             return;
 
         if (details == null || details.trim().isEmpty()) return;
 
         txtWithdrawDetails.setVisibility(View.VISIBLE);
         txtWithdrawDetails.setText(
-                RedeemFragment.UPI.equals(type)
+                RedeemFragment.UPI.equalsIgnoreCase(type)
                         ? "UPI ID:\n" + details
                         : "Bank Details:\n" + details
         );
@@ -258,15 +264,20 @@ public class activity_withdraw_success extends AppCompatActivity {
         });
     }
 
-    private void enableCopy(String code) {
-        txtVoucherCode.setOnClickListener(v -> {
+    private void enableCopy(String code, View... views) {
+        View.OnClickListener copyListener = v -> {
             ClipboardManager cm =
                     (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
             cm.setPrimaryClip(
                     ClipData.newPlainText("Voucher Code", code)
             );
-            Toast.makeText(this, "Voucher copied", Toast.LENGTH_SHORT).show();
-        });
+            Toast.makeText(this, "Voucher code copied! 📋", Toast.LENGTH_SHORT).show();
+        };
+
+        txtVoucherCode.setOnClickListener(copyListener);
+        for (View v : views) {
+            if (v != null) v.setOnClickListener(copyListener);
+        }
     }
     /* ================= CLEANUP ================= */
     @Override
