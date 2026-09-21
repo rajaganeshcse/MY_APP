@@ -126,11 +126,13 @@ public class activity_withdraw_success extends AppCompatActivity {
                 break;
 
             case RedeemFragment.AMAZON:
+            case "amazon_pay":
                 imgMethod.setImageResource(R.drawable.ic_amazon);
                 txtRewardType.setText("Reward: Amazon Gift Voucher");
                 break;
 
             case RedeemFragment.PHONEPE:
+            case "phone_pe":
                 imgMethod.setImageResource(R.drawable.ic_phonepe);
                 txtRewardType.setText("Reward: PhonePe Gift Voucher");
                 break;
@@ -168,7 +170,7 @@ public class activity_withdraw_success extends AppCompatActivity {
                     String voucher = doc.getString("voucher_code");
                     String liveWithdrawDetails = doc.getString("withdraw_details");
 
-                    if ("pending".equals(status)) {
+                    if ("pending".equalsIgnoreCase(status) || "pending_code".equalsIgnoreCase(status)) {
 
                         imgSuccess.setImageResource(R.drawable.ic_processing);
 
@@ -176,16 +178,16 @@ public class activity_withdraw_success extends AppCompatActivity {
                         txtTitle.setTextColor(Color.parseColor("#D97706"));
                         txtMessage.setText("Please wait while we process your request.");
 
-                        if (RedeemFragment.UPI.equals(type)) {
+                        if (RedeemFragment.UPI.equalsIgnoreCase(type)) {
                             txtMessage.setText("UPI amount will be credited within 24 hours.");
-                        } else if (RedeemFragment.BANK.equals(type)) {
+                        } else if (RedeemFragment.BANK.equalsIgnoreCase(type)) {
                             txtMessage.setText("Bank transfer will complete within 24–48 hours.");
                         }
 
                         showWithdrawDetailsIfNeeded(type, liveWithdrawDetails);
                     }
 
-                    else if ("success".equals(status)) {
+                    else if ("success".equalsIgnoreCase(status) || "approved".equalsIgnoreCase(status) || "completed".equalsIgnoreCase(status)) {
 
                         imgSuccess.setImageResource(R.drawable.ic_success);
                         txtTitle.setTextColor(Color.parseColor("#059669"));
@@ -209,7 +211,7 @@ public class activity_withdraw_success extends AppCompatActivity {
                         }
                     }
 
-                    else if ("failed".equals(status)) {
+                    else if ("failed".equalsIgnoreCase(status) || "rejected".equalsIgnoreCase(status)) {
 
                         imgSuccess.setImageResource(R.drawable.ic_failed);
                         txtTitle.setText("Failed ❌");
@@ -227,7 +229,9 @@ public class activity_withdraw_success extends AppCompatActivity {
                 || "google_play".equals(t)
                 || "googleplay".equals(t)
                 || RedeemFragment.AMAZON.equals(t)
-                || RedeemFragment.PHONEPE.equals(t);
+                || "amazon_pay".equals(t)
+                || RedeemFragment.PHONEPE.equals(t)
+                || "phone_pe".equals(t);
     }
 
     private void showWithdrawDetailsIfNeeded(String type, String details) {
