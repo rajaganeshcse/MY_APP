@@ -3,7 +3,9 @@ package com.app.rewardsplanet.withdraws;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
@@ -69,7 +71,7 @@ public class activity_withdraw_success extends AppCompatActivity {
         btnDone.setOnClickListener(v -> finish());
 
         /* GET DATA */
-        type = getIntent().getStringExtra(EXTRA_TYPE).toLowerCase();
+        type = getIntent().getStringExtra(EXTRA_TYPE) != null ? getIntent().getStringExtra(EXTRA_TYPE).toLowerCase() : "";
         String amount = getIntent().getStringExtra(EXTRA_AMOUNT);
         String requestId = getIntent().getStringExtra(EXTRA_REQUEST_ID);
         String date=getIntent().getStringExtra(EXTRA_DATE);
@@ -200,13 +202,36 @@ public class activity_withdraw_success extends AppCompatActivity {
                         if (isVoucherType(type)) {
 
                             txtTitle.setText("Redeem Successful 🎉");
-                            txtMessage.setText("Your voucher code is ready below! Tap to copy.");
+                            txtMessage.setText("Your voucher code is ready below! Tap to copy & redeem.");
 
                             if (voucher != null && !voucher.trim().isEmpty()) {
+                                String cleanCode = voucher.trim();
                                 if (containerVoucherBadge != null) containerVoucherBadge.setVisibility(View.VISIBLE);
                                 txtVoucherCode.setVisibility(View.VISIBLE);
-                                txtVoucherCode.setText("CODE: " + voucher.trim().toUpperCase());
-                                enableCopy(voucher.trim(), containerVoucherBadge, imgCopyIcon);
+                                txtVoucherCode.setText("CODE: " + cleanCode.toUpperCase());
+                                enableCopy(cleanCode, containerVoucherBadge, imgCopyIcon);
+
+                                if (isGooglePlayType(type)) {
+                                    btnDone.setText("REDEEM ON GOOGLE PLAY 🎮");
+                                    btnDone.setOnClickListener(v -> {
+                                        // Copy to clipboard
+                                        ClipboardManager cm = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                                        cm.setPrimaryClip(ClipData.newPlainText("Voucher Code", cleanCode));
+                                        Toast.makeText(activity_withdraw_success.this, "Code copied! Opening Play Store...", Toast.LENGTH_SHORT).show();
+
+                                        // Launch Play Store redeem URL with pre-filled code
+                                        try {
+                                            String redeemUrl = "https://play.google.com/redeem?code=" + Uri.encode(cleanCode);
+                                            Intent playIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(redeemUrl));
+                                            startActivity(playIntent);
+                                        } catch (Exception err) {
+                                            Toast.makeText(activity_withdraw_success.this, "Could not open Play Store: " + err.getMessage(), Toast.LENGTH_SHORT).show();
+                                        }
+                                    });
+                                } else {
+                                    btnDone.setText("DONE");
+                                    btnDone.setOnClickListener(v -> finish());
+                                }
                             }
 
                         } else {
@@ -214,6 +239,8 @@ public class activity_withdraw_success extends AppCompatActivity {
                             txtTitle.setText("Withdraw Successful 🎉");
                             txtMessage.setText("Amount credited successfully.");
                             showWithdrawDetailsIfNeeded(type, liveWithdrawDetails);
+                            btnDone.setText("DONE");
+                            btnDone.setOnClickListener(v -> finish());
                         }
                     }
 
@@ -223,11 +250,19 @@ public class activity_withdraw_success extends AppCompatActivity {
                         txtTitle.setText("Failed ❌");
                         txtTitle.setTextColor(Color.parseColor("#DC2626"));
                         txtMessage.setText("Coins will be refunded automatically.");
+                        btnDone.setText("DONE");
+                        btnDone.setOnClickListener(v -> finish());
                     }
                 });
     }
 
     /* ================= HELPERS ================= */
+    private boolean isGooglePlayType(String type) {
+        if (type == null) return false;
+        String t = type.toLowerCase().trim();
+        return RedeemFragment.GOOGLE.equals(t) || "google_play".equals(t) || "googleplay".equals(t);
+    }
+
     private boolean isVoucherType(String type) {
         if (type == null) return false;
         String t = type.toLowerCase().trim();
