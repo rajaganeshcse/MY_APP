@@ -1,165 +1,237 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="@color/base_color">
+    android:background="@drawable/bg_login_gradient"
+    android:orientation="vertical">
 
-    <!-- 🔹 TOP BAR -->
+    <!-- ============================================================
+         HEADER BAR
+         ============================================================ -->
     <LinearLayout
-        android:paddingTop="40sp"
         android:layout_width="match_parent"
-        android:layout_height="90dp"
-        android:paddingHorizontal="16dp">
+        android:layout_height="64dp"
+        android:layout_marginTop="20dp"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp">
 
+        <!-- BACK BUTTON -->
         <ImageView
             android:id="@+id/btnBack"
-            android:layout_width="50dp"
-            android:layout_height="48dp"
-            android:src="@drawable/back_arrow" />
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:background="@drawable/bg_back_light"
+            android:clickable="true"
+            android:contentDescription="Back"
+            android:elevation="4dp"
+            android:focusable="true"
+            android:padding="10dp"
+            android:src="@drawable/back_arrow"
+            app:tint="#0F172A" />
 
+        <!-- TITLE -->
         <TextView
             android:id="@+id/txtHeader"
-            android:layout_width="282dp"
-            android:layout_height="46dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_weight="1"
             android:gravity="center"
-            android:textStyle="bold"
+            android:letterSpacing="0.01"
             android:text="Transaction Status"
-            android:textColor="@color/black"
-            android:textSize="25sp"
-             />
+            android:textColor="#0F172A"
+            android:textSize="20sp"
+            android:textStyle="bold" />
 
+        <!-- BALANCE SPACER -->
         <View
-            android:layout_width="40dp"
-            android:layout_height="40dp" />
+            android:layout_width="42dp"
+            android:layout_height="42dp" />
+
     </LinearLayout>
 
-    <!-- 🔹 CONTENT -->
-    <LinearLayout
+    <!-- ============================================================
+         MAIN CONTENT SCROLL CONTAINER
+         ============================================================ -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/rounded_top_white"
-        android:orientation="vertical"
-        android:gravity="center_horizontal"
-        android:padding="20dp">
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
-        <ImageView
-            android:id="@+id/imgSuccess"
-            android:layout_width="180dp"
-            android:layout_height="180dp"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/ic_processing" />
-
-        <TextView
-            android:id="@+id/txtTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="47dp"
-            android:layout_marginTop="12dp"
-            android:text="Processing"
-            android:gravity="center_horizontal"
-            android:textColor="@color/color_green"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/txtMessage"
-            android:layout_width="wrap_content"
-            android:layout_height="32dp"
-            android:layout_marginBottom="10dp"
-            android:text="Please wait while we process your request"
-            android:textColor="@color/black"
-            android:gravity="center_horizontal"
-            android:textSize="20sp" />
-
-        <TextView
-            android:id="@+id/txtRewardType"
-            android:layout_width="wrap_content"
-            android:layout_height="34dp"
-            android:layout_marginBottom="8dp"
-            android:text="Reward"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-
-        <!-- METHOD + AMOUNT -->
         <LinearLayout
-            android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginBottom="12dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-            <ImageView
-                android:id="@+id/imgMethod"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="10dp"
-                android:src="@drawable/wallet_icon" />
+            <!-- MAIN STATUS CARD CONTAINER -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="8dp"
+                app:cardPreventCornerOverlap="false">
 
-            <TextView
-                android:id="@+id/txtAmount"
-                android:text="₹0"
-                android:textSize="25sp"
-                android:textStyle="bold"
-                android:textColor="#6A1BFF"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="24dp">
+
+                    <!-- STATUS BADGE ANIMATION / ICON -->
+                    <ImageView
+                        android:id="@+id/imgSuccess"
+                        android:layout_width="120dp"
+                        android:layout_height="120dp"
+                        android:layout_marginTop="8dp"
+                        android:contentDescription="Status Icon"
+                        android:src="@drawable/ic_processing" />
+
+                    <!-- STATUS TITLE -->
+                    <TextView
+                        android:id="@+id/txtTitle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:gravity="center"
+                        android:letterSpacing="0.01"
+                        android:text="Processing ⏳"
+                        android:textColor="#D97706"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+
+                    <!-- STATUS MESSAGE SUBTITLE -->
+                    <TextView
+                        android:id="@+id/txtMessage"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:gravity="center"
+                        android:text="Please wait while we process your request"
+                        android:textColor="#64748B"
+                        android:textSize="13sp" />
+
+                    <!-- RECEIPT / PAYOUT DETAILS CONTAINER -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="20dp"
+                        android:background="@drawable/bg_edit_text_light"
+                        android:gravity="center_horizontal"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <!-- PAYOUT METHOD BADGE & TITLE -->
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <ImageView
+                                android:id="@+id/imgMethod"
+                                android:layout_width="32dp"
+                                android:layout_height="32dp"
+                                android:layout_marginEnd="8dp"
+                                android:contentDescription="Method Icon"
+                                android:src="@drawable/wallet_icon" />
+
+                            <TextView
+                                android:id="@+id/txtRewardType"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Reward: Voucher"
+                                android:textColor="#0F172A"
+                                android:textSize="14sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
+
+                        <!-- AMOUNT -->
+                        <TextView
+                            android:id="@+id/txtAmount"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="₹0"
+                            android:textColor="#4F46E5"
+                            android:textSize="32sp"
+                            android:textStyle="bold" />
+
+                        <!-- DATE & TIME -->
+                        <TextView
+                            android:id="@+id/txtDateTime"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:gravity="center"
+                            android:text="01 May 2026, 10:09 AM"
+                            android:textColor="#64748B"
+                            android:textSize="12sp" />
+
+                        <!-- VOUCHER CODE (COPYABLE BADGE) -->
+                        <TextView
+                            android:id="@+id/txtVoucherCode"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="14dp"
+                            android:background="@drawable/bg_edit_text_light"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:gravity="center"
+                            android:paddingHorizontal="16dp"
+                            android:text="CODE: XXXX-XXXX-XXXX 📋"
+                            android:textColor="#4F46E5"
+                            android:textSize="14sp"
+                            android:textStyle="bold"
+                            android:visibility="gone" />
+
+                        <!-- UPI / BANK DETAILS -->
+                        <TextView
+                            android:id="@+id/txtdetail"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:background="#FFFFFF"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:padding="12dp"
+                            android:text="Details"
+                            android:textColor="#0F172A"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
+
+                    </LinearLayout>
+
+                    <!-- DONE BUTTON -->
+                    <TextView
+                        android:id="@+id/btnDone"
+                        android:layout_width="match_parent"
+                        android:layout_height="52dp"
+                        android:layout_marginTop="24dp"
+                        android:background="@drawable/bg_btn_primary_gradient"
+                        android:clickable="true"
+                        android:elevation="4dp"
+                        android:focusable="true"
+                        android:gravity="center"
+                        android:letterSpacing="0.02"
+                        android:text="DONE"
+                        android:textColor="#FFFFFF"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
+
         </LinearLayout>
-        <!-- DATE & TIME -->
-        <TextView
-            android:id="@+id/txtDateTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="01 May 2026, 10:09 AM"
-            android:textSize="14sp"
-            android:textColor="#777"
-            android:textStyle="bold"
-            android:layout_marginBottom="12dp"
-            android:gravity="center"/>
 
-        <!-- VOUCHER CODE -->
-        <TextView
-            android:id="@+id/txtVoucherCode"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:gravity="center"
-            android:paddingHorizontal="25dp"
-            android:background="@drawable/bg_voucher_code"
-            android:text="CODE: XXXX-XXXX-XXXX"
-            android:textColor="@color/black"
-            android:textStyle="bold"
-            android:layout_marginBottom="14dp"
-            android:visibility="gone" />
+    </ScrollView>
 
-        <!-- UPI / BANK DETAILS -->
-        <TextView
-            android:id="@+id/txtdetail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="12dp"
-            android:textColor="@color/black"
-            android:textSize="20sp"
-            android:background="@drawable/bg_light_border"
-            android:gravity="center"
-            android:layout_marginBottom="30dp"
-            android:visibility="gone" />
-
-        <!-- DONE -->
-        <TextView
-            android:id="@+id/btnDone"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/bg_btn_primary"
-            android:gravity="center"
-            android:padding="15dp"
-            android:layout_marginTop="20sp"
-            android:textSize="20sp"
-            android:text="DONE"
-            android:layout_marginBottom="20dp"
-            android:textStyle="bold"
-            android:textColor="@color/white" />
-
-    </LinearLayout>
 </LinearLayout>

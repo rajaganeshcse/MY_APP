@@ -1,5 +1,6 @@
 package com.app.rewardsplanet.withdraws;
 
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,38 +56,37 @@ public class WithdrawHistoryAdapter
 
         /* ================= TYPE ================= */
         String type = model.getType();
-        holder.txtType.setText(type.toUpperCase());
+        holder.txtType.setText(formatTypeTitle(type));
 
-        String  date = model.getFormattedDate();
-        holder.txtDate.setText(date);
-
+        String date = model.getFormattedDate();
+        holder.txtDate.setText(date != null && !date.isEmpty() ? date : "Recent Request");
 
         /* ================= AMOUNT ================= */
-        NumberFormat format =
-                NumberFormat.getInstance(new Locale("en", "IN"));
-        holder.txtAmount.setText("₹ " + format.format(model.getAmount()));
+        NumberFormat format = NumberFormat.getInstance(new Locale("en", "IN"));
+        holder.txtAmount.setText("₹" + format.format(model.getAmount()));
 
         /* ================= STATUS ================= */
-        String status = model.getStatus().toLowerCase();
-        holder.txtStatus.setText(capitalize(status));
+        String status = model.getStatus() != null ? model.getStatus().toLowerCase() : "pending";
 
         switch (status) {
             case "success":
-                holder.txtStatus.setBackgroundResource(
-                        R.drawable.bg_status_approved
-                );
+            case "approved":
+            case "completed":
+                holder.txtStatus.setText("SUCCESS");
+                holder.txtStatus.setTextColor(Color.parseColor("#03543F"));
+                holder.txtStatus.setBackgroundResource(R.drawable.bg_status_approved);
                 break;
 
             case "pending":
-                holder.txtStatus.setBackgroundResource(
-                        R.drawable.bg_status_rejected
-                );
+                holder.txtStatus.setText("PENDING");
+                holder.txtStatus.setTextColor(Color.parseColor("#92400E"));
+                holder.txtStatus.setBackgroundResource(R.drawable.bg_status_pending);
                 break;
 
             default:
-                holder.txtStatus.setBackgroundResource(
-                        R.drawable.bg_status_failed
-                );
+                holder.txtStatus.setText("REJECTED");
+                holder.txtStatus.setTextColor(Color.parseColor("#9B1C1C"));
+                holder.txtStatus.setBackgroundResource(R.drawable.bg_status_failed);
                 break;
         }
 
@@ -95,11 +95,6 @@ public class WithdrawHistoryAdapter
 
         /* ================= CLICK ================= */
         holder.itemView.setOnClickListener(v -> {
-
-            Log.d("CLICK", "Type: " + model.getType());
-            Log.d("CLICK", "Amount: " + model.getAmount());
-            Log.d("CLICK", "RequestId: " + model.getRequest_id());
-
             if (listener != null) {
                 listener.onItemClick(model);
             }
@@ -111,9 +106,20 @@ public class WithdrawHistoryAdapter
         return list != null ? list.size() : 0;
     }
 
+    private String formatTypeTitle(String type) {
+        if (type == null) return "Reward Payout";
+        switch (type.toLowerCase()) {
+            case "google": return "Google Play Voucher";
+            case "amazon": return "Amazon Gift Voucher";
+            case "phonepe": return "PhonePe Voucher";
+            case "upi": return "UPI Cash Transfer";
+            case "bank": return "Direct Bank Payout";
+            default: return capitalize(type) + " Payout";
+        }
+    }
+
     /* ================= ICON LOGIC ================= */
     private void setMethodIcon(ImageView img, String type) {
-
         if (type == null) {
             img.setImageResource(R.drawable.wallet_icon);
             return;
@@ -149,7 +155,7 @@ public class WithdrawHistoryAdapter
     static class ViewHolder extends RecyclerView.ViewHolder {
 
         ImageView imgMethod;
-        TextView txtType, txtAmount, txtStatus,txtDate;
+        TextView txtType, txtAmount, txtStatus, txtDate;
 
         ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -161,3 +167,4 @@ public class WithdrawHistoryAdapter
         }
     }
 }
+

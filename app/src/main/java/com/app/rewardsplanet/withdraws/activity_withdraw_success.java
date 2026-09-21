@@ -153,6 +153,7 @@ public class activity_withdraw_success extends AppCompatActivity {
         listener = db.collection("redeem_requests")
                 .document(requestId)
                 .addSnapshotListener((doc, e) -> {
+                    if (isFinishing() || isDestroyed()) return;
 
                     if (e != null || doc == null || !doc.exists()) return;
 
@@ -170,6 +171,7 @@ public class activity_withdraw_success extends AppCompatActivity {
                         imgSuccess.setImageResource(R.drawable.ic_processing);
 
                         txtTitle.setText("Processing ⏳");
+                        txtTitle.setTextColor(Color.parseColor("#D97706"));
                         txtMessage.setText("Please wait while we process your request.");
 
                         if (RedeemFragment.UPI.equals(type)) {
@@ -184,15 +186,16 @@ public class activity_withdraw_success extends AppCompatActivity {
                     else if ("success".equals(status)) {
 
                         imgSuccess.setImageResource(R.drawable.ic_success);
+                        txtTitle.setTextColor(Color.parseColor("#059669"));
 
                         if (isVoucherType(type)) {
 
                             txtTitle.setText("Redeem Successful 🎉");
-                            txtMessage.setText("Your voucher is ready!");
+                            txtMessage.setText("Your voucher code is ready below! Tap to copy.");
 
                             if (voucher != null && !voucher.trim().isEmpty()) {
                                 txtVoucherCode.setVisibility(View.VISIBLE);
-                                txtVoucherCode.setText("CODE: " + voucher);
+                                txtVoucherCode.setText("CODE: " + voucher + "  📋");
                                 enableCopy(voucher);
                             }
 
@@ -208,6 +211,7 @@ public class activity_withdraw_success extends AppCompatActivity {
 
                         imgSuccess.setImageResource(R.drawable.ic_failed);
                         txtTitle.setText("Failed ❌");
+                        txtTitle.setTextColor(Color.parseColor("#DC2626"));
                         txtMessage.setText("Coins will be refunded automatically.");
                     }
                 });

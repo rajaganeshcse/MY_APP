@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,6 +30,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     private static final String TAG = "HISTORY";
 
     private RecyclerView recyclerHistory;
+    private LinearLayout layoutEmptyState;
     private WithdrawHistoryAdapter adapter;
     private final List<WithdrawHistoryModel> list = new ArrayList<>();
 
@@ -47,9 +49,9 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         // Views
         btnBack = findViewById(R.id.btnBack);
         recyclerHistory = findViewById(R.id.recyclerHistory);
+        layoutEmptyState = findViewById(R.id.layoutEmptyState);
 
         recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
-
 
         // Adapter
         adapter = new WithdrawHistoryAdapter(list, model -> {
@@ -64,7 +66,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                     activity_withdraw_success.EXTRA_AMOUNT,
                     "₹ " + model.getAmount()
             );
-            intent.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID,model.getRequest_id());
+            intent.putExtra(activity_withdraw_success.EXTRA_REQUEST_ID, model.getRequest_id());
             startActivity(intent);
         });
 
@@ -74,17 +76,15 @@ public class TransactionHistoryActivity extends AppCompatActivity {
         db = FirebaseFirestore.getInstance();
         uid = FirebaseAuth.getInstance().getUid();
 
-        btnBack.setOnClickListener(v ->
-                getOnBackPressedDispatcher().onBackPressed()
-        );
+        btnBack.setOnClickListener(v -> finish());
         makeFullScreen();
         loadWithdrawHistory();
     }
 
     private void makeFullScreen() {
         Window window = getWindow();
+        if (window == null) return;
 
-        // 🔥 Make content go behind system bars
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false);
 
@@ -93,9 +93,6 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                 controller.setSystemBarsBehavior(
                         WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
                 );
-
-                // Optional: hide bars (remove if you only want transparent top)
-                // controller.hide(WindowInsets.Type.statusBars() | WindowInsets.Type.navigationBars());
             }
 
         } else {
@@ -105,10 +102,8 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             );
         }
 
-        // 🔥 Make status bar transparent (TOP FIX)
         window.setStatusBarColor(Color.TRANSPARENT);
 
-        // 🔥 Optional: make navigation bar transparent
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setNavigationBarColor(Color.TRANSPARENT);
         }
@@ -116,11 +111,11 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
     // ================= LOAD HISTORY =================
 
-
     private void loadWithdrawHistory() {
 
         if (uid == null) {
             Log.e(TAG, "UID is null");
+            if (layoutEmptyState != null) layoutEmptyState.setVisibility(View.VISIBLE);
             return;
         }
 
@@ -128,13 +123,18 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                 .whereEqualTo("uid", uid)
                 .orderBy("created_at", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
+                    if (isFinishing() || isDestroyed()) return;
 
                     if (error != null) {
                         Log.e(TAG, "Firestore error", error);
+                        if (layoutEmptyState != null) layoutEmptyState.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
                         return;
                     }
 
-                    if (value == null) return;
+                    if (value == null) {
+                        if (layoutEmptyState != null) layoutEmptyState.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+                        return;
+                    }
 
                     list.clear();
 
@@ -145,13 +145,14 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
                         if (model == null) continue;
 
-// 🔥 FORCE SET TIMESTAMP
                         model.setCreated_at(doc.getTimestamp("created_at"));
-
                         model.setRequest_id(doc.getId());
                         list.add(model);
                     }
 
+                    if (layoutEmptyState != null) {
+                        layoutEmptyState.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
+                    }
                     adapter.notifyDataSetChanged();
                 });
     }
@@ -163,4 +164,4 @@ public class TransactionHistoryActivity extends AppCompatActivity {
             historyListener.remove();
         }
     }
-}
+}
