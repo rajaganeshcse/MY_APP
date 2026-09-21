@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_dark_activity_gradient"
+    android:background="@drawable/bg_login_gradient"
     android:overScrollMode="never"
     android:padding="16dp"
     android:scrollbars="none">
@@ -24,13 +24,16 @@
             <!-- Back Button -->
             <ImageView
                 android:id="@+id/btnBack"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="@drawable/bg_back_dark"
+                android:layout_width="42dp"
+                android:layout_height="42dp"
+                android:background="@drawable/bg_back_light"
+                android:clickable="true"
                 android:contentDescription="Back"
+                android:elevation="4dp"
+                android:focusable="true"
                 android:padding="10dp"
                 android:src="@drawable/back_arrow"
-                app:tint="#FFFFFF" />
+                app:tint="#0F172A" />
 
             <!-- Title -->
             <TextView
@@ -41,7 +44,7 @@
                 android:layout_weight="1"
                 android:letterSpacing="0.01"
                 android:text="Redeem Options"
-                android:textColor="#FFFFFF"
+                android:textColor="#0F172A"
                 android:textSize="20sp"
                 android:textStyle="bold" />
 
@@ -50,7 +53,8 @@
                 android:id="@+id/coinLayout"
                 android:layout_width="wrap_content"
                 android:layout_height="38dp"
-                android:background="@drawable/bg_coin_chip_dark"
+                android:background="@drawable/bg_login_chip"
+                android:elevation="4dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal"
                 android:paddingStart="12dp"
@@ -68,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="6dp"
                     android:text="0"
-                    android:textColor="#FFD700"
+                    android:textColor="#D97706"
                     android:textSize="15sp"
                     android:textStyle="bold" />
 
@@ -76,14 +80,14 @@
 
         </LinearLayout>
 
-        <!-- Dynamic Grid of Cards -->
+        <!-- Dynamic Grid of Cards (2 Cards per Row) -->
         <GridLayout
             android:id="@+id/gridLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:columnCount="2"
-            android:useDefaultMargins="true" />
+            android:useDefaultMargins="false" />
 
     </LinearLayout>
 

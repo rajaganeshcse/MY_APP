@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg_dark_activity_gradient"
+    android:background="@drawable/bg_login_gradient"
     android:overScrollMode="never"
     android:scrollbars="none">
 
@@ -11,13 +11,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Ambient Glow Backdrop Circle -->
+        <!-- Background Ambient Glow -->
         <View
             android:layout_width="260dp"
             android:layout_height="260dp"
             android:layout_alignParentEnd="true"
             android:layout_alignParentTop="true"
-            android:alpha="0.15"
+            android:alpha="0.25"
             android:background="@drawable/bg_glow_circle"
             android:translationX="100dp"
             android:translationY="-60dp" />
@@ -31,13 +31,13 @@
             android:paddingEnd="20dp"
             android:paddingBottom="32dp">
 
-            <!-- Screen Header -->
+            <!-- Screen Header (Dark Navy Title & Subtitle) -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:letterSpacing="0.02"
                 android:text="Reward Store"
-                android:textColor="#FFFFFF"
+                android:textColor="#0F172A"
                 android:textSize="24sp"
                 android:textStyle="bold" />
 
@@ -46,128 +46,152 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:text="Redeem coins for real cash &amp; voucher codes"
-                android:textColor="#99FFFFFF"
+                android:textColor="#475569"
                 android:textSize="13sp" />
 
-            <!-- Coins Balance Card -->
-            <LinearLayout
+            <!-- Coins Balance Card (Light Modern Container) -->
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="125dp"
                 android:layout_marginTop="20dp"
-                android:background="@drawable/bg_balance_card_gradient"
-                android:elevation="12dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="20dp"
-                android:paddingEnd="20dp">
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="10dp">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="20dp"
+                    android:paddingEnd="20dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
+                    <LinearLayout
+                        android:layout_width="0dp"
                         android:layout_height="wrap_content"
-                        android:text="AVAILABLE BALANCE"
-                        android:textColor="#B3FFFFFF"
-                        android:textSize="11sp"
-                        android:textStyle="bold" />
+                        android:layout_weight="1"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/txtCoins"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="0"
-                        android:textColor="#FFD700"
-                        android:textSize="36sp"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.04"
+                            android:text="AVAILABLE COINS BALANCE"
+                            android:textColor="#64748B"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Coins"
-                        android:textColor="#FFFFFF"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
+                        <TextView
+                            android:id="@+id/txtCoins"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="0"
+                            android:textColor="#D97706"
+                            android:textSize="36sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Coins"
+                            android:textColor="#0F172A"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ImageView
+                        android:layout_width="85dp"
+                        android:layout_height="85dp"
+                        android:contentDescription="Coins Icon"
+                        android:src="@drawable/ic_coin" />
 
                 </LinearLayout>
 
-                <ImageView
-                    android:layout_width="90dp"
-                    android:layout_height="90dp"
-                    android:contentDescription="Coins Icon"
-                    android:src="@drawable/ic_coin" />
+            </androidx.cardview.widget.CardView>
 
-            </LinearLayout>
-
-            <!-- Rewards History Button -->
-            <LinearLayout
+            <!-- Rewards History Button Card -->
+            <androidx.cardview.widget.CardView
                 android:id="@+id/btnHistory"
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:layout_marginTop="16dp"
-                android:background="@drawable/bg_login_card_glass"
                 android:clickable="true"
-                android:elevation="6dp"
                 android:focusable="true"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:paddingStart="18dp"
-                android:paddingEnd="18dp">
+                app:cardBackgroundColor="#FFFFFF"
+                app:cardCornerRadius="18dp"
+                app:cardElevation="6dp">
 
-                <TextView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="📜 Rewards &amp; Withdrawal History"
-                    android:textColor="#FFFFFF"
-                    android:textSize="15sp"
-                    android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingStart="18dp"
+                    android:paddingEnd="18dp">
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:contentDescription="History Arrow"
-                    android:src="@drawable/ic_arrow_right"
-                    app:tint="#94A3B8" />
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="📜 Rewards &amp; Withdrawal History"
+                        android:textColor="#0F172A"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
 
-            </LinearLayout>
+                    <ImageView
+                        android:layout_width="20dp"
+                        android:layout_height="20dp"
+                        android:contentDescription="History Arrow"
+                        android:src="@drawable/ic_arrow_right"
+                        app:tint="#64748B" />
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <!-- Section Title -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="26dp"
-                android:layout_marginBottom="14dp"
+                android:layout_marginBottom="10dp"
                 android:letterSpacing="0.01"
                 android:text="Select Payout Method"
-                android:textColor="#FFFFFF"
+                android:textColor="#0F172A"
                 android:textSize="17sp"
                 android:textStyle="bold" />
 
-            <!-- Dynamic Options (Shown / Hidden by Firestore config) -->
-            <include
-                android:id="@+id/upiOption"
-                layout="@layout/item_reward_option" />
+            <!-- 2-COLUMN GRID LAYOUT (2 CARDS PER ROW) -->
+            <GridLayout
+                android:id="@+id/optionsGrid"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:columnCount="2"
+                android:useDefaultMargins="false">
 
-            <include
-                android:id="@+id/bankOption"
-                layout="@layout/item_reward_option" />
+                <include
+                    android:id="@+id/upiOption"
+                    layout="@layout/item_reward_option" />
 
-            <include
-                android:id="@+id/googleOption"
-                layout="@layout/item_reward_option" />
+                <include
+                    android:id="@+id/bankOption"
+                    layout="@layout/item_reward_option" />
 
-            <include
-                android:id="@+id/amazonOption"
-                layout="@layout/item_reward_option" />
+                <include
+                    android:id="@+id/googleOption"
+                    layout="@layout/item_reward_option" />
 
-            <include
-                android:id="@+id/phonepeOption"
-                layout="@layout/item_reward_option" />
+                <include
+                    android:id="@+id/amazonOption"
+                    layout="@layout/item_reward_option" />
+
+                <include
+                    android:id="@+id/phonepeOption"
+                    layout="@layout/item_reward_option" />
+
+            </GridLayout>
 
         </LinearLayout>
 

@@ -80,6 +80,11 @@ public class RedeemFragment extends Fragment {
             redeemType = getArguments().getString(TYPE, GOOGLE);
         }
 
+        View btnBack = view.findViewById(R.id.btnBack);
+        if (btnBack != null) {
+            btnBack.setOnClickListener(v -> getParentFragmentManager().popBackStack());
+        }
+
         setupHeader();
         loadCoins();
         setupCards();
