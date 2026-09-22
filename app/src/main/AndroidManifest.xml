@@ -128,6 +128,24 @@
             android:exported="false"
             android:theme="@style/Theme.RGamer"
             android:windowSoftInputMode="adjustResize" />
+
+        <!-- Share & Earn Module Activities -->
+        <activity
+            android:name=".share_earn.ui.ShareEarnActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".share_earn.ui.OfferDetailsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".share_earn.ui.OfferHistoryActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".share_earn.ui.ShareEarnEarningsActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>
