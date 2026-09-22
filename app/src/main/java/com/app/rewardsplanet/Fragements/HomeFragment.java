@@ -117,6 +117,7 @@ public class HomeFragment extends Fragment {
     private ObjectAnimator flameScaleYAnimator;
     private ImageView menuIcon;
     private ImageView notificationIcon;
+    private View menuShareEarn;
 
     private MaterialButton btnWatchNow;
     private MaterialButton btnRedeemBalance;
@@ -352,6 +353,10 @@ public class HomeFragment extends Fragment {
 
         menuIcon = view.findViewById(
                 R.id.menuIcon
+        );
+
+        menuShareEarn = view.findViewById(
+                R.id.menuShareEarn
         );
 
 
@@ -667,18 +672,28 @@ public class HomeFragment extends Fragment {
 
 
         // =====================================================
-        // TASKS
+        // TASKS / SHARE & EARN
         // =====================================================
 
         if (card_tasks != null) {
-
             card_tasks.setOnClickListener(v -> {
+                startActivity(
+                        new Intent(
+                                requireContext(),
+                                com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class
+                        )
+                );
+            });
+        }
 
-                Toast.makeText(
-                        getContext(),
-                        "Coming Soon",
-                        Toast.LENGTH_SHORT
-                ).show();
+        if (menuShareEarn != null) {
+            menuShareEarn.setOnClickListener(v -> {
+                startActivity(
+                        new Intent(
+                                requireContext(),
+                                com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class
+                        )
+                );
             });
         }
 

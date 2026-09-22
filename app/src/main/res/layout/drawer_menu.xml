@@ -318,6 +318,44 @@
 
             </LinearLayout>
 
+            <!-- SHARE AND EARN -->
+            <LinearLayout
+                android:id="@+id/menuShareEarn"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginVertical="2dp"
+                android:background="@drawable/bg_drawer_item_selector"
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:clickable="true"
+                android:focusable="true">
+
+                <ImageView
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:background="@drawable/bg_icon_circle_violet"
+                    android:padding="7dp"
+                    app:tint="#8B5CF6"
+                    android:src="@drawable/ic_share"
+                    android:contentDescription="Share and Earn" />
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_marginStart="14dp"
+                    android:text="Share &amp; Earn 🚀"
+                    android:textColor="#1E293B"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-medium"
+                    android:letterSpacing="0.01" />
+
+            </LinearLayout>
+
 
             <!-- DIVIDER -->
             <View
