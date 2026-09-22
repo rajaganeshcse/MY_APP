@@ -142,29 +142,21 @@ public class OfferDetailsActivity extends AppCompatActivity {
         if (steps != null && !steps.isEmpty()) {
             int num = 1;
             for (String step : steps) {
-                TextView tv = new TextView(this);
-                tv.setText(num + ". " + step);
-                tv.setTextSize(14);
-                tv.setTextColor(Color.parseColor("#475569"));
-                tv.setPadding(0, 6, 0, 6);
-                containerHowItWorks.addView(tv);
+                containerHowItWorks.addView(createStepView(num, step));
                 num++;
             }
         } else {
             String[] defaultSteps = {
-                    "1. Click on Visit & Share to open or share offer",
-                    "2. Complete registration / required action",
-                    "3. Submit proof via Claim Reward button",
-                    "4. Admin verifies and approves your claim",
-                    "5. Coins are credited to your wallet!"
+                    "Click on 'Visit & Earn' to open the offer",
+                    "Complete registration or required actions",
+                    "Submit verification proof via Claim Reward button",
+                    "Admin verifies and approves your claim",
+                    "Coins are credited directly to your wallet!"
             };
+            int num = 1;
             for (String s : defaultSteps) {
-                TextView tv = new TextView(this);
-                tv.setText(s);
-                tv.setTextSize(14);
-                tv.setTextColor(Color.parseColor("#475569"));
-                tv.setPadding(0, 6, 0, 6);
-                containerHowItWorks.addView(tv);
+                containerHowItWorks.addView(createStepView(num, s));
+                num++;
             }
         }
 
@@ -173,28 +165,86 @@ public class OfferDetailsActivity extends AppCompatActivity {
         List<String> terms = offer.getTermsAndConditions();
         if (terms != null && !terms.isEmpty()) {
             for (String term : terms) {
-                TextView tv = new TextView(this);
-                tv.setText("• " + term);
-                tv.setTextSize(13);
-                tv.setTextColor(Color.parseColor("#64748B"));
-                tv.setPadding(0, 4, 0, 4);
-                containerTerms.addView(tv);
+                containerTerms.addView(createTermView(term));
             }
         } else {
             String[] defaultTerms = {
-                    "• Valid once per user account",
-                    "• Complete required action within 7 days",
-                    "• Duplicate or fraudulent claims will be rejected"
+                    "Valid once per user and device",
+                    "Complete required action within 7 days of clicking link",
+                    "Duplicate or fraudulent claims will be rejected automatically"
             };
             for (String t : defaultTerms) {
-                TextView tv = new TextView(this);
-                tv.setText(t);
-                tv.setTextSize(13);
-                tv.setTextColor(Color.parseColor("#64748B"));
-                tv.setPadding(0, 4, 0, 4);
-                containerTerms.addView(tv);
+                containerTerms.addView(createTermView(t));
             }
         }
+    }
+
+    private View createStepView(int stepNumber, String text) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(android.view.Gravity.TOP);
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        rowParams.setMargins(0, 0, 0, (int) (12 * getResources().getDisplayMetrics().density));
+        row.setLayoutParams(rowParams);
+
+        TextView badge = new TextView(this);
+        int badgeSize = (int) (24 * getResources().getDisplayMetrics().density);
+        LinearLayout.LayoutParams badgeParams = new LinearLayout.LayoutParams(badgeSize, badgeSize);
+        badgeParams.setMargins(0, (int) (2 * getResources().getDisplayMetrics().density), 0, 0);
+        badge.setLayoutParams(badgeParams);
+        badge.setBackgroundResource(R.drawable.bg_step_circle);
+        badge.setText(String.valueOf(stepNumber));
+        badge.setTextSize(12);
+        badge.setTextColor(Color.parseColor("#4F46E5"));
+        badge.setTypeface(null, android.graphics.Typeface.BOLD);
+        badge.setGravity(android.view.Gravity.CENTER);
+        row.addView(badge);
+
+        TextView tv = new TextView(this);
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+        textParams.setMargins((int) (10 * getResources().getDisplayMetrics().density), 0, 0, 0);
+        tv.setLayoutParams(textParams);
+        String cleanText = text.replaceFirst("^[0-9]+[.)]\\s*", "");
+        tv.setText(cleanText);
+        tv.setTextSize(14);
+        tv.setTextColor(Color.parseColor("#1E293B"));
+        tv.setLineSpacing(4, 1.2f);
+        row.addView(tv);
+
+        return row;
+    }
+
+    private View createTermView(String text) {
+        LinearLayout row = new LinearLayout(this);
+        row.setOrientation(LinearLayout.HORIZONTAL);
+        row.setGravity(android.view.Gravity.TOP);
+        LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        rowParams.setMargins(0, 0, 0, (int) (8 * getResources().getDisplayMetrics().density));
+        row.setLayoutParams(rowParams);
+
+        TextView bullet = new TextView(this);
+        bullet.setText("•");
+        bullet.setTextSize(15);
+        bullet.setTextColor(Color.parseColor("#6366F1"));
+        bullet.setTypeface(null, android.graphics.Typeface.BOLD);
+        row.addView(bullet);
+
+        TextView tv = new TextView(this);
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1.0f);
+        textParams.setMargins((int) (8 * getResources().getDisplayMetrics().density), 0, 0, 0);
+        tv.setLayoutParams(textParams);
+        String cleanText = text.replaceFirst("^[•\\-*]\\s*", "");
+        tv.setText(cleanText);
+        tv.setTextSize(13);
+        tv.setTextColor(Color.parseColor("#475569"));
+        tv.setLineSpacing(3, 1.2f);
+        row.addView(tv);
+
+        return row;
     }
 
     private void generateClickAndOpen() {
