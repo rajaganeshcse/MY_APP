@@ -52,6 +52,7 @@ import com.app.rewardsplanet.notifications.MyFirebaseMessagingService;
 
 import java.util.HashMap;
 import java.util.Map;
+import com.app.rewardsplanet.share_earn.ui.InstallAttributionHelper;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -158,6 +159,21 @@ public class MainActivity extends AppCompatActivity {
 
         userPref = new UserPref(this);
 
+        // Install attribution — first launch detection (idempotent)
+        android.net.Uri launchUri = getIntent() != null ? getIntent().getData() : null;
+        String attrClickId = null;
+        if (launchUri != null) {
+            attrClickId = launchUri.getQueryParameter("click_id");
+            if (attrClickId == null || attrClickId.isEmpty()) {
+                String uriPath = launchUri.getPath();
+                if (uriPath != null && (uriPath.startsWith("/r/") || uriPath.startsWith("/track/"))) {
+                    String[] parts = uriPath.split("/");
+                    if (parts.length >= 3) attrClickId = parts[parts.length - 1];
+                }
+            }
+        }
+        InstallAttributionHelper.recordInstallIfFirstLaunch(this, attrClickId);
+
         initViews();
 
         initDrawer();
@@ -227,7 +243,10 @@ public class MainActivity extends AppCompatActivity {
                                 .collection("users")
                                 .document(uid)
                                 .set(tokenData, com.google.firebase.firestore.SetOptions.merge())
-                                .addOnSuccessListener(aVoid -> Log.d("RewardsFCM", "FCM token saved successfully to Firestore"))
+                                .addOnSuccessListener(aVoid -> {
+                                    Log.d("RewardsFCM", "FCM token saved successfully to Firestore");
+                                    InstallAttributionHelper.recordRegistrationIfNeeded(MainActivity.this);
+                                })
                                 .addOnFailureListener(e -> Log.e("RewardsFCM", "Failed to update FCM token in Firestore", e));
                     } else {
                         Log.w("RewardsFCM", "FirebaseAuth user unavailable when saving FCM token");
