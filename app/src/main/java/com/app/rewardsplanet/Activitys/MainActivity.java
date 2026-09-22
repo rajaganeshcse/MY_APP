@@ -27,7 +27,6 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-import com.app.rewardsplanet.Fragements.GameFragment;
 import com.app.rewardsplanet.Fragements.HomeFragment;
 import com.app.rewardsplanet.Fragements.RewardFragment;
 import com.app.rewardsplanet.LeaderboardFragment;
@@ -38,15 +37,18 @@ import com.app.rewardsplanet.invite.activity_refer_earn;
 import com.app.rewardsplanet.withdraws.TransactionHistoryActivity;
 
 import com.bumptech.glide.Glide;
-
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-
+import com.google.android.material.imageview.ShapeableImageView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.ListenerRegistration;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.Calendar;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.messaging.FirebaseMessaging;
 import com.app.rewardsplanet.notifications.MyFirebaseMessagingService;
 
@@ -62,19 +64,19 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================
 
     public LinearLayout navHome;
-    private LinearLayout navGame;
+    private LinearLayout navShareEarn;
     public LinearLayout navReward;
     private LinearLayout navLeaderboard;
 
     private LinearLayout bottomNav;
 
     private LinearLayout navPillHome;
-    private LinearLayout navPillGame;
+    private LinearLayout navPillShareEarn;
     private LinearLayout navPillReward;
     private LinearLayout navPillLeaderboard;
 
     private TextView txtNavHome;
-    private TextView txtNavGame;
+    private TextView txtNavShareEarn;
     private TextView txtNavReward;
     private TextView txtNavLeaderboard;
 
@@ -86,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     // =========================================================
 
     private ImageView imgNavHome;
-    private ImageView imgNavGame;
+    private ImageView imgNavShareEarn;
     private ImageView imgNavReward;
     private ImageView imgNavLeaderboard;
 
@@ -312,8 +314,8 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, com.app.rewardsplanet.lucky_draw.ScratchActivity.class));
                 break;
             case "GAMES":
-                selectNav(navGame);
-                loadFragment(new GameFragment());
+            case "SHARE_EARN":
+                startActivity(new Intent(this, com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class));
                 break;
             case "REDEEM":
                 selectNav(navReward);
@@ -328,9 +330,6 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case "PROFILE":
                 startActivity(new Intent(this, ProfileActivity.class));
-                break;
-            case "SHARE_EARN":
-                startActivity(new Intent(this, com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class));
                 break;
             case "OFFER_HISTORY":
             case "SHARE_EARN_HISTORY":
@@ -398,22 +397,22 @@ public class MainActivity extends AppCompatActivity {
         bottomNav = findViewById(R.id.bottomNav);
 
         navHome = findViewById(R.id.navHome);
-        navGame = findViewById(R.id.navGame);
+        navShareEarn = findViewById(R.id.navShareEarn);
         navReward = findViewById(R.id.navReward);
         navLeaderboard = findViewById(R.id.navLeaderboard);
 
         navPillHome = findViewById(R.id.navPillHome);
-        navPillGame = findViewById(R.id.navPillGame);
+        navPillShareEarn = findViewById(R.id.navPillShareEarn);
         navPillReward = findViewById(R.id.navPillReward);
         navPillLeaderboard = findViewById(R.id.navPillLeaderboard);
 
         imgNavHome = findViewById(R.id.imgNavHome);
-        imgNavGame = findViewById(R.id.imgNavGame);
+        imgNavShareEarn = findViewById(R.id.imgNavShareEarn);
         imgNavReward = findViewById(R.id.imgNavReward);
         imgNavLeaderboard = findViewById(R.id.imgNavLeaderboard);
 
         txtNavHome = findViewById(R.id.txtNavHome);
-        txtNavGame = findViewById(R.id.txtNavGame);
+        txtNavShareEarn = findViewById(R.id.txtNavShareEarn);
         txtNavReward = findViewById(R.id.txtNavReward);
         txtNavLeaderboard = findViewById(R.id.txtNavLeaderboard);
     }
@@ -1001,11 +1000,10 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        if (navGame != null) {
-            navGame.setOnClickListener(v -> {
+        if (navShareEarn != null) {
+            navShareEarn.setOnClickListener(v -> {
                 closeDrawer();
-                selectNavTab(1);
-                loadFragment(new GameFragment());
+                startActivity(new Intent(MainActivity.this, com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class));
             });
         }
 
@@ -1034,8 +1032,8 @@ public class MainActivity extends AppCompatActivity {
     public void selectNav(View selected) {
         if (selected == navHome) {
             selectNavTab(0);
-        } else if (selected == navGame) {
-            selectNavTab(1);
+        } else if (selected == navShareEarn) {
+            startActivity(new Intent(this, com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class));
         } else if (selected == navReward) {
             selectNavTab(2);
         } else if (selected == navLeaderboard) {
@@ -1057,13 +1055,13 @@ public class MainActivity extends AppCompatActivity {
 
         activeNavPosition = position;
 
-        LinearLayout[] navContainers = {navHome, navGame, navReward, navLeaderboard};
-        LinearLayout[] pills = {navPillHome, navPillGame, navPillReward, navPillLeaderboard};
-        ImageView[] icons = {imgNavHome, imgNavGame, imgNavReward, imgNavLeaderboard};
-        TextView[] texts = {txtNavHome, txtNavGame, txtNavReward, txtNavLeaderboard};
+        LinearLayout[] navContainers = {navHome, navShareEarn, navReward, navLeaderboard};
+        LinearLayout[] pills = {navPillHome, navPillShareEarn, navPillReward, navPillLeaderboard};
+        ImageView[] icons = {imgNavHome, imgNavShareEarn, imgNavReward, imgNavLeaderboard};
+        TextView[] texts = {txtNavHome, txtNavShareEarn, txtNavReward, txtNavLeaderboard};
         int[] bgGradients = {
                 R.drawable.bg_nav_pill_home,
-                R.drawable.bg_nav_pill_game,
+                R.drawable.bg_nav_pill_share_earn,
                 R.drawable.bg_nav_pill_reward,
                 R.drawable.bg_nav_pill_leaderboard
         };

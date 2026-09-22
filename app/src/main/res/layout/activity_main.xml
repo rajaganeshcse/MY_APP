@@ -88,9 +88,9 @@
 
                 </LinearLayout>
 
-                <!-- 2. GAMES -->
+                <!-- 2. SHARE & EARN -->
                 <LinearLayout
-                    android:id="@+id/navGame"
+                    android:id="@+id/navShareEarn"
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="0.85"
@@ -99,7 +99,7 @@
                     android:focusable="true">
 
                     <LinearLayout
-                        android:id="@+id/navPillGame"
+                        android:id="@+id/navPillShareEarn"
                         android:layout_width="wrap_content"
                         android:layout_height="40dp"
                         android:orientation="horizontal"
@@ -108,19 +108,19 @@
                         android:paddingEnd="14dp">
 
                         <ImageView
-                            android:id="@+id/imgNavGame"
+                            android:id="@+id/imgNavShareEarn"
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:scaleType="fitCenter"
-                            android:src="@drawable/ic_nav_game"
-                            android:contentDescription="Games" />
+                            android:src="@drawable/ic_nav_share_earn"
+                            android:contentDescription="Share &amp; Earn" />
 
                         <TextView
-                            android:id="@+id/txtNavGame"
+                            android:id="@+id/txtNavShareEarn"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="5dp"
-                            android:text="Games"
+                            android:text="Share &amp; Earn"
                             android:textColor="#FFFFFF"
                             android:textSize="12.5sp"
                             android:textStyle="bold"

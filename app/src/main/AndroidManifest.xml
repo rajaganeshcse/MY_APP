@@ -46,9 +46,6 @@
             </intent-filter>
         </service> <!-- Activities -->
         <activity
-            android:name=".Game.JoinedPlayersActivity"
-            android:exported="false" />
-        <activity
             android:name=".lucky_draw.activity_daily_spin"
             android:exported="false" />
         <activity
@@ -56,9 +53,6 @@
             android:exported="false" />
         <activity
             android:name=".lucky_draw.activity_lucky_draw_winner"
-            android:exported="false" />
-        <activity
-            android:name=".Game.activity_winners"
             android:exported="false" />
         <activity
             android:name=".withdraws.activity_withdraw_success"
@@ -71,9 +65,6 @@
             android:exported="false" />
         <activity
             android:name=".lucky_draw.activity_lucky_draw"
-            android:exported="false" />
-        <activity
-            android:name=".Game.TournamentActivity"
             android:exported="false" />
         <activity
             android:name=".Activitys.activity_login"
