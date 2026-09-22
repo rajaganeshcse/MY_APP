@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment;
 
 import com.app.rewardsplanet.Fragements.HomeFragment;
 import com.app.rewardsplanet.Fragements.RewardFragment;
+import com.app.rewardsplanet.Fragements.ShareEarnFragment;
 import com.app.rewardsplanet.LeaderboardFragment;
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.UserPref;
@@ -315,7 +316,8 @@ public class MainActivity extends AppCompatActivity {
                 break;
             case "GAMES":
             case "SHARE_EARN":
-                startActivity(new Intent(this, com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class));
+                selectNavTab(1);
+                loadFragment(new ShareEarnFragment());
                 break;
             case "REDEEM":
                 selectNav(navReward);
@@ -1003,7 +1005,8 @@ public class MainActivity extends AppCompatActivity {
         if (navShareEarn != null) {
             navShareEarn.setOnClickListener(v -> {
                 closeDrawer();
-                startActivity(new Intent(MainActivity.this, com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class));
+                selectNavTab(1);
+                loadFragment(new ShareEarnFragment());
             });
         }
 
@@ -1033,7 +1036,8 @@ public class MainActivity extends AppCompatActivity {
         if (selected == navHome) {
             selectNavTab(0);
         } else if (selected == navShareEarn) {
-            startActivity(new Intent(this, com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class));
+            selectNavTab(1);
+            loadFragment(new ShareEarnFragment());
         } else if (selected == navReward) {
             selectNavTab(2);
         } else if (selected == navLeaderboard) {
