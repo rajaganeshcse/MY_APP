@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -58,17 +60,25 @@ public class ShareEarnActivity extends AppCompatActivity {
 
     private final String[] categories = {"All", "Demat Account", "Credit Card", "UPI", "Shopping", "Apps", "Games"};
 
+    private Handler searchHandler = new Handler(Looper.getMainLooper());
+    private Runnable searchRunnable;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        makeFullScreen();
         setContentView(R.layout.activity_share_earn);
+        makeFullScreen();
 
         apiService = ApiClient.getClient().create(ShareEarnApiService.class);
 
-        findViewById(R.id.btnBack).setOnClickListener(v -> finish());
-        findViewById(R.id.btnHistory).setOnClickListener(v -> startActivity(new Intent(this, OfferHistoryActivity.class)));
-        findViewById(R.id.btnEarnings).setOnClickListener(v -> startActivity(new Intent(this, ShareEarnEarningsActivity.class)));
+        View btnBack = findViewById(R.id.btnBack);
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
+
+        View btnHistory = findViewById(R.id.btnHistory);
+        if (btnHistory != null) btnHistory.setOnClickListener(v -> startActivity(new Intent(this, OfferHistoryActivity.class)));
+
+        View btnEarnings = findViewById(R.id.btnEarnings);
+        if (btnEarnings != null) btnEarnings.setOnClickListener(v -> startActivity(new Intent(this, ShareEarnEarningsActivity.class)));
 
         swipeRefresh = findViewById(R.id.swipeRefresh);
         rvOffers = findViewById(R.id.rvOffers);
@@ -80,35 +90,49 @@ public class ShareEarnActivity extends AppCompatActivity {
         edtSearch = findViewById(R.id.edtSearch);
         Button btnRetry = findViewById(R.id.btnRetry);
 
-        rvOffers.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ShareEarnOfferAdapter(this, offerList, new ShareEarnOfferAdapter.OnOfferClickListener() {
-            @Override
-            public void onOfferClick(ShareEarnOffer offer) {
-                Intent intent = new Intent(ShareEarnActivity.this, OfferDetailsActivity.class);
-                intent.putExtra(OfferDetailsActivity.EXTRA_OFFER, offer);
-                startActivity(intent);
-            }
+        if (rvOffers != null) {
+            rvOffers.setLayoutManager(new LinearLayoutManager(this));
+            adapter = new ShareEarnOfferAdapter(this, offerList, new ShareEarnOfferAdapter.OnOfferClickListener() {
+                @Override
+                public void onOfferClick(ShareEarnOffer offer) {
+                    if (offer != null) {
+                        Intent intent = new Intent(ShareEarnActivity.this, OfferDetailsActivity.class);
+                        intent.putExtra(OfferDetailsActivity.EXTRA_OFFER, offer);
+                        startActivity(intent);
+                    }
+                }
 
-            @Override
-            public void onShareClick(ShareEarnOffer offer) {
-                generateClickAndShare(offer);
-            }
-        });
-        rvOffers.setAdapter(adapter);
+                @Override
+                public void onShareClick(ShareEarnOffer offer) {
+                    generateClickAndShare(offer);
+                }
+            });
+            rvOffers.setAdapter(adapter);
+        }
 
         setupCategoryChips();
 
-        swipeRefresh.setOnRefreshListener(this::fetchOffers);
-        btnRetry.setOnClickListener(v -> fetchOffers());
+        if (swipeRefresh != null) {
+            swipeRefresh.setOnRefreshListener(this::fetchOffers);
+        }
+        if (btnRetry != null) {
+            btnRetry.setOnClickListener(v -> fetchOffers());
+        }
 
-        edtSearch.addTextChangedListener(new TextWatcher() {
-            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-            @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
-                currentSearchQuery = s.toString().trim();
-                fetchOffers();
-            }
-            @Override public void afterTextChanged(Editable s) {}
-        });
+        if (edtSearch != null) {
+            edtSearch.addTextChangedListener(new TextWatcher() {
+                @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+                @Override public void onTextChanged(CharSequence s, int start, int before, int count) {
+                    currentSearchQuery = s.toString().trim();
+                    if (searchRunnable != null) {
+                        searchHandler.removeCallbacks(searchRunnable);
+                    }
+                    searchRunnable = () -> fetchOffers();
+                    searchHandler.postDelayed(searchRunnable, 350);
+                }
+                @Override public void afterTextChanged(Editable s) {}
+            });
+        }
 
         fetchOffers();
     }
@@ -159,66 +183,84 @@ public class ShareEarnActivity extends AppCompatActivity {
     }
 
     private void makeFullScreen() {
-        Window window = getWindow();
-        if (window == null) return;
+        try {
+            Window window = getWindow();
+            if (window == null) return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false);
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                controller.setSystemBarsBehavior(
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                );
-                // Ensure dark status bar icons on light theme
-                controller.setSystemBarsAppearance(
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.setDecorFitsSystemWindows(false);
+                WindowInsetsController controller = window.getInsetsController();
+                if (controller != null) {
+                    controller.setSystemBarsBehavior(
+                            WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    );
+                    controller.setSystemBarsAppearance(
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    );
+                }
+            } else {
+                View decor = window.getDecorView();
+                if (decor != null) {
+                    decor.setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    );
+                }
             }
-        } else {
-            window.getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            );
-        }
 
-        window.setStatusBarColor(Color.TRANSPARENT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setNavigationBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                window.setNavigationBarColor(Color.TRANSPARENT);
+            }
+        } catch (Exception e) {
+            android.util.Log.e("ShareEarnActivity", "makeFullScreen error", e);
         }
     }
 
     private void fetchOffers() {
-        if (!swipeRefresh.isRefreshing()) {
+        if (isFinishing() || isDestroyed()) return;
+
+        if (swipeRefresh != null && !swipeRefresh.isRefreshing()) {
             if (shimmerViewContainer != null) {
-                shimmerViewContainer.setVisibility(View.VISIBLE);
-                shimmerViewContainer.startShimmer();
+                try {
+                    shimmerViewContainer.setVisibility(View.VISIBLE);
+                    shimmerViewContainer.startShimmer();
+                } catch (Exception ignored) {}
             }
-            rvOffers.setVisibility(View.GONE);
+            if (rvOffers != null) rvOffers.setVisibility(View.GONE);
         }
-        layoutEmpty.setVisibility(View.GONE);
-        layoutError.setVisibility(View.GONE);
+        if (layoutEmpty != null) layoutEmpty.setVisibility(View.GONE);
+        if (layoutError != null) layoutError.setVisibility(View.GONE);
+
+        if (apiService == null) {
+            apiService = ApiClient.getClient().create(ShareEarnApiService.class);
+        }
 
         apiService.getOffers(currentCategory, currentSearchQuery).enqueue(new Callback<ShareEarnOffersResponse>() {
             @Override
             public void onResponse(Call<ShareEarnOffersResponse> call, Response<ShareEarnOffersResponse> response) {
+                if (isFinishing() || isDestroyed()) return;
+
                 if (shimmerViewContainer != null) {
-                    shimmerViewContainer.stopShimmer();
-                    shimmerViewContainer.setVisibility(View.GONE);
+                    try {
+                        shimmerViewContainer.stopShimmer();
+                        shimmerViewContainer.setVisibility(View.GONE);
+                    } catch (Exception ignored) {}
                 }
-                swipeRefresh.setRefreshing(false);
+                if (swipeRefresh != null) swipeRefresh.setRefreshing(false);
 
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                     List<ShareEarnOffer> data = response.body().getData();
                     offerList.clear();
                     if (data != null && !data.isEmpty()) {
                         offerList.addAll(data);
-                        adapter.notifyDataSetChanged();
-                        rvOffers.setVisibility(View.VISIBLE);
+                        if (adapter != null) adapter.notifyDataSetChanged();
+                        if (rvOffers != null) rvOffers.setVisibility(View.VISIBLE);
                     } else {
-                        rvOffers.setVisibility(View.GONE);
-                        layoutEmpty.setVisibility(View.VISIBLE);
+                        if (rvOffers != null) rvOffers.setVisibility(View.GONE);
+                        if (layoutEmpty != null) layoutEmpty.setVisibility(View.VISIBLE);
                     }
                 } else {
                     showError("Failed to fetch offers from server");
@@ -227,28 +269,38 @@ public class ShareEarnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ShareEarnOffersResponse> call, Throwable t) {
+                if (isFinishing() || isDestroyed()) return;
+
                 if (shimmerViewContainer != null) {
-                    shimmerViewContainer.stopShimmer();
-                    shimmerViewContainer.setVisibility(View.GONE);
+                    try {
+                        shimmerViewContainer.stopShimmer();
+                        shimmerViewContainer.setVisibility(View.GONE);
+                    } catch (Exception ignored) {}
                 }
-                swipeRefresh.setRefreshing(false);
-                showError("Network error: " + t.getMessage());
+                if (swipeRefresh != null) swipeRefresh.setRefreshing(false);
+                String msg = (t != null && t.getMessage() != null) ? t.getMessage() : "Unknown network error";
+                showError("Network error: " + msg);
             }
         });
     }
 
     private void showError(String msg) {
+        if (isFinishing() || isDestroyed()) return;
+
         if (shimmerViewContainer != null) {
-            shimmerViewContainer.stopShimmer();
-            shimmerViewContainer.setVisibility(View.GONE);
+            try {
+                shimmerViewContainer.stopShimmer();
+                shimmerViewContainer.setVisibility(View.GONE);
+            } catch (Exception ignored) {}
         }
-        rvOffers.setVisibility(View.GONE);
-        layoutEmpty.setVisibility(View.GONE);
-        layoutError.setVisibility(View.VISIBLE);
-        txtErrorMsg.setText(msg);
+        if (rvOffers != null) rvOffers.setVisibility(View.GONE);
+        if (layoutEmpty != null) layoutEmpty.setVisibility(View.GONE);
+        if (layoutError != null) layoutError.setVisibility(View.VISIBLE);
+        if (txtErrorMsg != null) txtErrorMsg.setText(msg);
     }
 
     private void generateClickAndShare(ShareEarnOffer offer) {
+        if (isFinishing() || isDestroyed()) return;
         if (offer == null || offer.getOfferId() == null) return;
 
         Toast.makeText(this, "Generating tracking link...", Toast.LENGTH_SHORT).show();
@@ -256,19 +308,31 @@ public class ShareEarnActivity extends AppCompatActivity {
         AuthTokenHelper.getBearerToken(new AuthTokenHelper.TokenCallback() {
             @Override
             public void onSuccess(String bearerToken) {
+                if (isFinishing() || isDestroyed()) return;
+
                 Map<String, Object> req = new HashMap<>();
                 req.put("offerId", offer.getOfferId());
+
+                if (apiService == null) {
+                    apiService = ApiClient.getClient().create(ShareEarnApiService.class);
+                }
 
                 apiService.createTrackingClick(bearerToken, req).enqueue(new Callback<ClickTrackingResponse>() {
                     @Override
                     public void onResponse(Call<ClickTrackingResponse> call, Response<ClickTrackingResponse> response) {
+                        if (isFinishing() || isDestroyed()) return;
+
                         if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                             ClickTrackingResponse.ClickData data = response.body().getData();
                             if (data != null && data.getTrackingUrl() != null) {
                                 String trackingUrl = data.getTrackingUrl();
 
-                                ShareOfferBottomSheetFragment sheet = ShareOfferBottomSheetFragment.newInstance(offer, trackingUrl);
-                                sheet.show(getSupportFragmentManager(), "ShareOfferBottomSheet");
+                                try {
+                                    ShareOfferBottomSheetFragment sheet = ShareOfferBottomSheetFragment.newInstance(offer, trackingUrl);
+                                    sheet.show(getSupportFragmentManager(), "ShareOfferBottomSheet");
+                                } catch (Exception e) {
+                                    android.util.Log.w("ShareEarnActivity", "Failed to show bottom sheet: " + e.getMessage());
+                                }
                             }
                         } else {
                             Toast.makeText(ShareEarnActivity.this, "Failed to create tracking click", Toast.LENGTH_SHORT).show();
@@ -277,15 +341,30 @@ public class ShareEarnActivity extends AppCompatActivity {
 
                     @Override
                     public void onFailure(Call<ClickTrackingResponse> call, Throwable t) {
-                        Toast.makeText(ShareEarnActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (isFinishing() || isDestroyed()) return;
+                        Toast.makeText(ShareEarnActivity.this, "Network error: " + (t != null ? t.getMessage() : "failed"), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
             @Override
             public void onError(Exception e) {
+                if (isFinishing() || isDestroyed()) return;
                 Toast.makeText(ShareEarnActivity.this, "Authentication required", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        if (searchHandler != null && searchRunnable != null) {
+            searchHandler.removeCallbacks(searchRunnable);
+        }
+        if (shimmerViewContainer != null) {
+            try {
+                shimmerViewContainer.stopShimmer();
+            } catch (Exception ignored) {}
+        }
+        super.onDestroy();
     }
 }

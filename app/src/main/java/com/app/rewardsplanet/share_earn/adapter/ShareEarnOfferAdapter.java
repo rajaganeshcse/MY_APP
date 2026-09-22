@@ -43,18 +43,37 @@ public class ShareEarnOfferAdapter extends RecyclerView.Adapter<ShareEarnOfferAd
 
     @Override
     public void onBindViewHolder(@NonNull OfferViewHolder holder, int position) {
+        if (position < 0 || position >= offers.size()) return;
         ShareEarnOffer offer = offers.get(position);
+        if (offer == null) return;
 
         holder.txtTitle.setText(offer.getTitle() != null ? offer.getTitle() : "Offer");
         holder.txtShortDesc.setText(offer.getShortDescription() != null ? offer.getShortDescription() : "");
         holder.txtRewardCoins.setText("Earn " + String.format("%,d", offer.getRewardCoins()) + " Coins");
 
-        if (offer.getLogoUrl() != null && !offer.getLogoUrl().trim().isEmpty()) {
-            Glide.with(context)
-                    .load(offer.getLogoUrl())
-                    .placeholder(R.drawable.logo)
-                    .error(R.drawable.logo)
-                    .into(holder.imgLogo);
+        // Safe Glide image load checking activity lifecycle
+        boolean isActivityValid = true;
+        if (context instanceof androidx.appcompat.app.AppCompatActivity) {
+            androidx.appcompat.app.AppCompatActivity act = (androidx.appcompat.app.AppCompatActivity) context;
+            if (act.isFinishing() || act.isDestroyed()) {
+                isActivityValid = false;
+            }
+        }
+
+        if (isActivityValid) {
+            try {
+                if (offer.getLogoUrl() != null && !offer.getLogoUrl().trim().isEmpty()) {
+                    Glide.with(holder.itemView.getContext())
+                            .load(offer.getLogoUrl())
+                            .placeholder(R.drawable.logo)
+                            .error(R.drawable.logo)
+                            .into(holder.imgLogo);
+                } else {
+                    holder.imgLogo.setImageResource(R.drawable.logo);
+                }
+            } catch (Exception ignored) {
+                holder.imgLogo.setImageResource(R.drawable.logo);
+            }
         } else {
             holder.imgLogo.setImageResource(R.drawable.logo);
         }

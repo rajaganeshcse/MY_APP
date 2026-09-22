@@ -47,8 +47,8 @@ public class RedirectCountdownActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        makeFullScreen();
         setContentView(R.layout.activity_redirect_countdown);
+        makeFullScreen();
 
         redirectUrl = getIntent().getStringExtra(EXTRA_REDIRECT_URL);
         offerTitle = getIntent().getStringExtra(EXTRA_OFFER_TITLE);
@@ -208,27 +208,34 @@ public class RedirectCountdownActivity extends AppCompatActivity {
     }
 
     private void makeFullScreen() {
-        Window window = getWindow();
-        if (window == null) return;
+        try {
+            Window window = getWindow();
+            if (window == null) return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false);
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                controller.setSystemBarsBehavior(
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.setDecorFitsSystemWindows(false);
+                WindowInsetsController controller = window.getInsetsController();
+                if (controller != null) {
+                    controller.setSystemBarsBehavior(
+                            WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    );
+                }
+            } else {
+                View decor = window.getDecorView();
+                if (decor != null) {
+                    decor.setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    );
+                }
             }
-        } else {
-            window.getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-            );
-        }
 
-        window.setStatusBarColor(Color.TRANSPARENT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setNavigationBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                window.setNavigationBarColor(Color.TRANSPARENT);
+            }
+        } catch (Exception e) {
+            android.util.Log.e("RedirectCountdown", "makeFullScreen error", e);
         }
     }
 }

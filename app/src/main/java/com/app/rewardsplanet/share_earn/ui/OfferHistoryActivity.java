@@ -48,12 +48,13 @@ public class OfferHistoryActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        makeFullScreen();
         setContentView(R.layout.activity_offer_history);
+        makeFullScreen();
 
         apiService = ApiClient.getClient().create(ShareEarnApiService.class);
 
-        findViewById(R.id.btnBackHistory).setOnClickListener(v -> finish());
+        View btnBack = findViewById(R.id.btnBackHistory);
+        if (btnBack != null) btnBack.setOnClickListener(v -> finish());
 
         swipeHistory = findViewById(R.id.swipeHistory);
         rvOfferHistory = findViewById(R.id.rvOfferHistory);
@@ -98,49 +99,57 @@ public class OfferHistoryActivity extends AppCompatActivity {
     }
 
     private void fetchHistory() {
-        if (!swipeHistory.isRefreshing()) {
-            progressHistory.setVisibility(View.VISIBLE);
-        }
-        layoutEmptyHistory.setVisibility(View.GONE);
+        if (isFinishing() || isDestroyed()) return;
+        if (progressHistory != null) progressHistory.setVisibility(View.VISIBLE);
 
         AuthTokenHelper.getBearerToken(new AuthTokenHelper.TokenCallback() {
             @Override
             public void onSuccess(String bearerToken) {
+                if (isFinishing() || isDestroyed()) return;
+
+                if (apiService == null) {
+                    apiService = ApiClient.getClient().create(ShareEarnApiService.class);
+                }
+
                 apiService.getMyOffers(bearerToken, currentStatus).enqueue(new Callback<OfferHistoryResponse>() {
                     @Override
                     public void onResponse(Call<OfferHistoryResponse> call, Response<OfferHistoryResponse> response) {
-                        progressHistory.setVisibility(View.GONE);
-                        swipeHistory.setRefreshing(false);
+                        if (isFinishing() || isDestroyed()) return;
+                        if (progressHistory != null) progressHistory.setVisibility(View.GONE);
+                        if (swipeHistory != null) swipeHistory.setRefreshing(false);
 
                         if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                             List<OfferHistoryResponse.HistoryItem> data = response.body().getData();
                             historyList.clear();
                             if (data != null && !data.isEmpty()) {
                                 historyList.addAll(data);
-                                adapter.notifyDataSetChanged();
-                                rvOfferHistory.setVisibility(View.VISIBLE);
+                                if (adapter != null) adapter.notifyDataSetChanged();
+                                if (rvOfferHistory != null) rvOfferHistory.setVisibility(View.VISIBLE);
+                                if (layoutEmptyHistory != null) layoutEmptyHistory.setVisibility(View.GONE);
                             } else {
-                                rvOfferHistory.setVisibility(View.GONE);
-                                layoutEmptyHistory.setVisibility(View.VISIBLE);
+                                if (rvOfferHistory != null) rvOfferHistory.setVisibility(View.GONE);
+                                if (layoutEmptyHistory != null) layoutEmptyHistory.setVisibility(View.VISIBLE);
                             }
                         } else {
-                            Toast.makeText(OfferHistoryActivity.this, "Failed to load offer history", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(OfferHistoryActivity.this, "Failed to load history", Toast.LENGTH_SHORT).show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<OfferHistoryResponse> call, Throwable t) {
-                        progressHistory.setVisibility(View.GONE);
-                        swipeHistory.setRefreshing(false);
-                        Toast.makeText(OfferHistoryActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                        if (isFinishing() || isDestroyed()) return;
+                        if (progressHistory != null) progressHistory.setVisibility(View.GONE);
+                        if (swipeHistory != null) swipeHistory.setRefreshing(false);
+                        Toast.makeText(OfferHistoryActivity.this, "Network error: " + (t != null ? t.getMessage() : "failed"), Toast.LENGTH_SHORT).show();
                     }
                 });
             }
 
             @Override
             public void onError(Exception e) {
-                progressHistory.setVisibility(View.GONE);
-                swipeHistory.setRefreshing(false);
+                if (isFinishing() || isDestroyed()) return;
+                if (progressHistory != null) progressHistory.setVisibility(View.GONE);
+                if (swipeHistory != null) swipeHistory.setRefreshing(false);
                 Toast.makeText(OfferHistoryActivity.this, "Auth error", Toast.LENGTH_SHORT).show();
             }
         });
@@ -153,32 +162,39 @@ public class OfferHistoryActivity extends AppCompatActivity {
     }
 
     private void makeFullScreen() {
-        Window window = getWindow();
-        if (window == null) return;
+        try {
+            Window window = getWindow();
+            if (window == null) return;
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            window.setDecorFitsSystemWindows(false);
-            WindowInsetsController controller = window.getInsetsController();
-            if (controller != null) {
-                controller.setSystemBarsBehavior(
-                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
-                );
-                controller.setSystemBarsAppearance(
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
-                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
-                );
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                window.setDecorFitsSystemWindows(false);
+                WindowInsetsController controller = window.getInsetsController();
+                if (controller != null) {
+                    controller.setSystemBarsBehavior(
+                            WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                    );
+                    controller.setSystemBarsAppearance(
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                            WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                    );
+                }
+            } else {
+                View decor = window.getDecorView();
+                if (decor != null) {
+                    decor.setSystemUiVisibility(
+                            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                                    View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                    );
+                }
             }
-        } else {
-            window.getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
-                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
-                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            );
-        }
 
-        window.setStatusBarColor(Color.TRANSPARENT);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            window.setNavigationBarColor(Color.TRANSPARENT);
+            window.setStatusBarColor(Color.TRANSPARENT);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                window.setNavigationBarColor(Color.TRANSPARENT);
+            }
+        } catch (Exception e) {
+            android.util.Log.e("OfferHistoryActivity", "makeFullScreen error", e);
         }
     }
 }

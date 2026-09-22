@@ -27,8 +27,12 @@ public class ApiClient {
 
     private static final String TAG      = "ApiClient";
     private static final String BASE_URL = "https://app-backend-lutn.onrender.com/";
+    private static volatile Retrofit sRetrofit = null;
 
-    public static Retrofit getClient() {
+    public static synchronized Retrofit getClient() {
+        if (sRetrofit != null) {
+            return sRetrofit;
+        }
 
         // Custom Gson with Firebase Timestamp Deserializer to prevent Retrofit parsing crashes
         Gson gson = new GsonBuilder()
@@ -75,10 +79,11 @@ public class ApiClient {
                 })
                 .build();
 
-        return new Retrofit.Builder()
+        sRetrofit = new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .client(client)
                 .addConverterFactory(GsonConverterFactory.create(gson))
                 .build();
+        return sRetrofit;
     }
 }
