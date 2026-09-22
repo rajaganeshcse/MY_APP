@@ -40,7 +40,10 @@ public class OfferDetailsActivity extends AppCompatActivity {
     private ImageView imgBanner, imgLogo;
     private TextView txtTitle, txtCategory, txtStatus, txtReward, txtFullDesc;
     private LinearLayout containerHowItWorks, containerTerms;
-    private Button btnShareEarnNow;
+    private Button btnShareEarnNow, btnClaimReward;
+    private View cardReferralCode;
+    private TextView txtReferralCode, btnCopyReferralCode;
+    private String lastClickId = null;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -63,10 +66,29 @@ public class OfferDetailsActivity extends AppCompatActivity {
         containerHowItWorks = findViewById(R.id.containerHowItWorks);
         containerTerms = findViewById(R.id.containerTerms);
         btnShareEarnNow = findViewById(R.id.btnShareEarnNow);
+        btnClaimReward = findViewById(R.id.btnClaimReward);
+
+        cardReferralCode = findViewById(R.id.cardReferralCode);
+        txtReferralCode = findViewById(R.id.txtReferralCode);
+        btnCopyReferralCode = findViewById(R.id.btnCopyReferralCode);
 
         ImageView btnShareTop = findViewById(R.id.btnShareTop);
         btnShareTop.setOnClickListener(v -> generateClickAndShare());
         btnShareEarnNow.setOnClickListener(v -> generateClickAndShare());
+
+        btnClaimReward.setOnClickListener(v -> {
+            ClaimRewardBottomSheetFragment sheet = ClaimRewardBottomSheetFragment.newInstance(offer, lastClickId);
+            sheet.show(getSupportFragmentManager(), "ClaimRewardBottomSheet");
+        });
+
+        btnCopyReferralCode.setOnClickListener(v -> {
+            if (offer != null && offer.getReferralCode() != null) {
+                android.content.ClipboardManager cm = (android.content.ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
+                android.content.ClipData clip = android.content.ClipData.newPlainText("Referral Code", offer.getReferralCode());
+                cm.setPrimaryClip(clip);
+                Toast.makeText(this, "Referral Code Copied: " + offer.getReferralCode(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
         bindOfferDetails();
     }
@@ -91,6 +113,24 @@ public class OfferDetailsActivity extends AppCompatActivity {
             imgLogo.setImageResource(R.drawable.logo);
         }
 
+        // Referral Code Card
+        if (offer.getReferralCode() != null && !offer.getReferralCode().trim().isEmpty()) {
+            cardReferralCode.setVisibility(View.VISIBLE);
+            txtReferralCode.setText(offer.getReferralCode().trim());
+        } else {
+            cardReferralCode.setVisibility(View.GONE);
+        }
+
+        // Claim Reward Button
+        boolean isReferral = "REFERRAL_TASK".equalsIgnoreCase(offer.getOfferType()) || offer.isProofRequired();
+        if (isReferral) {
+            btnClaimReward.setVisibility(View.VISIBLE);
+            btnShareEarnNow.setText("Visit & Share");
+        } else {
+            btnClaimReward.setVisibility(View.GONE);
+            btnShareEarnNow.setText("Share & Earn Now");
+        }
+
         // How it works items
         containerHowItWorks.removeAllViews();
         List<String> steps = offer.getHowItWorks();
@@ -107,11 +147,11 @@ public class OfferDetailsActivity extends AppCompatActivity {
             }
         } else {
             String[] defaultSteps = {
-                    "1. Click on Share & Earn Now",
-                    "2. User visits destination platform",
-                    "3. Complete registration / required action",
-                    "4. Conversion is verified",
-                    "5. Coins credited to your wallet!"
+                    "1. Click on Visit & Share to open or share offer",
+                    "2. Complete registration / required action",
+                    "3. Submit proof via Claim Reward button",
+                    "4. Admin verifies and approves your claim",
+                    "5. Coins are credited to your wallet!"
             };
             for (String s : defaultSteps) {
                 TextView tv = new TextView(this);
@@ -139,7 +179,7 @@ public class OfferDetailsActivity extends AppCompatActivity {
             String[] defaultTerms = {
                     "• Valid once per user account",
                     "• Complete required action within 7 days",
-                    "• Duplicate or fraud activity will result in rejection"
+                    "• Duplicate or fraudulent claims will be rejected"
             };
             for (String t : defaultTerms) {
                 TextView tv = new TextView(this);
@@ -155,6 +195,9 @@ public class OfferDetailsActivity extends AppCompatActivity {
     private void generateClickAndShare() {
         if (offer == null || offer.getOfferId() == null) return;
 
+        boolean isReferral = "REFERRAL_TASK".equalsIgnoreCase(offer.getOfferType()) || offer.isProofRequired();
+        String defaultBtnText = isReferral ? "Visit & Share" : "Share & Earn Now";
+
         btnShareEarnNow.setEnabled(false);
         btnShareEarnNow.setText("Generating Link...");
 
@@ -168,11 +211,12 @@ public class OfferDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ClickTrackingResponse> call, Response<ClickTrackingResponse> response) {
                         btnShareEarnNow.setEnabled(true);
-                        btnShareEarnNow.setText("Share & Earn Now");
+                        btnShareEarnNow.setText(defaultBtnText);
 
                         if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                             ClickTrackingResponse.ClickData data = response.body().getData();
                             if (data != null && data.getTrackingUrl() != null) {
+                                lastClickId = data.getClickId();
                                 String trackingUrl = data.getTrackingUrl();
 
                                 ShareOfferBottomSheetFragment sheet = ShareOfferBottomSheetFragment.newInstance(offer, trackingUrl);
@@ -186,7 +230,7 @@ public class OfferDetailsActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<ClickTrackingResponse> call, Throwable t) {
                         btnShareEarnNow.setEnabled(true);
-                        btnShareEarnNow.setText("Share & Earn Now");
+                        btnShareEarnNow.setText(defaultBtnText);
                         Toast.makeText(OfferDetailsActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -195,7 +239,7 @@ public class OfferDetailsActivity extends AppCompatActivity {
             @Override
             public void onError(Exception e) {
                 btnShareEarnNow.setEnabled(true);
-                btnShareEarnNow.setText("Share & Earn Now");
+                btnShareEarnNow.setText(defaultBtnText);
                 Toast.makeText(OfferDetailsActivity.this, "Auth error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });

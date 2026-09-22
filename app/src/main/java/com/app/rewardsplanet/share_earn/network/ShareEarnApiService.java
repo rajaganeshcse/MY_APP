@@ -1,5 +1,6 @@
 package com.app.rewardsplanet.share_earn.network;
 
+import com.app.rewardsplanet.share_earn.model.ClaimOfferResponse;
 import com.app.rewardsplanet.share_earn.model.ClickTrackingResponse;
 import com.app.rewardsplanet.share_earn.model.OfferHistoryResponse;
 import com.app.rewardsplanet.share_earn.model.ShareEarnEarningsResponse;
@@ -44,5 +45,12 @@ public interface ShareEarnApiService {
     @GET("api/v1/me/earnings")
     Call<ShareEarnEarningsResponse> getMyEarnings(
             @Header("Authorization") String token
+    );
+
+    @POST("api/v1/offers/{offerId}/claim")
+    Call<ClaimOfferResponse> submitOfferClaim(
+            @Header("Authorization") String token,
+            @Path("offerId") String offerId,
+            @Body Map<String, Object> req
     );
 }

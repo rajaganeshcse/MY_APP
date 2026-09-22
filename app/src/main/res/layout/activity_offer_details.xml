@@ -171,6 +171,77 @@
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 
+            <!-- Referral Code Card (For Personal Referral Tasks like GPay) -->
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cardReferralCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:visibility="gone"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#EFF6FF"
+                    android:orientation="vertical"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🎁 Referral / Invite Code"
+                        android:textColor="#1E40AF"
+                        android:textSize="14sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Apply this referral code during signup/payment to qualify for reward"
+                        android:textColor="#3B82F6"
+                        android:textSize="11sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="10dp"
+                        android:background="#FFFFFF"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="12dp">
+
+                        <TextView
+                            android:id="@+id/txtReferralCode"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:letterSpacing="0.05"
+                            android:text="GPAY123"
+                            android:textColor="#1E293B"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/btnCopyReferralCode"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="#DBEAFE"
+                            android:paddingHorizontal="12dp"
+                            android:paddingVertical="6dp"
+                            android:text="COPY CODE"
+                            android:textColor="#1D4ED8"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
             <!-- About This Offer -->
             <LinearLayout
                 android:layout_width="match_parent"
@@ -262,23 +333,41 @@
     <LinearLayout
         android:id="@+id/bottomBar"
         android:layout_width="match_parent"
-        android:layout_height="72dp"
+        android:layout_height="wrap_content"
         android:background="#FFFFFF"
         android:elevation="8dp"
         android:gravity="center"
+        android:orientation="horizontal"
         android:paddingHorizontal="16dp"
+        android:paddingVertical="12dp"
         app:layout_constraintBottom_toBottomOf="parent">
 
         <Button
             android:id="@+id/btnShareEarnNow"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="48dp"
+            android:layout_weight="1"
             android:backgroundTint="#4F46E5"
             android:text="Share &amp; Earn Now"
             android:textAllCaps="false"
             android:textColor="#FFFFFF"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textStyle="bold"
+            app:cornerRadius="12dp" />
+
+        <Button
+            android:id="@+id/btnClaimReward"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="10dp"
+            android:layout_weight="1"
+            android:backgroundTint="#16A34A"
+            android:text="Claim Reward"
+            android:textAllCaps="false"
+            android:textColor="#FFFFFF"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:visibility="gone"
             app:cornerRadius="12dp" />
 
     </LinearLayout>

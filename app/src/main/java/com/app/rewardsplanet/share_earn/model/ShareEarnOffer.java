@@ -47,6 +47,18 @@ public class ShareEarnOffer implements Serializable {
     @SerializedName("status")
     private String status;
 
+    @SerializedName("offerType")
+    private String offerType;
+
+    @SerializedName("referralCode")
+    private String referralCode;
+
+    @SerializedName("proofRequired")
+    private boolean proofRequired;
+
+    @SerializedName("proofLabel")
+    private String proofLabel;
+
     public String getOfferId() { return offerId; }
     public String getTitle() { return title; }
     public String getShortDescription() { return shortDescription; }
@@ -61,4 +73,8 @@ public class ShareEarnOffer implements Serializable {
     public List<String> getTermsAndConditions() { return termsAndConditions; }
     public int getPriority() { return priority; }
     public String getStatus() { return status; }
+    public String getOfferType() { return offerType; }
+    public String getReferralCode() { return referralCode; }
+    public boolean isProofRequired() { return proofRequired; }
+    public String getProofLabel() { return proofLabel; }
 }
