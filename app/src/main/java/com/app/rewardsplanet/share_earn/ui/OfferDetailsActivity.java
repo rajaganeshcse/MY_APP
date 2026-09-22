@@ -74,7 +74,12 @@ public class OfferDetailsActivity extends AppCompatActivity {
 
         ImageView btnShareTop = findViewById(R.id.btnShareTop);
         btnShareTop.setOnClickListener(v -> generateClickAndShare());
-        btnShareEarnNow.setOnClickListener(v -> generateClickAndShare());
+        btnShareEarnNow.setOnClickListener(v -> generateClickAndOpen());
+
+        Button btnShareOffer = findViewById(R.id.btnShareOffer);
+        if (btnShareOffer != null) {
+            btnShareOffer.setOnClickListener(v -> generateClickAndShare());
+        }
 
         btnClaimReward.setOnClickListener(v -> {
             ClaimRewardBottomSheetFragment sheet = ClaimRewardBottomSheetFragment.newInstance(offer, lastClickId);
@@ -125,10 +130,10 @@ public class OfferDetailsActivity extends AppCompatActivity {
         boolean isReferral = "REFERRAL_TASK".equalsIgnoreCase(offer.getOfferType()) || offer.isProofRequired();
         if (isReferral) {
             btnClaimReward.setVisibility(View.VISIBLE);
-            btnShareEarnNow.setText("Visit & Share");
+            btnShareEarnNow.setText("🌐 Visit & Complete");
         } else {
             btnClaimReward.setVisibility(View.GONE);
-            btnShareEarnNow.setText("Share & Earn Now");
+            btnShareEarnNow.setText("🌐 Visit & Earn");
         }
 
         // How it works items
@@ -190,6 +195,68 @@ public class OfferDetailsActivity extends AppCompatActivity {
                 containerTerms.addView(tv);
             }
         }
+    }
+
+    private void generateClickAndOpen() {
+        if (offer == null || offer.getOfferId() == null) return;
+
+        boolean isReferral = "REFERRAL_TASK".equalsIgnoreCase(offer.getOfferType()) || offer.isProofRequired();
+        String defaultBtnText = isReferral ? "🌐 Visit & Complete" : "🌐 Visit & Earn";
+
+        btnShareEarnNow.setEnabled(false);
+        btnShareEarnNow.setText("Opening Offer...");
+
+        AuthTokenHelper.getBearerToken(new AuthTokenHelper.TokenCallback() {
+            @Override
+            public void onSuccess(String bearerToken) {
+                Map<String, Object> req = new HashMap<>();
+                req.put("offerId", offer.getOfferId());
+
+                apiService.createTrackingClick(bearerToken, req).enqueue(new Callback<ClickTrackingResponse>() {
+                    @Override
+                    public void onResponse(Call<ClickTrackingResponse> call, Response<ClickTrackingResponse> response) {
+                        btnShareEarnNow.setEnabled(true);
+                        btnShareEarnNow.setText(defaultBtnText);
+
+                        if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
+                            ClickTrackingResponse.ClickData data = response.body().getData();
+                            if (data != null && data.getTrackingUrl() != null) {
+                                lastClickId = data.getClickId();
+                                String trackingUrl = data.getTrackingUrl();
+
+                                try {
+                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trackingUrl));
+                                    startActivity(intent);
+                                    Toast.makeText(OfferDetailsActivity.this, "Redirecting to offer... Complete the task to earn coins!", Toast.LENGTH_LONG).show();
+
+                                    if (isReferral) {
+                                        btnClaimReward.setVisibility(View.VISIBLE);
+                                    }
+                                } catch (Exception e) {
+                                    Toast.makeText(OfferDetailsActivity.this, "Could not open browser: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        } else {
+                            Toast.makeText(OfferDetailsActivity.this, "Failed to initialize tracking link", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<ClickTrackingResponse> call, Throwable t) {
+                        btnShareEarnNow.setEnabled(true);
+                        btnShareEarnNow.setText(defaultBtnText);
+                        Toast.makeText(OfferDetailsActivity.this, "Network error: " + t.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onError(Exception e) {
+                btnShareEarnNow.setEnabled(true);
+                btnShareEarnNow.setText(defaultBtnText);
+                Toast.makeText(OfferDetailsActivity.this, "Auth error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void generateClickAndShare() {

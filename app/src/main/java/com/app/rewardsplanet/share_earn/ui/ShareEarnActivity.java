@@ -138,11 +138,13 @@ public class ShareEarnActivity extends AppCompatActivity {
 
     private void updateChipStyle(TextView chip, boolean isSelected) {
         if (isSelected) {
-            chip.setBackgroundColor(Color.parseColor("#4F46E5"));
+            chip.setBackgroundResource(R.drawable.bg_share_earn_chip_selected);
             chip.setTextColor(Color.WHITE);
+            chip.setTypeface(null, android.graphics.Typeface.BOLD);
         } else {
-            chip.setBackgroundColor(Color.WHITE);
-            chip.setTextColor(Color.parseColor("#64748B"));
+            chip.setBackgroundResource(R.drawable.bg_share_earn_chip_unselected);
+            chip.setTextColor(Color.parseColor("#475569"));
+            chip.setTypeface(null, android.graphics.Typeface.NORMAL);
         }
     }
 

@@ -4,6 +4,7 @@ import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -77,6 +78,20 @@ public class ShareOfferBottomSheetFragment extends BottomSheetDialogFragment {
 
         btnCopyLink.setOnClickListener(view -> copyToClipboard());
         txtTrackingUrl.setOnClickListener(view -> copyToClipboard());
+
+        Button btnOpenBrowser = v.findViewById(R.id.btnOpenBrowser);
+        if (btnOpenBrowser != null) {
+            btnOpenBrowser.setOnClickListener(view -> {
+                if (trackingUrl != null && !trackingUrl.isEmpty()) {
+                    try {
+                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trackingUrl));
+                        startActivity(intent);
+                    } catch (Exception e) {
+                        Toast.makeText(getContext(), "Could not open browser: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
+        }
 
         String shareText = getShareMessage();
 

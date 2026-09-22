@@ -93,6 +93,20 @@
 
     </LinearLayout>
 
+    <!-- Open in Browser / Complete Offer Button -->
+    <Button
+        android:id="@+id/btnOpenBrowser"
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:layout_marginTop="12dp"
+        android:backgroundTint="#4F46E5"
+        android:text="🌐 Open &amp; Complete Offer"
+        android:textAllCaps="false"
+        android:textColor="#FFFFFF"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:cornerRadius="10dp" />
+
     <!-- Social Share Buttons Header -->
     <TextView
         android:layout_width="wrap_content"
