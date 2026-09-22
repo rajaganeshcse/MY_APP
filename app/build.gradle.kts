@@ -111,6 +111,14 @@ dependencies {
         "com.google.android.gms:play-services-ads:23.6.0"
     )
 
+    // ==============================
+    // PLAY INSTALL REFERRER
+    // ==============================
+
+    implementation(
+        "com.android.installreferrer:installreferrer:2.2"
+    )
+
 
     // ==============================
     // GLIDE

@@ -743,6 +743,10 @@ public class activity_login extends AppCompatActivity {
             return;
         }
         isNavigating = true;
+
+        // Record user registration attribution if arriving via a tracking campaign
+        com.app.rewardsplanet.share_earn.ui.InstallAttributionHelper.recordRegistrationIfNeeded(this);
+
         Log.d("LOGIN_DEBUG", "Opening MainActivity");
         Intent intent = new Intent(this, MainActivity.class);
         // Clear the entire back stack so pressing Back exits the app, not returning to login

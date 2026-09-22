@@ -159,20 +159,12 @@ public class MainActivity extends AppCompatActivity {
 
         userPref = new UserPref(this);
 
-        // Install attribution — first launch detection (idempotent)
-        android.net.Uri launchUri = getIntent() != null ? getIntent().getData() : null;
-        String attrClickId = null;
-        if (launchUri != null) {
-            attrClickId = launchUri.getQueryParameter("click_id");
-            if (attrClickId == null || attrClickId.isEmpty()) {
-                String uriPath = launchUri.getPath();
-                if (uriPath != null && (uriPath.startsWith("/r/") || uriPath.startsWith("/track/"))) {
-                    String[] parts = uriPath.split("/");
-                    if (parts.length >= 3) attrClickId = parts[parts.length - 1];
-                }
-            }
+        // Install attribution & campaign deep link handling (idempotent)
+        if (getIntent() != null && getIntent().getData() != null) {
+            InstallAttributionHelper.storeClickIdFromUri(this, getIntent().getData());
         }
-        InstallAttributionHelper.recordInstallIfFirstLaunch(this, attrClickId);
+        InstallAttributionHelper.initializeAndRecordInstall(this);
+        InstallAttributionHelper.recordRegistrationIfNeeded(this);
 
         initViews();
 
@@ -288,6 +280,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         setIntent(intent);
+        if (intent != null && intent.getData() != null) {
+            InstallAttributionHelper.storeClickIdFromUri(this, intent.getData());
+        }
         checkProfileSuccessDialog(intent);
         handleNotificationNavigation(intent);
     }

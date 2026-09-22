@@ -55,6 +55,13 @@ public class SplashActivity extends AppCompatActivity {
             FirebaseFirestore.getInstance().enableNetwork();
         } catch (Exception ignored) {}
 
+        // Attribution: Capture tracking link / deep link if present
+        if (getIntent() != null && getIntent().getData() != null) {
+            com.app.rewardsplanet.share_earn.ui.InstallAttributionHelper.storeClickIdFromUri(this, getIntent().getData());
+        }
+        // Initialize install attribution (reads Google Play referrer on first launch and dispatches to backend)
+        com.app.rewardsplanet.share_earn.ui.InstallAttributionHelper.initializeAndRecordInstall(this);
+
         FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
 
         if (firebaseUser == null) {
@@ -454,6 +461,15 @@ public class SplashActivity extends AppCompatActivity {
         window.setStatusBarColor(Color.TRANSPARENT);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        if (intent != null && intent.getData() != null) {
+            com.app.rewardsplanet.share_earn.ui.InstallAttributionHelper.storeClickIdFromUri(this, intent.getData());
         }
     }
 }
