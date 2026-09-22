@@ -2,10 +2,13 @@ package com.app.rewardsplanet.share_earn.ui;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowInsetsController;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -45,7 +48,7 @@ public class ShareEarnActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout swipeRefresh;
     private RecyclerView rvOffers;
-    private ProgressBar progressBar;
+    private com.facebook.shimmer.ShimmerFrameLayout shimmerViewContainer;
     private LinearLayout layoutEmpty, layoutError, chipGroupCategory;
     private TextView txtErrorMsg;
     private EditText edtSearch;
@@ -58,6 +61,7 @@ public class ShareEarnActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        makeFullScreen();
         setContentView(R.layout.activity_share_earn);
 
         apiService = ApiClient.getClient().create(ShareEarnApiService.class);
@@ -68,7 +72,7 @@ public class ShareEarnActivity extends AppCompatActivity {
 
         swipeRefresh = findViewById(R.id.swipeRefresh);
         rvOffers = findViewById(R.id.rvOffers);
-        progressBar = findViewById(R.id.progressBar);
+        shimmerViewContainer = findViewById(R.id.shimmerViewContainer);
         layoutEmpty = findViewById(R.id.layoutEmpty);
         layoutError = findViewById(R.id.layoutError);
         txtErrorMsg = findViewById(R.id.txtErrorMsg);
@@ -148,9 +152,50 @@ public class ShareEarnActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        makeFullScreen();
+    }
+
+    private void makeFullScreen() {
+        Window window = getWindow();
+        if (window == null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false);
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsBehavior(
+                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                );
+                // Ensure dark status bar icons on light theme
+                controller.setSystemBarsAppearance(
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                );
+            }
+        } else {
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            );
+        }
+
+        window.setStatusBarColor(Color.TRANSPARENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
+    }
+
     private void fetchOffers() {
         if (!swipeRefresh.isRefreshing()) {
-            progressBar.setVisibility(View.VISIBLE);
+            if (shimmerViewContainer != null) {
+                shimmerViewContainer.setVisibility(View.VISIBLE);
+                shimmerViewContainer.startShimmer();
+            }
+            rvOffers.setVisibility(View.GONE);
         }
         layoutEmpty.setVisibility(View.GONE);
         layoutError.setVisibility(View.GONE);
@@ -158,7 +203,10 @@ public class ShareEarnActivity extends AppCompatActivity {
         apiService.getOffers(currentCategory, currentSearchQuery).enqueue(new Callback<ShareEarnOffersResponse>() {
             @Override
             public void onResponse(Call<ShareEarnOffersResponse> call, Response<ShareEarnOffersResponse> response) {
-                progressBar.setVisibility(View.GONE);
+                if (shimmerViewContainer != null) {
+                    shimmerViewContainer.stopShimmer();
+                    shimmerViewContainer.setVisibility(View.GONE);
+                }
                 swipeRefresh.setRefreshing(false);
 
                 if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
@@ -179,7 +227,10 @@ public class ShareEarnActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<ShareEarnOffersResponse> call, Throwable t) {
-                progressBar.setVisibility(View.GONE);
+                if (shimmerViewContainer != null) {
+                    shimmerViewContainer.stopShimmer();
+                    shimmerViewContainer.setVisibility(View.GONE);
+                }
                 swipeRefresh.setRefreshing(false);
                 showError("Network error: " + t.getMessage());
             }
@@ -187,6 +238,10 @@ public class ShareEarnActivity extends AppCompatActivity {
     }
 
     private void showError(String msg) {
+        if (shimmerViewContainer != null) {
+            shimmerViewContainer.stopShimmer();
+            shimmerViewContainer.setVisibility(View.GONE);
+        }
         rvOffers.setVisibility(View.GONE);
         layoutEmpty.setVisibility(View.GONE);
         layoutError.setVisibility(View.VISIBLE);

@@ -3,8 +3,11 @@ package com.app.rewardsplanet.share_earn.ui;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowInsetsController;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -48,6 +51,7 @@ public class OfferDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        makeFullScreen();
         setContentView(R.layout.activity_offer_details);
 
         apiService = ApiClient.getClient().create(ShareEarnApiService.class);
@@ -274,20 +278,31 @@ public class OfferDetailsActivity extends AppCompatActivity {
                                 lastClickId = data.getClickId();
                                 String trackingUrl = data.getTrackingUrl();
 
-                                try {
-                                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trackingUrl));
-                                    startActivity(intent);
-                                    Toast.makeText(OfferDetailsActivity.this, "Redirecting to offer... Complete the task to earn coins!", Toast.LENGTH_LONG).show();
+                                Intent countdownIntent = new Intent(OfferDetailsActivity.this, RedirectCountdownActivity.class);
+                                countdownIntent.putExtra(RedirectCountdownActivity.EXTRA_REDIRECT_URL, trackingUrl);
+                                countdownIntent.putExtra(RedirectCountdownActivity.EXTRA_OFFER_TITLE, offer.getTitle());
+                                countdownIntent.putExtra(RedirectCountdownActivity.EXTRA_OFFER_LOGO, offer.getLogoUrl());
+                                countdownIntent.putExtra(RedirectCountdownActivity.EXTRA_REWARD_COINS, offer.getRewardCoins());
+                                countdownIntent.putExtra(RedirectCountdownActivity.EXTRA_CLICK_ID, data.getClickId());
+                                startActivity(countdownIntent);
 
-                                    if (isReferral) {
-                                        btnClaimReward.setVisibility(View.VISIBLE);
-                                    }
-                                } catch (Exception e) {
-                                    Toast.makeText(OfferDetailsActivity.this, "Could not open browser: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                                if (isReferral) {
+                                    btnClaimReward.setVisibility(View.VISIBLE);
                                 }
                             }
                         } else {
-                            Toast.makeText(OfferDetailsActivity.this, "Failed to initialize tracking link", Toast.LENGTH_SHORT).show();
+                            // Fallback to direct /r/{offerId} tracking URL
+                            String fallbackUrl = "https://app-backend-lutn.onrender.com/r/" + offer.getOfferId();
+                            Intent countdownIntent = new Intent(OfferDetailsActivity.this, RedirectCountdownActivity.class);
+                            countdownIntent.putExtra(RedirectCountdownActivity.EXTRA_REDIRECT_URL, fallbackUrl);
+                            countdownIntent.putExtra(RedirectCountdownActivity.EXTRA_OFFER_TITLE, offer.getTitle());
+                            countdownIntent.putExtra(RedirectCountdownActivity.EXTRA_OFFER_LOGO, offer.getLogoUrl());
+                            countdownIntent.putExtra(RedirectCountdownActivity.EXTRA_REWARD_COINS, offer.getRewardCoins());
+                            startActivity(countdownIntent);
+
+                            if (isReferral) {
+                                btnClaimReward.setVisibility(View.VISIBLE);
+                            }
                         }
                     }
 
@@ -360,5 +375,41 @@ public class OfferDetailsActivity extends AppCompatActivity {
                 Toast.makeText(OfferDetailsActivity.this, "Auth error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        makeFullScreen();
+    }
+
+    private void makeFullScreen() {
+        Window window = getWindow();
+        if (window == null) return;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.setDecorFitsSystemWindows(false);
+            WindowInsetsController controller = window.getInsetsController();
+            if (controller != null) {
+                controller.setSystemBarsBehavior(
+                        WindowInsetsController.BEHAVIOR_SHOW_TRANSIENT_BARS_BY_SWIPE
+                );
+                controller.setSystemBarsAppearance(
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                        WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+                );
+            }
+        } else {
+            window.getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN |
+                            View.SYSTEM_UI_FLAG_LAYOUT_STABLE |
+                            View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            );
+        }
+
+        window.setStatusBarColor(Color.TRANSPARENT);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.setNavigationBarColor(Color.TRANSPARENT);
+        }
     }
 }

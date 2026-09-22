@@ -164,6 +164,10 @@
             android:name=".share_earn.ui.ShareEarnEarningsActivity"
             android:exported="false"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".share_earn.ui.RedirectCountdownActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

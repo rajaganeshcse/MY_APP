@@ -329,6 +329,16 @@ public class MainActivity extends AppCompatActivity {
             case "PROFILE":
                 startActivity(new Intent(this, ProfileActivity.class));
                 break;
+            case "SHARE_EARN":
+                startActivity(new Intent(this, com.app.rewardsplanet.share_earn.ui.ShareEarnActivity.class));
+                break;
+            case "OFFER_HISTORY":
+            case "SHARE_EARN_HISTORY":
+                startActivity(new Intent(this, com.app.rewardsplanet.share_earn.ui.OfferHistoryActivity.class));
+                break;
+            case "SHARE_EARN_EARNINGS":
+                startActivity(new Intent(this, com.app.rewardsplanet.share_earn.ui.ShareEarnEarningsActivity.class));
+                break;
             case "HOME":
             default:
                 selectNav(navHome);

@@ -84,10 +84,17 @@ public class ShareOfferBottomSheetFragment extends BottomSheetDialogFragment {
             btnOpenBrowser.setOnClickListener(view -> {
                 if (trackingUrl != null && !trackingUrl.isEmpty()) {
                     try {
-                        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(trackingUrl));
+                        Intent intent = new Intent(requireContext(), RedirectCountdownActivity.class);
+                        intent.putExtra(RedirectCountdownActivity.EXTRA_REDIRECT_URL, trackingUrl);
+                        if (offer != null) {
+                            intent.putExtra(RedirectCountdownActivity.EXTRA_OFFER_TITLE, offer.getTitle());
+                            intent.putExtra(RedirectCountdownActivity.EXTRA_OFFER_LOGO, offer.getLogoUrl());
+                            intent.putExtra(RedirectCountdownActivity.EXTRA_REWARD_COINS, offer.getRewardCoins());
+                        }
                         startActivity(intent);
+                        dismiss();
                     } catch (Exception e) {
-                        Toast.makeText(getContext(), "Could not open browser: " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), "Could not open countdown: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
             });
