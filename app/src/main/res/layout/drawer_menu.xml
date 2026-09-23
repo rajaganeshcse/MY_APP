@@ -378,7 +378,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="14dp"
-                    android:text="Share &amp; Earn 🚀"
+                    android:text="Offer &amp; Task 🚀"
                     android:textColor="#1E293B"
                     android:textSize="16sp"
                     android:fontFamily="sans-serif-medium"
@@ -456,7 +456,7 @@
             <LinearLayout
                 android:id="@+id/menuFeedback"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="56dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -474,19 +474,34 @@
                     android:background="@drawable/bg_icon_circle_sky"
                     android:padding="7dp"
                     app:tint="#0284C7"
-                    android:src="@drawable/ic_privacy"
+                    android:src="@drawable/ic_edit"
                     android:contentDescription="Feedback" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="14dp"
-                    android:text="Feedback"
-                    android:textColor="#1E293B"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.01" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Feedback &amp; Ideas"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Help us improve RGamer"
+                        android:textColor="#64748B"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -494,7 +509,7 @@
             <LinearLayout
                 android:id="@+id/menuContact"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="56dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -512,19 +527,34 @@
                     android:background="@drawable/bg_icon_circle_violet"
                     android:padding="7dp"
                     app:tint="#7C3AED"
-                    android:src="@drawable/ic_help"
+                    android:src="@drawable/ic_email"
                     android:contentDescription="Contact Us" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="14dp"
-                    android:text="Contact Us"
-                    android:textColor="#1E293B"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.01" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Contact Us"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="24/7 dedicated support desk"
+                        android:textColor="#64748B"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -532,7 +562,7 @@
             <LinearLayout
                 android:id="@+id/menuFaq"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="56dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -553,16 +583,31 @@
                     android:src="@drawable/ic_terms"
                     android:contentDescription="FAQ" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="14dp"
-                    android:text="FAQ's"
-                    android:textColor="#1E293B"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.01" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="FAQ's"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Instant answers &amp; guides"
+                        android:textColor="#64748B"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -570,7 +615,7 @@
             <LinearLayout
                 android:id="@+id/menuPrivacy"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="56dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -591,16 +636,31 @@
                     android:src="@drawable/ic_privacy"
                     android:contentDescription="Privacy Policy" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="14dp"
-                    android:text="Privacy Policy"
-                    android:textColor="#1E293B"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.01" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Privacy Policy"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Security &amp; data protection"
+                        android:textColor="#64748B"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

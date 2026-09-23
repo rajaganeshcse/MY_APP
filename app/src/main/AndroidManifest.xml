@@ -74,6 +74,18 @@
             android:exported="false" />
         <activity
             android:name=".Activitys.MainActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activitys.PrivacyPolicyActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activitys.FaqActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activitys.ContactUsActivity"
+            android:exported="false" />
+        <activity
+            android:name=".Activitys.FeedbackActivity"
             android:exported="false" /> <!-- Launcher Activity -->
         <activity
             android:name=".Activitys.SplashActivity"

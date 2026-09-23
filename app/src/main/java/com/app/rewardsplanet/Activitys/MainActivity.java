@@ -652,14 +652,10 @@ public class MainActivity extends AppCompatActivity {
         // =====================================================
 
         if (menuFeedback != null) {
-
             menuFeedback.setOnClickListener(v -> {
-
                 closeDrawer();
-
-                openUrl(
-                        "https://yourwebsite.com/feedback"
-                );
+                Intent intent = new Intent(MainActivity.this, FeedbackActivity.class);
+                startActivity(intent);
             });
         }
 
@@ -669,14 +665,10 @@ public class MainActivity extends AppCompatActivity {
         // =====================================================
 
         if (menuContact != null) {
-
             menuContact.setOnClickListener(v -> {
-
                 closeDrawer();
-
-                openUrl(
-                        "https://yourwebsite.com/contact"
-                );
+                Intent intent = new Intent(MainActivity.this, ContactUsActivity.class);
+                startActivity(intent);
             });
         }
 
@@ -686,14 +678,10 @@ public class MainActivity extends AppCompatActivity {
         // =====================================================
 
         if (menuFaq != null) {
-
             menuFaq.setOnClickListener(v -> {
-
                 closeDrawer();
-
-                openUrl(
-                        "https://yourwebsite.com/faq"
-                );
+                Intent intent = new Intent(MainActivity.this, FaqActivity.class);
+                startActivity(intent);
             });
         }
 
@@ -703,14 +691,10 @@ public class MainActivity extends AppCompatActivity {
         // =====================================================
 
         if (menuPrivacy != null) {
-
             menuPrivacy.setOnClickListener(v -> {
-
                 closeDrawer();
-
-                openUrl(
-                        "https://yourwebsite.com/privacy-policy"
-                );
+                Intent intent = new Intent(MainActivity.this, PrivacyPolicyActivity.class);
+                startActivity(intent);
             });
         }
 
