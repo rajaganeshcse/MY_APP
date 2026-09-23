@@ -385,13 +385,27 @@ public class activity_login extends AppCompatActivity {
                 } else {
                     Log.e("LOGIN_DEBUG", "Google account is NULL");
                     showLoading(false);
-                    Toast.makeText(this, "Login Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Login Failed: Account data is null", Toast.LENGTH_LONG).show();
                 }
 
-            } catch (Exception e) {
-                Log.e("LOGIN_DEBUG", "Google Sign-In failed: " + e.getMessage());
+            } catch (ApiException e) {
+                Log.e("LOGIN_DEBUG", "Google Sign-In ApiException: code=" + e.getStatusCode() + ", msg=" + e.getMessage(), e);
                 showLoading(false);
-                Toast.makeText(this, "Login canceled or failed", Toast.LENGTH_SHORT).show();
+                String msg;
+                if (e.getStatusCode() == 10) {
+                    msg = "Google Sign-In Error 10: SHA-1 fingerprint missing in Firebase Console for com.dailykash.app";
+                } else if (e.getStatusCode() == 12500) {
+                    msg = "Google Sign-In Error 12500: Check Firebase Support Email and Google Play Services";
+                } else if (e.getStatusCode() == 12501) {
+                    msg = "Sign-in cancelled by user";
+                } else {
+                    msg = "Google Sign-In Failed (Code " + e.getStatusCode() + "): " + e.getMessage();
+                }
+                Toast.makeText(this, msg, Toast.LENGTH_LONG).show();
+            } catch (Exception e) {
+                Log.e("LOGIN_DEBUG", "Google Sign-In failed: " + e.getMessage(), e);
+                showLoading(false);
+                Toast.makeText(this, "Login error: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -412,7 +426,7 @@ public class activity_login extends AppCompatActivity {
                     if (user == null) {
                         Log.e("LOGIN_DEBUG", "Firebase user NULL");
                         showLoading(false);
-                        Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Authentication failed: User is null", Toast.LENGTH_SHORT).show();
                         return;
                     }
 
@@ -424,13 +438,13 @@ public class activity_login extends AppCompatActivity {
                         sendToBackend(token);
                     }).addOnFailureListener(e -> {
                         showLoading(false);
-                        Toast.makeText(this, "Failed to retrieve auth token", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(this, "Failed to retrieve auth token: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     });
                 })
                 .addOnFailureListener(e -> {
-                    Log.e("LOGIN_DEBUG", "Firebase Auth FAILED: " + e.getMessage());
+                    Log.e("LOGIN_DEBUG", "Firebase Auth FAILED: " + e.getMessage(), e);
                     showLoading(false);
-                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Firebase Auth Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
                 });
     }
 
@@ -475,17 +489,17 @@ public class activity_login extends AppCompatActivity {
                     }
 
                 } else {
-                    Log.e("API_DEBUG", "Auth FAILED: " + response.message());
+                    Log.e("API_DEBUG", "Auth FAILED: " + response.code() + " " + response.message());
                     showLoading(false);
-                    Toast.makeText(activity_login.this, "Auth Failed", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(activity_login.this, "Backend Auth Failed (" + response.code() + "): " + response.message(), Toast.LENGTH_LONG).show();
                 }
             }
 
             @Override
             public void onFailure(Call<ResponseBody> call, Throwable t) {
-                Log.e("API_DEBUG", "Auth ERROR: " + t.getMessage());
+                Log.e("API_DEBUG", "Auth ERROR: " + t.getMessage(), t);
                 showLoading(false);
-                Toast.makeText(activity_login.this, "Server Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(activity_login.this, "Backend Server Error: " + t.getMessage(), Toast.LENGTH_LONG).show();
             }
         });
     }
