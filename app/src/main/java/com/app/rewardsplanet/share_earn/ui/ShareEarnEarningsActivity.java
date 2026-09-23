@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
-import android.widget.ProgressBar;
+import android.widget.ScrollView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +21,9 @@ import com.app.rewardsplanet.network.AuthTokenHelper;
 import com.app.rewardsplanet.share_earn.adapter.OfferPerformanceAdapter;
 import com.app.rewardsplanet.share_earn.model.ShareEarnEarningsResponse;
 import com.app.rewardsplanet.share_earn.network.ShareEarnApiService;
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +40,9 @@ public class ShareEarnEarningsActivity extends AppCompatActivity {
 
     private TextView txtTotalEarnedCoins, txtStatClicks, txtStatConversions, txtStatPending;
     private RecyclerView rvOfferPerformance;
-    private ProgressBar progressEarnings;
+    private ScrollView scrollEarnings;
+    private ShimmerFrameLayout shimmerEarnings;
+    private AdView adViewEarnings;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -55,18 +60,30 @@ public class ShareEarnEarningsActivity extends AppCompatActivity {
         txtStatConversions = findViewById(R.id.txtStatConversions);
         txtStatPending = findViewById(R.id.txtStatPending);
         rvOfferPerformance = findViewById(R.id.rvOfferPerformance);
-        progressEarnings = findViewById(R.id.progressEarnings);
+        scrollEarnings = findViewById(R.id.scrollEarnings);
+        shimmerEarnings = findViewById(R.id.shimmerEarnings);
+        adViewEarnings = findViewById(R.id.adViewEarnings);
 
-        rvOfferPerformance.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new OfferPerformanceAdapter(this, perfList);
-        rvOfferPerformance.setAdapter(adapter);
+        if (rvOfferPerformance != null) {
+            rvOfferPerformance.setLayoutManager(new LinearLayoutManager(this));
+            adapter = new OfferPerformanceAdapter(this, perfList);
+            rvOfferPerformance.setAdapter(adapter);
+        }
+
+        if (adViewEarnings != null) {
+            try {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adViewEarnings.loadAd(adRequest);
+            } catch (Exception ignored) {}
+        }
 
         fetchEarnings();
     }
 
     private void fetchEarnings() {
         if (isFinishing() || isDestroyed()) return;
-        if (progressEarnings != null) progressEarnings.setVisibility(View.VISIBLE);
+
+        startShimmer();
 
         AuthTokenHelper.getBearerToken(new AuthTokenHelper.TokenCallback() {
             @Override
@@ -81,7 +98,7 @@ public class ShareEarnEarningsActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<ShareEarnEarningsResponse> call, Response<ShareEarnEarningsResponse> response) {
                         if (isFinishing() || isDestroyed()) return;
-                        if (progressEarnings != null) progressEarnings.setVisibility(View.GONE);
+                        stopShimmer();
 
                         if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
                             ShareEarnEarningsResponse.EarningsData data = response.body().getData();
@@ -105,7 +122,7 @@ public class ShareEarnEarningsActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<ShareEarnEarningsResponse> call, Throwable t) {
                         if (isFinishing() || isDestroyed()) return;
-                        if (progressEarnings != null) progressEarnings.setVisibility(View.GONE);
+                        stopShimmer();
                         Toast.makeText(ShareEarnEarningsActivity.this, "Network error: " + (t != null ? t.getMessage() : "failed"), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -114,16 +131,56 @@ public class ShareEarnEarningsActivity extends AppCompatActivity {
             @Override
             public void onError(Exception e) {
                 if (isFinishing() || isDestroyed()) return;
-                if (progressEarnings != null) progressEarnings.setVisibility(View.GONE);
+                stopShimmer();
                 Toast.makeText(ShareEarnEarningsActivity.this, "Auth error", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void startShimmer() {
+        if (shimmerEarnings != null) {
+            try {
+                shimmerEarnings.setVisibility(View.VISIBLE);
+                shimmerEarnings.startShimmer();
+            } catch (Exception ignored) {}
+        }
+        if (scrollEarnings != null) scrollEarnings.setVisibility(View.GONE);
+    }
+
+    private void stopShimmer() {
+        if (shimmerEarnings != null) {
+            try {
+                shimmerEarnings.stopShimmer();
+                shimmerEarnings.setVisibility(View.GONE);
+            } catch (Exception ignored) {}
+        }
+        if (scrollEarnings != null) scrollEarnings.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    protected void onPause() {
+        if (adViewEarnings != null) {
+            adViewEarnings.pause();
+        }
+        super.onPause();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        if (adViewEarnings != null) {
+            adViewEarnings.resume();
+        }
         makeFullScreen();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopShimmer();
+        if (adViewEarnings != null) {
+            adViewEarnings.destroy();
+        }
+        super.onDestroy();
     }
 
     private void makeFullScreen() {
@@ -159,7 +216,7 @@ public class ShareEarnEarningsActivity extends AppCompatActivity {
                 window.setNavigationBarColor(Color.TRANSPARENT);
             }
         } catch (Exception e) {
-            android.util.Log.e("ShareEarnEarnings", "makeFullScreen error", e);
+            android.util.Log.e("ShareEarnEarningsActivity", "makeFullScreen error", e);
         }
     }
 }

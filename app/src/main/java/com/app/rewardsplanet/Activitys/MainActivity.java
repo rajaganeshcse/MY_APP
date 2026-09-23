@@ -35,6 +35,7 @@ import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.UserPref;
 
 import com.app.rewardsplanet.invite.activity_refer_earn;
+import com.app.rewardsplanet.withdraws.RewardHistory;
 import com.app.rewardsplanet.withdraws.TransactionHistoryActivity;
 
 import com.bumptech.glide.Glide;
@@ -526,17 +527,15 @@ public class MainActivity extends AppCompatActivity {
 
 
         // =====================================================
-        // ACCOUNT HISTORY & TRANSACTION HISTORY CLICKS
+        // COIN TRANSACTIONS CLICK
         // =====================================================
 
-        View.OnClickListener openHistoryListener = v -> {
-            closeDrawer();
-            Intent intent = new Intent(MainActivity.this, TransactionHistoryActivity.class);
-            startActivity(intent);
-        };
-
         if (menuWallet != null) {
-            menuWallet.setOnClickListener(openHistoryListener);
+            menuWallet.setOnClickListener(v -> {
+                closeDrawer();
+                Intent intent = new Intent(MainActivity.this, RewardHistory.class);
+                startActivity(intent);
+            });
         }
 
         // =====================================================

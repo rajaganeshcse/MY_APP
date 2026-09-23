@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowInsetsController;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,6 +22,9 @@ import com.app.rewardsplanet.network.AuthTokenHelper;
 import com.app.rewardsplanet.share_earn.adapter.OfferHistoryAdapter;
 import com.app.rewardsplanet.share_earn.model.OfferHistoryResponse;
 import com.app.rewardsplanet.share_earn.network.ShareEarnApiService;
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +41,9 @@ public class OfferHistoryActivity extends AppCompatActivity {
 
     private SwipeRefreshLayout swipeHistory;
     private RecyclerView rvOfferHistory;
-    private ProgressBar progressHistory;
+    private ShimmerFrameLayout shimmerHistory;
     private LinearLayout layoutEmptyHistory;
+    private AdView adViewOfferHistory;
 
     private TextView tabAll, tabPending, tabCompleted, tabRejected;
     private String currentStatus = "All";
@@ -58,8 +61,9 @@ public class OfferHistoryActivity extends AppCompatActivity {
 
         swipeHistory = findViewById(R.id.swipeHistory);
         rvOfferHistory = findViewById(R.id.rvOfferHistory);
-        progressHistory = findViewById(R.id.progressHistory);
+        shimmerHistory = findViewById(R.id.shimmerHistory);
         layoutEmptyHistory = findViewById(R.id.layoutEmptyHistory);
+        adViewOfferHistory = findViewById(R.id.adViewOfferHistory);
 
         tabAll = findViewById(R.id.tabHistoryAll);
         tabPending = findViewById(R.id.tabHistoryPending);
@@ -76,6 +80,13 @@ public class OfferHistoryActivity extends AppCompatActivity {
         tabRejected.setOnClickListener(v -> selectTab("Rejected", tabRejected));
 
         swipeHistory.setOnRefreshListener(this::fetchHistory);
+
+        if (adViewOfferHistory != null) {
+            try {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adViewOfferHistory.loadAd(adRequest);
+            } catch (Exception ignored) {}
+        }
 
         fetchHistory();
     }
@@ -100,7 +111,17 @@ public class OfferHistoryActivity extends AppCompatActivity {
 
     private void fetchHistory() {
         if (isFinishing() || isDestroyed()) return;
-        if (progressHistory != null) progressHistory.setVisibility(View.VISIBLE);
+
+        if (swipeHistory != null && !swipeHistory.isRefreshing()) {
+            if (shimmerHistory != null) {
+                try {
+                    shimmerHistory.setVisibility(View.VISIBLE);
+                    shimmerHistory.startShimmer();
+                } catch (Exception ignored) {}
+            }
+            if (rvOfferHistory != null) rvOfferHistory.setVisibility(View.GONE);
+        }
+        if (layoutEmptyHistory != null) layoutEmptyHistory.setVisibility(View.GONE);
 
         AuthTokenHelper.getBearerToken(new AuthTokenHelper.TokenCallback() {
             @Override
@@ -115,7 +136,7 @@ public class OfferHistoryActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call<OfferHistoryResponse> call, Response<OfferHistoryResponse> response) {
                         if (isFinishing() || isDestroyed()) return;
-                        if (progressHistory != null) progressHistory.setVisibility(View.GONE);
+                        stopShimmerLoading();
                         if (swipeHistory != null) swipeHistory.setRefreshing(false);
 
                         if (response.isSuccessful() && response.body() != null && response.body().isSuccess()) {
@@ -138,7 +159,7 @@ public class OfferHistoryActivity extends AppCompatActivity {
                     @Override
                     public void onFailure(Call<OfferHistoryResponse> call, Throwable t) {
                         if (isFinishing() || isDestroyed()) return;
-                        if (progressHistory != null) progressHistory.setVisibility(View.GONE);
+                        stopShimmerLoading();
                         if (swipeHistory != null) swipeHistory.setRefreshing(false);
                         Toast.makeText(OfferHistoryActivity.this, "Network error: " + (t != null ? t.getMessage() : "failed"), Toast.LENGTH_SHORT).show();
                     }
@@ -148,17 +169,46 @@ public class OfferHistoryActivity extends AppCompatActivity {
             @Override
             public void onError(Exception e) {
                 if (isFinishing() || isDestroyed()) return;
-                if (progressHistory != null) progressHistory.setVisibility(View.GONE);
+                stopShimmerLoading();
                 if (swipeHistory != null) swipeHistory.setRefreshing(false);
                 Toast.makeText(OfferHistoryActivity.this, "Auth error", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
+    private void stopShimmerLoading() {
+        if (shimmerHistory != null) {
+            try {
+                shimmerHistory.stopShimmer();
+                shimmerHistory.setVisibility(View.GONE);
+            } catch (Exception ignored) {}
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (adViewOfferHistory != null) {
+            adViewOfferHistory.pause();
+        }
+        super.onPause();
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
+        if (adViewOfferHistory != null) {
+            adViewOfferHistory.resume();
+        }
         makeFullScreen();
+    }
+
+    @Override
+    protected void onDestroy() {
+        stopShimmerLoading();
+        if (adViewOfferHistory != null) {
+            adViewOfferHistory.destroy();
+        }
+        super.onDestroy();
     }
 
     private void makeFullScreen() {

@@ -84,7 +84,7 @@ public class RedirectCountdownActivity extends AppCompatActivity {
         }
 
         if (rewardCoins > 0) {
-            txtRewardBadge.setText("🪙 Earn +" + String.format("%,d", rewardCoins) + " Coins");
+            txtRewardBadge.setText("Earn +" + String.format("%,d", rewardCoins) + " Coins");
             txtRewardBadge.setVisibility(View.VISIBLE);
         } else {
             txtRewardBadge.setVisibility(View.GONE);

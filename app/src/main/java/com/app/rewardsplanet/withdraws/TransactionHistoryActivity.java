@@ -17,6 +17,9 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.app.rewardsplanet.R;
+import com.facebook.shimmer.ShimmerFrameLayout;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.ListenerRegistration;
@@ -30,6 +33,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     private static final String TAG = "HISTORY";
 
     private RecyclerView recyclerHistory;
+    private ShimmerFrameLayout shimmerWithdrawHistory;
     private LinearLayout layoutEmptyState;
     private WithdrawHistoryAdapter adapter;
     private final List<WithdrawHistoryModel> list = new ArrayList<>();
@@ -39,17 +43,19 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     private ListenerRegistration historyListener;
 
     private ImageView btnBack;
+    private AdView adViewTransactionHistory;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_transaction_history_fragment);
 
         // Views
         btnBack = findViewById(R.id.btnBack);
         recyclerHistory = findViewById(R.id.recyclerHistory);
+        shimmerWithdrawHistory = findViewById(R.id.shimmerWithdrawHistory);
         layoutEmptyState = findViewById(R.id.layoutEmptyState);
+        adViewTransactionHistory = findViewById(R.id.adViewTransactionHistory);
 
         recyclerHistory.setLayoutManager(new LinearLayoutManager(this));
 
@@ -78,6 +84,14 @@ public class TransactionHistoryActivity extends AppCompatActivity {
 
         btnBack.setOnClickListener(v -> finish());
         makeFullScreen();
+
+        if (adViewTransactionHistory != null) {
+            try {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adViewTransactionHistory.loadAd(adRequest);
+            } catch (Exception ignored) {}
+        }
+
         loadWithdrawHistory();
     }
 
@@ -112,18 +126,21 @@ public class TransactionHistoryActivity extends AppCompatActivity {
     // ================= LOAD HISTORY =================
 
     private void loadWithdrawHistory() {
-
         if (uid == null) {
             Log.e(TAG, "UID is null");
+            stopShimmer();
             if (layoutEmptyState != null) layoutEmptyState.setVisibility(View.VISIBLE);
             return;
         }
+
+        startShimmer();
 
         historyListener = db.collection("redeem_requests")
                 .whereEqualTo("uid", uid)
                 .orderBy("created_at", Query.Direction.DESCENDING)
                 .addSnapshotListener((value, error) -> {
                     if (isFinishing() || isDestroyed()) return;
+                    stopShimmer();
 
                     if (error != null) {
                         Log.e(TAG, "Firestore error", error);
@@ -139,10 +156,7 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                     list.clear();
 
                     for (var doc : value.getDocuments()) {
-
-                        WithdrawHistoryModel model =
-                                doc.toObject(WithdrawHistoryModel.class);
-
+                        WithdrawHistoryModel model = doc.toObject(WithdrawHistoryModel.class);
                         if (model == null) continue;
 
                         model.setCreated_at(doc.getTimestamp("created_at"));
@@ -153,15 +167,58 @@ public class TransactionHistoryActivity extends AppCompatActivity {
                     if (layoutEmptyState != null) {
                         layoutEmptyState.setVisibility(list.isEmpty() ? View.VISIBLE : View.GONE);
                     }
+                    if (recyclerHistory != null) {
+                        recyclerHistory.setVisibility(list.isEmpty() ? View.GONE : View.VISIBLE);
+                    }
                     adapter.notifyDataSetChanged();
                 });
     }
 
+    private void startShimmer() {
+        if (shimmerWithdrawHistory != null) {
+            try {
+                shimmerWithdrawHistory.setVisibility(View.VISIBLE);
+                shimmerWithdrawHistory.startShimmer();
+            } catch (Exception ignored) {}
+        }
+        if (recyclerHistory != null) recyclerHistory.setVisibility(View.GONE);
+        if (layoutEmptyState != null) layoutEmptyState.setVisibility(View.GONE);
+    }
+
+    private void stopShimmer() {
+        if (shimmerWithdrawHistory != null) {
+            try {
+                shimmerWithdrawHistory.stopShimmer();
+                shimmerWithdrawHistory.setVisibility(View.GONE);
+            } catch (Exception ignored) {}
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        if (adViewTransactionHistory != null) {
+            adViewTransactionHistory.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adViewTransactionHistory != null) {
+            adViewTransactionHistory.resume();
+        }
+    }
+
     @Override
     protected void onDestroy() {
-        super.onDestroy();
+        stopShimmer();
+        if (adViewTransactionHistory != null) {
+            adViewTransactionHistory.destroy();
+        }
         if (historyListener != null) {
             historyListener.remove();
         }
+        super.onDestroy();
     }
-}
+}

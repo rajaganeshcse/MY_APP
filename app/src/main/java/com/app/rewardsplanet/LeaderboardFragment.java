@@ -162,9 +162,9 @@ public class LeaderboardFragment extends Fragment {
         if (!isAdded()) return;
 
         // ── Default placeholders ─────────────────────────────────────────────
-        safeSet(name1,  "—");       safeSet(score1, "🪙 0");
-        safeSet(name2,  "—");       safeSet(score2, "🪙 0");
-        safeSet(name3,  "—");       safeSet(score3, "🪙 0");
+        safeSet(name1,  "—");       safeSet(score1, "0");
+        safeSet(name2,  "—");       safeSet(score2, "0");
+        safeSet(name3,  "—");       safeSet(score3, "0");
 
         if (img1 != null) img1.setImageResource(R.drawable.ic_profile);
         if (img2 != null) img2.setImageResource(R.drawable.ic_profile);
@@ -174,7 +174,7 @@ public class LeaderboardFragment extends Fragment {
         if (list.size() > 0) {
             User u = list.get(0);
             safeSet(name1,  displayName(u));
-            safeSet(score1, "🪙 " + scoreOf(u));
+            safeSet(score1, String.valueOf(scoreOf(u)));
             loadProfileImage(img1, u.profile_pic);
         }
 
@@ -182,7 +182,7 @@ public class LeaderboardFragment extends Fragment {
         if (list.size() > 1) {
             User u = list.get(1);
             safeSet(name2,  displayName(u));
-            safeSet(score2, "🪙 " + scoreOf(u));
+            safeSet(score2, String.valueOf(scoreOf(u)));
             loadProfileImage(img2, u.profile_pic);
         }
 
@@ -190,7 +190,7 @@ public class LeaderboardFragment extends Fragment {
         if (list.size() > 2) {
             User u = list.get(2);
             safeSet(name3,  displayName(u));
-            safeSet(score3, "🪙 " + scoreOf(u));
+            safeSet(score3, String.valueOf(scoreOf(u)));
             loadProfileImage(img3, u.profile_pic);
         }
     }

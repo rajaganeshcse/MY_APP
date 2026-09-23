@@ -94,11 +94,11 @@
                 android:orientation="horizontal"
                 android:paddingHorizontal="12dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="🪙"
-                    android:textSize="14sp" />
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:src="@drawable/ic_coin"
+                    android:contentDescription="Coins" />
 
                 <TextView
                     android:id="@+id/txtRewardCoins"

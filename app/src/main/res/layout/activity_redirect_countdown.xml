@@ -111,18 +111,33 @@
                 android:textStyle="bold" />
 
             <!-- Reward Coins Badge -->
-            <TextView
-                android:id="@+id/txtRewardBadge"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
                 android:background="@drawable/bg_reward_gradient"
-                android:paddingHorizontal="16dp"
-                android:paddingVertical="6dp"
-                android:text="🪙 Earn +2,800 Coins"
-                android:textColor="#FFFFFF"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:paddingHorizontal="14dp"
+                android:paddingVertical="6dp">
+
+                <ImageView
+                    android:layout_width="18dp"
+                    android:layout_height="18dp"
+                    android:src="@drawable/ic_coin"
+                    android:contentDescription="Coins" />
+
+                <TextView
+                    android:id="@+id/txtRewardBadge"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:text="Earn +2,800 Coins"
+                    android:textColor="#FFFFFF"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <!-- Central Countdown Container Card -->
             <androidx.cardview.widget.CardView

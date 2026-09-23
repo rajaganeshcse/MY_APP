@@ -76,10 +76,17 @@
             android:paddingEnd="10dp"
             android:paddingBottom="5dp">
 
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_coin"
+                android:contentDescription="Coins" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="+250 🪙"
+                android:layout_marginStart="3dp"
+                android:text="+250"
                 android:textColor="#D97706"
                 android:textSize="12sp"
                 android:textStyle="bold" />

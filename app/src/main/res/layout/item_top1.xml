@@ -61,16 +61,30 @@
             android:textStyle="bold" />
 
         <!-- Score -->
-        <TextView
-            android:id="@+id/score2"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:gravity="center"
-            android:text="🪙 0"
-            android:textColor="#FFD700"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/ic_coin"
+                android:contentDescription="Coins" />
+
+            <TextView
+                android:id="@+id/score2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:text="0"
+                android:textColor="#FFD700"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <!-- Podium block — silver -->
         <LinearLayout
@@ -135,16 +149,30 @@
             android:textStyle="bold" />
 
         <!-- Score -->
-        <TextView
-            android:id="@+id/score1"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:gravity="center"
-            android:text="🪙 0"
-            android:textColor="#FFD700"
-            android:textSize="12sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:src="@drawable/ic_coin"
+                android:contentDescription="Coins" />
+
+            <TextView
+                android:id="@+id/score1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:text="0"
+                android:textColor="#FFD700"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <!-- Podium block — gold (tallest) -->
         <LinearLayout
@@ -214,16 +242,30 @@
             android:textStyle="bold" />
 
         <!-- Score -->
-        <TextView
-            android:id="@+id/score3"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
             android:gravity="center"
-            android:text="🪙 0"
-            android:textColor="#FFD700"
-            android:textSize="10sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:src="@drawable/ic_coin"
+                android:contentDescription="Coins" />
+
+            <TextView
+                android:id="@+id/score3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:text="0"
+                android:textColor="#FFD700"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <!-- Podium block — bronze -->
         <LinearLayout

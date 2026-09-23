@@ -169,11 +169,11 @@
                 android:textStyle="bold"
                 android:letterSpacing="0.08" />
 
-            <!-- ACCOUNT HISTORY (FORMERLY WALLET) -->
+            <!-- COIN TRANSACTIONS (REWARD HISTORY) -->
             <LinearLayout
                 android:id="@+id/menuWallet"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="56dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -190,19 +190,34 @@
                     android:layout_height="36dp"
                     android:background="@drawable/bg_icon_circle_purple"
                     android:padding="7dp"
-                    android:src="@drawable/ic_history"
-                    android:contentDescription="Account History" />
+                    android:src="@drawable/ic_coin"
+                    android:contentDescription="Coin Transactions" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="14dp"
-                    android:text="Account History"
-                    android:textColor="#1E293B"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.01" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Coin Transactions"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Track earnings &amp; rewards"
+                        android:textColor="#64748B"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 
@@ -243,11 +258,11 @@
 
             </LinearLayout>
 
-            <!-- MY ACTIVITY -->
+            <!-- PAYOUT / WITHDRAWAL HISTORY -->
             <LinearLayout
                 android:id="@+id/menuActivity"
                 android:layout_width="match_parent"
-                android:layout_height="52dp"
+                android:layout_height="56dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginVertical="2dp"
@@ -264,19 +279,34 @@
                     android:layout_height="36dp"
                     android:background="@drawable/bg_icon_circle_blue"
                     android:padding="7dp"
-                    android:src="@drawable/ic_gift"
-                    android:contentDescription="My Activity" />
+                    android:src="@drawable/img_redeem"
+                    android:contentDescription="Payout History" />
 
-                <TextView
+                <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:layout_marginStart="14dp"
-                    android:text="My Activity"
-                    android:textColor="#1E293B"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium"
-                    android:letterSpacing="0.01" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Payout History"
+                        android:textColor="#1E293B"
+                        android:textSize="15sp"
+                        android:fontFamily="sans-serif-medium"
+                        android:textStyle="bold"
+                        android:letterSpacing="0.01" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Withdrawal &amp; redeem status"
+                        android:textColor="#64748B"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

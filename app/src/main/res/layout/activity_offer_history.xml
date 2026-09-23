@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ads="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F8FAFC">
@@ -113,8 +114,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginTop="12dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabContainerHistory">
+        app:layout_constraintTop_toBottomOf="@+id/tabContainerHistory"
+        app:layout_constraintBottom_toTopOf="@+id/adViewOfferHistory">
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvOfferHistory"
@@ -125,17 +126,33 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-    <!-- Loading Bar -->
-    <ProgressBar
-        android:id="@+id/progressHistory"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminateTint="#4F46E5"
+    <!-- Shimmer Skeleton Loading -->
+    <com.facebook.shimmer.ShimmerFrameLayout
+        android:id="@+id/shimmerHistory"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="12dp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:shimmer_auto_start="false"
+        app:shimmer_duration="1200"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tabContainerHistory" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tabContainerHistory"
+        app:layout_constraintBottom_toTopOf="@+id/adViewOfferHistory">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include layout="@layout/item_offer_history_shimmer" />
+            <include layout="@layout/item_offer_history_shimmer" />
+            <include layout="@layout/item_offer_history_shimmer" />
+            <include layout="@layout/item_offer_history_shimmer" />
+
+        </LinearLayout>
+
+    </com.facebook.shimmer.ShimmerFrameLayout>
 
     <!-- Empty History View -->
     <LinearLayout
@@ -145,7 +162,7 @@
         android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/adViewOfferHistory"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tabContainerHistory">
@@ -166,5 +183,16 @@
             android:textStyle="bold" />
 
     </LinearLayout>
+
+    <!-- Google Mobile Ads Banner -->
+    <com.google.android.gms.ads.AdView
+        android:id="@+id/adViewOfferHistory"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        ads:adSize="BANNER"
+        ads:adUnitId="@string/banner_ad_unit_id"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

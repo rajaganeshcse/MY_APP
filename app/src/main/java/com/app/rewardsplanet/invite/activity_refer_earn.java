@@ -17,6 +17,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import com.app.rewardsplanet.R;
 import com.app.rewardsplanet.UserPref;
 import com.app.rewardsplanet.profile.MyEarningsFragment;
+import com.google.android.gms.ads.AdRequest;
+import com.google.android.gms.ads.AdView;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,6 +31,7 @@ public class activity_refer_earn extends AppCompatActivity {
     private ViewPager2 viewPager;
     private View btnBack;
     private TextView txtCoins;
+    private AdView adViewRefer;
 
     private FirebaseFirestore db;
     private ListenerRegistration userListener;
@@ -47,6 +50,7 @@ public class activity_refer_earn extends AppCompatActivity {
         txtCoins = findViewById(R.id.txtCoins);
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager);
+        adViewRefer = findViewById(R.id.adViewRefer);
 
         if (btnBack != null) {
             btnBack.setOnClickListener(v -> finish());
@@ -73,6 +77,13 @@ public class activity_refer_earn extends AppCompatActivity {
                     }
                 }).attach();
             }
+        }
+
+        if (adViewRefer != null) {
+            try {
+                AdRequest adRequest = new AdRequest.Builder().build();
+                adViewRefer.loadAd(adRequest);
+            } catch (Exception ignored) {}
         }
     }
 
@@ -116,6 +127,8 @@ public class activity_refer_earn extends AppCompatActivity {
 
     private void makeFullScreen() {
         Window window = getWindow();
+        if (window == null) return;
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.setDecorFitsSystemWindows(false);
             WindowInsetsController controller = window.getInsetsController();
@@ -137,10 +150,29 @@ public class activity_refer_earn extends AppCompatActivity {
     }
 
     @Override
+    protected void onPause() {
+        if (adViewRefer != null) {
+            adViewRefer.pause();
+        }
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (adViewRefer != null) {
+            adViewRefer.resume();
+        }
+    }
+
+    @Override
     protected void onDestroy() {
-        super.onDestroy();
+        if (adViewRefer != null) {
+            adViewRefer.destroy();
+        }
         if (userListener != null) {
             userListener.remove();
         }
+        super.onDestroy();
     }
 }
