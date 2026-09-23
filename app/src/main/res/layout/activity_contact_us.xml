@@ -124,7 +124,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="2dp"
-                            android:text="support@rgamer.app"
+                            android:text="support@dailykash.app"
                             android:textColor="#64748B"
                             android:textSize="11sp" />
 

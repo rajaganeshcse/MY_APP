@@ -20,7 +20,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:text="REWARDSPRO 💙 INDIA"
+        android:text="DailyKash 💙 INDIA"
         android:textColor="#1E40AF"
         android:textSize="18sp"
         android:textStyle="bold"
@@ -40,18 +40,6 @@
         android:letterSpacing="0.02" />
 
     <!-- ================= WHY CHOOSE US ================= -->
-    <TextView
-        android:id="@+id/txtWhyChooseUsTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="20dp"
-        android:gravity="center"
-        android:text="Why Choose Us"
-        android:textColor="#0F172A"
-        android:textSize="13.5sp"
-        android:textStyle="bold"
-        android:letterSpacing="0.02" />
 
     <!-- 3 EVENLY SPACED ITEMS -->
     <LinearLayout
@@ -245,7 +233,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="12dp"
         android:gravity="center"
-        android:text="© 2026 RewardsPro. All rights reserved."
+        android:text="© 2026 DailyKash. All rights reserved."
         android:textColor="#94A3B8"
         android:textSize="11sp" />
 

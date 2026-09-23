@@ -377,7 +377,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:lineSpacingExtra="3dp"
-                        android:text="You have the right to request access to your data or request complete account and data deletion at any time. You can submit an account deletion request through the Contact Us section in this app or by sending an email to support@rgamer.app."
+                        android:text="You have the right to request access to your data or request complete account and data deletion at any time. You can submit an account deletion request through the Contact Us section in this app or by sending an email to support@dailykash.app."
                         android:textColor="#475569"
                         android:textSize="13sp" />
 

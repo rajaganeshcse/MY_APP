@@ -736,7 +736,7 @@
                 android:textSize="15sp"
                 android:fontFamily="sans-serif-medium"
                 android:textStyle="bold"
-                android:text="REWARDSPRO 💙 INDIA"
+                android:text="DAILYKASH 💙 INDIA"
                 android:layout_marginBottom="24dp"
                 android:textColor="#2563EB"
                 android:letterSpacing="0.05" />

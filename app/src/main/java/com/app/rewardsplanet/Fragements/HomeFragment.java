@@ -731,14 +731,14 @@ public class HomeFragment extends Fragment {
         if (btnFooterAboutUs != null) {
             btnFooterAboutUs.setOnClickListener(v -> {
                 if (!isAdded()) return;
-                Toast.makeText(getContext(), "RewardsPro • India's #1 Rewards Platform", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "DailyKash • India's #1 Rewards Platform", Toast.LENGTH_SHORT).show();
             });
         }
 
         if (btnFooterSupport != null) {
             btnFooterSupport.setOnClickListener(v -> {
                 if (!isAdded()) return;
-                Toast.makeText(getContext(), "Support Email: support@rewardspro.in", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getContext(), "Support Email: support@dailykash.app", Toast.LENGTH_SHORT).show();
             });
         }
 
