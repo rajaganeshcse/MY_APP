@@ -1,6 +1,15 @@
+import java.util.Properties
+import java.io.FileInputStream
+
 plugins {
     alias(libs.plugins.android.application)
     id("com.google.gms.google-services")
+}
+
+val keystorePropertiesFile = rootProject.file("keystore.properties")
+val keystoreProperties = Properties()
+if (keystorePropertiesFile.exists()) {
+    FileInputStream(keystorePropertiesFile).use { keystoreProperties.load(it) }
 }
 
 android {
@@ -8,8 +17,20 @@ android {
 
     compileSdk = 35
 
+    signingConfigs {
+        create("release") {
+            val keyFile = keystoreProperties.getProperty("storeFile")
+            if (keyFile != null) {
+                storeFile = rootProject.file(keyFile)
+                storePassword = keystoreProperties.getProperty("storePassword")
+                keyAlias = keystoreProperties.getProperty("keyAlias")
+                keyPassword = keystoreProperties.getProperty("keyPassword")
+            }
+        }
+    }
+
     defaultConfig {
-        applicationId = "com.example.rgamer"
+        applicationId = "com.dailykash.app"
 
         minSdk = 23
 
@@ -24,6 +45,7 @@ android {
 
     buildTypes {
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
 
             proguardFiles(
