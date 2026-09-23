@@ -153,6 +153,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             );
 
             int iconRes = R.drawable.ic_notification;
+            Bitmap appIconBitmap = BitmapFactory.decodeResource(getResources(), iconRes);
 
             String fullMessage = body;
             if (body1 != null && !body1.trim().isEmpty()) {
@@ -167,6 +168,10 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setDefaults(NotificationCompat.DEFAULT_ALL)
                     .setContentIntent(pi);
+
+            if (appIconBitmap != null) {
+                builder.setLargeIcon(appIconBitmap);
+            }
 
             Bitmap imageBitmap = downloadImageSafely(imageUrl);
 
