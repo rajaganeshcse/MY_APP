@@ -392,7 +392,9 @@ public class activity_login extends AppCompatActivity {
                 Log.e("LOGIN_DEBUG", "Google Sign-In ApiException: code=" + e.getStatusCode() + ", msg=" + e.getMessage(), e);
                 showLoading(false);
                 String msg;
-                if (e.getStatusCode() == 10) {
+                if (e.getStatusCode() == 7) {
+                    msg = "Google Error 7 (Network/Auth): 1) Add SHA-1 to com.dailykash.app in Firebase Console. 2) Set phone Date & Time to Automatic. 3) Clear Google Play Services cache.";
+                } else if (e.getStatusCode() == 10) {
                     msg = "Google Sign-In Error 10: SHA-1 fingerprint missing in Firebase Console for com.dailykash.app";
                 } else if (e.getStatusCode() == 12500) {
                     msg = "Google Sign-In Error 12500: Check Firebase Support Email and Google Play Services";
