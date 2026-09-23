@@ -649,7 +649,7 @@ public class HitRewardzActivity extends AppCompatActivity implements HitRewardzA
 
     private void loadRewardedAd() {
         AdRequest adRequest = new AdRequest.Builder().build();
-        RewardedAd.load(this, "ca-app-pub-3940256099942544/5224354917", adRequest, new RewardedAdLoadCallback() {
+        RewardedAd.load(this, com.app.rewardsplanet.ads.AdsManager.REWARDED_AD_ID, adRequest, new RewardedAdLoadCallback() {
             @Override
             public void onAdFailedToLoad(@NonNull LoadAdError loadAdError) {
                 rewardedAd = null;

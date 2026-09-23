@@ -322,10 +322,10 @@ public class ScratchActivity extends AppCompatActivity {
         try {
             adUnitId = getString(R.string.rewarded_ad_unit_id);
         } catch (Exception e) {
-            adUnitId = "ca-app-pub-3940256099942544/5224354917";
+            adUnitId = com.app.rewardsplanet.ads.AdsManager.REWARDED_AD_ID;
         }
         if (adUnitId == null || adUnitId.trim().isEmpty()) {
-            adUnitId = "ca-app-pub-3940256099942544/5224354917";
+            adUnitId = com.app.rewardsplanet.ads.AdsManager.REWARDED_AD_ID;
         }
 
         RewardedAd.load(

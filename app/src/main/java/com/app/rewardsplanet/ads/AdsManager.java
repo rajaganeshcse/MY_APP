@@ -2,11 +2,11 @@ package com.app.rewardsplanet.ads;
 
 public class AdsManager {
 
-    // Test Ad Unit IDs
+    // Live Ad Unit IDs for DailyKash
 
     // Banner
     public static final String BANNER_AD_ID =
-            "ca-app-pub-3940256099942544/6300978111";
+            "ca-app-pub-6379296195597918/4162307480";
 
     // Native
     public static final String NATIVE_AD_ID =
@@ -14,11 +14,11 @@ public class AdsManager {
 
     // Rewarded
     public static final String REWARDED_AD_ID =
-            "ca-app-pub-3940256099942544/5224354917";
+            "ca-app-pub-6379296195597918/4521489420";
 
-    // Interstitial (optional)
+    // Interstitial
     public static final String INTERSTITIAL_AD_ID =
-            "ca-app-pub-3940256099942544/1033173712";
+            "ca-app-pub-6379296195597918/1568023025";
 
     // App Open (optional)
     public static final String APP_OPEN_AD_ID =
