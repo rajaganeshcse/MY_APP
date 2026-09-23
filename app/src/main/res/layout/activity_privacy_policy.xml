@@ -106,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="6dp"
                         android:lineSpacingExtra="3dp"
-                        android:text="RGamer is committed to protecting your personal information. We do not sell your personal data to third parties, and all rewards and payout processing are handled with industry-standard encryption."
+                        android:text="DailyKash is committed to protecting your personal information. We do not sell your personal data to third parties, and all rewards and payout processing are handled with industry-standard encryption."
                         android:textColor="#4338CA"
                         android:textSize="13sp" />
 
@@ -187,7 +187,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         android:lineSpacingExtra="3dp"
-                        android:text="This Privacy Policy governs the manner in which RGamer collects, uses, maintains, and discloses information collected from users of the RGamer mobile application. By accessing or using our application, you agree to the collection and use of information in accordance with this policy."
+                        android:text="This Privacy Policy governs the manner in which DailyKash collects, uses, maintains, and discloses information collected from users of the DailyKash mobile application. By accessing or using our application, you agree to the collection and use of information in accordance with this policy."
                         android:textColor="#475569"
                         android:textSize="13sp" />
 

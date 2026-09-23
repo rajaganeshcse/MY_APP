@@ -93,7 +93,7 @@ public class FaqActivity extends AppCompatActivity {
 
         // Coins & Tasks
         allFaqList.add(new FaqItem(
-                "How do I earn coins in RGamer?",
+                "How do I earn coins in DailyKash?",
                 "You can earn coins by spinning the daily lucky wheel, scratching cards, completing partner tasks and offerwalls, sharing curated offers with your network, and referring your friends.",
                 "Coins & Tasks"
         ));
@@ -133,7 +133,7 @@ public class FaqActivity extends AppCompatActivity {
         // Refer & Earn
         allFaqList.add(new FaqItem(
                 "How does the Refer & Earn bonus work?",
-                "Share your unique referral code or link with friends. When they install RGamer and sign in with your code, both you and your friend receive instant bonus coins.",
+                "Share your unique referral code or link with friends. When they install DailyKash and sign in with your code, both you and your friend receive instant bonus coins.",
                 "Refer & Earn"
         ));
         allFaqList.add(new FaqItem(
@@ -144,13 +144,13 @@ public class FaqActivity extends AppCompatActivity {
 
         // Account & Rules
         allFaqList.add(new FaqItem(
-                "Is VPN or proxy allowed while using RGamer?",
+                "Is VPN or proxy allowed while using DailyKash?",
                 "No. Using VPNs, proxy servers, emulators, auto-clickers, or cloned apps is strictly prohibited by our terms. Accounts violating these rules will be permanently suspended.",
                 "Account & Rules"
         ));
         allFaqList.add(new FaqItem(
                 "Can I create multiple accounts on the same phone?",
-                "No. RGamer enforces a strict policy of one account per device. Creating multiple accounts on a single device will result in automated bans.",
+                "No. DailyKash enforces a strict policy of one account per device. Creating multiple accounts on a single device will result in automated bans.",
                 "Account & Rules"
         ));
         allFaqList.add(new FaqItem(

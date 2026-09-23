@@ -87,7 +87,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
         Map<String, String> data = message.getData();
 
-        String title = get(data, "title", message.getNotification() != null ? message.getNotification().getTitle() : "Rewards Planet 🌟");
+        String title = get(data, "title", message.getNotification() != null ? message.getNotification().getTitle() : "DailyKash 🌟");
         String body = get(data, "message", get(data, "body", message.getNotification() != null ? message.getNotification().getBody() : "Claim your daily rewards now!"));
         String body1 = get(data, "body1", "");
         String imageUrl = get(data, "imageUrl", get(data, "image", ""));
@@ -100,7 +100,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         String requestId = get(data, "requestId", "");
 
         if (title == null || title.trim().isEmpty()) {
-            title = "Rewards Planet 🌟";
+            title = "DailyKash 🌟";
         }
         if (body == null || body.trim().isEmpty()) {
             body = "Check out your new rewards!";

@@ -130,8 +130,8 @@ public class ContactUsActivity extends AppCompatActivity {
         if (cardChannelEmail != null) {
             cardChannelEmail.setOnClickListener(v -> {
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                emailIntent.setData(Uri.parse("mailto:support@rgamer.app"));
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "[RGamer Support] Inquiry");
+                emailIntent.setData(Uri.parse("mailto:support@dailykash.app"));
+                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "[DailyKash Support] Inquiry");
                 emailIntent.putExtra(Intent.EXTRA_TEXT,
                         "\n\n---\nAccount ID: " + uid + "\nDevice: " + Build.MANUFACTURER + " " + Build.MODEL + "\nOS: Android " + Build.VERSION.RELEASE);
                 try {
@@ -146,7 +146,7 @@ public class ContactUsActivity extends AppCompatActivity {
         if (cardChannelTelegram != null) {
             cardChannelTelegram.setOnClickListener(v -> {
                 try {
-                    Intent tgIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/rgamerapp"));
+                    Intent tgIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://t.me/dailykashapp"));
                     startActivity(tgIntent);
                 } catch (Exception e) {
                     Toast.makeText(this, "Could not open Telegram link", Toast.LENGTH_SHORT).show();

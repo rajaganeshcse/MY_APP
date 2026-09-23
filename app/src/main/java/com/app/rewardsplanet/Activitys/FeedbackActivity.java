@@ -247,7 +247,7 @@ public class FeedbackActivity extends AppCompatActivity {
         if (selectedRating == 5) {
             new AlertDialog.Builder(this)
                     .setTitle("Thank You So Much! 🌟")
-                    .setMessage("We are thrilled to know you love RGamer! Would you mind taking 10 seconds to leave us a quick review on Google Play?")
+                    .setMessage("We are thrilled to know you love DailyKash! Would you mind taking 10 seconds to leave us a quick review on Google Play?")
                     .setPositiveButton("Rate on Play Store", (dialog, which) -> {
                         openPlayStore();
                         finish();
@@ -261,7 +261,7 @@ public class FeedbackActivity extends AppCompatActivity {
         } else {
             new AlertDialog.Builder(this)
                     .setTitle("Feedback Received!")
-                    .setMessage("Thank you for sharing your thoughts with us. Our team reads every piece of feedback to make RGamer better for everyone!")
+                    .setMessage("Thank you for sharing your thoughts with us. Our team reads every piece of feedback to make DailyKash better for everyone!")
                     .setPositiveButton("Done", (dialog, which) -> {
                         dialog.dismiss();
                         finish();
