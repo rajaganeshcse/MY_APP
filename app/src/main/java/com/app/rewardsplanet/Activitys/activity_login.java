@@ -482,9 +482,9 @@ public class activity_login extends AppCompatActivity {
                     // Full sign-out: revokes Google session so silent re-auth can't bypass the check
                     forceLogout();
 
-                    if ("ACCOUNT_PENDING".equals(errorBody)) {
+                    if (errorBody != null && errorBody.contains("ACCOUNT_PENDING")) {
                         showAccountPendingDialog();
-                    } else if ("ACCOUNT_DELETED".equals(errorBody)) {
+                    } else if (errorBody != null && errorBody.contains("ACCOUNT_DELETED")) {
                         showAccountDeletedDialog();
                     } else {
                         Toast.makeText(activity_login.this, "Access denied", Toast.LENGTH_SHORT).show();

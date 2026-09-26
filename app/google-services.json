@@ -66,67 +66,6 @@
           ]
         }
       }
-    },
-    {
-      "client_info": {
-        "mobilesdk_app_id": "1:389812623522:android:0feb6bbfd36ced57491ffb",
-        "android_client_info": {
-          "package_name": "com.example.rgamer"
-        }
-      },
-      "oauth_client": [
-        {
-          "client_id": "389812623522-h7sehbl0jann9uoko49ulq6denspk97s.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.rgamer",
-            "certificate_hash": "892cfb0fe778e4f9f0a9f1480a364235df960dd1"
-          }
-        },
-        {
-          "client_id": "389812623522-ig06u08pkoskejd21hsp7npmn1r07qj9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.rgamer",
-            "certificate_hash": "e032a050c63b65e1b91f3146768da8368a282dde"
-          }
-        },
-        {
-          "client_id": "389812623522-s0tencn963mshpcd8aogi0d7u8qh5kgu.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.rgamer",
-            "certificate_hash": "09c1c312a06da2f9a0085009c14ab99e01cec01f"
-          }
-        },
-        {
-          "client_id": "389812623522-v5bkhnjeta64ig3okf201f23011e6dm9.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.example.rgamer",
-            "certificate_hash": "c80fbac9baaba3b0e50f4c29a250b208df8f72a8"
-          }
-        },
-        {
-          "client_id": "389812623522-ml86fm651a4btuvqba0u2mmgp9thvsvf.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
-      "api_key": [
-        {
-          "current_key": "AIzaSyCLbBJbxZnSN_65QtjsLcx-o_HTkQfV0Eo"
-        }
-      ],
-      "services": {
-        "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "389812623522-l54fsesc259340uqht1lu2ae5gtaofrf.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
-        }
-      }
     }
   ],
   "configuration_version": "1"

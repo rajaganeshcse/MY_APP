@@ -14,6 +14,17 @@ import retrofit2.http.*;
 
 public interface ApiService {
 
+    /* ================= HEALTH / CONNECTIVITY CHECK ================= */
+
+    /** Full app + Firestore connectivity check. Call on startup / before critical operations.
+     *  No auth header needed. Returns JSON: { status, backend, firebase_sdk, firestore, timestamp } */
+    @GET("api/app-check")
+    Call<ResponseBody> appCheck();
+
+    /** Fast liveness ping — checks backend is up & Firebase SDK is initialized. */
+    @GET("live/health")
+    Call<ResponseBody> liveness();
+
     /* ================= SCRATCH ================= */
 
     @POST("api/scratch/play")

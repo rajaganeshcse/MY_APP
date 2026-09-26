@@ -106,9 +106,9 @@ public class SplashActivity extends AppCompatActivity {
                     String accountStatus = doc.getString("account");
 
                     if ("Pending".equals(accountStatus) || "Deleted".equals(accountStatus)) {
-                        // Account is flagged — sign out and pass status to login screen
+                        // Account is flagged — sign out and pass status directly to login screen to show dialog
                         forceLogout();
-                        Intent intent = new Intent(SplashActivity.this, OnBoardingActivity.class);
+                        Intent intent = new Intent(SplashActivity.this, activity_login.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                         intent.putExtra("account_status", accountStatus);
                         isNavigated = true;
@@ -409,7 +409,15 @@ public class SplashActivity extends AppCompatActivity {
 
     private void navigateToLogin() {
         isNavigated = true;
-        Intent intent = new Intent(SplashActivity.this, OnBoardingActivity.class);
+        android.content.SharedPreferences prefs = getSharedPreferences("onboard", MODE_PRIVATE);
+        boolean firstTime = prefs.getBoolean("firstTime", true);
+
+        Intent intent;
+        if (firstTime) {
+            intent = new Intent(SplashActivity.this, OnBoardingActivity.class);
+        } else {
+            intent = new Intent(SplashActivity.this, activity_login.class);
+        }
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
         finish();
