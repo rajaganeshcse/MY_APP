@@ -23,30 +23,6 @@
           }
         },
         {
-          "client_id": "389812623522-d04qkp8n853fb5hci4pckbbpr1uf4d7a.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dailykash.app",
-            "certificate_hash": "e032a050c63b65e1b91f3146768da8368a282dde"
-          }
-        },
-        {
-          "client_id": "389812623522-doofitk7jvl4o6rgtctki4iq71ftl23t.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dailykash.app",
-            "certificate_hash": "09c1c312a06da2f9a0085009c14ab99e01cec01f"
-          }
-        },
-        {
-          "client_id": "389812623522-fkosti12luvnp442qrak41ub314q3k2b.apps.googleusercontent.com",
-          "client_type": 1,
-          "android_info": {
-            "package_name": "com.dailykash.app",
-            "certificate_hash": "892cfb0fe778e4f9f0a9f1480a364235df960dd1"
-          }
-        },
-        {
           "client_id": "389812623522-ml86fm651a4btuvqba0u2mmgp9thvsvf.apps.googleusercontent.com",
           "client_type": 3
         }
