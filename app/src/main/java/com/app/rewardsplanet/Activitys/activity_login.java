@@ -69,9 +69,12 @@ public class activity_login extends AppCompatActivity {
         loginProgressBar = findViewById(R.id.loginProgressBar);
         txtPrivacy = findViewById(R.id.txtPrivacy);
 
+        String webClientId = getString(R.string.default_web_client_id);
+        Log.d("LOGIN_DEBUG", "Configured Web Client ID: " + webClientId);
+
         GoogleSignInOptions gso =
                 new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                        .requestIdToken(getString(R.string.default_web_client_id))
+                        .requestIdToken(webClientId)
                         .requestEmail()
                         .build();
 
@@ -367,7 +370,12 @@ public class activity_login extends AppCompatActivity {
     private void signIn() {
         if (isLoading) return;
         showLoading(true);
-        startActivityForResult(googleSignInClient.getSignInIntent(), 100);
+
+        // Sign out previous session first so the account picker is always presented cleanly
+        // and any expired/stale tokens are cleared
+        googleSignInClient.signOut().addOnCompleteListener(task -> {
+            startActivityForResult(googleSignInClient.getSignInIntent(), 100);
+        });
     }
 
     @Override
