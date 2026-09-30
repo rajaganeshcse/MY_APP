@@ -47,6 +47,14 @@
           }
         },
         {
+          "client_id": "389812623522-cau0pcs7v2q3hdiir7sif4vopun1m50n.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.dailykash.app",
+            "certificate_hash": "30c8180874516777e5bbf610da257d6841f08344"
+          }
+        },
+        {
           "client_id": "389812623522-doofitk7jvl4o6rgtctki4iq71ftl23t.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
