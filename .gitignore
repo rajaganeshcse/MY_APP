@@ -18,3 +18,8 @@ app/release/
 keystore.properties
 *.jks
 *.keystore
+
+# Keystore & signing files (sensitive)
+app/keystore/
+*.aab
+*.apk
