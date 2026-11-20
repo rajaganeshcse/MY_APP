@@ -222,8 +222,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="ADVERTISEMENT"
-                android:textColor="#94A3B8"
-                android:textSize="10sp"
+                android:textColor="#64748B"
+                android:textSize="12sp"
                 android:letterSpacing="0.10" />
 
             <com.google.android.gms.ads.AdView

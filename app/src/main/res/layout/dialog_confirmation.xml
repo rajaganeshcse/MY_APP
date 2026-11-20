@@ -128,7 +128,7 @@
                         android:layout_height="wrap_content"
                         android:text="SELECT TICKETS"
                         android:textColor="#4F46E5"
-                        android:textSize="11sp"
+                        android:textSize="12sp"
                         android:letterSpacing="0.08"
                         android:textStyle="bold"
                         android:layout_marginBottom="14dp" />

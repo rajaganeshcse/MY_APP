@@ -172,7 +172,7 @@
                 android:paddingBottom="6dp"
                 android:text="🏆 Offers"
                 android:textColor="#1E293B"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -278,7 +278,7 @@
                 android:gravity="center"
                 android:text="⚡ Fast Login  •  🔒 100% Safe &amp; Encrypted"
                 android:textColor="#64748B"
-                android:textSize="11sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 

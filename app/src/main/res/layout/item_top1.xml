@@ -2,7 +2,7 @@
 <!--
     item_top1.xml — Podium layout for Top 3 leaderboard positions.
     Layout order (L→R): 2nd | 1st | 3rd  (standard podium arrangement)
-    Fixes: corrected emoji, silver bg for 2nd, dark themed text colors.
+    Enhanced: High-contrast typography, 12sp+ readable stats, premium podium styling.
 -->
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -56,8 +56,8 @@
             android:ellipsize="end"
             android:gravity="center"
             android:text="—"
-            android:textColor="#000000"
-            android:textSize="11sp"
+            android:textColor="#0F172A"
+            android:textSize="12.5sp"
             android:textStyle="bold" />
 
         <!-- Score -->
@@ -69,8 +69,8 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
                 android:src="@drawable/ic_coin"
                 android:contentDescription="Coins" />
 
@@ -80,8 +80,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
                 android:text="0"
-                android:textColor="#FFD700"
-                android:textSize="10sp"
+                android:textColor="#D97706"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="2nd"
-                android:textColor="#000000"
+                android:textColor="#0F172A"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -144,8 +144,8 @@
             android:ellipsize="end"
             android:gravity="center"
             android:text="—"
-            android:textColor="#000000"
-            android:textSize="13sp"
+            android:textColor="#0F172A"
+            android:textSize="14sp"
             android:textStyle="bold" />
 
         <!-- Score -->
@@ -157,8 +157,8 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="14dp"
-                android:layout_height="14dp"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:src="@drawable/ic_coin"
                 android:contentDescription="Coins" />
 
@@ -168,8 +168,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
                 android:text="0"
-                android:textColor="#FFD700"
-                android:textSize="12sp"
+                android:textColor="#D97706"
+                android:textSize="13sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -186,7 +186,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="👑 1st"
-                android:textColor="#000000"
+                android:textColor="#0F172A"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
@@ -237,8 +237,8 @@
             android:ellipsize="end"
             android:gravity="center"
             android:text="—"
-            android:textColor="#000000"
-            android:textSize="11sp"
+            android:textColor="#0F172A"
+            android:textSize="12.5sp"
             android:textStyle="bold" />
 
         <!-- Score -->
@@ -250,8 +250,8 @@
             android:orientation="horizontal">
 
             <ImageView
-                android:layout_width="12dp"
-                android:layout_height="12dp"
+                android:layout_width="13dp"
+                android:layout_height="13dp"
                 android:src="@drawable/ic_coin"
                 android:contentDescription="Coins" />
 
@@ -261,8 +261,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="3dp"
                 android:text="0"
-                android:textColor="#FFD700"
-                android:textSize="10sp"
+                android:textColor="#D97706"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
@@ -278,7 +278,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="3rd"
-                android:textColor="#000000"
+                android:textColor="#0F172A"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 

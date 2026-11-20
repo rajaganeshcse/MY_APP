@@ -194,7 +194,7 @@
                                 android:paddingBottom="4dp"
                                 android:text="100% COMPLETED"
                                 android:textColor="#047857"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 android:textStyle="bold" />
 
                         </LinearLayout>
@@ -350,7 +350,7 @@
                                 android:gravity="center"
                                 android:text="✓ Verified"
                                 android:textColor="#16A34A"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 android:textStyle="bold" />
                         </FrameLayout>
 
@@ -360,8 +360,8 @@
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="14dp"
                             android:text="ⓘ Enter valid 10-digit mobile number"
-                            android:textColor="#94A3B8"
-                            android:textSize="11sp" />
+                            android:textColor="#64748B"
+                            android:textSize="12sp" />
 
                         <!-- EMAIL ID -->
                         <TextView
@@ -422,7 +422,7 @@
                                 android:gravity="center"
                                 android:text="✓ Verified"
                                 android:textColor="#16A34A"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 android:textStyle="bold" />
                         </FrameLayout>
 
@@ -432,8 +432,8 @@
                             android:layout_marginTop="4dp"
                             android:layout_marginBottom="14dp"
                             android:text="ⓘ Email address is linked to your account"
-                            android:textColor="#94A3B8"
-                            android:textSize="11sp" />
+                            android:textColor="#64748B"
+                            android:textSize="12sp" />
 
                         <!-- DATE OF BIRTH -->
                         <TextView

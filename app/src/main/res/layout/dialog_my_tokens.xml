@@ -129,7 +129,7 @@
                         android:layout_height="wrap_content"
                         android:text="YOUR TICKET TOKEN(S)"
                         android:textColor="#4F46E5"
-                        android:textSize="11sp"
+                        android:textSize="12sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.08"
                         android:layout_marginBottom="10dp" />

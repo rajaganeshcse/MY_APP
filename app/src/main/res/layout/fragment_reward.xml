@@ -95,7 +95,7 @@
                                 android:letterSpacing="0.06"
                                 android:text="AVAILABLE COINS BALANCE"
                                 android:textColor="#E0E7FF"
-                                android:textSize="11sp"
+                                android:textSize="12sp"
                                 android:textStyle="bold" />
 
                             <TextView
@@ -139,7 +139,7 @@
                 android:clickable="true"
                 android:focusable="true"
                 app:cardBackgroundColor="#FFFFFF"
-                app:cardCornerRadius="18dp"
+                app:cardCornerRadius="20dp"
                 app:cardElevation="6dp">
 
                 <LinearLayout

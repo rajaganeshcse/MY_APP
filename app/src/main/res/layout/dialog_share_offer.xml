@@ -148,7 +148,7 @@
                 android:layout_marginTop="4dp"
                 android:text="WhatsApp"
                 android:textColor="#475569"
-                android:textSize="11sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -175,7 +175,7 @@
                 android:layout_marginTop="4dp"
                 android:text="Telegram"
                 android:textColor="#475569"
-                android:textSize="11sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -202,7 +202,7 @@
                 android:layout_marginTop="4dp"
                 android:text="Messages"
                 android:textColor="#475569"
-                android:textSize="11sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 
@@ -229,7 +229,7 @@
                 android:layout_marginTop="4dp"
                 android:text="More"
                 android:textColor="#475569"
-                android:textSize="11sp" />
+                android:textSize="12sp" />
 
         </LinearLayout>
 

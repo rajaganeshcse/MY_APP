@@ -126,7 +126,7 @@
                             android:layout_marginTop="2dp"
                             android:text="support@dailykash.app"
                             android:textColor="#64748B"
-                            android:textSize="11sp" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 
@@ -175,7 +175,7 @@
                             android:layout_marginTop="2dp"
                             android:text="@DailyKashCommunity"
                             android:textColor="#64748B"
-                            android:textSize="11sp" />
+                            android:textSize="12sp" />
 
                     </LinearLayout>
 

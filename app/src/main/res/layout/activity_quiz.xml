@@ -82,7 +82,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Daily Quiz"
-                        android:textColor="@color/black"
+                        android:textColor="#0F172A"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:letterSpacing="0.02" />
@@ -92,7 +92,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Question 1/10"
-                        android:textColor="#94A3B8"
+                        android:textColor="#64748B"
                         android:textSize="12sp" />
 
                 </LinearLayout>
@@ -429,7 +429,7 @@
                 android:gravity="center"
                 android:text="ADVERTISEMENT"
                 android:textColor="#64748B"
-                android:textSize="11sp"
+                android:textSize="12sp"
                 android:letterSpacing="0.08" />
 
             <com.google.android.gms.ads.AdView

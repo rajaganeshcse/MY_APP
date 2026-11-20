@@ -251,7 +251,7 @@
                                         android:layout_marginStart="6dp"
                                         android:text="COIN BALANCE"
                                         android:textColor="#C7D2FE"
-                                        android:textSize="11sp"
+                                        android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:letterSpacing="0.08" />
 
@@ -309,7 +309,7 @@
                                         android:layout_marginStart="6dp"
                                         android:text="TICKETS"
                                         android:textColor="#C7D2FE"
-                                        android:textSize="11sp"
+                                        android:textSize="12sp"
                                         android:textStyle="bold"
                                         android:letterSpacing="0.08" />
 
@@ -375,16 +375,16 @@
                                 <com.google.android.material.button.MaterialButton
                                     android:id="@+id/btnRedeemBalance"
                                     android:layout_width="wrap_content"
-                                    android:layout_height="32dp"
+                                    android:layout_height="34dp"
                                     android:layout_marginTop="4dp"
                                     android:text="REDEEM ➔"
                                     android:textColor="#4338CA"
-                                    android:textSize="11.5sp"
+                                    android:textSize="12.5sp"
                                     android:textStyle="bold"
                                     android:letterSpacing="0.04"
-                                    app:cornerRadius="16dp"
+                                    app:cornerRadius="17dp"
                                     app:backgroundTint="#FFFFFF"
-                                    app:elevation="3dp"
+                                    app:elevation="4dp"
                                     android:paddingStart="14dp"
                                     android:paddingEnd="14dp"
                                     android:insetTop="0dp"
