@@ -9,8 +9,8 @@
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="4dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp"
     app:strokeWidth="0dp"
     app:cardBackgroundColor="@android:color/transparent">
 
@@ -39,13 +39,13 @@
             <!-- RIBBON BADGE -->
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="19dp"
+                android:layout_height="22dp"
                 android:background="@drawable/bg_hitz_ribbon_gold"
                 android:gravity="center"
                 android:letterSpacing="0.04"
                 android:text="⚡ HIGH PAYOUT WEEKLY OFFER ⚡"
                 android:textColor="#0F172A"
-                android:textSize="9.5sp"
+                android:textSize="10.5sp"
                 android:textStyle="bold" />
 
             <LinearLayout
@@ -100,19 +100,19 @@
                         android:id="@+id/txtRewardSubtitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="1dp"
+                        android:layout_marginTop="2dp"
                         android:layout_gravity="center_horizontal"
                         android:gravity="center"
                         android:text="High payout long ad tasks • Resets Monday"
-                        android:textColor="#E9D5FF"
-                        android:textSize="11sp" />
+                        android:textColor="#F3E8FF"
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
                 <ImageView
                     android:id="@+id/imgRewardArrow"
-                    android:layout_width="29dp"
-                    android:layout_height="31dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_gravity="center"
                     android:background="@drawable/bg_back_dark"
                     android:contentDescription="Open"

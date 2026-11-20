@@ -34,8 +34,8 @@
         android:layout_marginTop="4dp"
         android:gravity="center"
         android:text="Earn • Play • Complete • Redeem"
-        android:textColor="#64748B"
-        android:textSize="12sp"
+        android:textColor="#475569"
+        android:textSize="12.5sp"
         android:textStyle="bold"
         android:letterSpacing="0.02" />
 
@@ -73,8 +73,8 @@
                 android:layout_marginTop="2dp"
                 android:gravity="center"
                 android:text="Protected Data"
-                android:textColor="#64748B"
-                android:textSize="10.5sp" />
+                android:textColor="#475569"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <!-- ⚡ Fast -->
@@ -101,8 +101,8 @@
                 android:layout_marginTop="2dp"
                 android:gravity="center"
                 android:text="Instant Payouts"
-                android:textColor="#64748B"
-                android:textSize="10.5sp" />
+                android:textColor="#475569"
+                android:textSize="12sp" />
         </LinearLayout>
 
         <!-- 📊 Transparent -->
@@ -129,8 +129,8 @@
                 android:layout_marginTop="2dp"
                 android:gravity="center"
                 android:text="Realtime Stats"
-                android:textColor="#64748B"
-                android:textSize="10.5sp" />
+                android:textColor="#475569"
+                android:textSize="12sp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -234,7 +234,7 @@
         android:layout_marginTop="12dp"
         android:gravity="center"
         android:text="© 2026 DailyKash. All rights reserved."
-        android:textColor="#94A3B8"
-        android:textSize="11sp" />
+        android:textColor="#64748B"
+        android:textSize="12sp" />
 
 </LinearLayout>

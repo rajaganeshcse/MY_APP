@@ -92,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="9999999999"
-                    android:textColor="#94A3B8"
+                    android:textColor="#CBD5E1"
                     android:textSize="12sp"
                     android:fontFamily="sans-serif"
                     android:letterSpacing="0.02" />
@@ -215,7 +215,7 @@
                         android:layout_height="wrap_content"
                         android:text="Track earnings &amp; rewards"
                         android:textColor="#64748B"
-                        android:textSize="11sp" />
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -304,7 +304,7 @@
                         android:layout_height="wrap_content"
                         android:text="Withdrawal &amp; redeem status"
                         android:textColor="#64748B"
-                        android:textSize="11sp" />
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -499,7 +499,7 @@
                         android:layout_height="wrap_content"
                         android:text="Help us improve DailyKash"
                         android:textColor="#64748B"
-                        android:textSize="11sp" />
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -552,7 +552,7 @@
                         android:layout_height="wrap_content"
                         android:text="24/7 dedicated support desk"
                         android:textColor="#64748B"
-                        android:textSize="11sp" />
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -605,7 +605,7 @@
                         android:layout_height="wrap_content"
                         android:text="Instant answers &amp; guides"
                         android:textColor="#64748B"
-                        android:textSize="11sp" />
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 
@@ -658,7 +658,7 @@
                         android:layout_height="wrap_content"
                         android:text="Security &amp; data protection"
                         android:textColor="#64748B"
-                        android:textSize="11sp" />
+                        android:textSize="12sp" />
 
                 </LinearLayout>
 

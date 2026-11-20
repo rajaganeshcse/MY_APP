@@ -10,7 +10,7 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="20dp"
-    app:cardElevation="5dp"
+    app:cardElevation="6dp"
     app:strokeWidth="0dp"
     app:cardBackgroundColor="@android:color/transparent">
 
@@ -79,8 +79,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="Join free tournaments &amp; jackpot draws"
-                    android:textColor="#E0E7FF"
-                    android:textSize="11.5sp"
+                    android:textColor="#EEF2FF"
+                    android:textSize="12sp"
                     android:textStyle="bold" />
 
             </LinearLayout>

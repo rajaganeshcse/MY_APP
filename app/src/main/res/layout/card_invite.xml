@@ -11,7 +11,7 @@
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
     app:cardCornerRadius="20dp"
-    app:cardElevation="5dp"
+    app:cardElevation="6dp"
     app:strokeWidth="0dp"
     app:cardBackgroundColor="@android:color/transparent">
 
@@ -56,7 +56,6 @@
                     android:layout_gravity="center"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_invite"
-
                     android:contentDescription="Invite Friends" />
             </FrameLayout>
 
@@ -82,8 +81,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="2dp"
                     android:text="Share with friends to get bonus coins"
-                    android:textColor="#E9D5FF"
-                    android:textSize="11.5sp"
+                    android:textColor="#F5D0FE"
+                    android:textSize="12sp"
                     android:textStyle="bold"
                     android:maxLines="1"
                     android:ellipsize="end"/>

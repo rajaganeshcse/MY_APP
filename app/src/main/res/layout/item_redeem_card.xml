@@ -7,8 +7,8 @@
     android:layout_columnWeight="1"
     android:layout_margin="5dp"
     app:cardBackgroundColor="#FFFFFF"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="5dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp"
     app:cardPreventCornerOverlap="false">
 
     <LinearLayout
@@ -77,8 +77,8 @@
             android:maxLines="1"
             android:ellipsize="end"
             android:text="Voucher Code"
-            android:textColor="#64748B"
-            android:textSize="10.5sp" />
+            android:textColor="#475569"
+            android:textSize="12sp" />
 
     </LinearLayout>
 

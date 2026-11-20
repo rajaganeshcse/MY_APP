@@ -4,15 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_daily_quiz"
     android:layout_width="0dp"
-    android:layout_height="136dp"
+    android:layout_height="138dp"
     android:layout_weight="1"
     android:layout_marginStart="5dp"
     android:layout_marginBottom="10dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="4dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp"
     app:strokeWidth="0dp"
     app:cardBackgroundColor="@android:color/transparent">
 
@@ -53,7 +53,6 @@
                     android:layout_gravity="center"
                     android:scaleType="fitCenter"
                     android:src="@drawable/ic_quiz"
-                    app:tint="#FFFFFF"
                     android:contentDescription="Daily Quiz" />
             </FrameLayout>
 
@@ -78,9 +77,9 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="2dp"
                 android:gravity="center"
-                android:text="Answer &amp; earn rewards"
-                android:textColor="#E9D5FF"
-                android:textSize="11.5sp"
+                android:text="Test knowledge &amp; win"
+                android:textColor="#F5D0FE"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 android:maxLines="1"
                 android:ellipsize="end" />

@@ -4,15 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/card_spinner"
     android:layout_width="0dp"
-    android:layout_height="136dp"
+    android:layout_height="138dp"
     android:layout_weight="1"
     android:layout_marginEnd="5dp"
     android:layout_marginBottom="10dp"
     android:clickable="true"
     android:focusable="true"
     android:foreground="?android:attr/selectableItemBackground"
-    app:cardCornerRadius="18dp"
-    app:cardElevation="4dp"
+    app:cardCornerRadius="20dp"
+    app:cardElevation="6dp"
     app:strokeWidth="0dp"
     app:cardBackgroundColor="@android:color/transparent">
 
@@ -38,51 +38,51 @@
             android:orientation="vertical"
             android:padding="12dp">
 
-        <FrameLayout
-            android:layout_width="48dp"
-            android:layout_height="48dp"
-            android:layout_gravity="center"
-            android:background="@drawable/bg_quiz_score_badge"
-            android:backgroundTint="#26FFFFFF"
-            android:gravity="center">
-
-            <ImageView
-                android:id="@+id/imgSpinner"
-                android:layout_width="28dp"
-                android:layout_height="28dp"
+            <FrameLayout
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:layout_gravity="center"
-                android:scaleType="fitCenter"
-                android:src="@drawable/ic_spinner"
-                android:contentDescription="Spin &amp; Win" />
-        </FrameLayout>
+                android:background="@drawable/bg_quiz_score_badge"
+                android:backgroundTint="#26FFFFFF"
+                android:gravity="center">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="8dp"
-            android:gravity="center"
-            android:text="Spin &amp; Win 🎡"
-            android:textColor="#FFFFFF"
-            android:textSize="14.5sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end" />
+                <ImageView
+                    android:id="@+id/imgSpinner"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:layout_gravity="center"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/ic_spinner"
+                    android:contentDescription="Spin &amp; Win" />
+            </FrameLayout>
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="2dp"
-            android:gravity="center"
-            android:text="Daily lucky wheel"
-            android:textColor="#E9D5FF"
-            android:textSize="11.5sp"
-            android:textStyle="bold"
-            android:maxLines="1"
-            android:ellipsize="end" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:gravity="center"
+                android:text="Spin &amp; Win 🎡"
+                android:textColor="#FFFFFF"
+                android:textSize="14.5sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
 
-    </LinearLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="2dp"
+                android:gravity="center"
+                android:text="Daily lucky wheel"
+                android:textColor="#F3E8FF"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                android:maxLines="1"
+                android:ellipsize="end" />
+
+        </LinearLayout>
 
     </FrameLayout>
 
